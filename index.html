@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bolão do Almeida - Copa do Mundo 2026</title>
+<meta name="description" content="Bolão do Almeida - Copa do Mundo 2026. Faça sua inscrição e concorra a prêmios!">
+<link rel="canonical" href="https://bolaocopa.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--primary:#8B1538;--primary-dark:#5C0E25;--secondary:#1A3A5C;--accent-gold:#D4A843;--accent-teal:#00B4D8;--bg-dark:#0A0E17;--bg-card:#111827;--bg-card-hover:#1A2235;--text-primary:#F1F5F9;--text-secondary:#94A3B8;--text-muted:#64748B;--border:#1E293B;--success:#22C55E;--warning:#F59E0B;--error:#EF4444;--gradient-copa:linear-gradient(135deg,#8B1538 0%,#1A3A5C 50%,#00B4D8 100%);--gradient-gold:linear-gradient(135deg,#D4A843,#F0D78C,#D4A843)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
+
+/* SIDE FLAGS */
+.side-flags{position:fixed;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:4px;opacity:.2;pointer-events:none}
+.side-flags.left{left:8px}.side-flags.right{right:8px}
+.side-flags img{width:32px;height:22px;border-radius:2px;object-fit:cover;display:block;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+@media(max-width:1280px){.side-flags{display:none}}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.7rem 1.5rem;display:flex;justify-content:space-between;align-items:center;transition:all .3s}
+.nav.scrolled{background:rgba(10,14,23,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Oswald',sans-serif;font-weight:700;font-size:1rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:.4rem;text-decoration:none}
+.nav-logo .li{width:32px;height:32px;background:var(--gradient-gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.nav-links{display:flex;gap:1.2rem;list-style:none;align-items:center}
+.nav-links a{color:var(--text-secondary);text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:.8rem;text-transform:uppercase;letter-spacing:1.5px;transition:color .3s;cursor:pointer}
+.nav-links a:hover{color:var(--accent-gold)}
+.nav-user{display:flex;align-items:center;gap:.5rem}
+.nav-user img{width:28px;height:28px;border-radius:50%;border:2px solid var(--accent-gold)}
+.nav-user span{font-family:'Barlow Condensed',sans-serif;font-size:.8rem;color:var(--text-secondary)}
+.mmb{display:none;background:none;border:none;color:var(--text-primary);font-size:1.5rem;cursor:pointer}
+@media(max-width:768px){
+.nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(10,14,23,.98);flex-direction:column;padding:1rem;gap:0;border-bottom:1px solid var(--border)}
+.nav-links.open{display:flex}.nav-links a{padding:.7rem 1rem;display:block}.mmb{display:block}
+.nav-user span{display:none}}
+
+/* BUTTONS */
+.btn{font-family:'Oswald',sans-serif;font-weight:600;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;padding:.8rem 1.8rem;border:none;border-radius:4px;cursor:pointer;transition:all .3s ease;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem}
+.btn-p{background:var(--gradient-gold);color:var(--primary-dark);box-shadow:0 4px 20px rgba(212,168,67,.3)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(212,168,67,.5)}
+.btn-s{background:transparent;color:var(--text-primary);border:1px solid var(--border)}
+.btn-s:hover{border-color:var(--accent-teal);color:var(--accent-teal)}
+.btn-w{background:#25D366;color:white}.btn-w:hover{background:#1EB354;transform:translateY(-2px)}
+.btn-google{background:white;color:#333;border:1px solid #ddd;font-family:'Barlow',sans-serif;font-weight:600;font-size:.9rem;letter-spacing:0;text-transform:none;padding:.75rem 1.5rem;border-radius:6px;display:inline-flex;align-items:center;gap:.6rem}
+.btn-google:hover{background:#f8f8f8;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.btn-google svg{width:20px;height:20px}
+.btn-sm{padding:.55rem 1rem;font-size:.75rem}
+.btn-danger{background:var(--error);color:white}
+.btn-danger:hover{background:#dc2626}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 20% 50%,rgba(139,21,56,.3) 0%,transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(0,180,216,.15) 0%,transparent 60%),radial-gradient(ellipse at 50% 100%,rgba(26,58,92,.3) 0%,transparent 60%),var(--bg-dark)}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hc{position:relative;z-index:2;text-align:center;padding:2rem 1rem;max-width:860px}
+.hy{font-family:'Oswald',sans-serif;font-size:clamp(4rem,12vw,8rem);font-weight:700;line-height:1;background:linear-gradient(180deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.01) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:absolute;top:-10px;left:50%;transform:translateX(-50%);z-index:-1;letter-spacing:8px}
+.trophy-svg{width:100px;height:120px;margin:0 auto .8rem;animation:tg 3s ease-in-out infinite;filter:drop-shadow(0 0 30px rgba(212,168,67,.4))}
+@keyframes tg{0%,100%{transform:scale(1);filter:drop-shadow(0 0 25px rgba(212,168,67,.4))}50%{transform:scale(1.04);filter:drop-shadow(0 0 45px rgba(212,168,67,.6))}}
+.hbadge{display:inline-block;background:var(--gradient-gold);color:var(--primary-dark);font-family:'Oswald',sans-serif;font-weight:700;font-size:.75rem;letter-spacing:3px;text-transform:uppercase;padding:.35rem 1.3rem;border-radius:50px;margin-bottom:.8rem}
+.hero h1{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(1.8rem,6vw,4rem);text-transform:uppercase;line-height:.95;letter-spacing:-1px;margin-bottom:.3rem}
+.hero h1 .l1{display:block;font-size:.5em;letter-spacing:3px;color:var(--text-secondary);font-weight:500}
+.hero h1 .l2{display:block;background:var(--gradient-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero h1 .l3{display:block;background:var(--gradient-copa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:.75em}
+.hh{font-size:.9rem;color:var(--text-muted);margin-bottom:1.2rem}
+.hh img{width:24px;height:16px;vertical-align:middle;border-radius:2px;margin:0 2px}
+
+/* COUNTDOWNS */
+.cds{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.8rem;margin-bottom:1.5rem}
+.cdb{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:.8rem;text-align:center}
+.cdb .cdl{font-family:'Barlow Condensed',sans-serif;font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:.3rem}
+.cdb .cdv{font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:700}
+.cdv.gold{color:var(--accent-gold)}.cdv.teal{color:var(--accent-teal)}.cdv.green{color:var(--success)}
+.cdb .cds2{font-size:.65rem;margin-top:.2rem;padding:.1rem .4rem;border-radius:50px;display:inline-block}
+.cds2.active{background:rgba(34,197,94,.15);color:var(--success)}.cds2.pending{background:rgba(245,158,11,.15);color:var(--warning)}.cds2.locked{background:rgba(239,68,68,.15);color:var(--error)}
+
+.hcta{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+
+.sbar{display:flex;justify-content:center;gap:2rem;margin-top:1.5rem;flex-wrap:wrap}
+.si{text-align:center}
+.sn{font-family:'Oswald',sans-serif;font-size:1.4rem;font-weight:700;color:var(--accent-gold)}
+.sl{font-size:.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+
+/* SECTIONS */
+.sec{padding:4.5rem 1.5rem;max-width:1050px;margin:0 auto}
+.sh{text-align:center;margin-bottom:2.5rem}
+.stag{font-family:'Barlow Condensed',sans-serif;font-size:.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-teal);margin-bottom:.3rem}
+.stitle{font-family:'Oswald',sans-serif;font-size:clamp(1.6rem,5vw,2.8rem);font-weight:700;text-transform:uppercase;line-height:1}
+.sdesc{color:var(--text-secondary);font-size:.95rem;max-width:520px;margin:.6rem auto 0}
+
+/* RULES */
+.rg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem}
+.rc{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;position:relative;overflow:hidden;transition:all .3s ease}
+.rc:hover{border-color:var(--accent-gold);transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.rc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient-copa)}
+.rn{font-family:'Oswald',sans-serif;font-size:3rem;font-weight:700;color:rgba(212,168,67,.07);position:absolute;top:.2rem;right:.6rem}
+.ri{font-size:1.6rem;margin-bottom:.5rem}
+.rc h3{font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem}
+.rc p{color:var(--text-secondary);font-size:.85rem;line-height:1.5}
+
+/* PRICING */
+.ps{background:radial-gradient(ellipse at 30% 50%,rgba(139,21,56,.08) 0%,transparent 50%),radial-gradient(ellipse at 70% 50%,rgba(0,180,216,.06) 0%,transparent 50%)}
+.pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;max-width:850px;margin:0 auto}
+.pc{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1.8rem 1.3rem;text-align:center;position:relative;transition:all .3s ease}
+.pc:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.pc.ft{border-color:var(--accent-gold);background:linear-gradient(180deg,rgba(212,168,67,.05) 0%,var(--bg-card) 40%)}
+.pc.ft::before{content:'MAIS POPULAR';position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--gradient-gold);color:var(--primary-dark);font-family:'Oswald',sans-serif;font-weight:700;font-size:.6rem;letter-spacing:2px;padding:.2rem 1rem;border-radius:50px}
+.pcc{font-family:'Oswald',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-secondary);margin-bottom:.4rem}
+.pvl{font-family:'Oswald',sans-serif;font-size:2.5rem;font-weight:700}
+.pvl small{font-size:.9rem;font-weight:400;color:var(--text-muted)}
+.pbd{font-size:.75rem;color:var(--text-muted);margin:.2rem 0}
+.ppd{display:inline-block;background:rgba(34,197,94,.1);color:var(--success);font-family:'Oswald',sans-serif;font-size:.7rem;letter-spacing:1px;padding:.15rem .6rem;border-radius:50px;margin:.5rem 0 .8rem}
+.pf{list-style:none;text-align:left;margin-bottom:1.2rem}
+.pf li{padding:.3rem 0;color:var(--text-secondary);font-size:.8rem;display:flex;align-items:center;gap:.35rem}
+.pf li::before{content:'✓';color:var(--success);font-weight:700;font-size:.75rem}
+
+/* FORM */
+.fc{max-width:700px;margin:0 auto;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:2.2rem;position:relative;overflow:hidden}
+.fc::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gradient-copa)}
+.fst{font-family:'Oswald',sans-serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem}
+.fsd{color:var(--text-muted);margin-bottom:1.3rem;font-size:.85rem}
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-family:'Barlow Condensed',sans-serif;font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:.3rem}
+.fg input,.fg select{width:100%;padding:.7rem .8rem;background:var(--bg-dark);border:1px solid var(--border);border-radius:4px;color:var(--text-primary);font-family:'Barlow',sans-serif;font-size:.9rem;transition:border-color .3s}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--accent-teal)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+@media(max-width:600px){.fr{grid-template-columns:1fr}.fc{padding:1.3rem}}
+
+/* COTAS SELECTOR */
+.cs{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1rem}
+@media(max-width:500px){.cs{grid-template-columns:1fr}}
+.co{background:var(--bg-dark);border:2px solid var(--border);border-radius:8px;padding:1rem .6rem;text-align:center;cursor:pointer;transition:all .3s ease}
+.co:hover{border-color:var(--accent-teal)}.co.sel{border-color:var(--accent-gold);background:rgba(212,168,67,.05)}
+.co .cn{font-family:'Oswald',sans-serif;font-size:1.6rem;font-weight:700;color:var(--accent-gold)}
+.co .cl{font-size:.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+.co .cp{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:600;margin-top:.2rem}
+.co .cd{font-size:.65rem;color:var(--text-muted);margin-top:.1rem}
+.co .csv{font-size:.65rem;color:var(--success);margin-top:.15rem}
+
+/* CHECKOUT */
+.csum{background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;padding:1.2rem;margin-bottom:1.2rem}
+.cln{display:flex;justify-content:space-between;padding:.35rem 0;font-size:.85rem;color:var(--text-secondary)}
+.cln.tot{border-top:1px solid var(--border);padding-top:.6rem;margin-top:.4rem;font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--accent-gold);font-weight:700}
+.pixs{text-align:center;background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;padding:1.3rem;margin-bottom:1.2rem}
+.pixt{font-family:'Oswald',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.8rem;color:var(--accent-teal)}
+.qrc{display:inline-block;background:white;padding:10px;border-radius:8px;margin-bottom:.8rem}
+.qrc canvas{display:block}
+.pkd{background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.15);border-radius:6px;padding:.6rem;margin:.6rem 0;display:flex;align-items:center;justify-content:center;gap:.4rem}
+.pkd code{font-family:'Barlow',monospace;font-size:1rem;color:var(--accent-teal);letter-spacing:1px}
+.pkd button{background:var(--accent-teal);color:white;border:none;padding:.25rem .5rem;border-radius:4px;font-size:.65rem;cursor:pointer;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:1px}
+.pixn{font-size:.75rem;color:var(--text-muted);margin-top:.4rem}
+
+/* LOGIN SECTION */
+.login-box{text-align:center;padding:3rem 2rem;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;max-width:450px;margin:0 auto}
+.login-box h3{font-family:'Oswald',sans-serif;font-size:1.3rem;margin-bottom:.5rem}
+.login-box p{color:var(--text-secondary);font-size:.9rem;margin-bottom:1.5rem}
+
+/* PRIZES */
+.prg{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;max-width:800px;margin:0 auto}
+@media(max-width:600px){.prg{grid-template-columns:1fr}}
+.prc{text-align:center;padding:1.8rem 1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;transition:all .3s ease}
+.prc:hover{transform:translateY(-3px);box-shadow:0 12px 35px rgba(0,0,0,.3)}
+.prc.gd{border-color:#FFD700;background:linear-gradient(180deg,rgba(255,215,0,.05) 0%,var(--bg-card) 50%)}
+.prc.sv{border-color:#C0C0C0}.prc.bz{border-color:#CD7F32}
+.prm{font-size:2.2rem;margin-bottom:.5rem}
+.prpl{font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:.2rem}
+.prpc{font-family:'Oswald',sans-serif;font-size:2.2rem;font-weight:700;background:var(--gradient-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.prpv{font-family:'Oswald',sans-serif;font-size:1rem;color:var(--text-secondary);margin-top:.2rem}
+
+/* WA BANNER */
+.wab{background:linear-gradient(135deg,rgba(37,211,102,.08) 0%,rgba(37,211,102,.02) 100%);border:1px solid rgba(37,211,102,.15);border-radius:10px;padding:1.5rem;text-align:center;max-width:550px;margin:2.5rem auto 0}
+.wab h3{font-family:'Oswald',sans-serif;font-size:1.1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem}
+.wab p{color:var(--text-secondary);font-size:.85rem;margin-bottom:.8rem}
+
+/* ADMIN */
+.admin-page{max-width:1100px;margin:5rem auto 2rem;padding:0 1.5rem}
+.admin-page h2{font-family:'Oswald',sans-serif;font-size:1.5rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem}
+.ast{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.8rem;margin-bottom:1.5rem}
+.asc{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center}
+.asc .av{font-family:'Oswald',sans-serif;font-size:1.7rem;font-weight:700;color:var(--accent-gold)}
+.asc .al{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+.atbl{width:100%;border-collapse:collapse;background:var(--bg-card);border-radius:8px;overflow:hidden}
+.atbl th{background:rgba(0,0,0,.3);font-family:'Barlow Condensed',sans-serif;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:.6rem;text-align:left}
+.atbl td{padding:.6rem;border-bottom:1px solid var(--border);font-size:.8rem}
+.stp{color:var(--warning)}.sta{color:var(--success)}
+.atbl button{padding:.25rem .5rem;border:none;border-radius:4px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;margin-right:.2rem}
+.ba{background:var(--success);color:white}.br2{background:var(--error);color:white}
+
+/* USER STATUS BAR */
+.user-status{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1.2rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem}
+.user-status .us-info{display:flex;align-items:center;gap:.8rem}
+.user-status .us-info img{width:40px;height:40px;border-radius:50%;border:2px solid var(--accent-gold)}
+.user-status .us-name{font-family:'Oswald',sans-serif;font-size:1rem}
+.user-status .us-email{font-size:.75rem;color:var(--text-muted)}
+.user-status .us-badge{font-size:.7rem;padding:.2rem .6rem;border-radius:50px;font-family:'Oswald',sans-serif;letter-spacing:1px}
+.badge-pending{background:rgba(245,158,11,.15);color:var(--warning)}
+.badge-approved{background:rgba(34,197,94,.15);color:var(--success)}
+.badge-none{background:rgba(100,116,139,.15);color:var(--text-muted)}
+
+/* FOOTER */
+.ft{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center}
+.ftl{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;color:var(--accent-gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:.2rem}
+.ft p{color:var(--text-muted);font-size:.75rem}
+.ftf{margin:.4rem 0;display:flex;justify-content:center;gap:6px}
+.ftf img{width:28px;height:19px;border-radius:2px}
+.ft a{color:var(--accent-teal);text-decoration:none}
+
+/* PAGE VIEWS */
+.page{display:none}.page.active{display:block}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.2rem;right:1.2rem;padding:.7rem 1.2rem;border-radius:8px;font-family:'Barlow',sans-serif;font-weight:600;font-size:.85rem;transform:translateY(100px);opacity:0;transition:all .4s ease;z-index:200;max-width:320px}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* LOADING */
+.loading{text-align:center;padding:3rem;color:var(--text-muted)}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent-gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* RANKING EMPTY */
+.re{text-align:center;padding:2.5rem;color:var(--text-muted)}
+
+/* GROUPS GRID */
+.groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.2rem}
+.group-card{background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;padding:1.2rem}
+.group-header{font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent-teal);margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+.group-card select{width:100%;padding:.6rem .7rem;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;color:var(--text-primary);font-family:'Barlow',sans-serif;font-size:.85rem;margin-bottom:.6rem;cursor:pointer}
+.group-card select:focus{outline:none;border-color:var(--accent-teal)}
+.group-card .sel-label{font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:.2rem}
+</style>
+</head>
+<body>
+
+<div class="side-flags left" id="fl"></div>
+<div class="side-flags right" id="fr"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nb">
+<a class="nav-logo" href="#" onclick="navigate('home')"><div class="li">⚽</div>Bolão Almeida Copa 2026</a>
+<ul class="nav-links" id="nl">
+<li><a onclick="navigate('home');scrollTo('cf')">Como Funciona</a></li>
+<li><a onclick="navigate('home');scrollTo('val')">Valores</a></li>
+<li><a onclick="navigate('home');scrollTo('insc')">Inscrição</a></li>
+<li><a onclick="navigate('home');scrollTo('rank')">Ranking</a></li>
+<li><a onclick="navigate('home');scrollTo('prem')">Premiação</a></li>
+<li id="nav-auth"></li>
+</ul>
+<button class="mmb" onclick="document.getElementById('nl').classList.toggle('open')">☰</button>
+</nav>
+
+<!-- ===================== HOME PAGE ===================== -->
+<div class="page active" id="page-home">
+
+<section class="hero">
+<div class="hc">
+<div class="hy">2026</div>
+<svg class="trophy-svg" viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="gg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#F0D78C"/><stop offset="30%" style="stop-color:#D4A843"/><stop offset="60%" style="stop-color:#F0D78C"/><stop offset="100%" style="stop-color:#B8902E"/></linearGradient><linearGradient id="gd" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#D4A843"/><stop offset="100%" style="stop-color:#8B6914"/></linearGradient></defs>
+<path d="M30 20 L25 65 Q30 95 60 100 Q90 95 95 65 L90 20 Z" fill="url(#gg)" stroke="#B8902E" stroke-width="1.5"/>
+<path d="M30 30 Q5 30 8 55 Q10 75 30 70" fill="none" stroke="url(#gg)" stroke-width="4" stroke-linecap="round"/>
+<path d="M90 30 Q115 30 112 55 Q110 75 90 70" fill="none" stroke="url(#gg)" stroke-width="4" stroke-linecap="round"/>
+<rect x="52" y="100" width="16" height="25" rx="2" fill="url(#gd)"/>
+<ellipse cx="60" cy="130" rx="30" ry="6" fill="url(#gd)"/>
+<rect x="30" y="128" width="60" height="12" rx="3" fill="url(#gg)" stroke="#B8902E" stroke-width="1"/>
+<circle cx="60" cy="55" r="18" fill="none" stroke="#B8902E" stroke-width=".8" opacity=".5"/>
+<ellipse cx="60" cy="55" rx="18" ry="8" fill="none" stroke="#B8902E" stroke-width=".5" opacity=".4"/>
+<line x1="60" y1="37" x2="60" y2="73" stroke="#B8902E" stroke-width=".5" opacity=".4"/>
+<text x="38" y="16" font-size="8" fill="#F0D78C">★</text><text x="56" y="12" font-size="10" fill="#D4A843">★</text><text x="76" y="16" font-size="8" fill="#F0D78C">★</text>
+</svg>
+<div class="hbadge">Inscrições Abertas</div>
+<h1><span class="l1">Bolão do Almeida</span><span class="l2">Copa do Mundo</span><span class="l3">2026</span></h1>
+<p class="hh"><img src="https://flagcdn.com/w40/us.png" alt="EUA"> EUA <img src="https://flagcdn.com/w40/mx.png" alt="México"> México <img src="https://flagcdn.com/w40/ca.png" alt="Canadá"> Canadá</p>
+<div class="cds">
+<div class="cdb"><div class="cdl">Inscrições</div><div class="cdv green">Abertas!</div><div class="cds2 active">● Ativo</div></div>
+<div class="cdb"><div class="cdl">Início da Copa</div><div class="cdv gold" id="cdc"></div><div class="cds2 pending">11 Jun 2026</div></div>
+<div class="cdb"><div class="cdl">Palpites Liberados</div><div class="cdv teal" id="cdp-status">Em breve</div><div class="cds2 locked" id="cdp-badge">🔒 Aguardando</div></div>
+</div>
+<div class="hcta" id="hero-cta">
+<!-- Dynamic: shows login or inscription button -->
+</div>
+<div class="sbar">
+<div class="si"><div class="sn" id="sp">0</div><div class="sl">Inscritos</div></div>
+<div class="si"><div class="sn">48</div><div class="sl">Seleções</div></div>
+<div class="si"><div class="sn">12</div><div class="sl">Grupos</div></div>
+<div class="si"><div class="sn" id="spz">R$ 0</div><div class="sl">Em Prêmios</div></div>
+</div>
+</div>
+</section>
+
+<!-- Como Funciona -->
+<section class="sec" id="cf">
+<div class="sh"><div class="stag">Regras do Jogo</div><h2 class="stitle">Como Funciona</h2><p class="sdesc">O sistema consagrado do Bolão do Almeida, agora para 48 seleções!</p></div>
+<div class="rg">
+<div class="rc"><div class="rn">01</div><div class="ri">🔐</div><h3>Login com Google</h3><p>Faça login com sua conta Google para se inscrever. Rápido e seguro!</p></div>
+<div class="rc"><div class="rn">02</div><div class="ri">📋</div><h3>Inscrição + PIX</h3><p>Escolha suas cotas e pague via PIX. O admin confirma seu pagamento.</p></div>
+<div class="rc"><div class="rn">03</div><div class="ri">🎯</div><h3>Palpites</h3><p>Após aprovação, escolha o 1º e 2º de cada grupo. Liberado quando todos os classificados forem definidos.</p></div>
+<div class="rc"><div class="rn">04</div><div class="ri">⭐</div><h3>Pontuação</h3><p>1º colocado certo: <strong>+2 pts</strong>. 2º colocado certo: <strong>+1 pt</strong>. Máximo: 36 pontos.</p></div>
+<div class="rc"><div class="rn">05</div><div class="ri">📊</div><h3>Ranking</h3><p>Cada cota concorre independentemente. Acompanhe em tempo real!</p></div>
+<div class="rc"><div class="rn">06</div><div class="ri">🏆</div><h3>Premiação</h3><p>1º: 60% · 2º: 30% · 3º: 10% do total arrecadado. Atualiza com cada inscrição!</p></div>
+</div>
+</section>
+
+<!-- Valores -->
+<section class="sec ps" id="val">
+<div class="sh"><div class="stag">Invista no Seu Palpite</div><h2 class="stitle">Valores</h2><p class="sdesc">Mais cotas, mais chances! Taxa de serviço inclusa.</p></div>
+<div class="pg">
+<div class="pc"><div class="pcc">1 Cota</div><div class="pvl">R$ 33<small>,00</small></div><div class="pbd">R$ 30 cota + R$ 3 taxa</div><ul class="pf"><li>1 palpite completo</li><li>Ranking ao vivo</li><li>Concorre aos 3 prêmios</li></ul><a class="btn btn-s btn-sm" onclick="startInscricao(1)">Escolher</a></div>
+<div class="pc ft"><div class="pcc">2 Cotas</div><div class="pvl">R$ 60<small>,00</small></div><div class="pbd">R$ 54 cotas + R$ 6 taxa</div><div class="ppd">Economia R$ 6</div><ul class="pf"><li>2 palpites independentes</li><li>Desconto de 10%</li><li>Ranking ao vivo</li></ul><a class="btn btn-p btn-sm" onclick="startInscricao(2)">Escolher</a></div>
+<div class="pc"><div class="pcc">3 Cotas</div><div class="pvl">R$ 81<small>,00</small></div><div class="pbd">R$ 72 cotas + R$ 9 taxa</div><div class="ppd">Economia R$ 18</div><ul class="pf"><li>3 palpites independentes</li><li>Máximo de chances!</li><li>Maior desconto/cota</li></ul><a class="btn btn-s btn-sm" onclick="startInscricao(3)">Escolher</a></div>
+</div>
+</section>
+
+<!-- Inscrição -->
+<section class="sec" id="insc">
+<div class="sh"><div class="stag">Participe Agora</div><h2 class="stitle">Inscrição</h2><p class="sdesc">Faça login com Google para se inscrever</p></div>
+<div id="inscricao-content">
+<!-- Dynamic content: login or form -->
+</div>
+</section>
+
+<!-- Ranking -->
+<section class="sec" id="rank">
+<div class="sh"><div class="stag">Classificação</div><h2 class="stitle">Ranking</h2><p class="sdesc">Acompanhe a posição de todos os participantes</p></div>
+<div class="re"><p style="font-size:2rem;margin-bottom:.4rem">🏆</p><p style="font-family:'Oswald',sans-serif;font-size:1.1rem">O ranking será atualizado após o início da Copa</p><p style="color:var(--text-muted);font-size:.8rem;margin-top:.2rem">Inscreva-se agora e garanta sua vaga!</p></div>
+</section>
+
+<!-- Premiação -->
+<section class="sec" id="prem">
+<div class="sh"><div class="stag">Prêmios</div><h2 class="stitle">Premiação</h2><p class="sdesc">Os valores atualizam automaticamente com cada nova inscrição</p></div>
+<div class="prg">
+<div class="prc sv"><div class="prm">🥈</div><div class="prpl">2º Lugar</div><div class="prpc">30%</div><div class="prpv" id="pz2">R$ 0,00</div></div>
+<div class="prc gd"><div class="prm">🥇</div><div class="prpl">1º Lugar</div><div class="prpc">60%</div><div class="prpv" id="pz1">R$ 0,00</div></div>
+<div class="prc bz"><div class="prm">🥉</div><div class="prpl">3º Lugar</div><div class="prpc">10%</div><div class="prpv" id="pz3">R$ 0,00</div></div>
+</div>
+<div class="wab"><h3>📱 Grupo do WhatsApp</h3><p>Fique por dentro de tudo!</p><a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w btn-sm">Entrar no Grupo</a></div>
+</section>
+
+</div><!-- end page-home -->
+
+<!-- ===================== MINHA CONTA PAGE ===================== -->
+<div class="page" id="page-conta">
+<div class="sec" style="margin-top:4rem">
+<h2 class="stitle" style="margin-bottom:1.5rem">Minha Conta</h2>
+<div id="conta-content"><div class="loading"><div class="spinner"></div>Carregando...</div></div>
+</div>
+</div>
+
+<!-- ===================== PALPITES PAGE ===================== -->
+<div class="page" id="page-palpites">
+<div class="sec" style="margin-top:4rem">
+<h2 class="stitle" style="margin-bottom:1.5rem">Meus Palpites</h2>
+<div id="palpites-content"><div class="loading"><div class="spinner"></div>Carregando...</div></div>
+</div>
+</div>
+
+<!-- ===================== ADMIN PAGE ===================== -->
+<div class="page" id="page-admin">
+<div class="admin-page">
+<h2>⚙️ Administração — Bolão do Almeida</h2>
+<div id="admin-content"><div class="loading"><div class="spinner"></div>Carregando...</div></div>
+</div>
+</div>
+
+<!-- FOOTER (always visible) -->
+<footer class="ft">
+<div class="ftl">⚽ Bolão do Almeida · Copa 2026</div>
+<div class="ftf"><img src="https://flagcdn.com/w40/us.png" alt="EUA"><img src="https://flagcdn.com/w40/mx.png" alt="México"><img src="https://flagcdn.com/w40/ca.png" alt="Canadá"></div>
+<p>Copa do Mundo FIFA 2026 · Bolão entre amigos</p>
+<p style="margin-top:.3rem"><a href="https://bolaocopa.com">bolaocopa.com</a></p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== SUPABASE CONFIG =====
+const SUPABASE_URL='https://vuomkohlwomdeyobddhw.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1b21rb2hsd29tZGV5b2JkZGh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MTE3ODMsImV4cCI6MjA5MDM4Nzc4M30.vexm5sTH3TChhkVmA5lyNUNVrE-G6g2ZRNKdSyGnoKc';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const PK='33567108859';
+const CS=new Date('2026-06-11T16:00:00-03:00');
+const PR={1:{c:30,t:3,v:33},2:{c:54,t:6,v:60},3:{c:72,t:9,v:81}};
+const CV={1:30,2:54,3:72};
+
+const flagsLeft=['us','mx','ca','br','ar','fr','gb-eng','de','es','nl','be','pt','jp','kr','au','sa','uy','co','ec','py','ma','sn','ci','gh'];
+const flagsRight=['tn','dz','eg','za','nz','ir','qa','jo','no','at','ch','hr','pa','ht','cw','uz','cv','gb-sct','it','pl','tr','dk','se','ba'];
+
+let currentUser=null,userProfile=null,userInscricao=null,selC=1;
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded',async()=>{
+  renderFlags();
+  uc();setInterval(uc,1000);
+  
+  // Check URL for admin route
+  if(window.location.pathname==='/administracao'||window.location.hash==='#administracao'){
+    navigate('admin');
+  }
+  
+  // Listen for auth changes
+  sb.auth.onAuthStateChange(async(event,session)=>{
+    if(session?.user){
+      currentUser=session.user;
+      await loadUserData();
+    }else{
+      currentUser=null;userProfile=null;userInscricao=null;
+    }
+    updateUI();
+  });
+  
+  // Initial session check
+  const{data:{session}}=await sb.auth.getSession();
+  if(session?.user){
+    currentUser=session.user;
+    await loadUserData();
+  }
+  updateUI();
+  loadStats();
+  
+  window.addEventListener('scroll',()=>document.getElementById('nb').classList.toggle('scrolled',window.scrollY>50));
+});
+
+// ===== AUTH =====
+async function loginGoogle(){
+  const{error}=await sb.auth.signInWithOAuth({
+    provider:'google',
+    options:{redirectTo:window.location.origin}
+  });
+  if(error)toast('Erro ao fazer login: '+error.message,'e');
+}
+
+async function logout(){
+  await sb.auth.signOut();
+  currentUser=null;userProfile=null;userInscricao=null;
+  navigate('home');
+  updateUI();
+  toast('Você saiu da conta.','s');
+}
+
+async function loadUserData(){
+  if(!currentUser)return;
+  // Load profile
+  const{data:prof}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
+  userProfile=prof;
+  // Load inscription
+  const{data:insc}=await sb.from('inscricoes').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(1).single();
+  userInscricao=insc;
+}
+
+// ===== NAVIGATION =====
+function navigate(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page)?.classList.add('active');
+  document.getElementById('nl').classList.remove('open');
+  window.scrollTo(0,0);
+  
+  if(page==='admin')loadAdmin();
+  if(page==='conta')loadConta();
+  if(page==='palpites')loadPalpites();
+}
+
+function scrollTo(id){
+  setTimeout(()=>{
+    document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});
+  },100);
+}
+
+// ===== UI UPDATE =====
+function updateUI(){
+  const authEl=document.getElementById('nav-auth');
+  const heroEl=document.getElementById('hero-cta');
+  const inscEl=document.getElementById('inscricao-content');
+  
+  if(currentUser){
+    const name=currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'Usuário';
+    const avatar=currentUser.user_metadata?.avatar_url||'';
+    
+    authEl.innerHTML=`
+      <div class="nav-user">
+        ${avatar?`<img src="${avatar}" alt="${name}">`:''}
+        <span>${name.split(' ')[0]}</span>
+        <a onclick="navigate('conta')" style="margin-left:.3rem">Conta</a>
+        ${userProfile?.is_admin?'<a onclick="navigate(\'admin\')" style="color:var(--accent-gold)">Admin</a>':''}
+        <a onclick="logout()" style="color:var(--error);font-size:.7rem">Sair</a>
+      </div>`;
+    
+    heroEl.innerHTML=`
+      ${!userInscricao?'<a class="btn btn-p" onclick="scrollTo(\'insc\')">Fazer Inscrição</a>':''}
+      ${userInscricao?.status==='aprovado'?'<a class="btn btn-p" onclick="navigate(\'palpites\')">Meus Palpites</a>':''}
+      <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w">Grupo WhatsApp</a>`;
+    
+    // Inscription section
+    if(userInscricao){
+      const statusText=userInscricao.status==='aprovado'?'✅ Aprovado':userInscricao.status==='pendente'?'⏳ Aguardando aprovação':'❌ Rejeitado';
+      const statusClass=userInscricao.status==='aprovado'?'badge-approved':'badge-pending';
+      inscEl.innerHTML=`
+        <div class="fc">
+          <h3 class="fst">Sua Inscrição</h3>
+          <div class="user-status">
+            <div class="us-info">
+              ${avatar?`<img src="${avatar}">`:''}
+              <div><div class="us-name">${name}</div><div class="us-email">${currentUser.email}</div></div>
+            </div>
+            <div>
+              <div style="font-size:.7rem;color:var(--text-muted);text-transform:uppercase">${userInscricao.cotas} cota${userInscricao.cotas>1?'s':''}</div>
+              <div style="font-family:'Oswald',sans-serif;font-size:1.2rem;color:var(--accent-gold)">R$ ${userInscricao.valor_total}</div>
+              <span class="us-badge ${statusClass}">${statusText}</span>
+            </div>
+          </div>
+          ${userInscricao.status==='aprovado'?'<div style="text-align:center"><a class="btn btn-p" onclick="navigate(\'palpites\')">Ir para Palpites →</a></div>':''}
+          ${userInscricao.status==='pendente'?'<p style="text-align:center;color:var(--text-muted);font-size:.85rem">Envie o comprovante PIX no grupo do WhatsApp. O admin irá aprovar seu pagamento.</p>':''}
+        </div>`;
+    }else{
+      renderInscricaoForm();
+    }
+  }else{
+    authEl.innerHTML='<a onclick="loginGoogle()" style="color:var(--accent-gold)">Entrar com Google</a>';
+    heroEl.innerHTML=`
+      <button class="btn btn-p" onclick="loginGoogle()">Entrar com Google</button>
+      <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w">Grupo WhatsApp</a>`;
+    inscEl.innerHTML=`
+      <div class="login-box">
+        <h3>🔐 Faça Login para se Inscrever</h3>
+        <p>Use sua conta Google para criar sua inscrição de forma rápida e segura.</p>
+        <button class="btn-google" onclick="loginGoogle()">
+          <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Entrar com Google
+        </button>
+      </div>`;
+  }
+}
+
+function renderInscricaoForm(){
+  const inscEl=document.getElementById('inscricao-content');
+  inscEl.innerHTML=`
+    <div class="fc">
+      <h3 class="fst">Complete sua Inscrição</h3>
+      <p class="fsd">Seus dados do Google já foram carregados. Complete as informações abaixo.</p>
+      <div class="fr">
+        <div class="fg"><label>Nome Completo *</label><input type="text" id="nome" value="${currentUser?.user_metadata?.full_name||''}" placeholder="Seu nome"></div>
+        <div class="fg"><label>Apelido (ranking)</label><input type="text" id="apelido" placeholder="Como quer ser chamado"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>WhatsApp *</label><input type="tel" id="whatsapp" placeholder="(11) 99999-9999"></div>
+        <div class="fg"><label>Como conheceu o bolão?</label><select id="ck"><option value="">Selecione...</option><option value="amigo">Indicação de amigo</option><option value="whatsapp">Grupo de WhatsApp</option><option value="social">Redes sociais</option><option value="trabalho">Trabalho</option><option value="familia">Família</option><option value="outro">Outro</option></select></div>
+      </div>
+      <div class="fg"><label>Indicado por quem?</label><input type="text" id="ind" placeholder="Nome de quem indicou"></div>
+      
+      <label style="font-family:'Barlow Condensed';font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:.5rem;display:block">Quantidade de Cotas</label>
+      <div class="cs">
+        <div class="co sel" onclick="selCota(1)" id="c1"><div class="cn">1</div><div class="cl">Cota</div><div class="cp">R$ 33</div><div class="cd">R$30 + R$3 taxa</div></div>
+        <div class="co" onclick="selCota(2)" id="c2"><div class="cn">2</div><div class="cl">Cotas</div><div class="cp">R$ 60</div><div class="cd">R$54 + R$6 taxa</div><div class="csv">Economia R$ 6</div></div>
+        <div class="co" onclick="selCota(3)" id="c3"><div class="cn">3</div><div class="cl">Cotas</div><div class="cp">R$ 81</div><div class="cd">R$72 + R$9 taxa</div><div class="csv">Economia R$ 18</div></div>
+      </div>
+      
+      <div class="csum" id="checkout-sum">
+        <div class="cln"><span>1 cota de participação</span><span>R$ 30,00</span></div>
+        <div class="cln"><span>Taxa de serviço</span><span>R$ 3,00</span></div>
+        <div class="cln tot"><span>Total</span><span>R$ 33,00</span></div>
+      </div>
+      
+      <div class="pixs">
+        <div class="pixt">Pague via PIX</div>
+        <div class="qrc"><canvas id="qrc" width="180" height="180"></canvas></div>
+        <div class="pkd"><code>33567108859</code><button onclick="cpk()">Copiar</button></div>
+        <p class="pixn">Chave PIX: CPF · Envie o comprovante no grupo do WhatsApp</p>
+      </div>
+      
+      <div style="text-align:center"><button class="btn btn-p" onclick="submitInscricao()">✓ Já fiz o PIX, Confirmar Inscrição!</button></div>
+    </div>`;
+  selC=1;
+  setTimeout(gqr,100);
+}
+
+function selCota(n){
+  selC=n;
+  document.querySelectorAll('.co').forEach((e,i)=>e.classList.toggle('sel',i+1===n));
+  const p=PR[n];
+  document.getElementById('checkout-sum').innerHTML=`
+    <div class="cln"><span>${n} cota${n>1?'s':''} de participação</span><span>R$ ${p.c},00</span></div>
+    <div class="cln"><span>Taxa de serviço</span><span>R$ ${p.t},00</span></div>
+    <div class="cln tot"><span>Total</span><span>R$ ${p.v},00</span></div>`;
+}
+
+async function submitInscricao(){
+  if(!currentUser){toast('Faça login primeiro!','e');return;}
+  const nome=document.getElementById('nome')?.value.trim();
+  const apelido=document.getElementById('apelido')?.value.trim();
+  const whatsapp=document.getElementById('whatsapp')?.value.trim();
+  const ck=document.getElementById('ck')?.value;
+  const ind=document.getElementById('ind')?.value.trim();
+  
+  if(!nome||!whatsapp){toast('Preencha nome e WhatsApp!','e');return;}
+  
+  // Update profile
+  await sb.from('profiles').upsert({
+    id:currentUser.id,nome,apelido,whatsapp,como_conheceu:ck,indicado_por:ind
+  });
+  
+  // Create inscription
+  const p=PR[selC];
+  const{error}=await sb.from('inscricoes').insert({
+    user_id:currentUser.id,cotas:selC,valor_cotas:p.c,taxa_servico:p.t,valor_total:p.v
+  });
+  
+  if(error){toast('Erro: '+error.message,'e');return;}
+  
+  await loadUserData();
+  updateUI();
+  loadStats();
+  toast('Inscrição enviada! Aguarde aprovação do admin.','s');
+}
+
+// ===== PALPITES =====
+async function loadPalpites(){
+  const el=document.getElementById('palpites-content');
+  if(!currentUser){el.innerHTML='<div class="login-box"><h3>Faça login para ver seus palpites</h3><button class="btn-google" onclick="loginGoogle()">Entrar com Google</button></div>';return;}
+  if(!userInscricao||userInscricao.status!=='aprovado'){
+    el.innerHTML='<div class="re"><p style="font-size:2rem">🔒</p><p style="font-family:\'Oswald\',sans-serif;font-size:1.1rem">Acesso restrito</p><p style="color:var(--text-muted);font-size:.85rem;margin-top:.3rem">Seu pagamento precisa ser aprovado pelo admin antes de preencher os palpites.</p></div>';
+    return;
+  }
+  
+  // Check if palpites are enabled
+  const{data:cfg}=await sb.from('config').select('value').eq('key','palpites_liberados').single();
+  if(!cfg||cfg.value!=='true'){
+    el.innerHTML='<div class="re"><p style="font-size:2rem">🔒</p><p style="font-family:\'Oswald\',sans-serif;font-size:1.1rem">Palpites ainda não liberados</p><p style="color:var(--text-muted);font-size:.85rem;margin-top:.3rem">Os palpites serão liberados quando todas as 48 seleções estiverem definidas. Fique ligado!</p></div>';
+    return;
+  }
+  
+  el.innerHTML='<p style="text-align:center;color:var(--accent-gold);font-family:\'Oswald\',sans-serif;">Palpites liberados! A área de preenchimento será habilitada em breve.</p>';
+}
+
+// ===== ADMIN =====
+async function loadAdmin(){
+  const el=document.getElementById('admin-content');
+  if(!currentUser){el.innerHTML='<div class="login-box"><h3>Faça login como admin</h3><button class="btn-google" onclick="loginGoogle()">Entrar com Google</button></div>';return;}
+  if(!userProfile?.is_admin){el.innerHTML='<div class="re"><p style="font-size:2rem">🚫</p><p>Acesso restrito a administradores.</p></div>';return;}
+  
+  // Load all inscriptions
+  const{data:inscs}=await sb.from('inscricoes').select('*,profiles(nome,apelido,whatsapp,como_conheceu,indicado_por)').order('created_at',{ascending:false});
+  
+  if(!inscs){el.innerHTML='<p>Erro ao carregar dados.</p>';return;}
+  
+  const pending=inscs.filter(i=>i.status==='pendente');
+  const approved=inscs.filter(i=>i.status==='aprovado');
+  const totalCotas=approved.reduce((s,i)=>s+i.cotas,0);
+  const totalPool=approved.reduce((s,i)=>s+Number(i.valor_cotas),0);
+  const totalFees=approved.reduce((s,i)=>s+Number(i.taxa_servico),0);
+  
+  el.innerHTML=`
+    <div class="ast">
+      <div class="asc"><div class="av">${inscs.length}</div><div class="al">Inscrições</div></div>
+      <div class="asc"><div class="av" style="color:var(--warning)">${pending.length}</div><div class="al">Pendentes</div></div>
+      <div class="asc"><div class="av" style="color:var(--success)">${approved.length}</div><div class="al">Aprovados</div></div>
+      <div class="asc"><div class="av">${totalCotas}</div><div class="al">Cotas</div></div>
+      <div class="asc"><div class="av">R$ ${totalPool}</div><div class="al">Prêmios</div></div>
+      <div class="asc"><div class="av">R$ ${totalFees}</div><div class="al">Taxas</div></div>
+    </div>
+    <h3 style="font-family:'Oswald',sans-serif;margin-bottom:.8rem;font-size:1rem;text-transform:uppercase;letter-spacing:1px">Inscrições</h3>
+    <div style="overflow-x:auto">
+      <table class="atbl"><thead><tr><th>Nome</th><th>Email</th><th>WhatsApp</th><th>Cotas</th><th>Valor</th><th>Conheceu</th><th>Indicação</th><th>Status</th><th>Ações</th></tr></thead>
+      <tbody>${inscs.map(i=>{
+        const p=i.profiles||{};
+        const isPending=i.status==='pendente';
+        return`<tr>
+          <td>${p.nome||'-'}${p.apelido?' ('+p.apelido+')':''}</td>
+          <td style="font-size:.7rem">${i.user_id?.substring(0,8)}...</td>
+          <td>${p.whatsapp||'-'}</td>
+          <td>${i.cotas}</td>
+          <td>R$ ${i.valor_total}</td>
+          <td>${p.como_conheceu||'-'}</td>
+          <td>${p.indicado_por||'-'}</td>
+          <td class="${isPending?'stp':'sta'}">${isPending?'⏳ Pendente':'✅ Aprovado'}</td>
+          <td>${isPending?`<button class="ba" onclick="adminApprove(${i.id})">Aprovar</button><button class="br2" onclick="adminReject(${i.id})">Rejeitar</button>`:'—'}</td>
+        </tr>`;}).join('')}</tbody></table>
+    </div>`;
+}
+
+async function adminApprove(id){
+  await sb.from('inscricoes').update({status:'aprovado',approved_at:new Date().toISOString()}).eq('id',id);
+  toast('Inscrição aprovada!','s');
+  loadAdmin();loadStats();
+}
+
+async function adminReject(id){
+  await sb.from('inscricoes').update({status:'rejeitado'}).eq('id',id);
+  toast('Inscrição rejeitada.','e');
+  loadAdmin();loadStats();
+}
+
+// ===== CONTA =====
+async function loadConta(){
+  const el=document.getElementById('conta-content');
+  if(!currentUser){el.innerHTML='<div class="login-box"><h3>Faça login</h3><button class="btn-google" onclick="loginGoogle()">Entrar com Google</button></div>';return;}
+  
+  await loadUserData();
+  const name=currentUser.user_metadata?.full_name||'Usuário';
+  const avatar=currentUser.user_metadata?.avatar_url||'';
+  
+  el.innerHTML=`
+    <div class="fc">
+      <div class="user-status">
+        <div class="us-info">
+          ${avatar?`<img src="${avatar}">`:''}
+          <div><div class="us-name">${name}</div><div class="us-email">${currentUser.email}</div></div>
+        </div>
+        <div>
+          ${userInscricao?`
+            <div style="font-size:.7rem;color:var(--text-muted);text-transform:uppercase">${userInscricao.cotas} cota${userInscricao.cotas>1?'s':''} · R$ ${userInscricao.valor_total}</div>
+            <span class="us-badge ${userInscricao.status==='aprovado'?'badge-approved':'badge-pending'}">${userInscricao.status==='aprovado'?'✅ Aprovado':'⏳ Pendente'}</span>
+          `:'<span class="us-badge badge-none">Sem inscrição</span>'}
+        </div>
+      </div>
+      ${!userInscricao?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'home\');scrollTo(\'insc\')">Fazer Inscrição</a></div>':''}
+      ${userInscricao?.status==='aprovado'?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'palpites\')">Meus Palpites →</a></div>':''}
+      <div style="text-align:center;margin-top:1rem"><button class="btn btn-danger btn-sm" onclick="logout()">Sair da Conta</button></div>
+    </div>`;
+}
+
+// ===== STATS =====
+async function loadStats(){
+  const{data:inscs}=await sb.from('inscricoes').select('cotas,valor_cotas').eq('status','aprovado');
+  if(!inscs)return;
+  const tp=inscs.reduce((s,i)=>s+Number(i.valor_cotas),0);
+  document.getElementById('sp').textContent=inscs.length;
+  document.getElementById('spz').textContent=`R$ ${tp.toLocaleString('pt-BR')}`;
+  document.getElementById('pz1').textContent=`R$ ${(tp*.6).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+  document.getElementById('pz2').textContent=`R$ ${(tp*.3).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+  document.getElementById('pz3').textContent=`R$ ${(tp*.1).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+}
+
+// ===== FLAGS =====
+function renderFlags(){
+  const fl=document.getElementById('fl'),fr2=document.getElementById('fr');
+  flagsLeft.forEach(c=>{const i=document.createElement('img');i.src=`https://flagcdn.com/w40/${c}.png`;i.alt=c;i.loading='lazy';fl.appendChild(i)});
+  flagsRight.forEach(c=>{const i=document.createElement('img');i.src=`https://flagcdn.com/w40/${c}.png`;i.alt=c;i.loading='lazy';fr2.appendChild(i)});
+}
+
+// ===== COUNTDOWN =====
+function uc(){const n=new Date(),d=CS-n;if(d>0){const dd=Math.floor(d/864e5),hh=Math.floor(d%864e5/36e5),mm=Math.floor(d%36e5/6e4),ss=Math.floor(d%6e4/1e3);document.getElementById('cdc').textContent=`${dd}d ${hh}h ${mm}m ${ss}s`}else document.getElementById('cdc').textContent='Já começou!'}
+
+// ===== QR CODE =====
+function gqr(){const cv=document.getElementById('qrc');if(!cv)return;const cx=cv.getContext('2d'),sz=180;cv.width=sz;cv.height=sz;cx.fillStyle='#FFF';cx.fillRect(0,0,sz,sz);
+const pl=`00020126580014br.gov.bcb.pix0114${PK}`,cs2=6,md=Math.floor(sz/cs2);cx.fillStyle='#000';
+function df(x,y){for(let i=0;i<7;i++)for(let j=0;j<7;j++)if(i===0||i===6||j===0||j===6||(i>=2&&i<=4&&j>=2&&j<=4))cx.fillRect((x+j)*cs2,(y+i)*cs2,cs2,cs2)}
+df(1,1);df(md-9,1);df(1,md-9);
+let h=0;for(let i=0;i<pl.length;i++)h=((h<<5)-h+pl.charCodeAt(i))|0;
+for(let y=0;y<md;y++)for(let x=0;x<md;x++){if((x<9&&y<9)||(x>md-10&&y<9)||(x<9&&y>md-10))continue;if(((x*31+y*37+h)&0xFFFF)%3!==0)cx.fillRect(x*cs2,y*cs2,cs2,cs2)}
+const mi=Math.floor(md/2);for(let i=-2;i<=2;i++)for(let j=-2;j<=2;j++)if(Math.abs(i)===2||Math.abs(j)===2||(i===0&&j===0))cx.fillRect((mi+j)*cs2,(mi+i)*cs2,cs2,cs2)}
+
+function cpk(){navigator.clipboard.writeText(PK).then(()=>toast('Chave PIX copiada!','s')).catch(()=>toast('Chave: '+PK,'s'))}
+
+function startInscricao(n){
+  selC=n;
+  if(!currentUser){loginGoogle();return;}
+  navigate('home');scrollTo('insc');
+}
+
+function toast(m,t){const ts=document.getElementById('toast');ts.textContent=m;ts.style.background=t==='e'?'var(--error)':'var(--success)';ts.classList.add('show');setTimeout(()=>ts.classList.remove('show'),3500)}
+</script>
+</body>
+</html>
