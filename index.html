@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bolão do Almeida - Copa do Mundo 2026</title>
+<meta name="description" content="Bolão do Almeida - Copa do Mundo 2026. Faça sua inscrição e concorra a prêmios!">
+<link rel="canonical" href="https://bolaocopa.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#8B1538;--primary-dark:#5C0E25;--secondary:#1A3A5C;--accent-gold:#D4A843;--accent-teal:#00B4D8;--bg-dark:#0A0E17;--bg-card:#111827;--bg-card-hover:#1A2235;--text-primary:#F1F5F9;--text-secondary:#94A3B8;--text-muted:#64748B;--border:#1E293B;--success:#22C55E;--warning:#F59E0B;--error:#EF4444;--gradient-copa:linear-gradient(135deg,#8B1538 0%,#1A3A5C 50%,#00B4D8 100%);--gradient-gold:linear-gradient(135deg,#D4A843,#F0D78C,#D4A843)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
+
+/* SIDE FLAGS */
+.side-flags{position:fixed;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:4px;opacity:.25;pointer-events:none;transition:opacity .3s}
+.side-flags:hover{opacity:.5}
+.side-flags.left{left:8px}.side-flags.right{right:8px}
+.side-flags img{width:32px;height:22px;border-radius:2px;object-fit:cover;display:block;box-shadow:0 1px 3px rgba(0,0,0,.4);transition:transform .3s}
+@media(max-width:1280px){.side-flags{display:none}}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.7rem 1.5rem;display:flex;justify-content:space-between;align-items:center;transition:all .3s}
+.nav.scrolled{background:rgba(10,14,23,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Oswald',sans-serif;font-weight:700;font-size:1rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:.4rem}
+.nav-logo .li{width:32px;height:32px;background:var(--gradient-gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.nav-links{display:flex;gap:1.3rem;list-style:none}
+.nav-links a{color:var(--text-secondary);text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:.8rem;text-transform:uppercase;letter-spacing:1.5px;transition:color .3s}
+.nav-links a:hover{color:var(--accent-gold)}
+.mmb{display:none;background:none;border:none;color:var(--text-primary);font-size:1.5rem;cursor:pointer}
+@media(max-width:768px){
+.nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(10,14,23,.98);flex-direction:column;padding:1rem;gap:0;border-bottom:1px solid var(--border)}
+.nav-links.open{display:flex}.nav-links a{padding:.7rem 1rem;display:block}.mmb{display:block}}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 20% 50%,rgba(139,21,56,.3) 0%,transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(0,180,216,.15) 0%,transparent 60%),radial-gradient(ellipse at 50% 100%,rgba(26,58,92,.3) 0%,transparent 60%),var(--bg-dark)}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hc{position:relative;z-index:2;text-align:center;padding:2rem 1rem;max-width:860px}
+.hy{font-family:'Oswald',sans-serif;font-size:clamp(4rem,12vw,8rem);font-weight:700;line-height:1;background:linear-gradient(180deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.01) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:absolute;top:-10px;left:50%;transform:translateX(-50%);z-index:-1;letter-spacing:8px}
+.trophy-svg{width:100px;height:120px;margin:0 auto .8rem;animation:tg 3s ease-in-out infinite;filter:drop-shadow(0 0 30px rgba(212,168,67,.4))}
+@keyframes tg{0%,100%{transform:scale(1);filter:drop-shadow(0 0 25px rgba(212,168,67,.4))}50%{transform:scale(1.04);filter:drop-shadow(0 0 45px rgba(212,168,67,.6))}}
+.hbadge{display:inline-block;background:var(--gradient-gold);color:var(--primary-dark);font-family:'Oswald',sans-serif;font-weight:700;font-size:.75rem;letter-spacing:3px;text-transform:uppercase;padding:.35rem 1.3rem;border-radius:50px;margin-bottom:.8rem;animation:fid .8s ease-out}
+.hero h1{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(1.8rem,6vw,4rem);text-transform:uppercase;line-height:.95;letter-spacing:-1px;margin-bottom:.3rem;animation:fiu .8s ease-out .2s both}
+.hero h1 .l1{display:block;font-size:.5em;letter-spacing:3px;color:var(--text-secondary);font-weight:500}
+.hero h1 .l2{display:block;background:var(--gradient-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero h1 .l3{display:block;background:var(--gradient-copa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:.75em}
+.hh{font-size:.9rem;color:var(--text-muted);margin-bottom:1.2rem;animation:fiu .8s ease-out .4s both}
+.hh img{width:24px;height:16px;vertical-align:middle;border-radius:2px;margin:0 2px}
+
+/* COUNTDOWNS */
+.cds{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.8rem;margin-bottom:1.5rem;animation:fiu .8s ease-out .5s both}
+.cdb{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:.8rem;text-align:center}
+.cdb .cdl{font-family:'Barlow Condensed',sans-serif;font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:.3rem}
+.cdb .cdv{font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:700}
+.cdv.gold{color:var(--accent-gold)}.cdv.teal{color:var(--accent-teal)}.cdv.green{color:var(--success)}
+.cdb .cds2{font-size:.65rem;margin-top:.2rem;padding:.1rem .4rem;border-radius:50px;display:inline-block}
+.cds2.active{background:rgba(34,197,94,.15);color:var(--success)}.cds2.pending{background:rgba(245,158,11,.15);color:var(--warning)}.cds2.locked{background:rgba(239,68,68,.15);color:var(--error)}
+
+.hcta{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;animation:fiu .8s ease-out .6s both}
+.btn{font-family:'Oswald',sans-serif;font-weight:600;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;padding:.8rem 1.8rem;border:none;border-radius:4px;cursor:pointer;transition:all .3s ease;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem}
+.btn-p{background:var(--gradient-gold);color:var(--primary-dark);box-shadow:0 4px 20px rgba(212,168,67,.3)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(212,168,67,.5)}
+.btn-s{background:transparent;color:var(--text-primary);border:1px solid var(--border)}
+.btn-s:hover{border-color:var(--accent-teal);color:var(--accent-teal)}
+.btn-w{background:#25D366;color:white}.btn-w:hover{background:#1EB354;transform:translateY(-2px)}
+.btn-sm{padding:.55rem 1rem;font-size:.75rem}
+
+.sbar{display:flex;justify-content:center;gap:2rem;margin-top:1.5rem;flex-wrap:wrap;animation:fiu .8s ease-out .8s both}
+.si{text-align:center}
+.sn{font-family:'Oswald',sans-serif;font-size:1.4rem;font-weight:700;color:var(--accent-gold)}
+.sl{font-size:.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+
+/* SECTIONS */
+.sec{padding:4.5rem 1.5rem;max-width:1050px;margin:0 auto}
+.sh{text-align:center;margin-bottom:2.5rem}
+.stag{font-family:'Barlow Condensed',sans-serif;font-size:.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-teal);margin-bottom:.3rem}
+.stitle{font-family:'Oswald',sans-serif;font-size:clamp(1.6rem,5vw,2.8rem);font-weight:700;text-transform:uppercase;line-height:1}
+.sdesc{color:var(--text-secondary);font-size:.95rem;max-width:520px;margin:.6rem auto 0}
+
+/* RULES */
+.rg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem}
+.rc{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;position:relative;overflow:hidden;transition:all .3s ease}
+.rc:hover{border-color:var(--accent-gold);transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.rc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient-copa)}
+.rn{font-family:'Oswald',sans-serif;font-size:3rem;font-weight:700;color:rgba(212,168,67,.07);position:absolute;top:.2rem;right:.6rem}
+.ri{font-size:1.6rem;margin-bottom:.5rem}
+.rc h3{font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem}
+.rc p{color:var(--text-secondary);font-size:.85rem;line-height:1.5}
+
+/* PRICING */
+.ps{background:radial-gradient(ellipse at 30% 50%,rgba(139,21,56,.08) 0%,transparent 50%),radial-gradient(ellipse at 70% 50%,rgba(0,180,216,.06) 0%,transparent 50%)}
+.pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;max-width:850px;margin:0 auto}
+.pc{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1.8rem 1.3rem;text-align:center;position:relative;transition:all .3s ease}
+.pc:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.pc.ft{border-color:var(--accent-gold);background:linear-gradient(180deg,rgba(212,168,67,.05) 0%,var(--bg-card) 40%)}
+.pc.ft::before{content:'MAIS POPULAR';position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--gradient-gold);color:var(--primary-dark);font-family:'Oswald',sans-serif;font-weight:700;font-size:.6rem;letter-spacing:2px;padding:.2rem 1rem;border-radius:50px}
+.pcc{font-family:'Oswald',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-secondary);margin-bottom:.4rem}
+.pv{font-family:'Oswald',sans-serif;font-size:2.5rem;font-weight:700}
+.pv small{font-size:.9rem;font-weight:400;color:var(--text-muted)}
+.pbd{font-size:.75rem;color:var(--text-muted);margin:.2rem 0}
+.ppd{display:inline-block;background:rgba(34,197,94,.1);color:var(--success);font-family:'Oswald',sans-serif;font-size:.7rem;letter-spacing:1px;padding:.15rem .6rem;border-radius:50px;margin:.5rem 0 .8rem}
+.pf{list-style:none;text-align:left;margin-bottom:1.2rem}
+.pf li{padding:.3rem 0;color:var(--text-secondary);font-size:.8rem;display:flex;align-items:center;gap:.35rem}
+.pf li::before{content:'✓';color:var(--success);font-weight:700;font-size:.75rem}
+
+/* FORM */
+.fc{max-width:700px;margin:0 auto;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:2.2rem;position:relative;overflow:hidden}
+.fc::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gradient-copa)}
+.fs{display:none}.fs.act{display:block;animation:fi .4s ease}
+@keyframes fi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fp{display:flex;justify-content:center;gap:.35rem;margin-bottom:1.8rem}
+.fps{width:45px;height:3px;background:var(--border);border-radius:2px;transition:background .3s}
+.fps.act{background:var(--accent-gold)}.fps.done{background:var(--success)}
+.fst{font-family:'Oswald',sans-serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem}
+.fsd{color:var(--text-muted);margin-bottom:1.3rem;font-size:.85rem}
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-family:'Barlow Condensed',sans-serif;font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:.3rem}
+.fg input,.fg select{width:100%;padding:.7rem .8rem;background:var(--bg-dark);border:1px solid var(--border);border-radius:4px;color:var(--text-primary);font-family:'Barlow',sans-serif;font-size:.9rem;transition:border-color .3s}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--accent-teal)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+@media(max-width:600px){.fr{grid-template-columns:1fr}.fc{padding:1.3rem}}
+.cs{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1rem}
+@media(max-width:500px){.cs{grid-template-columns:1fr}}
+.co{background:var(--bg-dark);border:2px solid var(--border);border-radius:8px;padding:1rem .6rem;text-align:center;cursor:pointer;transition:all .3s ease}
+.co:hover{border-color:var(--accent-teal)}.co.sel{border-color:var(--accent-gold);background:rgba(212,168,67,.05)}
+.co .cn{font-family:'Oswald',sans-serif;font-size:1.6rem;font-weight:700;color:var(--accent-gold)}
+.co .cl{font-size:.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+.co .cp{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:600;margin-top:.2rem}
+.co .cd{font-size:.65rem;color:var(--text-muted);margin-top:.1rem}
+.co .csv{font-size:.65rem;color:var(--success);margin-top:.15rem}
+
+/* CHECKOUT */
+.csum{background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;padding:1.2rem;margin-bottom:1.2rem}
+.cln{display:flex;justify-content:space-between;padding:.35rem 0;font-size:.85rem;color:var(--text-secondary)}
+.cln.tot{border-top:1px solid var(--border);padding-top:.6rem;margin-top:.4rem;font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--accent-gold);font-weight:700}
+.pixs{text-align:center;background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;padding:1.3rem;margin-bottom:1.2rem}
+.pixt{font-family:'Oswald',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.8rem;color:var(--accent-teal)}
+.qrc{display:inline-block;background:white;padding:10px;border-radius:8px;margin-bottom:.8rem}
+.qrc canvas{display:block}
+.pkd{background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.15);border-radius:6px;padding:.6rem;margin:.6rem 0;display:flex;align-items:center;justify-content:center;gap:.4rem}
+.pkd code{font-family:'Barlow',monospace;font-size:1rem;color:var(--accent-teal);letter-spacing:1px}
+.pkd button{background:var(--accent-teal);color:white;border:none;padding:.25rem .5rem;border-radius:4px;font-size:.65rem;cursor:pointer;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:1px}
+.pixn{font-size:.75rem;color:var(--text-muted);margin-top:.4rem}
+.fnav{display:flex;justify-content:space-between;margin-top:1.3rem;padding-top:.8rem;border-top:1px solid var(--border)}
+
+/* RANKING */
+.re{text-align:center;padding:2.5rem;color:var(--text-muted)}
+
+/* PRIZES */
+.prg{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;max-width:800px;margin:0 auto}
+@media(max-width:600px){.prg{grid-template-columns:1fr}}
+.prc{text-align:center;padding:1.8rem 1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;transition:all .3s ease}
+.prc:hover{transform:translateY(-3px);box-shadow:0 12px 35px rgba(0,0,0,.3)}
+.prc.gd{border-color:#FFD700;background:linear-gradient(180deg,rgba(255,215,0,.05) 0%,var(--bg-card) 50%)}
+.prc.sv{border-color:#C0C0C0}.prc.bz{border-color:#CD7F32}
+.prm{font-size:2.2rem;margin-bottom:.5rem}
+.prpl{font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:.2rem}
+.prpc{font-family:'Oswald',sans-serif;font-size:2.2rem;font-weight:700;background:var(--gradient-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.prpv{font-family:'Oswald',sans-serif;font-size:1rem;color:var(--text-secondary);margin-top:.2rem}
+
+/* WA BANNER */
+.wab{background:linear-gradient(135deg,rgba(37,211,102,.08) 0%,rgba(37,211,102,.02) 100%);border:1px solid rgba(37,211,102,.15);border-radius:10px;padding:1.5rem;text-align:center;max-width:550px;margin:2.5rem auto 0}
+.wab h3{font-family:'Oswald',sans-serif;font-size:1.1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem}
+.wab p{color:var(--text-secondary);font-size:.85rem;margin-bottom:.8rem}
+
+/* ADMIN */
+.ap{display:none;position:fixed;inset:0;z-index:200;background:var(--bg-dark);overflow-y:auto}
+.ap.open{display:block}
+.ah{background:var(--bg-card);border-bottom:1px solid var(--border);padding:.8rem 1.5rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.ah h2{font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px}
+.amc{max-width:950px;margin:1.5rem auto;padding:0 1.2rem}
+.ast{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.8rem;margin-bottom:1.5rem}
+.asc{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center}
+.asc .av{font-family:'Oswald',sans-serif;font-size:1.7rem;font-weight:700;color:var(--accent-gold)}
+.asc .al{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+.atbl{width:100%;border-collapse:collapse;background:var(--bg-card);border-radius:8px;overflow:hidden}
+.atbl th{background:rgba(0,0,0,.3);font-family:'Barlow Condensed',sans-serif;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:.6rem;text-align:left}
+.atbl td{padding:.6rem;border-bottom:1px solid var(--border);font-size:.8rem}
+.stp{color:var(--warning)}.sta{color:var(--success)}
+.atbl button{padding:.25rem .5rem;border:none;border-radius:4px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.65rem;text-transform:uppercase;letter-spacing:1px}
+.ba{background:var(--success);color:white}.br{background:var(--error);color:white;margin-left:.2rem}
+
+/* FOOTER */
+.ft{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center}
+.ftl{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;color:var(--accent-gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:.2rem}
+.ft p{color:var(--text-muted);font-size:.75rem}
+.ftf{margin:.4rem 0;display:flex;justify-content:center;gap:6px}
+.ftf img{width:28px;height:19px;border-radius:2px}
+.ft a{color:var(--accent-teal);text-decoration:none}
+
+@keyframes fiu{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fid{from{opacity:0;transform:translateY(-15px)}to{opacity:1;transform:translateY(0)}}
+
+.toast{position:fixed;bottom:1.2rem;right:1.2rem;padding:.7rem 1.2rem;border-radius:8px;font-family:'Barlow',sans-serif;font-weight:600;font-size:.85rem;transform:translateY(100px);opacity:0;transition:all .4s ease;z-index:200;max-width:320px}
+.toast.show{transform:translateY(0);opacity:1}
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:150;justify-content:center;align-items:center;padding:1rem}
+.mo.show{display:flex}
+.mdl{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.8rem;max-width:380px;width:100%;text-align:center}
+.mdl h3{font-family:'Oswald',sans-serif;font-size:1.2rem;margin-bottom:.6rem}
+.mdl p{color:var(--text-secondary);margin-bottom:.3rem;font-size:.85rem}
+.mdl .ma{display:flex;gap:.6rem;justify-content:center;margin-top:1rem}
+.alm{max-width:330px}
+.alm input{width:100%;padding:.65rem;background:var(--bg-dark);border:1px solid var(--border);border-radius:4px;color:var(--text-primary);font-family:'Barlow',sans-serif;font-size:.95rem;margin:.8rem 0}
+</style>
+</head>
+<body>
+
+<div class="side-flags left" id="fl"></div>
+<div class="side-flags right" id="fr"></div>
+
+<nav class="nav" id="nb">
+<div class="nav-logo"><div class="li">⚽</div>Bolão Almeida Copa 2026</div>
+<ul class="nav-links" id="nl">
+<li><a href="#cf" onclick="cm()">Como Funciona</a></li>
+<li><a href="#val" onclick="cm()">Valores</a></li>
+<li><a href="#insc" onclick="cm()">Inscrição</a></li>
+<li><a href="#rank" onclick="cm()">Ranking</a></li>
+<li><a href="#prem" onclick="cm()">Premiação</a></li>
+<li><a href="#" onclick="event.preventDefault();sal()" style="color:var(--text-muted);font-size:.65rem;">Admin</a></li>
+</ul>
+<button class="mmb" onclick="tm()">☰</button>
+</nav>
+
+<section class="hero">
+<div class="hc">
+<div class="hy">2026</div>
+<svg class="trophy-svg" viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="gg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#F0D78C"/><stop offset="30%" style="stop-color:#D4A843"/><stop offset="60%" style="stop-color:#F0D78C"/><stop offset="100%" style="stop-color:#B8902E"/></linearGradient><linearGradient id="gd" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#D4A843"/><stop offset="100%" style="stop-color:#8B6914"/></linearGradient></defs>
+<path d="M30 20 L25 65 Q30 95 60 100 Q90 95 95 65 L90 20 Z" fill="url(#gg)" stroke="#B8902E" stroke-width="1.5"/>
+<path d="M30 30 Q5 30 8 55 Q10 75 30 70" fill="none" stroke="url(#gg)" stroke-width="4" stroke-linecap="round"/>
+<path d="M90 30 Q115 30 112 55 Q110 75 90 70" fill="none" stroke="url(#gg)" stroke-width="4" stroke-linecap="round"/>
+<rect x="52" y="100" width="16" height="25" rx="2" fill="url(#gd)"/>
+<ellipse cx="60" cy="130" rx="30" ry="6" fill="url(#gd)"/>
+<rect x="30" y="128" width="60" height="12" rx="3" fill="url(#gg)" stroke="#B8902E" stroke-width="1"/>
+<circle cx="60" cy="55" r="18" fill="none" stroke="#B8902E" stroke-width=".8" opacity=".5"/>
+<ellipse cx="60" cy="55" rx="18" ry="8" fill="none" stroke="#B8902E" stroke-width=".5" opacity=".4"/>
+<line x1="60" y1="37" x2="60" y2="73" stroke="#B8902E" stroke-width=".5" opacity=".4"/>
+<text x="38" y="16" font-size="8" fill="#F0D78C">★</text><text x="56" y="12" font-size="10" fill="#D4A843">★</text><text x="76" y="16" font-size="8" fill="#F0D78C">★</text>
+</svg>
+<div class="hbadge">Inscrições Abertas</div>
+<h1><span class="l1">Bolão do Almeida</span><span class="l2">Copa do Mundo</span><span class="l3">2026</span></h1>
+<p class="hh"><img src="https://flagcdn.com/w40/us.png" alt="EUA"> EUA <img src="https://flagcdn.com/w40/mx.png" alt="México"> México <img src="https://flagcdn.com/w40/ca.png" alt="Canadá"> Canadá</p>
+<div class="cds">
+<div class="cdb"><div class="cdl">Inscrições</div><div class="cdv green">Abertas!</div><div class="cds2 active">● Ativo</div></div>
+<div class="cdb"><div class="cdl">Início da Copa</div><div class="cdv gold" id="cdc"></div><div class="cds2 pending">11 Jun 2026</div></div>
+<div class="cdb"><div class="cdl">Palpites Liberados</div><div class="cdv teal">Em breve</div><div class="cds2 locked">🔒 Aguardando classificados</div></div>
+</div>
+<div class="hcta">
+<a href="#insc" class="btn btn-p">Fazer Inscrição</a>
+<a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w">Grupo WhatsApp</a>
+</div>
+<div class="sbar">
+<div class="si"><div class="sn" id="sp">0</div><div class="sl">Inscritos</div></div>
+<div class="si"><div class="sn">48</div><div class="sl">Seleções</div></div>
+<div class="si"><div class="sn">12</div><div class="sl">Grupos</div></div>
+<div class="si"><div class="sn" id="spz">R$ 0</div><div class="sl">Em Prêmios</div></div>
+</div>
+</div>
+</section>
+
+<section class="sec" id="cf">
+<div class="sh"><div class="stag">Regras do Jogo</div><h2 class="stitle">Como Funciona</h2><p class="sdesc">O sistema consagrado do Bolão do Almeida, agora para 48 seleções!</p></div>
+<div class="rg">
+<div class="rc"><div class="rn">01</div><div class="ri">📋</div><h3>Inscrição</h3><p>Preencha o formulário, escolha suas cotas e realize o pagamento via PIX.</p></div>
+<div class="rc"><div class="rn">02</div><div class="ri">💰</div><h3>Pagamento PIX</h3><p>Pague via QR Code ou chave PIX. O admin confirma e libera seu acesso.</p></div>
+<div class="rc"><div class="rn">03</div><div class="ri">🎯</div><h3>Palpites</h3><p>Para cada grupo (A-L), escolha o 1º e 2º colocado. Liberado quando todos os classificados forem definidos.</p></div>
+<div class="rc"><div class="rn">04</div><div class="ri">⭐</div><h3>Pontuação</h3><p>1º colocado certo: <strong>+2 pts</strong>. 2º colocado certo: <strong>+1 pt</strong>. Máximo: 36 pontos.</p></div>
+<div class="rc"><div class="rn">05</div><div class="ri">📊</div><h3>Ranking</h3><p>Cada cota concorre independentemente. Acompanhe em tempo real!</p></div>
+<div class="rc"><div class="rn">06</div><div class="ri">🏆</div><h3>Premiação</h3><p>1º: 60% · 2º: 30% · 3º: 10% do total arrecadado. Atualiza a cada inscrição!</p></div>
+</div>
+</section>
+
+<section class="sec ps" id="val">
+<div class="sh"><div class="stag">Invista no Seu Palpite</div><h2 class="stitle">Valores</h2><p class="sdesc">Mais cotas, mais chances! Taxa de serviço inclusa.</p></div>
+<div class="pg">
+<div class="pc"><div class="pcc">1 Cota</div><div class="pv">R$ 45<small>,00</small></div><div class="pbd">R$ 40 cota + R$ 5 taxa</div><ul class="pf"><li>1 palpite completo</li><li>Ranking ao vivo</li><li>Concorre aos 3 prêmios</li></ul><a href="#insc" class="btn btn-s btn-sm" onclick="sc(1)">Escolher</a></div>
+<div class="pc ft"><div class="pcc">2 Cotas</div><div class="pv">R$ 80<small>,00</small></div><div class="pbd">R$ 72 cotas + R$ 8 taxa</div><div class="ppd">Economia R$ 10</div><ul class="pf"><li>2 palpites independentes</li><li>Desconto de 10%</li><li>Ranking ao vivo</li></ul><a href="#insc" class="btn btn-p btn-sm" onclick="sc(2)">Escolher</a></div>
+<div class="pc"><div class="pcc">3 Cotas</div><div class="pv">R$ 106<small>,00</small></div><div class="pbd">R$ 96 cotas + R$ 10 taxa</div><div class="ppd">Economia R$ 29</div><ul class="pf"><li>3 palpites independentes</li><li>Máximo de chances!</li><li>Maior desconto/cota</li></ul><a href="#insc" class="btn btn-s btn-sm" onclick="sc(3)">Escolher</a></div>
+</div>
+</section>
+
+<section class="sec" id="insc">
+<div class="sh"><div class="stag">Participe Agora</div><h2 class="stitle">Inscrição</h2><p class="sdesc">Preencha seus dados e pague via PIX</p></div>
+<div class="fc">
+<div class="fp"><div class="fps act" id="p1"></div><div class="fps" id="p2"></div><div class="fps" id="p3"></div></div>
+<div class="fs act" id="s1">
+<h3 class="fst">Seus Dados</h3><p class="fsd">Preencha para se inscrever no Bolão do Almeida</p>
+<div class="fr"><div class="fg"><label>Nome Completo *</label><input type="text" id="nome" placeholder="Seu nome completo"></div><div class="fg"><label>Apelido (ranking)</label><input type="text" id="apelido" placeholder="Como quer ser chamado"></div></div>
+<div class="fr"><div class="fg"><label>E-mail *</label><input type="email" id="email" placeholder="seu@email.com"></div><div class="fg"><label>WhatsApp *</label><input type="tel" id="whatsapp" placeholder="(11) 99999-9999"></div></div>
+<div class="fr"><div class="fg"><label>Como conheceu o bolão?</label><select id="ck"><option value="">Selecione...</option><option value="amigo">Indicação de amigo</option><option value="whatsapp">Grupo de WhatsApp</option><option value="social">Redes sociais</option><option value="trabalho">Trabalho</option><option value="familia">Família</option><option value="outro">Outro</option></select></div><div class="fg"><label>Indicado por quem?</label><input type="text" id="ind" placeholder="Nome de quem indicou"></div></div>
+<label style="font-family:'Barlow Condensed';font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:.5rem;display:block">Quantidade de Cotas</label>
+<div class="cs">
+<div class="co" onclick="sc(1)" id="c1"><div class="cn">1</div><div class="cl">Cota</div><div class="cp">R$ 45</div><div class="cd">R$40 + R$5 taxa</div></div>
+<div class="co sel" onclick="sc(2)" id="c2"><div class="cn">2</div><div class="cl">Cotas</div><div class="cp">R$ 80</div><div class="cd">R$72 + R$8 taxa</div><div class="csv">Economia R$ 10</div></div>
+<div class="co" onclick="sc(3)" id="c3"><div class="cn">3</div><div class="cl">Cotas</div><div class="cp">R$ 106</div><div class="cd">R$96 + R$10 taxa</div><div class="csv">Economia R$ 29</div></div>
+</div>
+<div class="fnav"><div></div><button class="btn btn-p" onclick="gtc()">Ir para Pagamento →</button></div>
+</div>
+<div class="fs" id="s2">
+<h3 class="fst">Pagamento via PIX</h3><p class="fsd">Escaneie o QR Code ou copie a chave PIX</p>
+<div class="csum" id="csum"></div>
+<div class="pixs"><div class="pixt">Pague via PIX</div>
+<div class="qrc"><canvas id="qrc" width="180" height="180"></canvas></div>
+<div class="pkd"><code>33567108859</code><button onclick="cpk()">Copiar</button></div>
+<p class="pixn">Chave PIX: CPF · Envie o comprovante no grupo do WhatsApp</p>
+<p class="pixn">O admin confirmará o pagamento e liberará seu acesso.</p></div>
+<div class="fnav"><button class="btn btn-s" onclick="ss(1)">← Voltar</button><button class="btn btn-p" onclick="ci()">✓ Já fiz o PIX!</button></div>
+</div>
+<div class="fs" id="s3">
+<h3 class="fst">Inscrição Enviada! 🎉</h3><p class="fsd">Seu cadastro foi recebido</p>
+<div id="cd3" style="background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;padding:1.2rem;margin-bottom:1.2rem"></div>
+<div style="text-align:center"><p style="color:var(--text-secondary);font-size:.85rem;margin-bottom:.8rem">Aguarde a confirmação do admin. Os palpites serão liberados quando todos os classificados forem definidos.</p>
+<a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w btn-sm">Entrar no Grupo WhatsApp</a></div>
+</div>
+</div>
+</section>
+
+<section class="sec" id="rank">
+<div class="sh"><div class="stag">Classificação</div><h2 class="stitle">Ranking</h2><p class="sdesc">Acompanhe a posição de todos os participantes</p></div>
+<div class="re"><p style="font-size:2rem;margin-bottom:.4rem">🏆</p><p style="font-family:'Oswald',sans-serif;font-size:1.1rem">O ranking será atualizado após o início da Copa</p><p style="color:var(--text-muted);font-size:.8rem;margin-top:.2rem">Inscreva-se agora e garanta sua vaga!</p></div>
+</section>
+
+<section class="sec" id="prem">
+<div class="sh"><div class="stag">Prêmios</div><h2 class="stitle">Premiação</h2><p class="sdesc">Os valores atualizam automaticamente com cada nova inscrição</p></div>
+<div class="prg">
+<div class="prc sv"><div class="prm">🥈</div><div class="prpl">2º Lugar</div><div class="prpc">30%</div><div class="prpv" id="pz2">R$ 0,00</div></div>
+<div class="prc gd"><div class="prm">🥇</div><div class="prpl">1º Lugar</div><div class="prpc">60%</div><div class="prpv" id="pz1">R$ 0,00</div></div>
+<div class="prc bz"><div class="prm">🥉</div><div class="prpl">3º Lugar</div><div class="prpc">10%</div><div class="prpv" id="pz3">R$ 0,00</div></div>
+</div>
+<div class="wab"><h3>📱 Grupo do WhatsApp</h3><p>Fique por dentro de tudo! Novidades, confirmações e a galera do bolão.</p><a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w btn-sm">Entrar no Grupo</a></div>
+</section>
+
+<footer class="ft">
+<div class="ftl">⚽ Bolão do Almeida · Copa 2026</div>
+<div class="ftf"><img src="https://flagcdn.com/w40/us.png" alt="EUA"><img src="https://flagcdn.com/w40/mx.png" alt="México"><img src="https://flagcdn.com/w40/ca.png" alt="Canadá"></div>
+<p>Copa do Mundo FIFA 2026 · Bolão entre amigos</p>
+<p style="margin-top:.3rem"><a href="https://bolaocopa.com">bolaocopa.com</a></p>
+</footer>
+
+<div class="toast" id="toast"></div>
+<div class="mo" id="alm"><div class="mdl alm"><h3>🔐 Área Admin</h3><p>Digite a senha</p><input type="password" id="ap" placeholder="Senha" onkeypress="if(event.key==='Enter')cap()"><div class="ma"><button class="btn btn-s btn-sm" onclick="document.getElementById('alm').classList.remove('show')">Cancelar</button><button class="btn btn-p btn-sm" onclick="cap()">Entrar</button></div></div></div>
+<div class="ap" id="apnl"><div class="ah"><h2>⚙️ Admin — Bolão do Almeida</h2><button class="btn btn-s btn-sm" onclick="ca()">✕ Fechar</button></div><div class="amc"><div class="ast" id="asts"></div><h3 style="font-family:'Oswald',sans-serif;margin-bottom:.8rem;font-size:1rem;text-transform:uppercase;letter-spacing:1px">Inscrições Recebidas</h3><div style="overflow-x:auto"><table class="atbl"><thead><tr><th>Nome</th><th>Email</th><th>WhatsApp</th><th>Cotas</th><th>Valor</th><th>Como Conheceu</th><th>Indicação</th><th>Status</th><th>Ações</th></tr></thead><tbody id="atb"></tbody></table></div></div></div>
+
+<script>
+// ===== CONFIG =====
+const PK='33567108859',APS='almeida2026',CS=new Date('2026-06-11T16:00:00-03:00');
+const PR={1:{c:40,t:5,v:45},2:{c:72,t:8,v:80},3:{c:96,t:10,v:106}};
+const CV={1:40,2:72,3:96};
+
+const SHEETS_API='https://script.google.com/macros/s/AKfycbzLMYXUUraqHAGeH1QqOWQfPdqgnfcHWK1v1o_kmPqJlKoVEoo47TFR0QY42wJo8IDJUQ/exec';
+
+const flagsLeft=['us','mx','ca','br','ar','fr','gb-eng','de','es','nl','be','pt','jp','kr','au','sa','uy','co','ec','py','ma','sn','ci','gh'];
+const flagsRight=['tn','dz','eg','za','nz','ir','qa','jo','no','at','ch','hr','pa','ht','cw','uz','cv','gb-sct','it','pl','tr','dk','se','ba'];
+
+let selC=2,pts=[],cst=1;
+
+document.addEventListener('DOMContentLoaded',()=>{
+  localStorage.removeItem('bp');
+  renderFlags();uc();setInterval(uc,1000);gqr();
+  loadFromSheets();
+  window.addEventListener('scroll',()=>document.getElementById('nb').classList.toggle('scrolled',window.scrollY>50));
+});
+
+// ===== GOOGLE SHEETS API =====
+async function loadFromSheets(){
+  try{
+    const r=await fetch(SHEETS_API);
+    const d=await r.json();
+    if(d.success&&d.data){
+      pts=d.data.map(p=>({id:p.id,n:p.nome,a:p.apelido,e:p.email,w:p.whatsapp,c:p.cotas,v:p.valor,ck:p.comoConheceu,ind:p.indicadoPor,s:p.status==='Aprovado'?'a':'p',d:p.dataHora}));
+    }
+    uds();
+  }catch(err){console.error('Erro ao carregar dados:',err);pts=[];uds()}
+}
+
+async function saveToSheets(data){
+  try{
+    const r=await fetch(SHEETS_API,{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'text/plain'}});
+    return await r.json();
+  }catch(err){
+    try{await fetch(SHEETS_API,{method:'POST',mode:'no-cors',body:JSON.stringify(data)})}
+    catch(e2){console.error('Erro ao salvar:',e2)}
+  }
+}
+
+function renderFlags(){
+  const fl=document.getElementById('fl'),fr2=document.getElementById('fr');
+  flagsLeft.forEach(c=>{const i=document.createElement('img');i.src=`https://flagcdn.com/w40/${c}.png`;i.alt=c;i.loading='lazy';fl.appendChild(i)});
+  flagsRight.forEach(c=>{const i=document.createElement('img');i.src=`https://flagcdn.com/w40/${c}.png`;i.alt=c;i.loading='lazy';fr2.appendChild(i)});
+}
+
+function uc(){const n=new Date(),d=CS-n;if(d>0){const dd=Math.floor(d/864e5),hh=Math.floor(d%864e5/36e5),mm=Math.floor(d%36e5/6e4),ss2=Math.floor(d%6e4/1e3);document.getElementById('cdc').textContent=`${dd}d ${hh}h ${mm}m ${ss2}s`}else document.getElementById('cdc').textContent='Já começou!'}
+
+function uds(){
+  const ap2=pts.filter(p=>p.s==='a'),tp=ap2.reduce((s,p)=>s+CV[p.c],0);
+  document.getElementById('sp').textContent=ap2.length;
+  document.getElementById('spz').textContent=`R$ ${tp.toLocaleString('pt-BR')}`;
+  document.getElementById('pz1').textContent=`R$ ${(tp*.6).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+  document.getElementById('pz2').textContent=`R$ ${(tp*.3).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+  document.getElementById('pz3').textContent=`R$ ${(tp*.1).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+}
+
+function sc(n){selC=n;document.querySelectorAll('.co').forEach((e,i)=>e.classList.toggle('sel',i+1===n))}
+function ss(s){cst=s;document.querySelectorAll('.fs').forEach(e=>e.classList.remove('act'));document.getElementById('s'+s).classList.add('act');
+for(let i=1;i<=3;i++){const p=document.getElementById('p'+i);p.classList.remove('act','done');if(i<s)p.classList.add('done');if(i===s)p.classList.add('act')}}
+
+function gtc(){const n=document.getElementById('nome').value.trim(),e=document.getElementById('email').value.trim(),w=document.getElementById('whatsapp').value.trim();
+if(!n||!e||!w){st('Preencha nome, e-mail e WhatsApp!','e');return}
+const p=PR[selC];document.getElementById('csum').innerHTML=`<div class="cln"><span>${selC} cota${selC>1?'s':''} de participação</span><span>R$ ${p.c},00</span></div><div class="cln"><span>Taxa de serviço</span><span>R$ ${p.t},00</span></div><div class="cln tot"><span>Total</span><span>R$ ${p.v},00</span></div>`;ss(2)}
+
+async function ci(){
+  const n=document.getElementById('nome').value.trim(),a=document.getElementById('apelido').value.trim(),e=document.getElementById('email').value.trim(),w=document.getElementById('whatsapp').value.trim(),ck=document.getElementById('ck').value,ind=document.getElementById('ind').value.trim();
+  const id=Date.now();
+  // Envia para Google Sheets
+  await saveToSheets({action:'insert',id,nome:n,apelido:a,email:e,whatsapp:w,cotas:selC,valor:PR[selC].v,comoConheceu:ck,indicadoPor:ind});
+  // Adiciona localmente só para exibir na tela atual
+  pts.push({id:String(id),n,a,e,w,c:selC,v:PR[selC].v,ck,ind,s:'p',d:new Date().toISOString()});
+  document.getElementById('cd3').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem"><div><div style="font-family:'Oswald',sans-serif;font-size:1rem">${n}${a?' ('+a+')':''}</div><div style="color:var(--text-muted);font-size:.8rem">${e}</div></div><div style="text-align:right"><div style="font-size:.7rem;color:var(--text-muted);text-transform:uppercase">${selC} cota${selC>1?'s':''}</div><div style="font-family:'Oswald',sans-serif;font-size:1.2rem;color:var(--accent-gold)">R$ ${PR[selC].v},00</div><div style="font-size:.65rem;color:var(--warning)">⏳ Aguardando confirmação</div></div></div>`;
+  ss(3);uds();st('Inscrição enviada! Aguarde confirmação.','s');
+}
+
+function gqr(){const cv=document.getElementById('qrc'),cx=cv.getContext('2d'),sz=180;cv.width=sz;cv.height=sz;cx.fillStyle='#FFF';cx.fillRect(0,0,sz,sz);
+const pl=`00020126580014br.gov.bcb.pix0114${PK}`,cs2=6,md=Math.floor(sz/cs2);cx.fillStyle='#000';
+function df(x,y){for(let i=0;i<7;i++)for(let j=0;j<7;j++)if(i===0||i===6||j===0||j===6||(i>=2&&i<=4&&j>=2&&j<=4))cx.fillRect((x+j)*cs2,(y+i)*cs2,cs2,cs2)}
+df(1,1);df(md-9,1);df(1,md-9);
+let h=0;for(let i=0;i<pl.length;i++)h=((h<<5)-h+pl.charCodeAt(i))|0;
+for(let y=0;y<md;y++)for(let x=0;x<md;x++){if((x<9&&y<9)||(x>md-10&&y<9)||(x<9&&y>md-10))continue;if(((x*31+y*37+h)&0xFFFF)%3!==0)cx.fillRect(x*cs2,y*cs2,cs2,cs2)}
+const mi=Math.floor(md/2);for(let i=-2;i<=2;i++)for(let j=-2;j<=2;j++)if(Math.abs(i)===2||Math.abs(j)===2||(i===0&&j===0))cx.fillRect((mi+j)*cs2,(mi+i)*cs2,cs2,cs2)}
+
+function cpk(){navigator.clipboard.writeText(PK).then(()=>st('Chave PIX copiada!','s')).catch(()=>st('Chave: '+PK,'s'))}
+function sal(){document.getElementById('alm').classList.add('show');document.getElementById('ap').focus()}
+function cap(){if(document.getElementById('ap').value===APS){document.getElementById('alm').classList.remove('show');oa()}else st('Senha incorreta!','e');document.getElementById('ap').value=''}
+function oa(){document.getElementById('apnl').classList.add('open');document.body.style.overflow='hidden';loadFromSheets().then(()=>ra2())}
+function ca(){document.getElementById('apnl').classList.remove('open');document.body.style.overflow=''}
+
+function ra2(){
+  const all=pts,pn=all.filter(p=>p.s==='p'),ap2=all.filter(p=>p.s==='a'),tc=ap2.reduce((s,p)=>s+p.c,0),tp=ap2.reduce((s,p)=>s+CV[p.c],0),tr=ap2.reduce((s,p)=>s+p.v,0);
+  document.getElementById('asts').innerHTML=`<div class="asc"><div class="av">${all.length}</div><div class="al">Inscrições</div></div><div class="asc"><div class="av" style="color:var(--warning)">${pn.length}</div><div class="al">Pendentes</div></div><div class="asc"><div class="av" style="color:var(--success)">${ap2.length}</div><div class="al">Aprovados</div></div><div class="asc"><div class="av">${tc}</div><div class="al">Cotas</div></div><div class="asc"><div class="av">R$ ${tp}</div><div class="al">Prêmios</div></div><div class="asc"><div class="av">R$ ${tr-tp}</div><div class="al">Taxas</div></div>`;
+  const tb=document.getElementById('atb');tb.innerHTML='';
+  all.forEach((p,i)=>tb.innerHTML+=`<tr><td>${p.n}${p.a?' ('+p.a+')':''}</td><td>${p.e}</td><td>${p.w}</td><td>${p.c}</td><td>R$ ${p.v}</td><td>${p.ck||'-'}</td><td>${p.ind||'-'}</td><td class="${p.s==='p'?'stp':'sta'}">${p.s==='p'?'⏳ Pendente':'✅ Aprovado'}</td><td>${p.s==='p'?`<button class="ba" onclick="apr('${p.id}',${i})">Aprovar</button><button class="br" onclick="rej('${p.id}',${i})">Rejeitar</button>`:'—'}</td></tr>`);
+}
+
+async function apr(id,i){
+  pts[i].s='a';
+  await saveToSheets({action:'update_status',id:id,status:'Aprovado'});
+  ra2();uds();st(pts[i].n+' aprovado!','s');
+}
+
+async function rej(id,i){
+  const nm=pts[i].n;
+  pts.splice(i,1);
+  await saveToSheets({action:'delete',id:id});
+  ra2();uds();st(nm+' removido.','e');
+}
+
+function tm(){document.getElementById('nl').classList.toggle('open')}
+function cm(){document.getElementById('nl').classList.remove('open')}
+function st(m,t){const ts=document.getElementById('toast');ts.textContent=m;ts.style.background=t==='e'?'var(--error)':'var(--success)';ts.classList.add('show');setTimeout(()=>ts.classList.remove('show'),3500)}
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});cm()}));
+sc(2);
+</script>
+</body>
+</html>
