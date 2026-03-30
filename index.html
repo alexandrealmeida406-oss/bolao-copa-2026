@@ -239,11 +239,11 @@ body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-
 <nav class="nav" id="nb">
 <a class="nav-logo" href="#" onclick="navigate('home')"><div class="li">⚽</div>Bolão Almeida Copa 2026</a>
 <ul class="nav-links" id="nl">
-<li><a onclick="navigate('home');scrollTo('cf')">Como Funciona</a></li>
-<li><a onclick="navigate('home');scrollTo('val')">Valores</a></li>
-<li><a onclick="navigate('home');scrollTo('insc')">Inscrição</a></li>
-<li><a onclick="navigate('home');scrollTo('rank')">Ranking</a></li>
-<li><a onclick="navigate('home');scrollTo('prem')">Premiação</a></li>
+<li><a onclick="navigate('home');scrollToSection('cf')">Como Funciona</a></li>
+<li><a onclick="navigate('home');scrollToSection('val')">Valores</a></li>
+<li><a onclick="navigate('home');scrollToSection('insc')">Inscrição</a></li>
+<li><a onclick="navigate('home');scrollToSection('rank')">Ranking</a></li>
+<li><a onclick="navigate('home');scrollToSection('prem')">Premiação</a></li>
 <li id="nav-auth"></li>
 </ul>
 <button class="mmb" onclick="document.getElementById('nl').classList.toggle('open')">☰</button>
@@ -398,25 +398,32 @@ document.addEventListener('DOMContentLoaded',async()=>{
     navigate('admin');
   }
   
+  // Always show UI first
+  updateUI();
+  
+  // Then try to load session
+  try{
+    const{data:{session}}=await sb.auth.getSession();
+    if(session?.user){
+      currentUser=session.user;
+      await loadUserData();
+    }
+  }catch(e){console.warn('Session error:',e)}
+  
+  updateUI();
+  
+  try{await loadStats()}catch(e){console.warn('Stats error:',e)}
+  
   // Listen for auth changes
   sb.auth.onAuthStateChange(async(event,session)=>{
     if(session?.user){
       currentUser=session.user;
-      await loadUserData();
+      try{await loadUserData()}catch(e){console.warn('Auth change error:',e)}
     }else{
       currentUser=null;userProfile=null;userInscricao=null;
     }
     updateUI();
   });
-  
-  // Initial session check
-  const{data:{session}}=await sb.auth.getSession();
-  if(session?.user){
-    currentUser=session.user;
-    await loadUserData();
-  }
-  updateUI();
-  loadStats();
   
   window.addEventListener('scroll',()=>document.getElementById('nb').classList.toggle('scrolled',window.scrollY>50));
 });
@@ -466,7 +473,7 @@ function navigate(page){
   if(page==='palpites')loadPalpites();
 }
 
-function scrollTo(id){
+function scrollToSection(id){
   setTimeout(()=>{
     document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});
   },100);
@@ -492,7 +499,7 @@ function updateUI(){
       </div>`;
     
     heroEl.innerHTML=`
-      ${!userInscricao?'<a class="btn btn-p" onclick="scrollTo(\'insc\')">Fazer Inscrição</a>':''}
+      ${!userInscricao?'<a class="btn btn-p" onclick="scrollToSection(\'insc\')">Fazer Inscrição</a>':''}
       ${userInscricao?.status==='aprovado'?'<a class="btn btn-p" onclick="navigate(\'palpites\')">Meus Palpites</a>':''}
       <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w">Grupo WhatsApp</a>`;
     
@@ -718,7 +725,7 @@ async function loadConta(){
           `:'<span class="us-badge badge-none">Sem inscrição</span>'}
         </div>
       </div>
-      ${!userInscricao?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'home\');scrollTo(\'insc\')">Fazer Inscrição</a></div>':''}
+      ${!userInscricao?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'home\');scrollToSection(\'insc\')">Fazer Inscrição</a></div>':''}
       ${userInscricao?.status==='aprovado'?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'palpites\')">Meus Palpites →</a></div>':''}
       <div style="text-align:center;margin-top:1rem"><button class="btn btn-danger btn-sm" onclick="logout()">Sair da Conta</button></div>
     </div>`;
@@ -762,7 +769,7 @@ function cpk(){navigator.clipboard.writeText(PK).then(()=>toast('Chave PIX copia
 function startInscricao(n){
   selC=n;
   if(!currentUser){loginGoogle();return;}
-  navigate('home');scrollTo('insc');
+  navigate('home');scrollToSection('insc');
 }
 
 function toast(m,t){const ts=document.getElementById('toast');ts.textContent=m;ts.style.background=t==='e'?'var(--error)':'var(--success)';ts.classList.add('show');setTimeout(()=>ts.classList.remove('show'),3500)}
