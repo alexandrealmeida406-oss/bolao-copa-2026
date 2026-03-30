@@ -440,12 +440,18 @@ async function logout(){
 
 async function loadUserData(){
   if(!currentUser)return;
-  // Load profile
-  const{data:prof}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
-  userProfile=prof;
-  // Load inscription
-  const{data:insc}=await sb.from('inscricoes').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(1).single();
-  userInscricao=insc;
+  try{
+    // Load profile
+    const{data:prof,error:profErr}=await sb.from('profiles').select('*').eq('id',currentUser.id).maybeSingle();
+    userProfile=prof||null;
+    if(profErr)console.warn('Profile load error:',profErr.message);
+  }catch(e){console.warn('Profile error:',e);userProfile=null;}
+  try{
+    // Load inscription
+    const{data:inscs,error:inscErr}=await sb.from('inscricoes').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(1);
+    userInscricao=inscs&&inscs.length>0?inscs[0]:null;
+    if(inscErr)console.warn('Inscricao load error:',inscErr.message);
+  }catch(e){console.warn('Inscricao error:',e);userInscricao=null;}
 }
 
 // ===== NAVIGATION =====
@@ -720,14 +726,16 @@ async function loadConta(){
 
 // ===== STATS =====
 async function loadStats(){
-  const{data:inscs}=await sb.from('inscricoes').select('cotas,valor_cotas').eq('status','aprovado');
-  if(!inscs)return;
-  const tp=inscs.reduce((s,i)=>s+Number(i.valor_cotas),0);
-  document.getElementById('sp').textContent=inscs.length;
-  document.getElementById('spz').textContent=`R$ ${tp.toLocaleString('pt-BR')}`;
-  document.getElementById('pz1').textContent=`R$ ${(tp*.6).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
-  document.getElementById('pz2').textContent=`R$ ${(tp*.3).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
-  document.getElementById('pz3').textContent=`R$ ${(tp*.1).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+  try{
+    const{data:inscs,error}=await sb.from('inscricoes').select('cotas,valor_cotas').eq('status','aprovado');
+    if(error||!inscs)return;
+    const tp=inscs.reduce((s,i)=>s+Number(i.valor_cotas),0);
+    document.getElementById('sp').textContent=inscs.length;
+    document.getElementById('spz').textContent=`R$ ${tp.toLocaleString('pt-BR')}`;
+    document.getElementById('pz1').textContent=`R$ ${(tp*.6).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+    document.getElementById('pz2').textContent=`R$ ${(tp*.3).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+    document.getElementById('pz3').textContent=`R$ ${(tp*.1).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+  }catch(e){console.warn('Stats error:',e)}
 }
 
 // ===== FLAGS =====
