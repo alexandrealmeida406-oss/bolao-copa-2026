@@ -635,13 +635,126 @@ async function loadPalpites(){
   }
   
   // Check if palpites are enabled
-  const{data:cfg}=await sb.from('config').select('value').eq('key','palpites_liberados').single();
+  const{data:cfg}=await sb.from('config').select('value').eq('key','palpites_liberados').maybeSingle();
   if(!cfg||cfg.value!=='true'){
     el.innerHTML='<div class="re"><p style="font-size:2rem">🔒</p><p style="font-family:\'Oswald\',sans-serif;font-size:1.1rem">Palpites ainda não liberados</p><p style="color:var(--text-muted);font-size:.85rem;margin-top:.3rem">Os palpites serão liberados quando todas as 48 seleções estiverem definidas. Fique ligado!</p></div>';
     return;
   }
   
-  el.innerHTML='<p style="text-align:center;color:var(--accent-gold);font-family:\'Oswald\',sans-serif;">Palpites liberados! A área de preenchimento será habilitada em breve.</p>';
+  // Load existing palpites
+  const{data:existingPalpites}=await sb.from('palpites').select('*').eq('inscricao_id',userInscricao.id);
+  
+  // Build UI for each cota
+  let html='<div class="user-status" style="margin-bottom:1.5rem"><div class="us-info"><div><div class="us-name">'+((userProfile?.nome)||'Participante')+'</div><div class="us-email">'+userInscricao.cotas+' cota'+(userInscricao.cotas>1?'s':'')+'</div></div></div><span class="us-badge badge-approved">✅ Pagamento Aprovado</span></div>';
+  
+  for(let c=1;c<=userInscricao.cotas;c++){
+    const cotaPalpites=(existingPalpites||[]).filter(p=>p.cota_numero===c);
+    const hasSaved=cotaPalpites.length===12;
+    
+    html+=`<div style="margin-bottom:2rem">
+      <h3 class="fst" style="color:var(--accent-teal);margin-bottom:1rem">Cota ${c} de ${userInscricao.cotas} ${hasSaved?'<span style="color:var(--success);font-size:.7em">✅ Salvo</span>':''}</h3>
+      <div class="groups-grid" id="groups-cota-${c}">`;
+    
+    const groups=getGroups();
+    Object.entries(groups).forEach(([letter,teams])=>{
+      const saved=cotaPalpites.find(p=>p.grupo===letter);
+      html+=`<div class="group-card">
+        <div class="group-header">Grupo ${letter}</div>
+        <div class="sel-label">1º Colocado (+2 pts)</div>
+        <select id="g${letter}-1-c${c}" ${hasSaved?'disabled':''}>
+          <option value="">Selecione...</option>
+          ${teams.map(t=>`<option value="${t}" ${saved?.primeiro_colocado===t?'selected':''}>${t}</option>`).join('')}
+        </select>
+        <div class="sel-label">2º Colocado (+1 pt)</div>
+        <select id="g${letter}-2-c${c}" ${hasSaved?'disabled':''}>
+          <option value="">Selecione...</option>
+          ${teams.map(t=>`<option value="${t}" ${saved?.segundo_colocado===t?'selected':''}>${t}</option>`).join('')}
+        </select>
+      </div>`;
+    });
+    
+    html+=`</div>`;
+    if(!hasSaved){
+      html+=`<div style="text-align:center;margin-top:1rem"><button class="btn btn-p" onclick="savePalpites(${c})">Salvar Palpites da Cota ${c}</button></div>`;
+    }else{
+      html+=`<div style="text-align:center;margin-top:.5rem"><button class="btn btn-s btn-sm" onclick="editPalpites(${c})">Editar Palpites</button></div>`;
+    }
+    html+=`</div>`;
+  }
+  
+  el.innerHTML=html;
+}
+
+function getGroups(){
+  return {
+    A:['México','África do Sul','Coreia do Sul','Repescagem Europa D'],
+    B:['Canadá','Repescagem Europa A','Catar','Suíça'],
+    C:['Brasil','Marrocos','Haiti','Escócia'],
+    D:['Estados Unidos','Paraguai','Austrália','Repescagem Europa C'],
+    E:['Alemanha','Curaçao','Costa do Marfim','Equador'],
+    F:['Holanda','Japão','Repescagem Europa B','Tunísia'],
+    G:['Bélgica','Egito','Irã','Nova Zelândia'],
+    H:['Espanha','Cabo Verde','Arábia Saudita','Uruguai'],
+    I:['França','Senegal','Repescagem Mundial 2','Noruega'],
+    J:['Argentina','Argélia','Áustria','Jordânia'],
+    K:['Portugal','Repescagem Mundial 1','Uzbequistão','Colômbia'],
+    L:['Inglaterra','Croácia','Gana','Panamá']
+  };
+}
+
+async function savePalpites(cotaNum){
+  if(!currentUser||!userInscricao)return;
+  const groups=getGroups();
+  const palpites=[];
+  let allFilled=true;
+  
+  for(const letter of Object.keys(groups)){
+    const first=document.getElementById(`g${letter}-1-c${cotaNum}`)?.value;
+    const second=document.getElementById(`g${letter}-2-c${cotaNum}`)?.value;
+    if(!first||!second){allFilled=false;break;}
+    if(first===second){toast(`Grupo ${letter}: 1º e 2º não podem ser iguais!`,'e');return;}
+    palpites.push({
+      user_id:currentUser.id,
+      inscricao_id:userInscricao.id,
+      cota_numero:cotaNum,
+      grupo:letter,
+      primeiro_colocado:first,
+      segundo_colocado:second
+    });
+  }
+  
+  if(!allFilled){toast('Preencha todos os 12 grupos antes de salvar!','e');return;}
+  
+  // Delete existing palpites for this cota (in case of edit)
+  await sb.from('palpites').delete().eq('inscricao_id',userInscricao.id).eq('cota_numero',cotaNum);
+  
+  // Insert new palpites
+  const{error}=await sb.from('palpites').insert(palpites);
+  if(error){toast('Erro ao salvar: '+error.message,'e');return;}
+  
+  toast(`Palpites da Cota ${cotaNum} salvos com sucesso!`,'s');
+  loadPalpites();
+}
+
+function editPalpites(cotaNum){
+  // Enable selects for this cota
+  const groups=getGroups();
+  Object.keys(groups).forEach(letter=>{
+    const s1=document.getElementById(`g${letter}-1-c${cotaNum}`);
+    const s2=document.getElementById(`g${letter}-2-c${cotaNum}`);
+    if(s1)s1.disabled=false;
+    if(s2)s2.disabled=false;
+  });
+  // Show save button
+  const container=document.getElementById(`groups-cota-${cotaNum}`).parentElement;
+  const btns=container.querySelectorAll('button');
+  btns.forEach(b=>{
+    if(b.textContent.includes('Editar')){
+      b.textContent=`Salvar Palpites da Cota ${cotaNum}`;
+      b.className='btn btn-p';
+      b.onclick=()=>savePalpites(cotaNum);
+    }
+  });
 }
 
 // ===== ADMIN =====
