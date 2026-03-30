@@ -650,44 +650,51 @@ async function loadAdmin(){
   if(!currentUser){el.innerHTML='<div class="login-box"><h3>Faça login como admin</h3><button class="btn-google" onclick="loginGoogle()">Entrar com Google</button></div>';return;}
   if(!userProfile?.is_admin){el.innerHTML='<div class="re"><p style="font-size:2rem">🚫</p><p>Acesso restrito a administradores.</p></div>';return;}
   
-  // Load all inscriptions
-  const{data:inscs}=await sb.from('inscricoes').select('*,profiles(nome,apelido,whatsapp,como_conheceu,indicado_por)').order('created_at',{ascending:false});
-  
-  if(!inscs){el.innerHTML='<p>Erro ao carregar dados.</p>';return;}
-  
-  const pending=inscs.filter(i=>i.status==='pendente');
-  const approved=inscs.filter(i=>i.status==='aprovado');
-  const totalCotas=approved.reduce((s,i)=>s+i.cotas,0);
-  const totalPool=approved.reduce((s,i)=>s+Number(i.valor_cotas),0);
-  const totalFees=approved.reduce((s,i)=>s+Number(i.taxa_servico),0);
-  
-  el.innerHTML=`
-    <div class="ast">
-      <div class="asc"><div class="av">${inscs.length}</div><div class="al">Inscrições</div></div>
-      <div class="asc"><div class="av" style="color:var(--warning)">${pending.length}</div><div class="al">Pendentes</div></div>
-      <div class="asc"><div class="av" style="color:var(--success)">${approved.length}</div><div class="al">Aprovados</div></div>
-      <div class="asc"><div class="av">${totalCotas}</div><div class="al">Cotas</div></div>
-      <div class="asc"><div class="av">R$ ${totalPool}</div><div class="al">Prêmios</div></div>
-      <div class="asc"><div class="av">R$ ${totalFees}</div><div class="al">Taxas</div></div>
-    </div>
-    <h3 style="font-family:'Oswald',sans-serif;margin-bottom:.8rem;font-size:1rem;text-transform:uppercase;letter-spacing:1px">Inscrições</h3>
-    <div style="overflow-x:auto">
-      <table class="atbl"><thead><tr><th>Nome</th><th>Email</th><th>WhatsApp</th><th>Cotas</th><th>Valor</th><th>Conheceu</th><th>Indicação</th><th>Status</th><th>Ações</th></tr></thead>
-      <tbody>${inscs.map(i=>{
-        const p=i.profiles||{};
-        const isPending=i.status==='pendente';
-        return`<tr>
-          <td>${p.nome||'-'}${p.apelido?' ('+p.apelido+')':''}</td>
-          <td style="font-size:.7rem">${i.user_id?.substring(0,8)}...</td>
-          <td>${p.whatsapp||'-'}</td>
-          <td>${i.cotas}</td>
-          <td>R$ ${i.valor_total}</td>
-          <td>${p.como_conheceu||'-'}</td>
-          <td>${p.indicado_por||'-'}</td>
-          <td class="${isPending?'stp':'sta'}">${isPending?'⏳ Pendente':'✅ Aprovado'}</td>
-          <td>${isPending?`<button class="ba" onclick="adminApprove(${i.id})">Aprovar</button><button class="br2" onclick="adminReject(${i.id})">Rejeitar</button>`:'—'}</td>
-        </tr>`;}).join('')}</tbody></table>
-    </div>`;
+  try{
+    // Load inscriptions and profiles separately
+    const{data:inscs,error:insErr}=await sb.from('inscricoes').select('*').order('created_at',{ascending:false});
+    const{data:profs,error:profErr}=await sb.from('profiles').select('*');
+    
+    if(insErr||!inscs){el.innerHTML='<p>Erro ao carregar inscrições: '+(insErr?.message||'')+'</p>';return;}
+    
+    // Map profiles by user_id
+    const profMap={};
+    (profs||[]).forEach(p=>profMap[p.id]=p);
+    
+    const pending=inscs.filter(i=>i.status==='pendente');
+    const approved=inscs.filter(i=>i.status==='aprovado');
+    const totalCotas=approved.reduce((s,i)=>s+i.cotas,0);
+    const totalPool=approved.reduce((s,i)=>s+Number(i.valor_cotas),0);
+    const totalFees=approved.reduce((s,i)=>s+Number(i.taxa_servico),0);
+    
+    el.innerHTML=`
+      <div class="ast">
+        <div class="asc"><div class="av">${inscs.length}</div><div class="al">Inscrições</div></div>
+        <div class="asc"><div class="av" style="color:var(--warning)">${pending.length}</div><div class="al">Pendentes</div></div>
+        <div class="asc"><div class="av" style="color:var(--success)">${approved.length}</div><div class="al">Aprovados</div></div>
+        <div class="asc"><div class="av">${totalCotas}</div><div class="al">Cotas</div></div>
+        <div class="asc"><div class="av">R$ ${totalPool}</div><div class="al">Prêmios</div></div>
+        <div class="asc"><div class="av">R$ ${totalFees}</div><div class="al">Taxas</div></div>
+      </div>
+      <h3 style="font-family:'Oswald',sans-serif;margin-bottom:.8rem;font-size:1rem;text-transform:uppercase;letter-spacing:1px">Inscrições</h3>
+      <div style="overflow-x:auto">
+        <table class="atbl"><thead><tr><th>Nome</th><th>Email</th><th>WhatsApp</th><th>Cotas</th><th>Valor</th><th>Conheceu</th><th>Indicação</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody>${inscs.map(i=>{
+          const p=profMap[i.user_id]||{};
+          const isPending=i.status==='pendente';
+          return`<tr>
+            <td>${p.nome||'-'}${p.apelido?' ('+p.apelido+')':''}</td>
+            <td style="font-size:.7rem">${p.nome?'':i.user_id?.substring(0,8)+'...'}</td>
+            <td>${p.whatsapp||'-'}</td>
+            <td>${i.cotas}</td>
+            <td>R$ ${i.valor_total}</td>
+            <td>${p.como_conheceu||'-'}</td>
+            <td>${p.indicado_por||'-'}</td>
+            <td class="${isPending?'stp':'sta'}">${isPending?'⏳ Pendente':'✅ Aprovado'}</td>
+            <td>${isPending?`<button class="ba" onclick="adminApprove(${i.id})">Aprovar</button><button class="br2" onclick="adminReject(${i.id})">Rejeitar</button>`:'—'}</td>
+          </tr>`;}).join('')}</tbody></table>
+      </div>`;
+  }catch(e){el.innerHTML='<p>Erro: '+e.message+'</p>';}
 }
 
 async function adminApprove(id){
