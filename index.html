@@ -294,8 +294,8 @@ body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-
 <div class="rg">
 <div class="rc"><div class="rn">01</div><div class="ri">🔐</div><h3>Login com Google</h3><p>Faça login com sua conta Google para se inscrever. Rápido e seguro!</p></div>
 <div class="rc"><div class="rn">02</div><div class="ri">📋</div><h3>Inscrição + PIX</h3><p>Escolha suas cotas e pague via PIX. O admin confirma seu pagamento.</p></div>
-<div class="rc"><div class="rn">03</div><div class="ri">🎯</div><h3>Palpites</h3><p>Após aprovação, escolha o 1º e 2º de cada grupo. Liberado quando todos os classificados forem definidos.</p></div>
-<div class="rc"><div class="rn">04</div><div class="ri">⭐</div><h3>Pontuação</h3><p>1º colocado certo: <strong>+2 pts</strong>. 2º colocado certo: <strong>+1 pt</strong>. Máximo: 36 pontos.</p></div>
+<div class="rc"><div class="rn">03</div><div class="ri">🎯</div><h3>Palpites</h3><p>Informe o placar de todos os jogos! Na fase de grupos são 36 jogos. Após a fase de grupos, nova rodada de palpites para o mata-mata.</p></div>
+<div class="rc"><div class="rn">04</div><div class="ri">⭐</div><h3>Pontuação</h3><p><strong>Fase de Grupos:</strong> Placar exato = <strong>3 pts</strong>. Acertou gols de 1 equipe = <strong>1 pt</strong>.<br><strong>Eliminatórias:</strong> Placar exato = <strong>4 pts</strong>. Acertou gols de 1 equipe = <strong>1 pt</strong>.</p></div>
 <div class="rc"><div class="rn">05</div><div class="ri">📊</div><h3>Ranking</h3><p>Cada cota concorre independentemente. Acompanhe em tempo real!</p></div>
 <div class="rc"><div class="rn">06</div><div class="ri">🏆</div><h3>Premiação</h3><p>1º: 60% · 2º: 30% · 3º: 10% do total arrecadado. Atualiza com cada inscrição!</p></div>
 </div>
@@ -637,47 +637,111 @@ async function loadPalpites(){
   // Check if palpites are enabled
   const{data:cfg}=await sb.from('config').select('value').eq('key','palpites_liberados').maybeSingle();
   if(!cfg||cfg.value!=='true'){
-    el.innerHTML='<div class="re"><p style="font-size:2rem">🔒</p><p style="font-family:\'Oswald\',sans-serif;font-size:1.1rem">Palpites ainda não liberados</p><p style="color:var(--text-muted);font-size:.85rem;margin-top:.3rem">Os palpites serão liberados quando todas as 48 seleções estiverem definidas. Fique ligado!</p></div>';
+    el.innerHTML='<div class="re"><p style="font-size:2rem">🔒</p><p style="font-family:\'Oswald\',sans-serif;font-size:1.1rem">Palpites ainda não liberados</p><p style="color:var(--text-muted);font-size:.85rem;margin-top:.3rem">Os palpites serão liberados quando todas as 48 seleções estiverem definidas.</p></div>';
     return;
   }
+
+  // Check which phase is active
+  const{data:faseCfg}=await sb.from('config').select('value').eq('key','fase_palpites').maybeSingle();
+  const faseAtiva=faseCfg?.value||'grupos';
+  
+  // Load matches for active phase
+  const{data:jogos}=await sb.from('jogos').select('*').eq('fase',faseAtiva).order('grupo').order('rodada').order('data_jogo');
+  if(!jogos||jogos.length===0){el.innerHTML='<div class="re"><p>Nenhum jogo cadastrado para esta fase.</p></div>';return;}
   
   // Load existing palpites
   const{data:existingPalpites}=await sb.from('palpites').select('*').eq('inscricao_id',userInscricao.id);
   
-  // Build UI for each cota
-  let html='<div class="user-status" style="margin-bottom:1.5rem"><div class="us-info"><div><div class="us-name">'+((userProfile?.nome)||'Participante')+'</div><div class="us-email">'+userInscricao.cotas+' cota'+(userInscricao.cotas>1?'s':'')+'</div></div></div><span class="us-badge badge-approved">✅ Pagamento Aprovado</span></div>';
+  // Pontuação info
+  const ptsExato=faseAtiva==='grupos'?3:4;
   
+  let html=`
+    <div class="user-status" style="margin-bottom:1rem">
+      <div class="us-info"><div><div class="us-name">${userProfile?.nome||'Participante'}</div><div class="us-email">${userInscricao.cotas} cota${userInscricao.cotas>1?'s':''} · Fase: ${faseAtiva==='grupos'?'Fase de Grupos':'Eliminatórias'}</div></div></div>
+      <span class="us-badge badge-approved">✅ Ativo</span>
+    </div>
+    <div style="background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.2);border-radius:8px;padding:1rem;margin-bottom:1.5rem;font-size:.85rem">
+      <strong style="color:var(--accent-gold)">Regra de Pontuação${faseAtiva==='grupos'?' — Fase de Grupos':' — Eliminatórias'}:</strong><br>
+      🎯 Placar exato = <strong>${ptsExato} pontos</strong> · ⚽ Acertou gols de 1 equipe = <strong>1 ponto</strong> · ❌ Errou tudo = 0 pontos
+    </div>`;
+  
+  // Build UI per cota
   for(let c=1;c<=userInscricao.cotas;c++){
     const cotaPalpites=(existingPalpites||[]).filter(p=>p.cota_numero===c);
-    const hasSaved=cotaPalpites.length===12;
+    const totalSaved=cotaPalpites.length;
+    const totalJogos=jogos.length;
+    const allSaved=totalSaved>=totalJogos;
     
-    html+=`<div style="margin-bottom:2rem">
-      <h3 class="fst" style="color:var(--accent-teal);margin-bottom:1rem">Cota ${c} de ${userInscricao.cotas} ${hasSaved?'<span style="color:var(--success);font-size:.7em">✅ Salvo</span>':''}</h3>
-      <div class="groups-grid" id="groups-cota-${c}">`;
-    
-    const groups=getGroups();
-    Object.entries(groups).forEach(([letter,teams])=>{
-      const saved=cotaPalpites.find(p=>p.grupo===letter);
-      html+=`<div class="group-card">
-        <div class="group-header">Grupo ${letter}</div>
-        <div class="sel-label">1º Colocado (+2 pts)</div>
-        <select id="g${letter}-1-c${c}" ${hasSaved?'disabled':''}>
-          <option value="">Selecione...</option>
-          ${teams.map(t=>`<option value="${t}" ${saved?.primeiro_colocado===t?'selected':''}>${t}</option>`).join('')}
-        </select>
-        <div class="sel-label">2º Colocado (+1 pt)</div>
-        <select id="g${letter}-2-c${c}" ${hasSaved?'disabled':''}>
-          <option value="">Selecione...</option>
-          ${teams.map(t=>`<option value="${t}" ${saved?.segundo_colocado===t?'selected':''}>${t}</option>`).join('')}
-        </select>
-      </div>`;
+    // Calculate points if results exist
+    let totalPts=0;
+    cotaPalpites.forEach(p=>{
+      const jogo=jogos.find(j=>j.id===p.jogo_id);
+      if(jogo&&jogo.gols_casa!==null&&jogo.gols_fora!==null){
+        if(p.gols_casa===jogo.gols_casa&&p.gols_fora===jogo.gols_fora){
+          totalPts+=jogo.pontos_placar_exato;
+        }else if(p.gols_casa===jogo.gols_casa||p.gols_fora===jogo.gols_fora){
+          totalPts+=1;
+        }
+      }
     });
     
-    html+=`</div>`;
-    if(!hasSaved){
-      html+=`<div style="text-align:center;margin-top:1rem"><button class="btn btn-p" onclick="savePalpites(${c})">Salvar Palpites da Cota ${c}</button></div>`;
+    html+=`<div style="margin-bottom:2.5rem;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.5rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <h3 class="fst" style="color:var(--accent-teal);margin:0">Cota ${c} de ${userInscricao.cotas}</h3>
+        <div style="text-align:right">
+          <span style="font-size:.7rem;color:var(--text-muted)">${totalSaved}/${totalJogos} jogos</span>
+          ${allSaved?'<span style="color:var(--success);font-size:.75rem;margin-left:.5rem">✅ Completo</span>':''}
+          ${totalPts>0?`<div style="font-family:'Oswald',sans-serif;font-size:1.2rem;color:var(--accent-gold)">${totalPts} pts</div>`:''}
+        </div>
+      </div>`;
+    
+    // Group matches by grupo
+    const gruposMap={};
+    jogos.forEach(j=>{
+      if(!gruposMap[j.grupo])gruposMap[j.grupo]=[];
+      gruposMap[j.grupo].push(j);
+    });
+    
+    Object.entries(gruposMap).forEach(([grupo,matches])=>{
+      html+=`<div style="margin-bottom:1.2rem">
+        <div style="font-family:'Oswald',sans-serif;font-size:.85rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent-teal);margin-bottom:.6rem;padding-bottom:.3rem;border-bottom:1px solid var(--border)">Grupo ${grupo}</div>`;
+      
+      matches.forEach(jogo=>{
+        const saved=cotaPalpites.find(p=>p.jogo_id===jogo.id);
+        const hasResult=jogo.gols_casa!==null&&jogo.gols_fora!==null;
+        let matchPts=0;
+        let matchClass='';
+        if(saved&&hasResult){
+          if(saved.gols_casa===jogo.gols_casa&&saved.gols_fora===jogo.gols_fora){
+            matchPts=jogo.pontos_placar_exato;matchClass='match-exact';
+          }else if(saved.gols_casa===jogo.gols_casa||saved.gols_fora===jogo.gols_fora){
+            matchPts=1;matchClass='match-partial';
+          }else{matchClass='match-wrong';}
+        }
+        
+        const flagCasa=jogo.time_casa_flag?`<img src="https://flagcdn.com/w40/${jogo.time_casa_flag}.png" style="width:24px;height:16px;border-radius:2px;vertical-align:middle;margin-right:4px">`:'';
+        const flagFora=jogo.time_fora_flag?`<img src="https://flagcdn.com/w40/${jogo.time_fora_flag}.png" style="width:24px;height:16px;border-radius:2px;vertical-align:middle;margin-right:4px">`:'';
+        const dataJogo=jogo.data_jogo?new Date(jogo.data_jogo).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+        
+        html+=`<div class="match-row ${matchClass}" style="display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;margin-bottom:.4rem;background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;flex-wrap:wrap;${matchClass==='match-exact'?'border-color:var(--success);background:rgba(34,197,94,.05)':matchClass==='match-partial'?'border-color:var(--warning);background:rgba(245,158,11,.05)':matchClass==='match-wrong'?'border-color:var(--error);background:rgba(239,68,68,.05)':''}">
+          <div style="flex:1;min-width:100px;text-align:right;font-size:.85rem">${flagCasa}${jogo.time_casa}</div>
+          <input type="number" min="0" max="20" value="${saved?saved.gols_casa:''}" id="j${jogo.id}-c${c}-casa" ${allSaved&&!hasResult?'disabled':''} style="width:40px;text-align:center;padding:.4rem;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;color:var(--text-primary);font-family:'Oswald',sans-serif;font-size:1rem">
+          <span style="color:var(--text-muted);font-size:.8rem">×</span>
+          <input type="number" min="0" max="20" value="${saved?saved.gols_fora:''}" id="j${jogo.id}-c${c}-fora" ${allSaved&&!hasResult?'disabled':''} style="width:40px;text-align:center;padding:.4rem;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;color:var(--text-primary);font-family:'Oswald',sans-serif;font-size:1rem">
+          <div style="flex:1;min-width:100px;font-size:.85rem">${flagFora}${jogo.time_fora}</div>
+          ${hasResult?`<div style="font-size:.7rem;color:var(--text-muted)">Real: ${jogo.gols_casa}×${jogo.gols_fora}</div>`:''}
+          ${matchPts>0?`<div style="font-family:'Oswald',sans-serif;font-size:.8rem;color:${matchPts>=3?'var(--success)':'var(--warning)'}">+${matchPts}</div>`:''}
+          ${hasResult&&matchPts===0&&saved?'<div style="font-size:.7rem;color:var(--error)">0</div>':''}
+          <div style="font-size:.6rem;color:var(--text-muted);width:100%;text-align:center;margin-top:-.2rem">${dataJogo}</div>
+        </div>`;
+      });
+      html+=`</div>`;
+    });
+    
+    if(!allSaved){
+      html+=`<div style="text-align:center;margin-top:1rem"><button class="btn btn-p" onclick="savePalpitesPlacar(${c})">Salvar Palpites da Cota ${c}</button></div>`;
     }else{
-      html+=`<div style="text-align:center;margin-top:.5rem"><button class="btn btn-s btn-sm" onclick="editPalpites(${c})">Editar Palpites</button></div>`;
+      html+=`<div style="text-align:center;margin-top:.5rem"><button class="btn btn-s btn-sm" onclick="editPalpitesPlacar(${c})">Editar Palpites</button></div>`;
     }
     html+=`</div>`;
   }
@@ -685,76 +749,58 @@ async function loadPalpites(){
   el.innerHTML=html;
 }
 
-function getGroups(){
-  return {
-    A:['México','África do Sul','Coreia do Sul','Repescagem Europa D'],
-    B:['Canadá','Repescagem Europa A','Catar','Suíça'],
-    C:['Brasil','Marrocos','Haiti','Escócia'],
-    D:['Estados Unidos','Paraguai','Austrália','Repescagem Europa C'],
-    E:['Alemanha','Curaçao','Costa do Marfim','Equador'],
-    F:['Holanda','Japão','Repescagem Europa B','Tunísia'],
-    G:['Bélgica','Egito','Irã','Nova Zelândia'],
-    H:['Espanha','Cabo Verde','Arábia Saudita','Uruguai'],
-    I:['França','Senegal','Repescagem Mundial 2','Noruega'],
-    J:['Argentina','Argélia','Áustria','Jordânia'],
-    K:['Portugal','Repescagem Mundial 1','Uzbequistão','Colômbia'],
-    L:['Inglaterra','Croácia','Gana','Panamá']
-  };
-}
-
-async function savePalpites(cotaNum){
+async function savePalpitesPlacar(cotaNum){
   if(!currentUser||!userInscricao)return;
-  const groups=getGroups();
+  
+  const{data:jogos}=await sb.from('jogos').select('id').eq('fase','grupos').order('id');
+  if(!jogos)return;
+  
   const palpites=[];
   let allFilled=true;
   
-  for(const letter of Object.keys(groups)){
-    const first=document.getElementById(`g${letter}-1-c${cotaNum}`)?.value;
-    const second=document.getElementById(`g${letter}-2-c${cotaNum}`)?.value;
-    if(!first||!second){allFilled=false;break;}
-    if(first===second){toast(`Grupo ${letter}: 1º e 2º não podem ser iguais!`,'e');return;}
+  for(const jogo of jogos){
+    const casaEl=document.getElementById(`j${jogo.id}-c${cotaNum}-casa`);
+    const foraEl=document.getElementById(`j${jogo.id}-c${cotaNum}-fora`);
+    const casa=casaEl?.value;
+    const fora=foraEl?.value;
+    
+    if(casa===''||casa===null||fora===''||fora===null){allFilled=false;continue;}
+    
     palpites.push({
       user_id:currentUser.id,
       inscricao_id:userInscricao.id,
       cota_numero:cotaNum,
-      grupo:letter,
-      primeiro_colocado:first,
-      segundo_colocado:second
+      jogo_id:jogo.id,
+      gols_casa:parseInt(casa),
+      gols_fora:parseInt(fora)
     });
   }
   
-  if(!allFilled){toast('Preencha todos os 12 grupos antes de salvar!','e');return;}
+  if(palpites.length<jogos.length){
+    toast(`Preencha todos os ${jogos.length} jogos! Faltam ${jogos.length-palpites.length}.`,'e');
+    return;
+  }
   
-  // Delete existing palpites for this cota (in case of edit)
+  // Delete existing palpites for this cota
   await sb.from('palpites').delete().eq('inscricao_id',userInscricao.id).eq('cota_numero',cotaNum);
   
-  // Insert new palpites
+  // Insert new
   const{error}=await sb.from('palpites').insert(palpites);
   if(error){toast('Erro ao salvar: '+error.message,'e');return;}
   
-  toast(`Palpites da Cota ${cotaNum} salvos com sucesso!`,'s');
+  toast(`Palpites da Cota ${cotaNum} salvos com sucesso! 🎉`,'s');
   loadPalpites();
 }
 
-function editPalpites(cotaNum){
-  // Enable selects for this cota
-  const groups=getGroups();
-  Object.keys(groups).forEach(letter=>{
-    const s1=document.getElementById(`g${letter}-1-c${cotaNum}`);
-    const s2=document.getElementById(`g${letter}-2-c${cotaNum}`);
-    if(s1)s1.disabled=false;
-    if(s2)s2.disabled=false;
+function editPalpitesPlacar(cotaNum){
+  // Enable all inputs for this cota
+  document.querySelectorAll(`[id^="j"][id$="-c${cotaNum}-casa"],[id^="j"][id$="-c${cotaNum}-fora"]`).forEach(el=>{
+    el.disabled=false;
   });
-  // Show save button
-  const container=document.getElementById(`groups-cota-${cotaNum}`).parentElement;
-  const btns=container.querySelectorAll('button');
-  btns.forEach(b=>{
-    if(b.textContent.includes('Editar')){
-      b.textContent=`Salvar Palpites da Cota ${cotaNum}`;
-      b.className='btn btn-p';
-      b.onclick=()=>savePalpites(cotaNum);
-    }
-  });
+  // Change button
+  event.target.textContent=`Salvar Palpites da Cota ${cotaNum}`;
+  event.target.className='btn btn-p';
+  event.target.onclick=()=>savePalpitesPlacar(cotaNum);
 }
 
 // ===== ADMIN =====
