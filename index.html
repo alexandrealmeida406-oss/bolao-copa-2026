@@ -6,8 +6,10 @@
 <title>Bolão do Almeida - Copa do Mundo 2026</title>
 <meta name="description" content="Bolão do Almeida - Copa do Mundo 2026. Faça sua inscrição e concorra a prêmios!">
 <link rel="canonical" href="https://bolaocopa.com">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <style>
 :root{--primary:#8B1538;--primary-dark:#5C0E25;--secondary:#1A3A5C;--accent-gold:#D4A843;--accent-teal:#00B4D8;--bg-dark:#0A0E17;--bg-card:#111827;--bg-card-hover:#1A2235;--text-primary:#F1F5F9;--text-secondary:#94A3B8;--text-muted:#64748B;--border:#1E293B;--success:#22C55E;--warning:#F59E0B;--error:#EF4444;--gradient-copa:linear-gradient(135deg,#8B1538 0%,#1A3A5C 50%,#00B4D8 100%);--gradient-gold:linear-gradient(135deg,#D4A843,#F0D78C,#D4A843)}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -145,7 +147,7 @@ body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-
 .pixs{text-align:center;background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;padding:1.3rem;margin-bottom:1.2rem}
 .pixt{font-family:'Oswald',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.8rem;color:var(--accent-teal)}
 .qrc{display:inline-block;background:white;padding:10px;border-radius:8px;margin-bottom:.8rem}
-.qrc canvas{display:block}
+.qrc img{display:block;border-radius:4px}
 .pkd{background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.15);border-radius:6px;padding:.6rem;margin:.6rem 0;display:flex;align-items:center;justify-content:center;gap:.4rem}
 .pkd code{font-family:'Barlow',monospace;font-size:1rem;color:var(--accent-teal);letter-spacing:1px}
 .pkd button{background:var(--accent-teal);color:white;border:none;padding:.25rem .5rem;border-radius:4px;font-size:.65rem;cursor:pointer;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:1px}
@@ -575,7 +577,7 @@ function renderInscricaoForm(){
       
       <div class="pixs">
         <div class="pixt">Pague via PIX</div>
-        <div class="qrc"><canvas id="qrc" width="180" height="180"></canvas></div>
+        <div class="qrc"></div>
         <div class="pkd"><code>33567108859</code><button onclick="cpk()">Copiar</button></div>
         <p class="pixn">Chave PIX: CPF · Envie o comprovante no grupo do WhatsApp</p>
       </div>
@@ -922,13 +924,46 @@ function renderFlags(){
 function uc(){const n=new Date(),d=CS-n;if(d>0){const dd=Math.floor(d/864e5),hh=Math.floor(d%864e5/36e5),mm=Math.floor(d%36e5/6e4),ss=Math.floor(d%6e4/1e3);document.getElementById('cdc').textContent=`${dd}d ${hh}h ${mm}m ${ss}s`}else document.getElementById('cdc').textContent='Já começou!'}
 
 // ===== QR CODE =====
-function gqr(){const cv=document.getElementById('qrc');if(!cv)return;const cx=cv.getContext('2d'),sz=180;cv.width=sz;cv.height=sz;cx.fillStyle='#FFF';cx.fillRect(0,0,sz,sz);
-const pl=`00020126580014br.gov.bcb.pix0114${PK}`,cs2=6,md=Math.floor(sz/cs2);cx.fillStyle='#000';
-function df(x,y){for(let i=0;i<7;i++)for(let j=0;j<7;j++)if(i===0||i===6||j===0||j===6||(i>=2&&i<=4&&j>=2&&j<=4))cx.fillRect((x+j)*cs2,(y+i)*cs2,cs2,cs2)}
-df(1,1);df(md-9,1);df(1,md-9);
-let h=0;for(let i=0;i<pl.length;i++)h=((h<<5)-h+pl.charCodeAt(i))|0;
-for(let y=0;y<md;y++)for(let x=0;x<md;x++){if((x<9&&y<9)||(x>md-10&&y<9)||(x<9&&y>md-10))continue;if(((x*31+y*37+h)&0xFFFF)%3!==0)cx.fillRect(x*cs2,y*cs2,cs2,cs2)}
-const mi=Math.floor(md/2);for(let i=-2;i<=2;i++)for(let j=-2;j<=2;j++)if(Math.abs(i)===2||Math.abs(j)===2||(i===0&&j===0))cx.fillRect((mi+j)*cs2,(mi+i)*cs2,cs2,cs2)}
+function gqr(){
+  const container=document.querySelector('.qrc');
+  if(!container)return;
+  // Generate real PIX payload
+  function pixPayload(key){
+    const gui='br.gov.bcb.pix';
+    const merchant='BOLAO DO ALMEIDA';
+    const city='SAO PAULO';
+    function tlv(id,val){return id+String(val.length).padStart(2,'0')+val}
+    let payload='';
+    payload+=tlv('00','01'); // format
+    payload+=tlv('26',tlv('00',gui)+tlv('01',key)); // merchant account
+    payload+=tlv('52','0000'); // merchant category
+    payload+=tlv('53','986'); // currency BRL
+    payload+=tlv('58','BR'); // country
+    payload+=tlv('59',merchant);
+    payload+=tlv('60',city);
+    payload+=tlv('62',tlv('05','***')); // additional data
+    payload+='6304'; // CRC placeholder
+    // Calculate CRC16
+    let crc=0xFFFF;
+    for(let i=0;i<payload.length;i++){
+      crc^=payload.charCodeAt(i)<<8;
+      for(let j=0;j<8;j++)crc=crc&0x8000?(crc<<1)^0x1021:crc<<1;
+      crc&=0xFFFF;
+    }
+    return payload+crc.toString(16).toUpperCase().padStart(4,'0');
+  }
+  const pix=pixPayload(PK);
+  try{
+    const qr=qrcode(0,'M');
+    qr.addData(pix);
+    qr.make();
+    container.innerHTML=qr.createImgTag(4,8);
+    container.querySelector('img').style.borderRadius='4px';
+  }catch(e){
+    // Fallback: show text
+    container.innerHTML='<div style="padding:1rem;font-size:.8rem;color:var(--text-muted)">Use a chave PIX abaixo</div>';
+  }
+}
 
 function cpk(){navigator.clipboard.writeText(PK).then(()=>toast('Chave PIX copiada!','s')).catch(()=>toast('Chave: '+PK,'s'))}
 
