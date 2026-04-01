@@ -419,7 +419,7 @@ body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-
 <div class="rg">
 <div class="rc"><div class="rn">01</div><div class="ri">🔐</div><h3>Login com Google</h3><p>Faça login com sua conta Google para se inscrever. Rápido, seguro e sem precisar criar senha!</p></div>
 <div class="rc"><div class="rn">02</div><div class="ri">📋</div><h3>Inscrição + PIX</h3><p>Escolha 1, 2 ou 3 cotas e pague via PIX. O admin confirma seu pagamento e libera o acesso.</p></div>
-<div class="rc"><div class="rn">03</div><div class="ri">🎯</div><h3>Palpites</h3><p>Informe o placar de todos os 36 jogos da fase de grupos. Após o grupo, nova rodada para o mata-mata!</p></div>
+<div class="rc"><div class="rn">03</div><div class="ri">🎯</div><h3>Palpites — 2 Fases</h3><p><strong>1ª Rodada (já liberada!):</strong> 36 jogos da fase de grupos — prazo até 10/06 às 19h.<br><strong>2ª Rodada:</strong> jogos do mata-mata, liberada pelo admin após os classificados da fase de grupos serem definidos.</p></div>
 <div class="rc"><div class="rn">04</div><div class="ri">⭐</div><h3>Pontuação</h3><p><strong>Fase de Grupos:</strong> Placar exato = <strong>3 pts</strong>. Acertou gols de 1 equipe = <strong>1 pt</strong>.<br><strong>Eliminatórias:</strong> Placar exato = <strong>4 pts</strong>. Acertou gols de 1 equipe = <strong>1 pt</strong>.</p></div>
 <div class="rc"><div class="rn">05</div><div class="ri">📊</div><h3>Ranking</h3><p>Cada cota concorre de forma independente. Acompanhe sua posição em tempo real durante toda a Copa!</p></div>
 <div class="rc"><div class="rn">06</div><div class="ri">🏆</div><h3>Premiação</h3><p>1º: <strong>60%</strong> · 2º: <strong>30%</strong> · 3º: <strong>10%</strong> do total arrecadado. O prêmio aumenta com cada nova inscrição!</p></div>
@@ -435,49 +435,96 @@ body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-
 <div style="margin-top:2.5rem" id="manual">
 <div class="sh" style="margin-bottom:1.2rem"><div class="stag">Leia com atenção</div><h3 class="stitle" style="font-size:1.8rem">Manual do Bolão</h3></div>
 
+<!-- COMO FUNCIONA OS PALPITES -->
+<div class="manual-box" style="border-color:rgba(0,180,216,.25);background:linear-gradient(135deg,rgba(0,180,216,.05),var(--bg-card))">
+<h4 style="color:var(--accent-teal)">🎯 Como Funciona — As Duas Rodadas de Palpites</h4>
+<p style="margin-bottom:1rem">O Bolão do Almeida tem <strong style="color:var(--text-primary)">duas rodadas de palpites</strong>, uma para cada fase da Copa. Você precisa preencher as duas para maximizar seus pontos!</p>
+
+<!-- Fase 1 -->
+<div style="background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:1rem;margin-bottom:.8rem">
+  <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">
+    <span style="background:var(--success);color:white;font-family:'Oswald',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:1px;padding:.2rem .6rem;border-radius:50px;text-transform:uppercase">✅ Liberada agora</span>
+    <strong style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">1ª Rodada — Fase de Grupos</strong>
+  </div>
+  <ul style="margin-left:1rem">
+    <li style="margin-bottom:.3rem">Você palpita o placar de todos os <strong>36 jogos</strong> da fase de grupos (12 grupos × 3 jogos)</li>
+    <li style="margin-bottom:.3rem">Todos os placares devem ser preenchidos de uma vez — não é possível salvar parcialmente</li>
+    <li style="margin-bottom:.3rem">Você pode editar seus palpites quantas vezes quiser até o prazo final</li>
+    <li style="margin-bottom:.3rem"><strong style="color:var(--error)">Prazo final: 10/06/2026 às 19h00</strong> (véspera do início da Copa) — após esse horário os palpites são bloqueados definitivamente</li>
+    <li>Pontuação: placar exato = <strong>3 pts</strong> · acertou gols de 1 equipe = <strong>1 pt</strong> · errou = 0 pts</li>
+  </ul>
+</div>
+
+<!-- Fase 2 -->
+<div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:1rem">
+  <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">
+    <span style="background:var(--warning);color:var(--bg-dark);font-family:'Oswald',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:1px;padding:.2rem .6rem;border-radius:50px;text-transform:uppercase">🔒 Em breve</span>
+    <strong style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">2ª Rodada — Fase Eliminatória</strong>
+  </div>
+  <ul style="margin-left:1rem">
+    <li style="margin-bottom:.3rem">Após o encerramento da fase de grupos, o admin liberará uma <strong>nova rodada de palpites</strong> para o mata-mata</li>
+    <li style="margin-bottom:.3rem">Você palpita os jogos do <strong>mata-mata</strong>: 16-avos, oitavas, quartas, semifinais, disputa de 3º lugar e final</li>
+    <li style="margin-bottom:.3rem">Os confrontos só serão conhecidos depois que todos os classificados da fase de grupos forem definidos — por isso a liberação é separada</li>
+    <li style="margin-bottom:.3rem">Você receberá um aviso no grupo do WhatsApp quando a 2ª rodada for liberada</li>
+    <li>Pontuação maior: placar exato = <strong>4 pts</strong> · acertou gols de 1 equipe = <strong>1 pt</strong> · errou = 0 pts</li>
+  </ul>
+</div>
+
+<div style="margin-top:.8rem;padding:.7rem .9rem;background:rgba(212,168,67,.08);border-left:3px solid var(--accent-gold);border-radius:0 6px 6px 0;font-size:.82rem;color:var(--text-secondary)">
+  💡 <strong style="color:var(--accent-gold)">Dica:</strong> Não deixe para a última hora! Preencha seus palpites da Fase de Grupos o quanto antes para não perder o prazo de 10/06 às 19h. Fique ligado no WhatsApp para não perder o aviso da 2ª rodada!
+</div>
+</div>
+
+<!-- DATAS -->
 <div class="manual-box">
 <h4>📅 Datas Importantes</h4>
 <ul>
   <li><strong>Inscrições:</strong> Abertas — encerram em 10/06/2026 às 19h</li>
-  <li><strong>Prazo para palpitar (fase de grupos):</strong> <strong style="color:var(--error)">10/06/2026 às 19h00</strong> — bloqueado definitivamente após esse horário</li>
-  <li><strong>Início da Copa:</strong> 11/06/2026 — jogo de abertura no México</li>
-  <li><strong>Palpites das eliminatórias:</strong> Liberados após o encerramento da fase de grupos</li>
+  <li><strong>1ª Rodada de palpites (Fase de Grupos):</strong> <strong style="color:var(--success)">Liberada agora!</strong> Preencha os 36 jogos</li>
+  <li><strong>Prazo da 1ª Rodada:</strong> <strong style="color:var(--error)">10/06/2026 às 19h00</strong> — bloqueado definitivamente após esse horário</li>
+  <li><strong>Início da Copa:</strong> 11/06/2026 — México × África do Sul no Estádio Azteca</li>
+  <li><strong>Encerramento da Fase de Grupos:</strong> aproximadamente 26/06/2026</li>
+  <li><strong>2ª Rodada de palpites (Eliminatórias):</strong> Liberada pelo admin após os classificados estarem definidos — aviso no WhatsApp</li>
+  <li><strong>Final da Copa:</strong> 19/07/2026</li>
 </ul>
 </div>
 
+<!-- PAGAMENTO -->
 <div class="manual-box">
 <h4>💰 Pagamento &amp; Inscrição</h4>
 <p>Pague via <strong>PIX</strong> para a chave <code style="color:var(--accent-teal);font-family:monospace">33567108859</code> (CPF). Após pagar:</p>
 <ol>
-  <li>Envie o comprovante no grupo do WhatsApp</li>
+  <li>Envie o comprovante no grupo do WhatsApp — <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success);font-weight:600;text-decoration:none">📱 clique aqui para entrar no grupo</a></li>
   <li>O admin aprova sua inscrição</li>
   <li>Após aprovação, seus palpites são liberados automaticamente</li>
 </ol>
-<p style="margin-top:.5rem">Você pode adquirir <strong>até 3 cotas</strong>. Cada cota concorre de forma independente — mais cotas, mais chances!</p>
+<p style="margin-top:.5rem">Você pode adquirir <strong>até 3 cotas</strong>. Cada cota concorre de forma independente no ranking — mais cotas, mais chances de ganhar!</p>
 </div>
 
+<!-- PONTUAÇÃO -->
 <div class="manual-box">
 <h4>🎯 Tabela de Pontuação</h4>
 <table class="pts-tbl">
-<thead><tr><th>Situação</th><th>Grupos</th><th>Eliminatórias</th></tr></thead>
+<thead><tr><th>Situação</th><th>Fase de Grupos</th><th>Eliminatórias</th></tr></thead>
 <tbody>
-<tr><td>🎯 Acertou o placar exato (ex: Real 2×1 → Você disse 2×1)</td><td><span class="pb pb-g">3 pts</span></td><td><span class="pb pb-g">4 pts</span></td></tr>
-<tr><td>⚽ Acertou os gols de <em>uma</em> equipe (ex: Real 2×1 → Você disse 2×0)</td><td><span class="pb pb-w">1 pt</span></td><td><span class="pb pb-w">1 pt</span></td></tr>
+<tr><td>🎯 Acertou o placar exato (ex: 2×1 → você disse 2×1)</td><td><span class="pb pb-g">3 pts</span></td><td><span class="pb pb-g">4 pts</span></td></tr>
+<tr><td>⚽ Acertou os gols de <em>uma</em> equipe (ex: 2×1 → você disse 2×0)</td><td><span class="pb pb-w">1 pt</span></td><td><span class="pb pb-w">1 pt</span></td></tr>
 <tr><td>❌ Errou os gols das duas equipes</td><td><span class="pb pb-e">0 pts</span></td><td><span class="pb pb-e">0 pts</span></td></tr>
 </tbody>
 </table>
-<p style="margin-top:.7rem;font-size:.78rem;color:var(--text-muted)">⚠️ Nas eliminatórias, considera-se o placar do <strong>tempo regulamentar + prorrogação</strong>. Pênaltis não contam.</p>
+<p style="margin-top:.7rem;font-size:.78rem;color:var(--text-muted)">⚠️ Nas eliminatórias, o placar considerado é o do <strong>tempo regulamentar + prorrogação</strong>. Disputa de pênaltis não conta para pontuação.</p>
 </div>
 
+<!-- PREMIAÇÃO -->
 <div class="manual-box">
 <h4>🏆 Premiação</h4>
-<p>O prêmio é formado pelas <strong>cotas de participação</strong> (taxas de serviço não entram). Distribuição:</p>
+<p>O prêmio total é formado pelas <strong>cotas de participação</strong> (as taxas de serviço não entram no prêmio). Distribuição:</p>
 <ul style="margin-top:.5rem">
   <li>🥇 <strong>1º Lugar:</strong> 60% do total arrecadado</li>
   <li>🥈 <strong>2º Lugar:</strong> 30% do total arrecadado</li>
   <li>🥉 <strong>3º Lugar:</strong> 10% do total arrecadado</li>
 </ul>
-<p style="margin-top:.5rem">Em caso de empate no ranking, o critério de desempate será comunicado no WhatsApp.</p>
+<p style="margin-top:.5rem">O prêmio atualiza automaticamente com cada nova inscrição aprovada. Em caso de empate no ranking, o critério de desempate será comunicado no grupo do WhatsApp.</p>
 </div>
 </div>
 
@@ -960,6 +1007,53 @@ async function loadPalpites(){
   // Pontuação info
   const ptsExato=faseAtiva==='grupos'?3:4;
   
+  // ---- Banner de compra de cotas (topo da página de palpites) ----
+  const cotasAtuais = userInscricao.cotas;
+  let cotasBanner = '';
+  if(cotasAtuais < 3){
+    const optsP = [];
+    for(let n=cotasAtuais+1;n<=3;n++){
+      const add = PR[n].v - PR[cotasAtuais].v;
+      optsP.push(`<div class="co" onclick="selCotasPalp(${n})" id="pnc${n}" style="cursor:pointer">
+        <div class="cn">${n}</div>
+        <div class="cl">Cotas total</div>
+        <div class="cp">+R$ ${add}</div>
+        <div class="cd">Total: R$ ${PR[n].v}</div>
+      </div>`);
+    }
+    cotasBanner = `
+    <div style="background:linear-gradient(135deg,rgba(0,180,216,.07),rgba(212,168,67,.05));border:1px solid rgba(0,180,216,.2);border-radius:10px;padding:1.2rem 1.4rem;margin-bottom:1.2rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem;margin-bottom:.8rem">
+        <div>
+          <div style="font-family:'Oswald',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-teal)">➕ Quer mais chances?</div>
+          <div style="font-size:.8rem;color:var(--text-muted);margin-top:.15rem">Você tem <strong style="color:var(--text-primary)">${cotasAtuais} cota${cotasAtuais>1?'s':''}</strong>. Compre mais e aumente suas chances de ganhar!</div>
+        </div>
+        <button onclick="toggleCotasPalp()" id="btn-toggle-cotas-palp" class="btn btn-s btn-sm" style="white-space:nowrap">Ver opções ▾</button>
+      </div>
+      <div id="cotas-palp-detail" style="display:none">
+        <div class="cs" style="grid-template-columns:repeat(${3-cotasAtuais},1fr);margin-bottom:.8rem">${optsP.join('')}</div>
+        <div id="palp-extra-det" style="display:none">
+          <div class="pixs" style="margin-bottom:.8rem">
+            <div class="pixt">Pague a diferença via PIX</div>
+            <div class="qrc" id="palp-qrc-extra" style="margin:.4rem auto"></div>
+            <div class="pkd"><code>33567108859</code><button onclick="cpk()">Copiar</button></div>
+            <p class="pixn" id="palp-extra-inf"></p>
+          </div>
+          <div style="text-align:center">
+            <button class="btn btn-p" onclick="confirmarCotasPalp()">✓ Já fiz o PIX — Solicitar!</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  } else {
+    cotasBanner = `
+    <div style="background:linear-gradient(135deg,rgba(34,197,94,.07),rgba(212,168,67,.05));border:1px solid rgba(34,197,94,.2);border-radius:10px;padding:.9rem 1.2rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:.8rem">
+      <span style="font-size:1.4rem">🏆</span>
+      <div><div style="font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--success)">Máximo de cotas atingido!</div>
+      <div style="font-size:.78rem;color:var(--text-muted)">Você tem <strong>3 cotas</strong> — o máximo permitido. Boa sorte!</div></div>
+    </div>`;
+  }
+
   // Deadline countdown banner
   const agora=new Date(), tempoRestante=DEADLINE-agora;
   const deadlineBanner=(!bloqueado&&faseAtiva==='grupos'&&tempoRestante>0)?
@@ -970,7 +1064,7 @@ async function loadPalpites(){
     </div>`:
     bloqueado?`<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:.9rem;text-align:center;margin-bottom:1rem;color:var(--error);font-family:'Oswald',sans-serif;letter-spacing:1px;font-size:.9rem">🔒 PRAZO ENCERRADO — Palpites bloqueados em 10/06/2026 às 19h</div>`:'';
 
-  let html=`${deadlineBanner}
+  let html=`${cotasBanner}${deadlineBanner}
     <div class="user-status" style="margin-bottom:1rem">
       <div class="us-info"><div><div class="us-name">${userProfile?.nome||'Participante'}</div><div class="us-email">${userInscricao.cotas} cota${userInscricao.cotas>1?'s':''} · Fase: ${faseAtiva==='grupos'?'Fase de Grupos':'Eliminatórias'}</div></div></div>
       <span class="us-badge badge-approved">✅ Ativo</span>
@@ -1073,20 +1167,45 @@ async function loadPalpites(){
 async function savePalpitesPlacar(cotaNum){
   if(!currentUser||!userInscricao)return;
   if(new Date()>=DEADLINE){toast('⏰ Prazo encerrado! Palpites bloqueados desde 10/06 às 19h.','e');return;}
+
   const{data:jogos}=await sb.from('jogos').select('id').eq('fase','grupos').order('id');
-  if(!jogos)return;
-  
+  if(!jogos||jogos.length===0)return;
+
   const palpites=[];
-  let allFilled=true;
-  
+  const vazios=[];
+  let primeiroVazio=null;
+
+  // Limpar destaques anteriores
+  document.querySelectorAll(`[id$="-c${cotaNum}-casa"],[id$="-c${cotaNum}-fora"]`).forEach(el=>{
+    el.style.borderColor='';
+    el.style.boxShadow='';
+  });
+
   for(const jogo of jogos){
     const casaEl=document.getElementById(`j${jogo.id}-c${cotaNum}-casa`);
     const foraEl=document.getElementById(`j${jogo.id}-c${cotaNum}-fora`);
-    const casa=casaEl?.value;
-    const fora=foraEl?.value;
-    
-    if(casa===''||casa===null||fora===''||fora===null){allFilled=false;continue;}
-    
+    const casa=casaEl?.value?.trim();
+    const fora=foraEl?.value?.trim();
+
+    const casaVazia=!casaEl||casa===''||casa===null||casa===undefined;
+    const foraVazia=!foraEl||fora===''||fora===null||fora===undefined;
+
+    if(casaVazia||foraVazia){
+      // Destacar em vermelho os inputs vazios
+      if(casaVazia&&casaEl){
+        casaEl.style.borderColor='var(--error)';
+        casaEl.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';
+        if(!primeiroVazio)primeiroVazio=casaEl;
+      }
+      if(foraVazia&&foraEl){
+        foraEl.style.borderColor='var(--error)';
+        foraEl.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';
+        if(!primeiroVazio)primeiroVazio=foraEl;
+      }
+      vazios.push(jogo.id);
+      continue;
+    }
+
     palpites.push({
       user_id:currentUser.id,
       inscricao_id:userInscricao.id,
@@ -1096,33 +1215,55 @@ async function savePalpitesPlacar(cotaNum){
       gols_fora:parseInt(fora)
     });
   }
-  
-  if(palpites.length<jogos.length){
-    toast(`Preencha todos os ${jogos.length} jogos! Faltam ${jogos.length-palpites.length}.`,'e');
+
+  if(vazios.length>0){
+    // Rolar até o primeiro campo vazio
+    if(primeiroVazio){
+      primeiroVazio.scrollIntoView({behavior:'smooth',block:'center'});
+      setTimeout(()=>primeiroVazio.focus(),400);
+    }
+    toast(
+      `⚠️ Preencha todos os ${jogos.length} jogos! Faltam ${vazios.length} placar${vazios.length>1?'es':''}.`,
+      'e'
+    );
     return;
   }
-  
-  // Delete existing palpites for this cota
+
+  // Tudo preenchido — salvar
+  const btn=document.querySelector(`button[onclick="savePalpitesPlacar(${cotaNum})"]`);
+  if(btn){btn.textContent='Salvando...';btn.disabled=true;}
+
   await sb.from('palpites').delete().eq('inscricao_id',userInscricao.id).eq('cota_numero',cotaNum);
-  
-  // Insert new
   const{error}=await sb.from('palpites').insert(palpites);
-  if(error){toast('Erro ao salvar: '+error.message,'e');return;}
-  
-  toast(`Palpites da Cota ${cotaNum} salvos com sucesso! 🎉`,'s');
+
+  if(error){
+    toast('Erro ao salvar: '+error.message,'e');
+    if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.disabled=false;}
+    return;
+  }
+
+  toast(`✅ Palpites da Cota ${cotaNum} salvos com sucesso! (${palpites.length} jogos) 🎉`,'s');
   loadPalpites();
 }
 
 function editPalpitesPlacar(cotaNum){
   if(new Date()>=DEADLINE){toast('⏰ Prazo encerrado! Não é possível editar.','e');return;}
-  // Enable all inputs for this cota
+  // Enable all inputs for this cota and clear error highlights
   document.querySelectorAll(`[id^="j"][id$="-c${cotaNum}-casa"],[id^="j"][id$="-c${cotaNum}-fora"]`).forEach(el=>{
     el.disabled=false;
+    el.style.borderColor='';
+    el.style.boxShadow='';
+    // Clear error highlight on input
+    el.addEventListener('input',()=>{
+      el.style.borderColor='';
+      el.style.boxShadow='';
+    },{once:true});
   });
-  // Change button
-  event.target.textContent=`Salvar Palpites da Cota ${cotaNum}`;
-  event.target.className='btn btn-p';
-  event.target.onclick=()=>savePalpitesPlacar(cotaNum);
+  // Change button to save
+  const btn=event.target;
+  btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;
+  btn.className='btn btn-p';
+  btn.setAttribute('onclick',`savePalpitesPlacar(${cotaNum})`);
 }
 
 // ===== ADMIN =====
@@ -1160,20 +1301,21 @@ async function loadAdmin(){
       <h3 style="font-family:'Oswald',sans-serif;margin-bottom:.8rem;font-size:1rem;text-transform:uppercase;letter-spacing:1px">Inscrições</h3>
       <div id="admin-cotas-pend-section"></div>
       <div style="overflow-x:auto">
-        <table class="atbl"><thead><tr><th>Nome</th><th>Email</th><th>WhatsApp</th><th>Cotas</th><th>Valor</th><th>Conheceu</th><th>Indicação</th><th>Status</th><th>Ações</th></tr></thead>
+      <table class="atbl"><thead><tr><th>Nome</th><th>E-mail</th><th>WhatsApp</th><th>Cotas</th><th>Valor</th><th>Conheceu</th><th>Indicação</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody>${inscs.map(i=>{
           const p=profMap[i.user_id]||{};
           const isPending=i.status==='pendente';
+          const emailUser=p.email_reset||'';
           return`<tr>
             <td>${p.nome||'-'}${p.apelido?' ('+p.apelido+')':''}</td>
-            <td style="font-size:.7rem">${p.nome?'':i.user_id?.substring(0,8)+'...'}</td>
+            <td style="font-size:.7rem">${emailUser||i.user_id?.substring(0,10)+'...'}</td>
             <td>${p.whatsapp||'-'}</td>
             <td>${i.cotas}</td>
             <td>R$ ${i.valor_total}</td>
             <td>${p.como_conheceu||'-'}</td>
             <td>${p.indicado_por||'-'}</td>
             <td class="${isPending?'stp':'sta'}">${isPending?'⏳ Pendente':'✅ Aprovado'}</td>
-            <td>${isPending?`<button class="ba" onclick="adminApprove(${i.id})">Aprovar</button><button class="br2" onclick="adminReject(${i.id})">Rejeitar</button>`:'—'}</td>
+            <td>${isPending?`<button class="ba" onclick="adminApprove(${i.id})">Aprovar</button><button class="br2" onclick="adminReject(${i.id})">Rejeitar</button>`:emailUser?`<button style="background:var(--accent-teal);color:white;padding:.2rem .45rem;border:none;border-radius:4px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.6rem;text-transform:uppercase" onclick="preencherReset('${emailUser}')">🔑 Reset</button>`:'—'}</td>
           </tr>`;}).join('')}</tbody></table>
       </div>`;
     // Load compra_cotas pendentes
@@ -1187,6 +1329,33 @@ async function loadAdmin(){
       const section=document.getElementById('admin-cotas-pend-section');
       if(section)section.innerHTML=`<div style="margin-bottom:1.5rem"><h4 style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--warning);text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem">⏳ Solicitações de Mais Cotas (${cotasPend.length})</h4><div style="overflow-x:auto"><table class="atbl"><thead><tr><th>Nome</th><th>De</th><th>Para</th><th>+Valor</th><th>Ações</th></tr></thead><tbody>${cpHtml}</tbody></table></div></div>`;
     }
+
+    // Seção de reset de senha — Admin
+    const resetSection = document.createElement('div');
+    resetSection.style.marginTop = '2rem';
+    resetSection.innerHTML = `
+      <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem;color:var(--accent-teal)">🔑 Reset de Senha — Usuários</h3>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1.2rem">
+        <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:1rem">Informe o e-mail do usuário e a nova senha temporária. Avise o usuário pelo WhatsApp para fazer login com a nova senha.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:.6rem;align-items:end">
+          <div class="fg" style="margin:0">
+            <label>E-mail do usuário</label>
+            <input type="email" id="reset-email-user" placeholder="email@exemplo.com">
+          </div>
+          <div class="fg" style="margin:0">
+            <label>Nova senha temporária</label>
+            <div style="position:relative">
+              <input type="text" id="reset-nova-senha" placeholder="mín. 8 caracteres" style="padding-right:2.5rem">
+              <button onclick="gerarSenhaAleat()" title="Gerar senha aleatória" style="position:absolute;right:.4rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--accent-teal);font-size:.9rem">🎲</button>
+            </div>
+          </div>
+          <button class="btn btn-p btn-sm" onclick="adminResetSenha()" style="height:40px">🔑 Resetar</button>
+        </div>
+        <p style="font-size:.7rem;color:var(--text-muted);margin-top:.6rem">⚠️ Após o reset, avise o usuário pelo WhatsApp para entrar com a nova senha e trocá-la em seguida.</p>
+        <div id="reset-resultado" style="display:none;margin-top:.8rem;padding:.7rem;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:6px;font-size:.8rem;color:var(--success)"></div>
+      </div>`;
+    el.appendChild(resetSection);
+
   }catch(e){el.innerHTML='<p>Erro: '+e.message+'</p>';}
 }
 
@@ -1200,6 +1369,73 @@ async function adminReject(id){
   await sb.from('inscricoes').update({status:'rejeitado'}).eq('id',id);
   toast('Inscrição rejeitada.','e');
   loadAdmin();loadStats();
+}
+
+function preencherReset(email){
+  // Preenche o campo de reset e rola até ele
+  const el=document.getElementById('reset-email-user');
+  if(el){el.value=email;el.scrollIntoView({behavior:'smooth',block:'center'});el.focus();}
+  toast('E-mail preenchido — informe a nova senha e clique em Resetar','s');
+}
+
+function gerarSenhaAleat(){
+  const chars='abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789@#!';
+  let senha='';
+  for(let i=0;i<10;i++)senha+=chars[Math.floor(Math.random()*chars.length)];
+  const el=document.getElementById('reset-nova-senha');
+  if(el){el.value=senha;el.type='text';}
+  toast('Senha gerada: '+senha+' — Copie antes de resetar!','s');
+}
+
+function preencherReset(email){
+  // Chamado pelo botão 🔑 na tabela de inscrições
+  const el=document.getElementById('reset-email-user');
+  if(el){
+    el.value=email;
+    el.scrollIntoView({behavior:'smooth',block:'center'});
+    el.focus();
+    toast('E-mail preenchido. Defina uma nova senha e clique em Resetar.','s');
+  }
+}
+
+async function adminResetSenha(){
+  const email=document.getElementById('reset-email-user')?.value.trim();
+  const novaSenha=document.getElementById('reset-nova-senha')?.value.trim();
+  if(!email){toast('Informe o e-mail do usuário!','e');return;}
+  if(!novaSenha||novaSenha.length<8){toast('A senha deve ter no mínimo 8 caracteres!','e');return;}
+
+  const btn=event?.target;
+  if(btn){btn.textContent='Resetando...';btn.disabled=true;}
+
+  try{
+    // Usar a Admin API do Supabase via fetch com service role
+    // Como só temos anon key, a alternativa mais simples é via RPC ou registrar no banco
+    // Tentativa 1: registrar no banco para o admin ver e fazer manualmente
+    await sb.from('reset_senha_admin').upsert({
+      email_usuario:email,
+      nova_senha:novaSenha,
+      solicitado_em:new Date().toISOString(),
+      admin_id:currentUser.id,
+      status:'pendente'
+    },{onConflict:'email_usuario'});
+
+    // Mostrar resultado com instrução clara para o admin
+    const res=document.getElementById('reset-resultado');
+    if(res){
+      res.style.display='block';
+      res.innerHTML=`✅ Solicitação registrada para <strong>${email}</strong>.<br>
+        Para aplicar agora: acesse <a href="https://supabase.com/dashboard/project/vuomkohlwomdeyobddhw/auth/users" target="_blank" style="color:var(--success)">Supabase → Authentication → Users</a>, 
+        busque o e-mail, clique nos 3 pontinhos → <strong>Send password recovery</strong> ou edite a senha diretamente.<br><br>
+        <strong>Nova senha temporária:</strong> <code style="color:var(--accent-teal);font-family:monospace;font-size:.9rem">${novaSenha}</code>`;
+    }
+    toast(`✅ Registrado! Acesse o Supabase para aplicar a nova senha de ${email}.`,'s');
+    document.getElementById('reset-email-user').value='';
+    document.getElementById('reset-nova-senha').value='';
+  }catch(e){
+    toast(`Acesse: Supabase → Auth → Users → "${email}" → Reset password.`,'s');
+  }finally{
+    if(btn){btn.textContent='🔑 Resetar';btn.disabled=false;}
+  }
 }
 
 // ===== CONTA =====
@@ -1349,7 +1585,8 @@ function loginBoxHTML(){
         <div class="fg"><label>Senha</label><input type="password" id="em-senha" placeholder="Sua senha" onkeydown="if(event.key==='Enter')loginEmail()"></div>
         <button class="btn btn-p" style="width:100%;justify-content:center" onclick="loginEmail()">Entrar</button>
         <p style="text-align:center;margin-top:.8rem;font-size:.75rem;color:var(--text-muted)">
-          Esqueceu? <a onclick="solicitarReset()" style="color:var(--accent-teal);cursor:pointer">Redefinir senha</a>
+          Esqueceu a senha? Solicite ao <strong style="color:var(--text-primary)">Administrador Alexandre Almeida</strong> via
+          <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success);font-weight:600;text-decoration:none">📱 WhatsApp</a>
         </p>
       </div>
       <div id="ef-reg" style="display:none">
@@ -1416,26 +1653,33 @@ async function registrarEmail(){
     if(error){toast('Erro: '+error.message,'e');if(btn){btn.textContent='Criar Conta';btn.disabled=false;}return;}
     if(data?.user){
       await sb.from('profiles').upsert({id:data.user.id,nome,whatsapp:wpp});
-      if(data.session||data.user.email_confirmed_at){
-        currentUser=data.user;await loadUserData();updateUI();loadStats();
+      // Tenta logar direto (sem precisar confirmar email)
+      const{data:loginData,error:loginErr}=await sb.auth.signInWithPassword({email,password:senha});
+      if(!loginErr&&loginData?.user){
+        currentUser=loginData.user;await loadUserData();updateUI();loadStats();
         toast('Conta criada! Bem-vindo(a), '+nome.split(' ')[0]+'! 🎉','s');
       }else{
+        // Se não logou direto, informa para fazer login manualmente
         const rf=document.getElementById('ef-reg');
-        if(rf)rf.innerHTML=`<div style="text-align:center;padding:1.5rem;color:var(--text-secondary)"><p style="font-size:1.5rem;margin-bottom:.5rem">📧</p><p>Conta criada! Verifique o e-mail <strong style="color:var(--text-primary)">${email}</strong> para confirmar.<br><br>Após confirmar, faça login.</p></div>`;
-        toast('Conta criada! Confirme seu e-mail para entrar.','s');
+        if(rf)rf.innerHTML=`<div style="text-align:center;padding:1.5rem;color:var(--text-secondary)"><p style="font-size:1.5rem;margin-bottom:.5rem">✅</p><p>Conta criada com sucesso!<br><br>Clique em <strong style="color:var(--text-primary)">Entrar</strong> acima e faça login com o e-mail e senha que você criou.</p></div>`;
+        toast('Conta criada! Faça login para continuar.','s');
+        // Mudar para aba de login
+        setTimeout(()=>showEMTab('in'),1500);
       }
     }
   }catch(e){toast('Erro ao criar conta.','e');if(btn){btn.textContent='Criar Conta';btn.disabled=false;}}
 }
 
-async function solicitarReset(){
+function solicitarReset(){
+  // Reset por email desativado — usuário deve contatar o admin
   const email=document.getElementById('em-email')?.value.trim();
-  if(!email){toast('Digite seu e-mail primeiro!','e');return;}
-  try{
-    const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'?reset=1'});
-    if(!error){toast('E-mail de redefinição enviado! Verifique sua caixa de entrada.','s');}
-    else{toast('Não foi possível enviar. Entre em contato via WhatsApp.','s');}
-  }catch(e){toast('Entre em contato via WhatsApp para redefinir a senha.','s');}
+  const msg=email
+    ?`Para redefinir sua senha, entre em contato com o Administrador Alexandre Almeida via WhatsApp informando seu e-mail: ${email}`
+    :'Para redefinir sua senha, entre em contato com o Administrador Alexandre Almeida via WhatsApp.';
+  toast('📱 '+msg,'s');
+  setTimeout(()=>{
+    window.open('https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t','_blank');
+  },500);
 }
 
 // ===== COMPRA DE COTAS ADICIONAIS =====
@@ -1486,6 +1730,60 @@ async function confirmarCotas(){
   toast(ok?`Solicitação enviada! Admin irá aprovar para ${_novasCotas} cotas. 🎉`:`Envie no WhatsApp: "Quero ir para ${_novasCotas} cotas (+R$ ${add})" com o comprovante.`,'s');
   const det=document.getElementById('extra-det');if(det)det.style.display='none';
   _novasCotas=null;
+}
+
+// ===== COMPRA DE COTAS — PÁGINA DE PALPITES (IDs únicos) =====
+let _novasCotasPalp=null;
+
+function toggleCotasPalp(){
+  const det=document.getElementById('cotas-palp-detail');
+  const btn=document.getElementById('btn-toggle-cotas-palp');
+  if(!det)return;
+  const open=det.style.display==='block';
+  det.style.display=open?'none':'block';
+  if(btn)btn.textContent=open?'Ver opções ▾':'Fechar ▴';
+}
+
+function selCotasPalp(n){
+  _novasCotasPalp=n;
+  document.querySelectorAll('[id^="pnc"]').forEach(e=>e.classList.remove('sel'));
+  document.getElementById('pnc'+n)?.classList.add('sel');
+  const add=PR[n].v-PR[userInscricao?.cotas||1].v;
+  const det=document.getElementById('palp-extra-det');
+  const inf=document.getElementById('palp-extra-inf');
+  if(det)det.style.display='block';
+  if(inf)inf.textContent=`Pague R$ ${add},00 (de ${userInscricao?.cotas||1}→${n} cotas) · Envie comprovante no grupo do WhatsApp`;
+  setTimeout(()=>{
+    const c=document.getElementById('palp-qrc-extra');
+    if(!c)return;
+    try{const q=qrcode(0,'M');q.addData(PK);q.make();c.innerHTML=q.createImgTag(3,6);c.querySelector('img').style.borderRadius='4px';}catch(e){}
+  },80);
+}
+
+async function confirmarCotasPalp(){
+  if(!_novasCotasPalp||!currentUser||!userInscricao){toast('Selecione a quantidade de cotas!','e');return;}
+  const add=PR[_novasCotasPalp].v-PR[userInscricao.cotas].v;
+  let ok=false;
+  try{
+    const{error}=await sb.from('compra_cotas').insert({
+      user_id:currentUser.id,
+      inscricao_id:userInscricao.id,
+      cotas_atual:userInscricao.cotas,
+      cotas_nova:_novasCotasPalp,
+      valor_adicional:add,
+      status:'pendente'
+    });
+    ok=!error;
+  }catch(e){}
+  toast(
+    ok
+      ?`✅ Solicitação enviada! Admin irá aprovar para ${_novasCotasPalp} cotas. 🎉`
+      :`Envie no WhatsApp: "Quero ir para ${_novasCotasPalp} cotas (+R$ ${add})" + comprovante PIX.`,
+    's'
+  );
+  const det=document.getElementById('palp-extra-det');
+  if(det)det.style.display='none';
+  _novasCotasPalp=null;
 }
 
 // Admin: aprovar/rejeitar cotas extras
