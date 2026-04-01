@@ -259,6 +259,103 @@ body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-
   .match-row .team-away{flex:1}
   .match-row .score-block input{width:44px;height:40px;font-size:1.1rem}
 }
+
+/* MATCH ROW — layout grid responsivo (FIX DESKTOP+MOBILE) */
+.match-row{
+  display:grid;
+  grid-template-columns:1fr 50px 20px 50px 1fr;
+  align-items:center;
+  gap:.3rem;
+  padding:.55rem .8rem;
+  margin-bottom:.35rem;
+  background:var(--bg-dark);
+  border:1px solid var(--border);
+  border-radius:6px;
+  transition:border-color .2s;
+}
+.match-row.match-exact{border-color:var(--success);background:rgba(34,197,94,.05)}
+.match-row.match-partial{border-color:var(--warning);background:rgba(245,158,11,.05)}
+.match-row.match-wrong{border-color:var(--error);background:rgba(239,68,68,.05)}
+.match-row .team-home{
+  text-align:right;font-size:.82rem;display:flex;align-items:center;
+  justify-content:flex-end;gap:.3rem;min-width:0;
+}
+.match-row .team-away{
+  text-align:left;font-size:.82rem;display:flex;align-items:center;
+  gap:.3rem;min-width:0;
+}
+.match-row .team-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.match-row .score-inp{
+  width:50px;height:44px;text-align:center;padding:.3rem .2rem;
+  background:var(--bg-card);border:2px solid var(--border);border-radius:6px;
+  color:var(--text-primary);font-family:'Oswald',sans-serif;font-size:1.25rem;
+  -moz-appearance:textfield;appearance:textfield;transition:border-color .2s;
+}
+.match-row .score-inp:focus{border-color:var(--accent-teal);outline:none}
+.match-row .score-inp:disabled{opacity:.4;cursor:not-allowed}
+.match-row .score-sep{
+  text-align:center;color:var(--accent-gold);font-size:.9rem;
+  font-family:'Oswald',sans-serif;font-weight:700;
+}
+.match-row .match-meta{
+  grid-column:1/-1;display:flex;justify-content:center;align-items:center;
+  gap:.5rem;font-size:.62rem;color:var(--text-muted);flex-wrap:wrap;margin-top:.1rem;
+}
+@media(max-width:480px){
+  .match-row{grid-template-columns:1fr 42px 16px 42px 1fr;gap:.15rem;padding:.45rem .4rem}
+  .match-row .score-inp{width:42px;height:40px;font-size:1.05rem}
+  .match-row .team-home,.match-row .team-away{font-size:.72rem}
+  .match-row .team-home img,.match-row .team-away img{width:18px;height:12px}
+}
+
+/* DEADLINE BANNER */
+.deadline-banner{
+  background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(239,68,68,.06));
+  border:1px solid rgba(245,158,11,.25);border-radius:10px;
+  padding:.9rem 1.2rem;text-align:center;margin-bottom:1.2rem;
+  display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;
+}
+.deadline-banner .db-icon{font-size:1.3rem}
+.deadline-banner .db-text{font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--warning);text-transform:uppercase;letter-spacing:1px}
+.deadline-banner .db-count{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;color:var(--error)}
+.deadline-banner .db-sub{font-size:.7rem;color:var(--text-muted)}
+
+/* PRAZO COUNTDOWN NA HOME */
+.cdv.red{color:var(--error)}
+
+/* LOGIN TABS */
+.login-tabs{display:flex;gap:.4rem;background:var(--bg-dark);border-radius:8px;padding:.3rem;margin-bottom:1.2rem}
+.login-tab{flex:1;padding:.5rem;border:none;border-radius:6px;font-family:'Oswald',sans-serif;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.login-tab.active{background:var(--gradient-gold);color:var(--primary-dark)}
+.login-tab.inactive{background:transparent;color:var(--text-muted)}
+.email-mode-tabs{display:flex;margin-bottom:1rem;border-bottom:1px solid var(--border)}
+.email-mode-tab{flex:1;padding:.45rem;border:none;border-bottom:2px solid transparent;background:transparent;font-family:'Oswald',sans-serif;font-size:.75rem;text-transform:uppercase;cursor:pointer;transition:all .2s;color:var(--text-muted)}
+.email-mode-tab.active{border-bottom-color:var(--accent-teal);color:var(--text-primary)}
+
+/* COMPRA COTAS */
+.cotas-extra{background:linear-gradient(135deg,rgba(0,180,216,.06),rgba(212,168,67,.04));border:1px solid rgba(0,180,216,.15);border-radius:10px;padding:1.5rem;margin-top:1.2rem}
+.cotas-extra h4{font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-teal);margin-bottom:.7rem}
+
+/* MANUAL */
+.manual-box{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.4rem;margin-bottom:1rem}
+.manual-box h4{font-family:'Oswald',sans-serif;font-size:.95rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-gold);margin-bottom:.7rem}
+.manual-box p,.manual-box li{color:var(--text-secondary);font-size:.85rem;line-height:1.65}
+.manual-box ul,.manual-box ol{padding-left:1.2rem;margin-top:.4rem}
+.manual-box li{margin-bottom:.3rem}
+.pts-table{width:100%;border-collapse:collapse;margin-top:.6rem;font-size:.82rem}
+.pts-table th{background:rgba(0,0,0,.25);font-family:'Barlow Condensed',sans-serif;font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:.5rem .6rem;text-align:left}
+.pts-table td{padding:.45rem .6rem;border-bottom:1px solid var(--border);color:var(--text-secondary)}
+.pts-table tr:last-child td{border-bottom:none}
+.pts-badge{display:inline-block;font-family:'Oswald',sans-serif;font-weight:700;font-size:.88rem;padding:.1rem .5rem;border-radius:4px}
+.pts-exato{background:rgba(34,197,94,.15);color:var(--success)}
+.pts-parcial{background:rgba(245,158,11,.15);color:var(--warning)}
+.pts-errou{background:rgba(100,116,139,.12);color:var(--text-muted)}
+@media(max-width:600px){.pts-table{font-size:.72rem}.pts-table th,.pts-table td{padding:.35rem .35rem}}
+
+/* ADS */
+.ad-slot{text-align:center;min-height:90px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.01);border:1px dashed rgba(255,255,255,.04);border-radius:4px;margin:1.5rem auto;max-width:728px;overflow:hidden}
+@media(max-width:768px){.ad-slot{min-height:50px}}
+
 </style>
 </head>
 <body>
@@ -305,7 +402,7 @@ body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-
 <div class="cds">
 <div class="cdb"><div class="cdl">Inscrições</div><div class="cdv green">Abertas!</div><div class="cds2 active">● Ativo</div></div>
 <div class="cdb"><div class="cdl">Início da Copa</div><div class="cdv gold" id="cdc"></div><div class="cds2 pending">11 Jun 2026</div></div>
-<div class="cdb"><div class="cdl">Palpites Liberados</div><div class="cdv teal" id="cdp-status">Em breve</div><div class="cds2 locked" id="cdp-badge">🔒 Aguardando</div></div>
+<div class="cdb"><div class="cdl">Prazo dos Palpites</div><div class="cdv red" id="cdp-count">--</div><div class="cds2 locked" id="cdp-badge">⏰ 10 Jun · 19h</div></div>
 </div>
 <div class="hcta" id="hero-cta">
 <!-- Dynamic: shows login or inscription button -->
@@ -338,130 +435,163 @@ body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-
 </div>
 
 <div class="rg">
-<div class="rc"><div class="rn">01</div><div class="ri">🔐</div><h3>Login com Google</h3><p>Faça login com sua conta Google para se inscrever. Rápido, seguro e sem precisar criar senha!</p></div>
+<div class="rc"><div class="rn">01</div><div class="ri">🔐</div><h3>Login & Cadastro</h3><p>Entre com Google <em>ou</em> crie uma conta com e-mail e senha. Rápido e seguro!</p></div>
 <div class="rc"><div class="rn">02</div><div class="ri">📋</div><h3>Inscrição + PIX</h3><p>Escolha 1, 2 ou 3 cotas e pague via PIX. O admin confirma seu pagamento e libera o acesso.</p></div>
-<div class="rc"><div class="rn">03</div><div class="ri">🎯</div><h3>Palpites</h3><p>Informe o placar de todos os 36 jogos da fase de grupos. Após o grupo, nova rodada para o mata-mata!</p></div>
+<div class="rc"><div class="rn">03</div><div class="ri">🎯</div><h3>Palpites</h3><p>Informe o placar dos <strong>36 jogos</strong> da fase de grupos. Prazo: <strong>10/06 às 19h</strong>. Após esse horário os palpites são bloqueados definitivamente.</p></div>
 <div class="rc"><div class="rn">04</div><div class="ri">⭐</div><h3>Pontuação</h3><p><strong>Fase de Grupos:</strong> Placar exato = <strong>3 pts</strong>. Acertou gols de 1 equipe = <strong>1 pt</strong>.<br><strong>Eliminatórias:</strong> Placar exato = <strong>4 pts</strong>. Acertou gols de 1 equipe = <strong>1 pt</strong>.</p></div>
 <div class="rc"><div class="rn">05</div><div class="ri">📊</div><h3>Ranking</h3><p>Cada cota concorre de forma independente. Acompanhe sua posição em tempo real durante toda a Copa!</p></div>
 <div class="rc"><div class="rn">06</div><div class="ri">🏆</div><h3>Premiação</h3><p>1º: <strong>60%</strong> · 2º: <strong>30%</strong> · 3º: <strong>10%</strong> do total arrecadado. O prêmio aumenta com cada nova inscrição!</p></div>
 </div>
+
+<!-- AD SLOT TOP -->
+<div class="ad-slot" style="margin-top:2rem" id="ad-top">
+  <!-- Google AdSense: substitua pelo código do seu anúncio -->
+  <!-- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXX" data-ad-slot="XXXXXXXX" data-ad-format="auto"></ins> -->
+</div>
+
+<!-- Manual do Bolão -->
+<div style="margin-top:2.5rem">
+<div class="sh" style="margin-bottom:1.2rem"><div class="stag">Leia com atenção</div><h3 class="stitle" style="font-size:1.8rem">Manual do Bolão</h3></div>
+
+<div class="manual-box">
+<h4>📅 Datas Importantes</h4>
+<ul>
+  <li><strong>Inscrições abertas:</strong> agora — encerram em 10/06/2026 às 19h</li>
+  <li><strong>Prazo para palpitar (fase de grupos):</strong> <strong style="color:var(--error)">10/06/2026 às 19h00</strong> — bloqueado definitivamente após esse horário</li>
+  <li><strong>Início da Copa:</strong> 11/06/2026 — jogo de abertura no México</li>
+  <li><strong>Palpites das eliminatórias:</strong> liberados após o encerramento da fase de grupos</li>
+</ul>
+</div>
+
+<div class="manual-box">
+<h4>💰 Pagamento &amp; Inscrição</h4>
+<p>Pague via <strong>PIX</strong> para a chave <code style="color:var(--accent-teal);font-family:monospace">33567108859</code> (CPF). Após pagar:</p>
+<ol>
+  <li>Envie o comprovante no grupo do WhatsApp</li>
+  <li>O admin aprova sua inscrição</li>
+  <li>Após aprovação, seus palpites são liberados automaticamente</li>
+</ol>
+<p style="margin-top:.5rem">Você pode adquirir <strong>até 3 cotas</strong>. Cada cota concorre de forma independente — mais cotas, mais chances!</p>
+</div>
+
+<div class="manual-box">
+<h4>🎯 Tabela de Pontuação</h4>
+<table class="pts-table">
+<thead><tr><th>Situação</th><th>Grupos</th><th>Eliminatórias</th></tr></thead>
+<tbody>
+<tr><td>🎯 Acertou o placar exato (ex: Real 2×1 → Você disse 2×1)</td><td><span class="pts-badge pts-exato">3 pts</span></td><td><span class="pts-badge pts-exato">4 pts</span></td></tr>
+<tr><td>⚽ Acertou os gols de <em>uma</em> equipe (ex: Real 2×1 → Você disse 2×0)</td><td><span class="pts-badge pts-parcial">1 pt</span></td><td><span class="pts-badge pts-parcial">1 pt</span></td></tr>
+<tr><td>❌ Errou os gols das duas equipes</td><td><span class="pts-badge pts-errou">0 pts</span></td><td><span class="pts-badge pts-errou">0 pts</span></td></tr>
+</tbody>
+</table>
+<p style="margin-top:.7rem;font-size:.78rem;color:var(--text-muted)">⚠️ Nas eliminatórias, o placar considerado é o do <strong>tempo regulamentar + prorrogação</strong>. Disputa de pênaltis não conta para pontuação.</p>
+</div>
+
+<div class="manual-box">
+<h4>🏆 Premiação</h4>
+<p>O prêmio total é formado pelas <strong>cotas de participação</strong> (as taxas de serviço não entram no prêmio). Distribuição:</p>
+<ul style="margin-top:.5rem">
+  <li>🥇 <strong>1º Lugar:</strong> 60% do total arrecadado</li>
+  <li>🥈 <strong>2º Lugar:</strong> 30% do total arrecadado</li>
+  <li>🥉 <strong>3º Lugar:</strong> 10% do total arrecadado</li>
+</ul>
+<p style="margin-top:.5rem">Em caso de empate no ranking, o critério de desempate será definido pelo admin e comunicado no WhatsApp.</p>
+</div>
+</div>
+
 </section>
 
 <!-- Grupos da Copa 2026 -->
 <section class="sec" id="grupos" style="padding-top:0">
-<div class="sh"><div class="stag">Copa do Mundo 2026</div><h2 class="stitle">Os 12 Grupos</h2><p class="sdesc">48 seleções de todo o mundo. 3 por grupo avançam ao mata-mata.</p></div>
-<div class="groups-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem">
+<div class="sh"><div class="stag">Copa do Mundo 2026</div><h2 class="stitle">Os 12 Grupos</h2><p class="sdesc">48 seleções classificadas. Os 3 melhores de cada grupo avançam ao mata-mata.</p></div>
+<div class="groups-grid" style="grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:.9rem">
 
-<div class="group-card">
-<div class="group-header">Grupo A</div>
-<div style="display:flex;flex-direction:column;gap:.4rem">
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/us.png" style="width:22px;height:15px;border-radius:2px" alt="EUA"> EUA 🏟️</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/mg.png" style="width:22px;height:15px;border-radius:2px" alt=""> Jamaica</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/pa.png" style="width:22px;height:15px;border-radius:2px" alt=""> Panamá</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/ge.png" style="width:22px;height:15px;border-radius:2px" alt=""> Geórgia</div>
+<div class="group-card"><div class="group-header">Grupo A</div><div style="display:flex;flex-direction:column;gap:.4rem">
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/us.png" style="width:22px;height:15px;border-radius:2px" alt=""> EUA 🏟️</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/jm.png" style="width:22px;height:15px;border-radius:2px" alt=""> Jamaica</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/pa.png" style="width:22px;height:15px;border-radius:2px" alt=""> Panamá</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/ge.png" style="width:22px;height:15px;border-radius:2px" alt=""> Geórgia</div>
 </div></div>
 
-<div class="group-card">
-<div class="group-header">Grupo B</div>
-<div style="display:flex;flex-direction:column;gap:.4rem">
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/ar.png" style="width:22px;height:15px;border-radius:2px" alt=""> Argentina</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/cl.png" style="width:22px;height:15px;border-radius:2px" alt=""> Chile</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/pe.png" style="width:22px;height:15px;border-radius:2px" alt=""> Peru</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/au.png" style="width:22px;height:15px;border-radius:2px" alt=""> Austrália</div>
+<div class="group-card"><div class="group-header">Grupo B</div><div style="display:flex;flex-direction:column;gap:.4rem">
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/ar.png" style="width:22px;height:15px;border-radius:2px" alt=""> Argentina</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/cl.png" style="width:22px;height:15px;border-radius:2px" alt=""> Chile</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/pe.png" style="width:22px;height:15px;border-radius:2px" alt=""> Peru</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/au.png" style="width:22px;height:15px;border-radius:2px" alt=""> Austrália</div>
 </div></div>
 
-<div class="group-card">
-<div class="group-header">Grupo C</div>
-<div style="display:flex;flex-direction:column;gap:.4rem">
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/mx.png" style="width:22px;height:15px;border-radius:2px" alt=""> México 🏟️</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/hn.png" style="width:22px;height:15px;border-radius:2px" alt=""> Honduras</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/kz.png" style="width:22px;height:15px;border-radius:2px" alt=""> Cazaquistão</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/be.png" style="width:22px;height:15px;border-radius:2px" alt=""> Bélgica</div>
+<div class="group-card"><div class="group-header">Grupo C</div><div style="display:flex;flex-direction:column;gap:.4rem">
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/mx.png" style="width:22px;height:15px;border-radius:2px" alt=""> México 🏟️</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/hn.png" style="width:22px;height:15px;border-radius:2px" alt=""> Honduras</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/kz.png" style="width:22px;height:15px;border-radius:2px" alt=""> Cazaquistão</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/be.png" style="width:22px;height:15px;border-radius:2px" alt=""> Bélgica</div>
 </div></div>
 
-<div class="group-card">
-<div class="group-header">Grupo D</div>
-<div style="display:flex;flex-direction:column;gap:.4rem">
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/pt.png" style="width:22px;height:15px;border-radius:2px" alt=""> Portugal</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/dk.png" style="width:22px;height:15px;border-radius:2px" alt=""> Dinamarca</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/uy.png" style="width:22px;height:15px;border-radius:2px" alt=""> Uruguai</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/ng.png" style="width:22px;height:15px;border-radius:2px" alt=""> Nigéria</div>
+<div class="group-card"><div class="group-header">Grupo D</div><div style="display:flex;flex-direction:column;gap:.4rem">
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/pt.png" style="width:22px;height:15px;border-radius:2px" alt=""> Portugal</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/dk.png" style="width:22px;height:15px;border-radius:2px" alt=""> Dinamarca</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/uy.png" style="width:22px;height:15px;border-radius:2px" alt=""> Uruguai</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/ng.png" style="width:22px;height:15px;border-radius:2px" alt=""> Nigéria</div>
 </div></div>
 
-<div class="group-card">
-<div class="group-header">Grupo E</div>
-<div style="display:flex;flex-direction:column;gap:.4rem">
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/fr.png" style="width:22px;height:15px;border-radius:2px" alt=""> França</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/at.png" style="width:22px;height:15px;border-radius:2px" alt=""> Áustria</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/ki.png" style="width:22px;height:15px;border-radius:2px" alt=""> Costa Rica</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/tz.png" style="width:22px;height:15px;border-radius:2px" alt=""> Tanzânia</div>
+<div class="group-card"><div class="group-header">Grupo E</div><div style="display:flex;flex-direction:column;gap:.4rem">
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/fr.png" style="width:22px;height:15px;border-radius:2px" alt=""> França</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/at.png" style="width:22px;height:15px;border-radius:2px" alt=""> Áustria</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/cr.png" style="width:22px;height:15px;border-radius:2px" alt=""> Costa Rica</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/tz.png" style="width:22px;height:15px;border-radius:2px" alt=""> Tanzânia</div>
 </div></div>
 
-<div class="group-card">
-<div class="group-header">Grupo F</div>
-<div style="display:flex;flex-direction:column;gap:.4rem">
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/br.png" style="width:22px;height:15px;border-radius:2px" alt=""> Brasil 🇧🇷</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/de.png" style="width:22px;height:15px;border-radius:2px" alt=""> Alemanha</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/se.png" style="width:22px;height:15px;border-radius:2px" alt=""> Suécia</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/td.png" style="width:22px;height:15px;border-radius:2px" alt=""> República dos Camarões</div>
+<div class="group-card"><div class="group-header">Grupo F</div><div style="display:flex;flex-direction:column;gap:.4rem">
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/br.png" style="width:22px;height:15px;border-radius:2px" alt=""> Brasil 🇧🇷</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/de.png" style="width:22px;height:15px;border-radius:2px" alt=""> Alemanha</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/se.png" style="width:22px;height:15px;border-radius:2px" alt=""> Suécia</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/cm.png" style="width:22px;height:15px;border-radius:2px" alt=""> Camarões</div>
 </div></div>
 
-<div class="group-card">
-<div class="group-header">Grupo G</div>
-<div style="display:flex;flex-direction:column;gap:.4rem">
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/es.png" style="width:22px;height:15px;border-radius:2px" alt=""> Espanha</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/nl.png" style="width:22px;height:15px;border-radius:2px" alt=""> Países Baixos</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/co.png" style="width:22px;height:15px;border-radius:2px" alt=""> Colômbia</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/ci.png" style="width:22px;height:15px;border-radius:2px" alt=""> Costa do Marfim</div>
+<div class="group-card"><div class="group-header">Grupo G</div><div style="display:flex;flex-direction:column;gap:.4rem">
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/es.png" style="width:22px;height:15px;border-radius:2px" alt=""> Espanha</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/nl.png" style="width:22px;height:15px;border-radius:2px" alt=""> Países Baixos</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/co.png" style="width:22px;height:15px;border-radius:2px" alt=""> Colômbia</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/ci.png" style="width:22px;height:15px;border-radius:2px" alt=""> Costa do Marfim</div>
 </div></div>
 
-<div class="group-card">
-<div class="group-header">Grupo H</div>
-<div style="display:flex;flex-direction:column;gap:.4rem">
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/gb-eng.png" style="width:22px;height:15px;border-radius:2px" alt=""> Inglaterra</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/ir.png" style="width:22px;height:15px;border-radius:2px" alt=""> Irã</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/ph.png" style="width:22px;height:15px;border-radius:2px" alt=""> Filipinas</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/ma.png" style="width:22px;height:15px;border-radius:2px" alt=""> Marrocos</div>
+<div class="group-card"><div class="group-header">Grupo H</div><div style="display:flex;flex-direction:column;gap:.4rem">
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/gb-eng.png" style="width:22px;height:15px;border-radius:2px" alt=""> Inglaterra</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/ir.png" style="width:22px;height:15px;border-radius:2px" alt=""> Irã</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/sz.png" style="width:22px;height:15px;border-radius:2px" alt=""> Eswatini / Rep. Checa</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/ma.png" style="width:22px;height:15px;border-radius:2px" alt=""> Marrocos</div>
 </div></div>
 
-<div class="group-card">
-<div class="group-header">Grupo I</div>
-<div style="display:flex;flex-direction:column;gap:.4rem">
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/hr.png" style="width:22px;height:15px;border-radius:2px" alt=""> Croácia</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/ec.png" style="width:22px;height:15px;border-radius:2px" alt=""> Equador</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/sz.png" style="width:22px;height:15px;border-radius:2px" alt=""> Suazilândia / Rep. Checa</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/eg.png" style="width:22px;height:15px;border-radius:2px" alt=""> Egito</div>
+<div class="group-card"><div class="group-header">Grupo I</div><div style="display:flex;flex-direction:column;gap:.4rem">
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/hr.png" style="width:22px;height:15px;border-radius:2px" alt=""> Croácia</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/ec.png" style="width:22px;height:15px;border-radius:2px" alt=""> Equador</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/eg.png" style="width:22px;height:15px;border-radius:2px" alt=""> Egito</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/gh.png" style="width:22px;height:15px;border-radius:2px" alt=""> Gana</div>
 </div></div>
 
-<div class="group-card">
-<div class="group-header">Grupo J</div>
-<div style="display:flex;flex-direction:column;gap:.4rem">
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/jp.png" style="width:22px;height:15px;border-radius:2px" alt=""> Japão</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/ca.png" style="width:22px;height:15px;border-radius:2px" alt=""> Canadá 🏟️</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/tr.png" style="width:22px;height:15px;border-radius:2px" alt=""> Turquia</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/sn.png" style="width:22px;height:15px;border-radius:2px" alt=""> Senegal</div>
+<div class="group-card"><div class="group-header">Grupo J</div><div style="display:flex;flex-direction:column;gap:.4rem">
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/jp.png" style="width:22px;height:15px;border-radius:2px" alt=""> Japão</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/ca.png" style="width:22px;height:15px;border-radius:2px" alt=""> Canadá 🏟️</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/tr.png" style="width:22px;height:15px;border-radius:2px" alt=""> Turquia</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/sn.png" style="width:22px;height:15px;border-radius:2px" alt=""> Senegal</div>
 </div></div>
 
-<div class="group-card">
-<div class="group-header">Grupo K</div>
-<div style="display:flex;flex-direction:column;gap:.4rem">
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/kr.png" style="width:22px;height:15px;border-radius:2px" alt=""> Coreia do Sul</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/pl.png" style="width:22px;height:15px;border-radius:2px" alt=""> Polônia</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/za.png" style="width:22px;height:15px;border-radius:2px" alt=""> África do Sul</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/gh.png" style="width:22px;height:15px;border-radius:2px" alt=""> Gana</div>
+<div class="group-card"><div class="group-header">Grupo K</div><div style="display:flex;flex-direction:column;gap:.4rem">
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/kr.png" style="width:22px;height:15px;border-radius:2px" alt=""> Coreia do Sul</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/pl.png" style="width:22px;height:15px;border-radius:2px" alt=""> Polônia</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/za.png" style="width:22px;height:15px;border-radius:2px" alt=""> África do Sul</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/it.png" style="width:22px;height:15px;border-radius:2px" alt=""> Itália</div>
 </div></div>
 
-<div class="group-card">
-<div class="group-header">Grupo L</div>
-<div style="display:flex;flex-direction:column;gap:.4rem">
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/mx.png" style="width:22px;height:15px;border-radius:2px" alt=""> Repescagem Intercontinental</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/al.png" style="width:22px;height:15px;border-radius:2px" alt=""> Albânia</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/uz.png" style="width:22px;height:15px;border-radius:2px" alt=""> Uzbequistão</div>
-<div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem"><img src="https://flagcdn.com/w40/dz.png" style="width:22px;height:15px;border-radius:2px" alt=""> Argélia</div>
+<div class="group-card"><div class="group-header">Grupo L</div><div style="display:flex;flex-direction:column;gap:.4rem">
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/ve.png" style="width:22px;height:15px;border-radius:2px" alt=""> Venezuela</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/hu.png" style="width:22px;height:15px;border-radius:2px" alt=""> Hungria</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/uz.png" style="width:22px;height:15px;border-radius:2px" alt=""> Uzbequistão</div>
+<div style="display:flex;align-items:center;gap:.5rem;font-size:.83rem"><img src="https://flagcdn.com/w40/dz.png" style="width:22px;height:15px;border-radius:2px" alt=""> Argélia</div>
 </div></div>
 
 </div>
-<p style="text-align:center;color:var(--text-muted);font-size:.75rem;margin-top:1.2rem">⚠️ Grupos conforme sorteio FIFA de 05/12/2025. Repescagens intercontinentais ainda em definição. Os grupos são ilustrativos para o bolão — o admin atualizará com a chave oficial.</p>
+<p style="text-align:center;color:var(--text-muted);font-size:.73rem;margin-top:1rem">⚠️ Grupos baseados no sorteio FIFA. Algumas vagas da repescagem intercontinental podem ser atualizadas pelo admin conforme confirmação oficial.</p>
 </section>
 
 <!-- Valores -->
@@ -526,10 +656,14 @@ body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-
 </div>
 
 <!-- FOOTER (always visible) -->
+<!-- AD SLOT FOOTER -->
+<div class="ad-slot" id="ad-footer" style="margin:0 auto 1rem;max-width:728px">
+  <!-- Google AdSense: substitua pelo código do seu anúncio -->
+</div>
 <footer class="ft">
 <div class="ftl">⚽ Bolão do Almeida · Copa 2026</div>
-<div class="ftf"><img src="https://flagcdn.com/w40/us.png" alt="EUA"><img src="https://flagcdn.com/w40/mx.png" alt="México"><img src="https://flagcdn.com/w40/ca.png" alt="Canadá"></div>
-<p>Copa do Mundo FIFA 2026 · Bolão entre amigos · 48 seleções · 12 grupos</p>
+<div class="ftf" style="flex-wrap:wrap;gap:4px;max-width:600px;margin:.6rem auto"><img src="https://flagcdn.com/w40/us.png" alt="us" title="us"> <img src="https://flagcdn.com/w40/mx.png" alt="mx" title="mx"> <img src="https://flagcdn.com/w40/ca.png" alt="ca" title="ca"> <img src="https://flagcdn.com/w40/br.png" alt="br" title="br"> <img src="https://flagcdn.com/w40/ar.png" alt="ar" title="ar"> <img src="https://flagcdn.com/w40/co.png" alt="co" title="co"> <img src="https://flagcdn.com/w40/uy.png" alt="uy" title="uy"> <img src="https://flagcdn.com/w40/ec.png" alt="ec" title="ec"> <img src="https://flagcdn.com/w40/ve.png" alt="ve" title="ve"> <img src="https://flagcdn.com/w40/jm.png" alt="jm" title="jm"> <img src="https://flagcdn.com/w40/pa.png" alt="pa" title="pa"> <img src="https://flagcdn.com/w40/hn.png" alt="hn" title="hn"> <img src="https://flagcdn.com/w40/cr.png" alt="cr" title="cr"> <img src="https://flagcdn.com/w40/de.png" alt="de" title="de"> <img src="https://flagcdn.com/w40/fr.png" alt="fr" title="fr"> <img src="https://flagcdn.com/w40/es.png" alt="es" title="es"> <img src="https://flagcdn.com/w40/gb-eng.png" alt="gb-eng" title="gb-eng"> <img src="https://flagcdn.com/w40/pt.png" alt="pt" title="pt"> <img src="https://flagcdn.com/w40/nl.png" alt="nl" title="nl"> <img src="https://flagcdn.com/w40/be.png" alt="be" title="be"> <img src="https://flagcdn.com/w40/it.png" alt="it" title="it"> <img src="https://flagcdn.com/w40/at.png" alt="at" title="at"> <img src="https://flagcdn.com/w40/ge.png" alt="ge" title="ge"> <img src="https://flagcdn.com/w40/hu.png" alt="hu" title="hu"> <img src="https://flagcdn.com/w40/tr.png" alt="tr" title="tr"> <img src="https://flagcdn.com/w40/dk.png" alt="dk" title="dk"> <img src="https://flagcdn.com/w40/pl.png" alt="pl" title="pl"> <img src="https://flagcdn.com/w40/gb-sct.png" alt="gb-sct" title="gb-sct"> <img src="https://flagcdn.com/w40/hr.png" alt="hr" title="hr"> <img src="https://flagcdn.com/w40/se.png" alt="se" title="se"> <img src="https://flagcdn.com/w40/jp.png" alt="jp" title="jp"> <img src="https://flagcdn.com/w40/kr.png" alt="kr" title="kr"> <img src="https://flagcdn.com/w40/ir.png" alt="ir" title="ir"> <img src="https://flagcdn.com/w40/au.png" alt="au" title="au"> <img src="https://flagcdn.com/w40/kz.png" alt="kz" title="kz"> <img src="https://flagcdn.com/w40/uz.png" alt="uz" title="uz"> <img src="https://flagcdn.com/w40/sn.png" alt="sn" title="sn"> <img src="https://flagcdn.com/w40/ma.png" alt="ma" title="ma"> <img src="https://flagcdn.com/w40/ng.png" alt="ng" title="ng"> <img src="https://flagcdn.com/w40/eg.png" alt="eg" title="eg"> <img src="https://flagcdn.com/w40/ci.png" alt="ci" title="ci"> <img src="https://flagcdn.com/w40/cm.png" alt="cm" title="cm"> <img src="https://flagcdn.com/w40/za.png" alt="za" title="za"> <img src="https://flagcdn.com/w40/gh.png" alt="gh" title="gh"> <img src="https://flagcdn.com/w40/dz.png" alt="dz" title="dz"> <img src="https://flagcdn.com/w40/tz.png" alt="tz" title="tz"> <img src="https://flagcdn.com/w40/nz.png" alt="nz" title="nz"> <img src="https://flagcdn.com/w40/pk.png" alt="pk" title="pk"></div>
+<p>Copa do Mundo FIFA 2026 · EUA, México &amp; Canadá · Bolão entre amigos</p>
 <p style="margin-top:.2rem;font-size:.7rem;color:var(--text-muted)">Feito com ❤️ para Gabriel, Marcos e Tatiana</p>
 <p style="margin-top:.3rem"><a href="https://bolaocopa.com">bolaocopa.com</a></p>
 </footer>
@@ -544,11 +678,20 @@ const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 const PK='33567108859';
 const CS=new Date('2026-06-11T16:00:00-03:00');
+const DEADLINE=new Date('2026-06-10T19:00:00-03:00');
+function isPalpitesBloqueados(){return new Date()>=DEADLINE;}
 const PR={1:{c:30,t:3,v:33},2:{c:54,t:6,v:60},3:{c:72,t:9,v:81}};
 const CV={1:30,2:54,3:72};
 
-const flagsLeft=['us','mx','ca','br','ar','co','uy','ec','ve','pe','bo','ma','eg','sn','ng','gh','ci','cm','za','tz','dz','tn','ao','bj'];
-const flagsRight=['jp','kr','ir','au','sa','jo','id','uz','qa','th','cn','nz','de','es','fr','gb-eng','pt','nl','be','at','dk','se','pl','hr'];
+// === Copa 2026 — 48 seleções classificadas ===
+// CONMEBOL(6): Brasil, Argentina, Colômbia, Uruguai, Equador, Venezuela
+// CONCACAF(6): EUA, México, Canadá, Panamá, Costa Rica, Honduras, Jamaica(play-in)
+// UEFA(16): Espanha, França, Inglaterra, Alemanha, Portugal, Holanda, Bélgica, Áustria, Itália, Croácia, Polônia, Hungria, Turquia, Geórgia, Dinamarca, Suécia
+// AFC(8): Japão, Coreia do Sul, Irã, Austrália, Cazaquistão, Uzbequistão + play-in
+// CAF(9): Marrocos, Senegal, Nigéria, Egito, Costa do Marfim, Camarões, África do Sul, Gana, Argélia, Tanzânia
+// OFC(1): Nova Zelândia
+const flagsLeft=['us','mx','ca','br','ar','co','uy','ec','ve','jm','pa','hn','cr','de','fr','es','gb-eng','pt','nl','be'];
+const flagsRight=['jp','kr','ir','au','kz','uz','ma','sn','ng','eg','ci','cm','za','gh','dz','tz','nz','it','hu','tr'];
 
 let currentUser=null,userProfile=null,userInscricao=null,selC=1;
 
@@ -556,6 +699,7 @@ let currentUser=null,userProfile=null,userInscricao=null,selC=1;
 document.addEventListener('DOMContentLoaded',async()=>{
   renderFlags();
   uc();setInterval(uc,1000);
+  updateDeadlineCountdown();setInterval(updateDeadlineCountdown,1000);
   
   // Check URL for admin route
   if(window.location.pathname==='/administracao'||window.location.hash==='#administracao'){
@@ -695,19 +839,11 @@ function updateUI(){
       renderInscricaoForm();
     }
   }else{
-    authEl.innerHTML='<a onclick="loginGoogle()" style="color:var(--accent-gold)">Entrar com Google</a>';
+    authEl.innerHTML='<a onclick="navigate(\'home\');setTimeout(()=>scrollToSection(\'insc\'),80)" style="color:var(--accent-gold)">Entrar</a>';
     heroEl.innerHTML=`
-      <button class="btn btn-p" onclick="loginGoogle()">Entrar com Google</button>
+      <button class="btn btn-p" onclick="scrollToSection('insc')">Participar Agora</button>
       <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w">Grupo WhatsApp</a>`;
-    inscEl.innerHTML=`
-      <div class="login-box">
-        <h3>🔐 Faça Login para se Inscrever</h3>
-        <p>Use sua conta Google para criar sua inscrição de forma rápida e segura.</p>
-        <button class="btn-google" onclick="loginGoogle()">
-          <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          Entrar com Google
-        </button>
-      </div>`;
+    inscEl.innerHTML=renderLoginBox();
   }
 }
 
@@ -716,7 +852,7 @@ function renderInscricaoForm(){
   inscEl.innerHTML=`
     <div class="fc">
       <h3 class="fst">Complete sua Inscrição</h3>
-      <p class="fsd">Seus dados do Google já foram carregados. Complete as informações abaixo.</p>
+      <p class="fsd">Complete os dados abaixo para finalizar sua inscrição.</p>
       <div class="fr">
         <div class="fg"><label>Nome Completo *</label><input type="text" id="nome" value="${currentUser?.user_metadata?.full_name||''}" placeholder="Seu nome"></div>
         <div class="fg"><label>Apelido (ranking)</label><input type="text" id="apelido" placeholder="Como quer ser chamado"></div>
@@ -795,26 +931,47 @@ async function submitInscricao(){
 // ===== PALPITES =====
 async function loadPalpites(){
   const el=document.getElementById('palpites-content');
-  if(!currentUser){el.innerHTML='<div class="login-box"><h3>Faça login para ver seus palpites</h3><button class="btn-google" onclick="loginGoogle()">Entrar com Google</button></div>';return;}
+  if(!currentUser){
+    el.innerHTML=`<div class="login-box" style="max-width:460px"><h3>🔐 Faça login para ver seus palpites</h3><p>Entre com Google ou com sua conta de e-mail.</p>${renderLoginBox()}</div>`;
+    return;
+  }
   if(!userInscricao||userInscricao.status!=='aprovado'){
     el.innerHTML='<div class="re"><p style="font-size:2rem">🔒</p><p style="font-family:\'Oswald\',sans-serif;font-size:1.1rem">Acesso restrito</p><p style="color:var(--text-muted);font-size:.85rem;margin-top:.3rem">Seu pagamento precisa ser aprovado pelo admin antes de preencher os palpites.</p></div>';
     return;
   }
   
-  // Check if palpites are enabled
-  const{data:cfg}=await sb.from('config').select('value').eq('key','palpites_liberados').maybeSingle();
+  // Check if palpites are enabled — with graceful error handling
+  let cfg=null;
+  try{const r=await sb.from('config').select('value').eq('key','palpites_liberados').maybeSingle();cfg=r.data;}catch(e){}
   if(!cfg||cfg.value!=='true'){
-    el.innerHTML='<div class="re"><p style="font-size:2rem">🔒</p><p style="font-family:\'Oswald\',sans-serif;font-size:1.1rem">Palpites ainda não liberados</p><p style="color:var(--text-muted);font-size:.85rem;margin-top:.3rem">Os palpites serão liberados quando todas as 48 seleções estiverem definidas.</p></div>';
-    return;
+    const tl=DEADLINE-new Date();
+    const ddL=tl>0?`<br><br>⏰ Prazo: <strong style="color:var(--error)">${Math.floor(tl/864e5)}d ${Math.floor(tl%864e5/36e5)}h ${Math.floor(tl%36e5/6e4)}m</strong> restantes`:'';
+    el.innerHTML=`<div class="re" style="max-width:500px;margin:0 auto;padding:3rem 1.5rem">
+      <p style="font-size:2.5rem;margin-bottom:.8rem">🔒</p>
+      <p style="font-family:'Oswald',sans-serif;font-size:1.2rem;margin-bottom:.6rem">Palpites ainda não liberados</p>
+      <p style="color:var(--text-muted);font-size:.85rem;line-height:1.65">Os palpites serão liberados quando os jogos forem cadastrados pelo admin.${ddL}<br><br>
+      Fique de olho no grupo do WhatsApp para o aviso!</p>
+      <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w btn-sm" style="margin-top:1.2rem">📱 Grupo WhatsApp</a>
+    </div>`;return;
   }
 
   // Check which phase is active
-  const{data:faseCfg}=await sb.from('config').select('value').eq('key','fase_palpites').maybeSingle();
+  let faseCfg=null;
+  try{const r=await sb.from('config').select('value').eq('key','fase_palpites').maybeSingle();faseCfg=r.data;}catch(e){}
   const faseAtiva=faseCfg?.value||'grupos';
+  const bloqueado=isPalpitesBloqueados()&&faseAtiva==='grupos';
   
-  // Load matches for active phase
-  const{data:jogos}=await sb.from('jogos').select('*').eq('fase',faseAtiva).order('grupo').order('rodada').order('data_jogo');
-  if(!jogos||jogos.length===0){el.innerHTML='<div class="re"><p>Nenhum jogo cadastrado para esta fase.</p></div>';return;}
+  // Load matches for active phase — with graceful error handling
+  let jogos=null;
+  try{const r=await sb.from('jogos').select('*').eq('fase',faseAtiva).order('grupo').order('rodada').order('data_jogo');jogos=r.data;}catch(e){}
+  if(!jogos||jogos.length===0){
+    el.innerHTML=`<div class="re" style="max-width:500px;margin:0 auto;padding:3rem 1.5rem">
+      <p style="font-size:2.5rem;margin-bottom:.8rem">⚽</p>
+      <p style="font-family:'Oswald',sans-serif;font-size:1.2rem;margin-bottom:.6rem">Jogos ainda sendo cadastrados</p>
+      <p style="color:var(--text-muted);font-size:.85rem;line-height:1.65">O admin está finalizando o cadastro dos jogos da fase <strong>${faseAtiva==='grupos'?'de Grupos':'Eliminatória'}</strong>.<br>Volte em breve!</p>
+      <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w btn-sm" style="margin-top:1.2rem">📱 Grupo WhatsApp</a>
+    </div>`;return;
+  }
   
   // Load existing palpites
   const{data:existingPalpites}=await sb.from('palpites').select('*').eq('inscricao_id',userInscricao.id);
@@ -822,7 +979,16 @@ async function loadPalpites(){
   // Pontuação info
   const ptsExato=faseAtiva==='grupos'?3:4;
   
-  let html=`
+  // Deadline banner
+  let deadlineBanner='';
+  if(!bloqueado&&faseAtiva==='grupos'){
+    const tl2=DEADLINE-new Date();
+    if(tl2>0){const d2=Math.floor(tl2/864e5),h2=Math.floor(tl2%864e5/36e5),m2=Math.floor(tl2%36e5/6e4);
+    deadlineBanner=`<div class="deadline-banner"><span class="db-icon">⏰</span><div><div class="db-text">Prazo para palpitar</div><div class="db-sub">10/06/2026 às 19h00 (horário de Brasília)</div></div><div class="db-count">${d2}d ${h2}h ${m2}m</div></div>`;}
+  }
+  if(bloqueado){deadlineBanner='<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:1rem;text-align:center;margin-bottom:1rem;color:var(--error);font-family:'Oswald',sans-serif;letter-spacing:1px">🔒 PRAZO ENCERRADO — Palpites bloqueados em 10/06/2026 às 19h</div>';}
+
+  let html=`${deadlineBanner}
     <div class="user-status" style="margin-bottom:1rem">
       <div class="us-info"><div><div class="us-name">${userProfile?.nome||'Participante'}</div><div class="us-email">${userInscricao.cotas} cota${userInscricao.cotas>1?'s':''} · Fase: ${faseAtiva==='grupos'?'Fase de Grupos':'Eliminatórias'}</div></div></div>
       <span class="us-badge badge-approved">✅ Ativo</span>
@@ -889,29 +1055,30 @@ async function loadPalpites(){
         const flagCasa=jogo.time_casa_flag?`<img src="https://flagcdn.com/w40/${jogo.time_casa_flag}.png" style="width:22px;height:15px;border-radius:2px;flex-shrink:0" alt="${jogo.time_casa}">`:'';
         const flagFora=jogo.time_fora_flag?`<img src="https://flagcdn.com/w40/${jogo.time_fora_flag}.png" style="width:22px;height:15px;border-radius:2px;flex-shrink:0" alt="${jogo.time_fora}">`:'';
         const dataJogo=jogo.data_jogo?new Date(jogo.data_jogo).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
-        const borderStyle=matchClass==='match-exact'?'border-color:var(--success);background:rgba(34,197,94,.05)':matchClass==='match-partial'?'border-color:var(--warning);background:rgba(245,158,11,.05)':matchClass==='match-wrong'?'border-color:var(--error);background:rgba(239,68,68,.05)':'';
         
-        html+=`<div class="match-row ${matchClass}" style="${borderStyle}">
-          <div class="team-home">${flagCasa}<span>${jogo.time_casa}</span></div>
-          <div class="score-block">
-            <input type="number" min="0" max="20" value="${saved?saved.gols_casa:''}" id="j${jogo.id}-c${c}-casa" ${allSaved&&!hasResult?'disabled':''}>
-            <span class="score-sep">×</span>
-            <input type="number" min="0" max="20" value="${saved?saved.gols_fora:''}" id="j${jogo.id}-c${c}-fora" ${allSaved&&!hasResult?'disabled':''}>
+        const inputDis=(bloqueado||(allSaved&&!hasResult))?'disabled':'';
+        html+=`<div class="match-row ${matchClass}">
+          <div class="team-home">${flagCasa}<span class="team-name">${jogo.time_casa}</span></div>
+          <input type="number" min="0" max="20" value="${saved?saved.gols_casa:''}" id="j${jogo.id}-c${c}-casa" ${inputDis} class="score-inp">
+          <span class="score-sep">×</span>
+          <input type="number" min="0" max="20" value="${saved?saved.gols_fora:''}" id="j${jogo.id}-c${c}-fora" ${inputDis} class="score-inp">
+          <div class="team-away"><span class="team-name">${jogo.time_fora}</span>${flagFora}</div>
+          <div class="match-meta">
+            <span>${dataJogo}</span>
+            ${hasResult?`<span>Resultado: ${jogo.gols_casa}×${jogo.gols_fora}</span>`:''}
+            ${matchPts>0?`<span style="color:${matchPts>=3?'var(--success)':'var(--warning)'};font-family:'Oswald',sans-serif;font-weight:700">+${matchPts}pts</span>`:''}
+            ${hasResult&&matchPts===0&&saved?'<span style="color:var(--error)">0 pts</span>':''}
           </div>
-          <div class="team-away"><span>${jogo.time_fora}</span>${flagFora}</div>
-          ${hasResult?`<span class="match-result">Real: ${jogo.gols_casa}×${jogo.gols_fora}</span>`:''}
-          ${matchPts>0?`<span class="match-pts" style="color:${matchPts>=3?'var(--success)':'var(--warning)'}">+${matchPts}</span>`:''}
-          ${hasResult&&matchPts===0&&saved?'<span style="font-size:.7rem;color:var(--error)">0</span>':''}
-          <span class="match-date">${dataJogo}</span>
         </div>`;
       });
       html+=`</div>`;
     });
     
-    if(!allSaved){
-      html+=`<div style="text-align:center;margin-top:1rem"><button class="btn btn-p" onclick="savePalpitesPlacar(${c})">Salvar Palpites da Cota ${c}</button></div>`;
-    }else{
-      html+=`<div style="text-align:center;margin-top:.5rem"><button class="btn btn-s btn-sm" onclick="editPalpitesPlacar(${c})">Editar Palpites</button></div>`;
+    if(!bloqueado){
+      if(!allSaved){html+=`<div style="text-align:center;margin-top:1rem"><button class="btn btn-p" onclick="savePalpitesPlacar(${c})">Salvar Palpites da Cota ${c}</button></div>`;}
+      else{html+=`<div style="text-align:center;margin-top:.5rem"><button class="btn btn-s btn-sm" onclick="editPalpitesPlacar(${c})">✏️ Editar Palpites da Cota ${c}</button></div>`;}
+    }else if(!allSaved){
+      html+=`<div style="text-align:center;margin-top:.5rem;color:var(--error);font-size:.82rem">⏰ Prazo encerrado — palpites bloqueados</div>`;
     }
     html+=`</div>`;
   }
@@ -921,6 +1088,7 @@ async function loadPalpites(){
 
 async function savePalpitesPlacar(cotaNum){
   if(!currentUser||!userInscricao)return;
+  if(isPalpitesBloqueados()){toast('⏰ Prazo encerrado! Palpites não podem mais ser alterados.','e');return;}
   
   const{data:jogos}=await sb.from('jogos').select('id').eq('fase','grupos').order('id');
   if(!jogos)return;
@@ -963,6 +1131,7 @@ async function savePalpitesPlacar(cotaNum){
 }
 
 function editPalpitesPlacar(cotaNum){
+  if(isPalpitesBloqueados()){toast('⏰ Prazo encerrado! Não é mais possível editar.','e');return;}
   // Enable all inputs for this cota
   document.querySelectorAll(`[id^="j"][id$="-c${cotaNum}-casa"],[id^="j"][id$="-c${cotaNum}-fora"]`).forEach(el=>{
     el.disabled=false;
@@ -996,7 +1165,12 @@ async function loadAdmin(){
     const totalPool=approved.reduce((s,i)=>s+Number(i.valor_cotas),0);
     const totalFees=approved.reduce((s,i)=>s+Number(i.taxa_servico),0);
     
-    el.innerHTML=`
+    // Load pending cotas purchases
+    let cotasPend=[];
+    try{const{data:cc}=await sb.from('compra_cotas').select('*').eq('status','pendente').order('created_at',{ascending:false});cotasPend=cc||[];}catch(e){}
+    const cotasPendHTML=cotasPend.length>0?`<div style="margin-bottom:1.5rem"><h4 style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--warning);text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem">⏳ Solicitações de + Cotas (${cotasPend.length})</h4><div style="overflow-x:auto"><table class="atbl"><thead><tr><th>Nome</th><th>De</th><th>Para</th><th>+Valor</th><th>Ações</th></tr></thead><tbody>${cotasPend.map(cc=>{const p=profMap[cc.user_id]||{};return`<tr><td>${p.nome||cc.user_id?.substring(0,8)||'-'}</td><td>${cc.cotas_atual}x</td><td>${cc.cotas_nova}x</td><td>R$ ${cc.valor_adicional}</td><td><button class="ba" onclick="adminApproveCotas(${cc.id},${cc.inscricao_id},${cc.cotas_nova})">Aprovar</button><button class="br2" onclick="adminRejectCotas(${cc.id})">Rejeitar</button></td></tr>`;}).join('')}</tbody></table></div></div>`:'';
+
+        el.innerHTML=`
       <div class="ast">
         <div class="asc"><div class="av">${inscs.length}</div><div class="al">Inscrições</div></div>
         <div class="asc"><div class="av" style="color:var(--warning)">${pending.length}</div><div class="al">Pendentes</div></div>
@@ -1006,6 +1180,7 @@ async function loadAdmin(){
         <div class="asc"><div class="av">R$ ${totalFees}</div><div class="al">Taxas</div></div>
       </div>
       <h3 style="font-family:'Oswald',sans-serif;margin-bottom:.8rem;font-size:1rem;text-transform:uppercase;letter-spacing:1px">Inscrições</h3>
+      ${cotasPendHTML}
       <div style="overflow-x:auto">
         <table class="atbl"><thead><tr><th>Nome</th><th>Email</th><th>WhatsApp</th><th>Cotas</th><th>Valor</th><th>Conheceu</th><th>Indicação</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody>${inscs.map(i=>{
@@ -1063,6 +1238,7 @@ async function loadConta(){
       </div>
       ${!userInscricao?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'home\');scrollToSection(\'insc\')">Fazer Inscrição</a></div>':''}
       ${userInscricao?.status==='aprovado'?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'palpites\')">Meus Palpites →</a></div>':''}
+      ${userInscricao?.status==='aprovado'?renderCompraCotas(userInscricao.cotas):''}
       <div style="text-align:center;margin-top:1rem"><button class="btn btn-danger btn-sm" onclick="logout()">Sair da Conta</button></div>
     </div>`;
 }
@@ -1140,6 +1316,203 @@ function startInscricao(n){
   if(!currentUser){loginGoogle();return;}
   navigate('home');scrollToSection('insc');
 }
+
+
+// ===== RENDERIZA LOGIN BOX (Google + Email/Senha) =====
+function renderLoginBox(){
+  return `<div class="login-tabs">
+    <button class="login-tab active" id="lt-google" onclick="showLoginTab('google')">Google</button>
+    <button class="login-tab inactive" id="lt-email" onclick="showLoginTab('email')">E-mail / Senha</button>
+  </div>
+  <div id="login-google-panel">
+    <button class="btn-google" onclick="loginGoogle()" style="width:100%;justify-content:center">
+      <svg viewBox="0 0 24 24" width="20" height="20"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Entrar com Google
+    </button>
+  </div>
+  <div id="login-email-panel" style="display:none">
+    <div class="email-mode-tabs">
+      <button class="email-mode-tab active" id="emt-login" onclick="showEmailMode('login')">Entrar</button>
+      <button class="email-mode-tab" id="emt-register" onclick="showEmailMode('register')">Criar Conta</button>
+    </div>
+    <div id="email-login-form">
+      <div class="fg"><label>E-mail</label><input type="email" id="email-in" placeholder="seuemail@exemplo.com" onkeydown="if(event.key==='Enter')loginEmail()"></div>
+      <div class="fg"><label>Senha</label><input type="password" id="senha-in" placeholder="Sua senha" onkeydown="if(event.key==='Enter')loginEmail()"></div>
+      <button class="btn btn-p" style="width:100%;justify-content:center;margin-top:.4rem" onclick="loginEmail()">Entrar</button>
+      <p style="text-align:center;margin-top:.8rem;font-size:.75rem;color:var(--text-muted)">Esqueceu a senha? <a onclick="solicitarReset()" style="color:var(--accent-teal);cursor:pointer">Solicitar reset</a></p>
+    </div>
+    <div id="email-register-form" style="display:none">
+      <div class="fg"><label>Nome Completo *</label><input type="text" id="reg-nome" placeholder="Seu nome completo"></div>
+      <div class="fg"><label>E-mail *</label><input type="email" id="reg-email" placeholder="seuemail@exemplo.com"></div>
+      <div class="fg"><label>Senha * <span style="font-size:.68rem;color:var(--text-muted)">(mín. 8 caracteres)</span></label><input type="password" id="reg-senha" placeholder="Crie uma senha forte"></div>
+      <div class="fg"><label>WhatsApp *</label><input type="tel" id="reg-whatsapp" placeholder="(11) 99999-9999"></div>
+      <button class="btn btn-p" style="width:100%;justify-content:center;margin-top:.4rem" onclick="registrarEmail()">Criar Conta</button>
+    </div>
+  </div>`;
+}
+
+function showLoginTab(tab){
+  const gp=document.getElementById('login-google-panel');
+  const ep=document.getElementById('login-email-panel');
+  const tg=document.getElementById('lt-google');
+  const te=document.getElementById('lt-email');
+  if(!gp||!ep||!tg||!te)return;
+  if(tab==='google'){
+    gp.style.display='block';ep.style.display='none';
+    tg.className='login-tab active';te.className='login-tab inactive';
+  }else{
+    gp.style.display='none';ep.style.display='block';
+    te.className='login-tab active';tg.className='login-tab inactive';
+    setTimeout(()=>document.getElementById('email-in')?.focus(),50);
+  }
+}
+
+function showEmailMode(mode){
+  const lf=document.getElementById('email-login-form');
+  const rf=document.getElementById('email-register-form');
+  const tl=document.getElementById('emt-login');
+  const tr2=document.getElementById('emt-register');
+  if(!lf||!rf)return;
+  if(mode==='login'){
+    lf.style.display='block';rf.style.display='none';
+    tl.className='email-mode-tab active';tr2.className='email-mode-tab';
+  }else{
+    lf.style.display='none';rf.style.display='block';
+    tl.className='email-mode-tab';tr2.className='email-mode-tab active';
+    setTimeout(()=>document.getElementById('reg-nome')?.focus(),50);
+  }
+}
+
+async function loginEmail(){
+  const email=document.getElementById('email-in')?.value.trim();
+  const senha=document.getElementById('senha-in')?.value;
+  if(!email||!senha){toast('Preencha e-mail e senha!','e');return;}
+  try{
+    const{data,error}=await sb.auth.signInWithPassword({email,password:senha});
+    if(error){toast('Erro: '+(error.message.includes('Invalid')?'E-mail ou senha incorretos.':error.message),'e');return;}
+    currentUser=data.user;await loadUserData();updateUI();loadStats();
+    toast('Login realizado com sucesso! 🎉','s');
+  }catch(e){toast('Erro ao fazer login.','e');}
+}
+
+async function registrarEmail(){
+  const nome=document.getElementById('reg-nome')?.value.trim();
+  const email=document.getElementById('reg-email')?.value.trim();
+  const senha=document.getElementById('reg-senha')?.value;
+  const whatsapp=document.getElementById('reg-whatsapp')?.value.trim();
+  if(!nome||!email||!senha||!whatsapp){toast('Preencha todos os campos!','e');return;}
+  if(senha.length<8){toast('Senha deve ter no mínimo 8 caracteres!','e');return;}
+  const btn=event?.target;if(btn){btn.textContent='Criando...';btn.disabled=true;}
+  try{
+    const{data,error}=await sb.auth.signUp({email,password:senha,options:{data:{full_name:nome}}});
+    if(error){toast('Erro: '+error.message,'e');if(btn){btn.textContent='Criar Conta';btn.disabled=false;}return;}
+    if(data.user){
+      await sb.from('profiles').upsert({id:data.user.id,nome,whatsapp});
+      if(data.session||data.user.email_confirmed_at){
+        currentUser=data.user;await loadUserData();updateUI();loadStats();
+        toast('Conta criada! Bem-vindo(a), '+nome.split(' ')[0]+'! 🎉','s');
+      }else{
+        const rf=document.getElementById('email-register-form');
+        if(rf)rf.innerHTML=`<div style="text-align:center;padding:1.5rem;color:var(--text-secondary)"><p style="font-size:1.5rem;margin-bottom:.5rem">📧</p><p>Conta criada! Verifique o e-mail <strong style="color:var(--text-primary)">${email}</strong> para confirmar o cadastro.<br><br>Após confirmar, faça login.</p></div>`;
+        toast('Conta criada! Verifique seu e-mail.','s');
+      }
+    }
+  }catch(e){toast('Erro ao criar conta.','e');if(btn){btn.textContent='Criar Conta';btn.disabled=false;}}
+}
+
+async function solicitarReset(){
+  const email=document.getElementById('email-in')?.value.trim();
+  if(!email){toast('Digite seu e-mail primeiro!','e');return;}
+  try{
+    const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin});
+    if(!error){toast('E-mail de redefinição enviado! Verifique sua caixa de entrada.','s');}
+    else{toast('Não foi possível enviar. Entre em contato com o admin no WhatsApp.','s');}
+  }catch(e){toast('Entre em contato com o admin no WhatsApp para redefinir sua senha.','s');}
+}
+
+// ===== COMPRA DE COTAS ADICIONAIS =====
+let novasCotasSel=null;
+
+function renderCompraCotas(cotasAtuais){
+  if(cotasAtuais>=3)return`<div class="cotas-extra"><h4>➕ Suas Cotas</h4><p style="color:var(--text-muted);font-size:.83rem">Você já possui o máximo de <strong>3 cotas</strong>. Boa sorte! 🏆</p></div>`;
+  const opts=[];
+  for(let n=cotasAtuais+1;n<=3;n++){
+    const add=PR[n].v-PR[cotasAtuais].v;
+    opts.push(`<div class="co" onclick="selecionarCotas(${n})" id="nc${n}"><div class="cn">${n}</div><div class="cl">Cotas total</div><div class="cp">+R$ ${add}</div><div class="cd">Total: R$ ${PR[n].v}</div></div>`);
+  }
+  return`<div class="cotas-extra">
+    <h4>➕ Comprar Mais Cotas</h4>
+    <p style="color:var(--text-muted);font-size:.82rem;margin-bottom:.8rem">Você tem <strong style="color:var(--text-primary)">${cotasAtuais} cota${cotasAtuais>1?'s':''}</strong>. Mais cotas = mais chances de ganhar!</p>
+    <div class="cs" style="grid-template-columns:repeat(${3-cotasAtuais},1fr)">${opts.join('')}</div>
+    <div id="extra-cotas-detail" style="display:none;margin-top:1rem">
+      <div class="pixs">
+        <div class="pixt">Pague a diferença via PIX</div>
+        <div class="qrc" id="qrc-extra" style="margin:0 auto .6rem"></div>
+        <div class="pkd"><code>33567108859</code><button onclick="cpk()">Copiar</button></div>
+        <p class="pixn" id="extra-cotas-info"></p>
+      </div>
+      <div style="text-align:center"><button class="btn btn-p" onclick="confirmarCompraCotas()">✓ Já fiz o PIX — Solicitar Cotas!</button></div>
+    </div>
+  </div>`;
+}
+
+function selecionarCotas(n){
+  novasCotasSel=n;
+  document.querySelectorAll('[id^="nc"]').forEach(e=>e.classList.remove('sel'));
+  document.getElementById('nc'+n)?.classList.add('sel');
+  const cotasAtuais=userInscricao?.cotas||1;
+  const add=PR[n].v-PR[cotasAtuais].v;
+  const det=document.getElementById('extra-cotas-detail');
+  const inf=document.getElementById('extra-cotas-info');
+  if(det)det.style.display='block';
+  if(inf)inf.textContent=`Pague R$ ${add},00 (diferença de ${cotasAtuais}→${n} cotas) · Envie o comprovante no WhatsApp`;
+  setTimeout(()=>{const c=document.getElementById('qrc-extra');if(!c)return;try{const qr=qrcode(0,'M');qr.addData(PK);qr.make();c.innerHTML=qr.createImgTag(3,6);c.querySelector('img').style.borderRadius='4px';}catch(e){c.innerHTML='';}},80);
+}
+
+async function confirmarCompraCotas(){
+  if(!novasCotasSel||!currentUser||!userInscricao){toast('Selecione a quantidade de cotas!','e');return;}
+  const cotasAtuais=userInscricao.cotas;
+  const add=PR[novasCotasSel].v-PR[cotasAtuais].v;
+  let ok=false;
+  try{
+    const{error}=await sb.from('compra_cotas').insert({user_id:currentUser.id,inscricao_id:userInscricao.id,cotas_atual:cotasAtuais,cotas_nova:novasCotasSel,valor_adicional:add,status:'pendente'});
+    ok=!error;
+  }catch(e){}
+  if(ok){toast(`Solicitação enviada! Aguarde aprovação do admin para ${novasCotasSel} cotas. 🎉`,'s');}
+  else{toast(`Envie no WhatsApp: "Quero ir para ${novasCotasSel} cotas (+R$ ${add})" e o comprovante do PIX.`,'s');}
+  document.getElementById('extra-cotas-detail').style.display='none';
+  novasCotasSel=null;
+}
+
+// ===== COUNTDOWN — PRAZO DOS PALPITES =====
+function updateDeadlineCountdown(){
+  const n=new Date(),d=DEADLINE-n;
+  const el=document.getElementById('cdp-count');
+  const badge=document.getElementById('cdp-badge');
+  if(!el)return;
+  if(d>0){
+    const dd=Math.floor(d/864e5),hh=Math.floor(d%864e5/36e5),mm=Math.floor(d%36e5/6e4),ss=Math.floor(d%6e4/1e3);
+    el.textContent=`${dd}d ${hh}h ${mm}m ${ss}s`;
+    el.className='cdv red';
+    if(badge)badge.className='cds2 locked';
+  }else{
+    el.textContent='Encerrado';
+    el.className='cdv red';
+    if(badge){badge.textContent='🔒 Bloqueado';badge.className='cds2 locked';}
+  }
+}
+
+// ===== ADMIN: aprovação de cotas extras =====
+async function adminApproveCotas(id,inscId,cotasNova){
+  await sb.from('compra_cotas').update({status:'aprovado',approved_at:new Date().toISOString()}).eq('id',id);
+  await sb.from('inscricoes').update({cotas:cotasNova}).eq('id',inscId);
+  toast(`Aprovado! Atualizado para ${cotasNova} cotas.`,'s');loadAdmin();
+}
+async function adminRejectCotas(id){
+  await sb.from('compra_cotas').update({status:'rejeitado'}).eq('id',id);
+  toast('Solicitação rejeitada.','e');loadAdmin();
+}
+
 
 function toast(m,t){const ts=document.getElementById('toast');ts.textContent=m;ts.style.background=t==='e'?'var(--error)':'var(--success)';ts.classList.add('show');setTimeout(()=>ts.classList.remove('show'),3500)}
 </script>
