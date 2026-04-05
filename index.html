@@ -3,7 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <!-- build: 2026-04-05 13:53:50 -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#D4A843">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- iOS PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Bolão 2026">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+
+  <!-- Splash screens iOS (cor de fundo enquanto carrega) -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <!-- Windows PWA -->
+  <meta name="msapplication-TileColor" content="#0A0E17">
+  <meta name="msapplication-TileImage" content="/icon-192.png">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bolão do Almeida - Copa do Mundo 2026</title>
 <meta name="description" content="Bolão do Almeida - Copa do Mundo 2026. Faça sua inscrição e concorra a prêmios!">
 <link rel="canonical" href="https://bolaocopa.com">
@@ -2131,6 +2155,94 @@ async function salvarNovaSenha(){
   }
 }
 
+
+// ===== PWA — Service Worker + Install Prompt =====
+let deferredPrompt = null;
+
+// Registrar SW
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('[PWA] SW registrado:', reg.scope))
+      .catch(err => console.warn('[PWA] SW erro:', err));
+  });
+}
+
+// Capturar o evento de instalação (Android Chrome)
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Mostrar banner após 3s se não instalado
+  setTimeout(mostrarBannerInstall, 3000);
+});
+
+// Detectar se já está instalado
+window.addEventListener('appinstalled', () => {
+  deferredPrompt = null;
+  const banner = document.getElementById('pwa-banner');
+  if(banner) banner.remove();
+  toast('✅ App instalado! Procure o ícone na sua tela inicial.','s');
+});
+
+function mostrarBannerInstall(){
+  // Não mostrar se já está rodando como PWA
+  if(window.matchMedia('(display-mode: standalone)').matches) return;
+  if(window.navigator.standalone) return; // iOS já instalado
+  if(document.getElementById('pwa-banner')) return;
+
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const banner = document.createElement('div');
+  banner.id = 'pwa-banner';
+  banner.style.cssText = `
+    position:fixed;bottom:0;left:0;right:0;z-index:9999;
+    background:linear-gradient(135deg,#1A3A5C,#0A0E17);
+    border-top:2px solid #D4A843;
+    padding:1rem 1.2rem;
+    display:flex;align-items:center;gap:.8rem;
+    box-shadow:0 -4px 20px rgba(0,0,0,.5);
+    animation:slideUp .3s ease;
+  `;
+
+  if(isIOS){
+    banner.innerHTML = `
+      <img src="/icon-192.png" style="width:44px;height:44px;border-radius:10px;flex-shrink:0">
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Oswald',sans-serif;font-size:.85rem;color:#D4A843;text-transform:uppercase;letter-spacing:1px">Instalar o App</div>
+        <div style="font-size:.75rem;color:#94A3B8;margin-top:.1rem">Toque em <strong style="color:white">Compartilhar</strong> → <strong style="color:white">Adicionar à Tela Início</strong></div>
+      </div>
+      <button onclick="document.getElementById('pwa-banner').remove()" style="background:none;border:none;color:#64748B;font-size:1.3rem;cursor:pointer;padding:.2rem;flex-shrink:0">✕</button>
+    `;
+  } else {
+    banner.innerHTML = `
+      <img src="/icon-192.png" style="width:44px;height:44px;border-radius:10px;flex-shrink:0">
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Oswald',sans-serif;font-size:.85rem;color:#D4A843;text-transform:uppercase;letter-spacing:1px">Instalar o App</div>
+        <div style="font-size:.75rem;color:#94A3B8;margin-top:.1rem">Adicione à tela inicial para acesso rápido!</div>
+      </div>
+      <button onclick="instalarPWA()" style="background:linear-gradient(135deg,#D4A843,#F0D78C);color:#0A0E17;border:none;padding:.5rem 1rem;border-radius:6px;font-family:'Oswald',sans-serif;font-weight:700;font-size:.75rem;text-transform:uppercase;cursor:pointer;flex-shrink:0">Instalar</button>
+      <button onclick="document.getElementById('pwa-banner').remove()" style="background:none;border:none;color:#64748B;font-size:1.3rem;cursor:pointer;padding:.2rem .2rem .2rem .5rem;flex-shrink:0">✕</button>
+    `;
+  }
+
+  // Adicionar animação CSS
+  if(!document.getElementById('pwa-style')){
+    const style = document.createElement('style');
+    style.id = 'pwa-style';
+    style.textContent = '@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}';
+    document.head.appendChild(style);
+  }
+
+  document.body.appendChild(banner);
+}
+
+async function instalarPWA(){
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  console.log('[PWA] Escolha do usuário:', outcome);
+  deferredPrompt = null;
+  document.getElementById('pwa-banner')?.remove();
+}
 
 function toast(m,t){const ts=document.getElementById('toast');ts.textContent=m;ts.style.background=t==='e'?'var(--error)':'var(--success)';ts.classList.add('show');setTimeout(()=>ts.classList.remove('show'),3500)}
 </script>
