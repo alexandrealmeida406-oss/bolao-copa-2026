@@ -805,6 +805,12 @@ let currentUser=null,userProfile=null,userInscricao=null,selC=1;
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded',async()=>{
+  // Fallback: se sb não carregar em 3s, recarregar com cache bust
+  setTimeout(()=>{
+    if(typeof sb==='undefined'){
+      window.location.href=window.location.origin+window.location.pathname+'?nc='+Date.now();
+    }
+  },3000);
   renderFlags();
   uc();setInterval(uc,1000);
   updDeadline();setInterval(updDeadline,1000);
@@ -1610,9 +1616,58 @@ async function loadConta(){
   if(!currentUser){el.innerHTML='<div class="login-box"><h3>Faça login</h3><button class="btn-google" onclick="loginGoogle()">Entrar com Google</button></div>';return;}
   
   await loadUserData();
-  const name=currentUser.user_metadata?.full_name||'Usuário';
+  const name=currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'Usuário';
   const avatar=currentUser.user_metadata?.avatar_url||'';
-  
+
+  // ── Caso: REJEITADO ──────────────────────────────────────
+  if(userInscricao?.status==='rejeitado'){
+    el.innerHTML=`
+    <div class="fc">
+      <div class="user-status" style="margin-bottom:1rem">
+        <div class="us-info">
+          ${avatar?`<img src="${avatar}">`:''}
+          <div><div class="us-name">${name}</div><div class="us-email">${currentUser.email}</div></div>
+        </div>
+        <span class="us-badge" style="background:rgba(239,68,68,.15);color:var(--error)">❌ Rejeitado</span>
+      </div>
+      <div style="text-align:center;padding:1rem;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;margin-bottom:1.2rem">
+        <p style="font-size:1.5rem;margin-bottom:.4rem">❌</p>
+        <p style="font-family:'Oswald',sans-serif;font-size:1rem;color:var(--error);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Inscrição Rejeitada</p>
+        <p style="color:var(--text-muted);font-size:.85rem;line-height:1.5">Sua inscrição anterior foi rejeitada pelo admin (pagamento não confirmado).<br>Você pode fazer uma nova inscrição pagando o PIX e confirmando abaixo.</p>
+      </div>
+      <h3 class="fst" style="margin-bottom:.3rem">Nova Inscrição</h3>
+      <p class="fsd">Escolha suas cotas e pague via PIX para participar.</p>
+      <label style="font-family:'Barlow Condensed';font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:.5rem;display:block">Quantidade de Cotas</label>
+      <div class="cs">
+        <div class="co sel" onclick="selCota(1)" id="c1"><div class="cn">1</div><div class="cl">Cota</div><div class="cp">R$ 33</div><div class="cd">R$30 + R$3 taxa</div></div>
+        <div class="co" onclick="selCota(2)" id="c2"><div class="cn">2</div><div class="cl">Cotas</div><div class="cp">R$ 60</div><div class="cd">R$54 + R$6 taxa</div><div class="csv">Economia R$ 6</div></div>
+        <div class="co" onclick="selCota(3)" id="c3"><div class="cn">3</div><div class="cl">Cotas</div><div class="cp">R$ 81</div><div class="cd">R$72 + R$9 taxa</div><div class="csv">Economia R$ 18</div></div>
+      </div>
+      <div class="csum" id="checkout-sum">
+        <div class="cln"><span>1 cota de participação</span><span>R$ 30,00</span></div>
+        <div class="cln"><span>Taxa de serviço</span><span>R$ 3,00</span></div>
+        <div class="cln tot"><span>Total</span><span>R$ 33,00</span></div>
+      </div>
+      <div class="pixs">
+        <div class="pixt">Pague via PIX</div>
+        <div class="qrc"></div>
+        <div class="pkd"><code>33567108859</code><button onclick="cpk()">Copiar</button></div>
+        <p class="pixn">Chave PIX: CPF · <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">Envie o comprovante no grupo</a></p>
+      </div>
+      <div style="text-align:center"><button id="btn-confirmar-inscricao" class="btn btn-p" style="min-height:52px" onclick="submitNovaInscricao()">✓ Já fiz o PIX — Nova Inscrição!</button></div>
+      <div style="text-align:center;margin-top:1rem"><button class="btn btn-danger btn-sm" onclick="logout()">Sair da Conta</button></div>
+    </div>`;
+    selC=1;
+    setTimeout(gqr,100);
+    return;
+  }
+
+  // ── Caso: NORMAL (sem inscrição, pendente ou aprovado) ───
+  const badgeClass = !userInscricao ? 'badge-none'
+    : userInscricao.status==='aprovado' ? 'badge-approved' : 'badge-pending';
+  const badgeText = !userInscricao ? 'Sem inscrição'
+    : userInscricao.status==='aprovado' ? '✅ Aprovado' : '⏳ Pendente';
+
   el.innerHTML=`
     <div class="fc">
       <div class="user-status">
@@ -1623,12 +1678,14 @@ async function loadConta(){
         <div>
           ${userInscricao?`
             <div style="font-size:.7rem;color:var(--text-muted);text-transform:uppercase">${userInscricao.cotas} cota${userInscricao.cotas>1?'s':''} · R$ ${userInscricao.valor_total}</div>
-            <span class="us-badge ${userInscricao.status==='aprovado'?'badge-approved':'badge-pending'}">${userInscricao.status==='aprovado'?'✅ Aprovado':'⏳ Pendente'}</span>
-          `:'<span class="us-badge badge-none">Sem inscrição</span>'}
+          `:''}
+          <span class="us-badge ${badgeClass}">${badgeText}</span>
         </div>
       </div>
       ${!userInscricao?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'home\');scrollToSection(\'insc\')">Fazer Inscrição</a></div>':''}
-      ${userInscricao?.status==='aprovado'?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'palpites\')">🎯 Palpites 1ª Fase →</a></div>':''}\n      ${userInscricao?.status==='aprovado'?renderCompraCotas(userInscricao.cotas):''}
+      ${userInscricao?.status==='pendente'?`<p style="text-align:center;color:var(--text-muted);font-size:.85rem;margin-top:.8rem">📱 Envie o comprovante PIX no <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">grupo do WhatsApp</a>. O admin irá aprovar seu pagamento.</p>`:''}
+      ${userInscricao?.status==='aprovado'?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'palpites\')">🎯 Palpites 1ª Fase →</a></div>':''}
+      ${userInscricao?.status==='aprovado'?renderCompraCotas(userInscricao.cotas):''}
       <div style="text-align:center;margin-top:1rem"><button class="btn btn-danger btn-sm" onclick="logout()">Sair da Conta</button></div>
     </div>`;
 }
@@ -2006,61 +2063,40 @@ function mostrarModalTrocaSenha(){
 }
 
 async function salvarNovaSenha(){
-  const nova = document.getElementById('nova-senha-def')?.value;
-  const conf = document.getElementById('nova-senha-conf')?.value;
-  const btn  = document.getElementById('btn-salvar-senha');
+  const btn = document.getElementById('btn-salvar-senha');
 
-  if(!nova||nova.length<8){
-    document.getElementById('nova-senha-def')?.focus();
-    toast('A senha deve ter no mínimo 8 caracteres!','e');
-    return;
-  }
-  if(nova!==conf){
-    document.getElementById('nova-senha-conf')?.focus();
-    toast('As senhas não conferem!','e');
-    return;
-  }
-
-  // Verificar se o cliente Supabase existe
+  // Verificar sb ANTES de qualquer coisa — se não existir, recarregar
   if(typeof sb==='undefined'||!sb?.auth){
-    toast('Recarregando página para corrigir o erro...','e');
+    if(btn){btn.textContent='Recarregando...';btn.disabled=true;}
     setTimeout(()=>{
-      window.location.href=window.location.href.split('?')[0]+'?v='+Date.now();
-    },1500);
+      window.location.href=window.location.origin+window.location.pathname+'?nc='+Date.now();
+    },800);
     return;
   }
+
+  const nova=document.getElementById('nova-senha-def')?.value;
+  const conf=document.getElementById('nova-senha-conf')?.value;
+
+  if(!nova||nova.length<8){document.getElementById('nova-senha-def')?.focus();toast('Mínimo 8 caracteres!','e');return;}
+  if(nova!==conf){document.getElementById('nova-senha-conf')?.focus();toast('As senhas não conferem!','e');return;}
 
   if(btn){btn.textContent='Salvando...';btn.disabled=true;}
-
   try{
     const{error}=await sb.auth.updateUser({
-      password: nova,
-      data: {...(currentUser?.user_metadata||{}), must_change_password: false}
+      password:nova,
+      data:{...(currentUser?.user_metadata||{}),must_change_password:false}
     });
-
-    if(error){
-      toast('Erro: '+error.message,'e');
-      if(btn){btn.textContent='✓ Salvar Nova Senha';btn.disabled=false;}
-      return;
-    }
-
-    // Fechar modal
+    if(error){toast('Erro: '+error.message,'e');if(btn){btn.textContent='✓ Salvar Nova Senha';btn.disabled=false;}return;}
     const modal=document.getElementById('modal-troca-senha');
     if(modal)modal.style.display='none';
-
-    // Atualizar sessão local
-    try{
-      const{data}=await sb.auth.getUser();
-      if(data?.user)currentUser=data.user;
-    }catch(e2){}
-
-    toast('✅ Senha criada com sucesso! Bem-vindo(a) 🎉','s');
-
+    try{const{data}=await sb.auth.getUser();if(data?.user)currentUser=data.user;}catch(e2){}
+    toast('✅ Senha criada! Bem-vindo(a) 🎉','s');
   }catch(e){
-    toast('Erro inesperado: '+e.message,'e');
+    toast('Erro: '+e.message,'e');
     if(btn){btn.textContent='✓ Salvar Nova Senha';btn.disabled=false;}
   }
 }
+
 
 function toast(m,t){const ts=document.getElementById('toast');ts.textContent=m;ts.style.background=t==='e'?'var(--error)':'var(--success)';ts.classList.add('show');setTimeout(()=>ts.classList.remove('show'),3500)}
 </script>
