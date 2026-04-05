@@ -763,6 +763,23 @@ button:active,.co:active{opacity:.8}
 <p style="margin-top:.3rem"><a href="https://bolaocopa.com">bolaocopa.com</a></p>
 </footer>
 
+
+<!-- MODAL TROCA DE SENHA (primeiro login após reset) -->
+<div id="modal-troca-senha" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);align-items:center;justify-content:center">
+  <div style="background:var(--bg-card);border:1px solid var(--accent-gold);border-radius:12px;padding:2rem;max-width:440px;width:90%;margin:1rem;position:relative">
+    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--gradient-gold);border-radius:12px 12px 0 0"></div>
+    <div style="text-align:center;margin-bottom:1.2rem">
+      <p style="font-size:2rem;margin-bottom:.4rem">🔑</p>
+      <h3 style="font-family:'Oswald',sans-serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem">Crie sua nova senha</h3>
+      <p style="color:var(--text-muted);font-size:.85rem">O admin resetou sua senha. Por segurança, crie uma nova senha definitiva agora.</p>
+    </div>
+    <div class="fg"><label>Nova Senha *</label><input type="password" id="nova-senha-def" placeholder="Mínimo 8 caracteres" style="font-size:16px"></div>
+    <div class="fg"><label>Confirmar Nova Senha *</label><input type="password" id="nova-senha-conf" placeholder="Repita a nova senha" style="font-size:16px" onkeydown="if(event.key==='Enter')salvarNovaSenha()"></div>
+    <button id="btn-salvar-senha" class="btn btn-p" style="width:100%;justify-content:center;min-height:48px;margin-top:.4rem" onclick="salvarNovaSenha()">✓ Salvar Nova Senha</button>
+    <p style="text-align:center;margin-top:.8rem;font-size:.75rem;color:var(--text-muted)">Você não pode fechar esta janela sem criar uma nova senha.</p>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -846,17 +863,20 @@ async function logout(){
 async function loadUserData(){
   if(!currentUser)return;
   try{
-    // Load profile
     const{data:prof,error:profErr}=await sb.from('profiles').select('*').eq('id',currentUser.id).maybeSingle();
     userProfile=prof||null;
     if(profErr)console.warn('Profile load error:',profErr.message);
   }catch(e){console.warn('Profile error:',e);userProfile=null;}
   try{
-    // Load inscription
     const{data:inscs,error:inscErr}=await sb.from('inscricoes').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(1);
     userInscricao=inscs&&inscs.length>0?inscs[0]:null;
     if(inscErr)console.warn('Inscricao load error:',inscErr.message);
   }catch(e){console.warn('Inscricao error:',e);userInscricao=null;}
+
+  // Verificar se precisa trocar senha (first login após reset pelo admin)
+  if(currentUser.user_metadata?.must_change_password){
+    setTimeout(()=>mostrarModalTrocaSenha(),600);
+  }
 }
 
 // ===== NAVIGATION =====
@@ -1469,7 +1489,7 @@ async function loadAdmin(){
               <button onclick="gerarSenhaAleat()" title="Gerar senha aleatória" style="position:absolute;right:.4rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--accent-teal);font-size:.9rem">🎲</button>
             </div>
           </div>
-          <button class="btn btn-p btn-sm" onclick="adminResetSenha()" style="height:40px">🔑 Resetar</button>
+          <button id="btn-reset-senha" class="btn btn-p btn-sm" onclick="adminResetSenha()" style="height:40px;white-space:nowrap">🔑 Resetar Senha</button>
         </div>
         <p style="font-size:.7rem;color:var(--text-muted);margin-top:.6rem">⚠️ Após o reset, avise o usuário pelo WhatsApp para entrar com a nova senha e trocá-la em seguida.</p>
         <div id="reset-resultado" style="display:none;margin-top:.8rem;padding:.7rem;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:6px;font-size:.8rem;color:var(--success)"></div>
@@ -1548,43 +1568,108 @@ function preencherReset(email){
   }
 }
 
+// Service role key — fica só na memória, nunca salvo
+let _srvKey = '';
+
 async function adminResetSenha(){
-  const email=document.getElementById('reset-email-user')?.value.trim();
-  const novaSenha=document.getElementById('reset-nova-senha')?.value.trim();
+  const email = document.getElementById('reset-email-user')?.value.trim();
+  const novaSenha = document.getElementById('reset-nova-senha')?.value.trim();
   if(!email){toast('Informe o e-mail do usuário!','e');return;}
   if(!novaSenha||novaSenha.length<8){toast('A senha deve ter no mínimo 8 caracteres!','e');return;}
 
-  const btn=event?.target;
+  // Pedir service role key se não tiver na memória
+  if(!_srvKey){
+    _srvKey = prompt(
+      '🔑 Service Role Key do Supabase\n\n' +
+      'Necessária para resetar senhas. Encontre em:\n' +
+      'Supabase Dashboard → Settings → API → service_role (secret)\n\n' +
+      'A chave ficará apenas na memória desta sessão, não será salva.'
+    );
+    if(!_srvKey){toast('Operação cancelada.','e');return;}
+    _srvKey = _srvKey.trim();
+  }
+
+  const btn = document.getElementById('btn-reset-senha');
   if(btn){btn.textContent='Resetando...';btn.disabled=true;}
 
   try{
-    // Usar a Admin API do Supabase via fetch com service role
-    // Como só temos anon key, a alternativa mais simples é via RPC ou registrar no banco
-    // Tentativa 1: registrar no banco para o admin ver e fazer manualmente
-    await sb.from('reset_senha_admin').upsert({
-      email_usuario:email,
-      nova_senha:novaSenha,
-      solicitado_em:new Date().toISOString(),
-      admin_id:currentUser.id,
-      status:'pendente'
-    },{onConflict:'email_usuario'});
+    // 1. Buscar o user_id pelo email via Admin API
+    const listResp = await fetch(
+      `${SUPABASE_URL}/auth/v1/admin/users?page=1&per_page=1000`,
+      {headers:{'apikey':_srvKey,'Authorization':'Bearer '+_srvKey}}
+    );
+    if(!listResp.ok){
+      const err = await listResp.text();
+      if(err.includes('Invalid') || err.includes('Forbidden')){
+        _srvKey='';
+        toast('Service Role Key inválida. Tente novamente.','e');
+      }else{
+        toast('Erro ao buscar usuário: '+listResp.status,'e');
+      }
+      if(btn){btn.textContent='🔑 Resetar Senha';btn.disabled=false;}
+      return;
+    }
+    const users = await listResp.json();
+    const user = (users.users||[]).find(u=>u.email?.toLowerCase()===email.toLowerCase());
+    if(!user){
+      toast(`Usuário com e-mail "${email}" não encontrado.`,'e');
+      if(btn){btn.textContent='🔑 Resetar Senha';btn.disabled=false;}
+      return;
+    }
 
-    // Mostrar resultado com instrução clara para o admin
-    const res=document.getElementById('reset-resultado');
+    // 2. Alterar a senha diretamente
+    const updResp = await fetch(
+      `${SUPABASE_URL}/auth/v1/admin/users/${user.id}`,
+      {
+        method:'PUT',
+        headers:{
+          'apikey':_srvKey,
+          'Authorization':'Bearer '+_srvKey,
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+          password: novaSenha,
+          user_metadata: {...(user.user_metadata||{}), must_change_password: true}
+        })
+      }
+    );
+    if(!updResp.ok){
+      const err = await updResp.text();
+      toast('Erro ao resetar: '+err,'e');
+      if(btn){btn.textContent='🔑 Resetar Senha';btn.disabled=false;}
+      return;
+    }
+
+    // 3. Registrar no banco para auditoria
+    try{
+      await sb.from('reset_senha_admin').upsert({
+        email_usuario:email,
+        user_id:user.id,
+        solicitado_em:new Date().toISOString(),
+        admin_id:currentUser.id,
+        status:'aplicado'
+      },{onConflict:'email_usuario'});
+    }catch(e){}
+
+    // 4. Mostrar confirmação
+    const res = document.getElementById('reset-resultado');
     if(res){
       res.style.display='block';
-      res.innerHTML=`✅ Solicitação registrada para <strong>${email}</strong>.<br>
-        Para aplicar agora: acesse <a href="https://supabase.com/dashboard/project/vuomkohlwomdeyobddhw/auth/users" target="_blank" style="color:var(--success)">Supabase → Authentication → Users</a>, 
-        busque o e-mail, clique nos 3 pontinhos → <strong>Send password recovery</strong> ou edite a senha diretamente.<br><br>
-        <strong>Nova senha temporária:</strong> <code style="color:var(--accent-teal);font-family:monospace;font-size:.9rem">${novaSenha}</code>`;
+      res.innerHTML=`<div style="padding:.8rem;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:8px;font-size:.84rem">
+        ✅ <strong>Senha resetada com sucesso!</strong><br><br>
+        Usuário: <strong>${email}</strong><br>
+        Nova senha temporária: <code style="color:var(--accent-teal);background:var(--bg-dark);padding:.1rem .4rem;border-radius:4px;font-family:monospace">${novaSenha}</code><br><br>
+        <strong style="color:var(--warning)">⚠️ Avise o usuário:</strong> ao fazer o primeiro login com essa senha, ele será solicitado a criar uma senha definitiva.
+      </div>`;
     }
-    toast(`✅ Registrado! Acesse o Supabase para aplicar a nova senha de ${email}.`,'s');
+    toast(`✅ Senha de ${email} resetada! Avise o usuário.`,'s');
     document.getElementById('reset-email-user').value='';
     document.getElementById('reset-nova-senha').value='';
   }catch(e){
-    toast(`Acesse: Supabase → Auth → Users → "${email}" → Reset password.`,'s');
+    toast('Erro: '+e.message,'e');
+    if(btn){btn.textContent='🔑 Resetar Senha';btn.disabled=false;}
   }finally{
-    if(btn){btn.textContent='🔑 Resetar';btn.disabled=false;}
+    if(btn){btn.textContent='🔑 Resetar Senha';btn.disabled=false;}
   }
 }
 
@@ -1961,6 +2046,54 @@ async function adminApproveCotas(id,inscId,cotasNova){
 async function adminRejectCotas(id){
   await sb.from('compra_cotas').update({status:'rejeitado'}).eq('id',id);
   toast('Solicitação rejeitada.','e');loadAdmin();
+}
+
+
+// ===== MODAL TROCA DE SENHA =====
+function mostrarModalTrocaSenha(){
+  const modal = document.getElementById('modal-troca-senha');
+  if(modal){
+    modal.style.display='flex';
+    setTimeout(()=>document.getElementById('nova-senha-def')?.focus(),200);
+  }
+}
+
+async function salvarNovaSenha(){
+  const nova = document.getElementById('nova-senha-def')?.value;
+  const conf = document.getElementById('nova-senha-conf')?.value;
+  if(!nova||nova.length<8){
+    document.getElementById('nova-senha-def').focus();
+    toast('A senha deve ter no mínimo 8 caracteres!','e');
+    return;
+  }
+  if(nova!==conf){
+    document.getElementById('nova-senha-conf').focus();
+    toast('As senhas não conferem!','e');
+    return;
+  }
+  const btn = document.getElementById('btn-salvar-senha');
+  if(btn){btn.textContent='Salvando...';btn.disabled=true;}
+  try{
+    const{error}=await sb.auth.updateUser({
+      password: nova,
+      data: {...(currentUser.user_metadata||{}), must_change_password: false}
+    });
+    if(error){
+      toast('Erro ao salvar: '+error.message,'e');
+      if(btn){btn.textContent='✓ Salvar Nova Senha';btn.disabled=false;}
+      return;
+    }
+    // Fechar modal
+    const modal = document.getElementById('modal-troca-senha');
+    if(modal)modal.style.display='none';
+    // Atualizar currentUser
+    const{data:{user}}=await sb.auth.getUser();
+    if(user)currentUser=user;
+    toast('✅ Senha atualizada com sucesso! Bem-vindo(a) 🎉','s');
+  }catch(e){
+    toast('Erro: '+e.message,'e');
+    if(btn){btn.textContent='✓ Salvar Nova Senha';btn.disabled=false;}
+  }
 }
 
 function toast(m,t){const ts=document.getElementById('toast');ts.textContent=m;ts.style.background=t==='e'?'var(--error)':'var(--success)';ts.classList.add('show');setTimeout(()=>ts.classList.remove('show'),3500)}
