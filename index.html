@@ -777,7 +777,10 @@ button:active,.co:active{opacity:.8}
     <div class="fg"><label>Nova Senha *</label><input type="password" id="nova-senha-def" placeholder="Mínimo 8 caracteres" style="font-size:16px"></div>
     <div class="fg"><label>Confirmar Nova Senha *</label><input type="password" id="nova-senha-conf" placeholder="Repita a nova senha" style="font-size:16px" onkeydown="if(event.key==='Enter')salvarNovaSenha()"></div>
     <button id="btn-salvar-senha" class="btn btn-p" style="width:100%;justify-content:center;min-height:48px;margin-top:.4rem" onclick="salvarNovaSenha()">✓ Salvar Nova Senha</button>
-    <p style="text-align:center;margin-top:.8rem;font-size:.75rem;color:var(--text-muted)">Você não pode fechar esta janela sem criar uma nova senha.</p>
+    <p style="text-align:center;margin-top:.8rem;font-size:.75rem;color:var(--text-muted)" id="modal-senha-info">Crie uma senha definitiva para continuar.</p>
+    <div style="text-align:center;margin-top:.6rem">
+      <button onclick="fecharModalEmergencia()" style="background:none;border:none;color:var(--text-muted);font-size:.72rem;cursor:pointer;text-decoration:underline">Cancelar e sair da conta</button>
+    </div>
   </div>
 </div>
 
@@ -1978,6 +1981,22 @@ async function adminRejectCotas(id){
 
 
 // ===== MODAL TROCA DE SENHA =====
+function fecharModalEmergencia(){
+  // Fecha modal e faz logout — usuário terá que logar novamente com nova senha
+  const modal=document.getElementById('modal-troca-senha');
+  if(modal)modal.style.display='none';
+  if(typeof sb!=='undefined'&&sb?.auth){
+    sb.auth.signOut().then(()=>{
+      currentUser=null;userProfile=null;userInscricao=null;
+      navigate('home');updateUI();
+      toast('Você saiu. Peça ao admin para redefinir sua senha.','s');
+    });
+  }else{
+    // sb não existe — recarregar página forçando cache bust
+    window.location.href=window.location.href.split('?')[0]+'?v='+Date.now();
+  }
+}
+
 function mostrarModalTrocaSenha(){
   const modal = document.getElementById('modal-troca-senha');
   if(modal){
@@ -2004,7 +2023,10 @@ async function salvarNovaSenha(){
 
   // Verificar se o cliente Supabase existe
   if(typeof sb==='undefined'||!sb?.auth){
-    toast('Erro interno: recarregue a página e tente novamente.','e');
+    toast('Recarregando página para corrigir o erro...','e');
+    setTimeout(()=>{
+      window.location.href=window.location.href.split('?')[0]+'?v='+Date.now();
+    },1500);
     return;
   }
 
