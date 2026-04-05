@@ -204,6 +204,7 @@ body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-
 .badge-pending{background:rgba(245,158,11,.15);color:var(--warning)}
 .badge-approved{background:rgba(34,197,94,.15);color:var(--success)}
 .badge-none{background:rgba(100,116,139,.15);color:var(--text-muted)}
+.badge-rejected{background:rgba(239,68,68,.15);color:var(--error)}
 
 /* FOOTER */
 .ft{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center}
@@ -902,8 +903,8 @@ function updateUI(){
       <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w">Grupo WhatsApp</a>`;
     
     // Inscription section
-    if(userInscricao){
-      const statusText=userInscricao.status==='aprovado'?'✅ Aprovado':userInscricao.status==='pendente'?'⏳ Aguardando aprovação':'❌ Rejeitado';
+    if(userInscricao && userInscricao.status !== 'rejeitado'){
+      const statusText=userInscricao.status==='aprovado'?'✅ Aprovado':'⏳ Aguardando aprovação';
       const statusClass=userInscricao.status==='aprovado'?'badge-approved':'badge-pending';
       inscEl.innerHTML=`
         <div class="fc">
@@ -920,8 +921,41 @@ function updateUI(){
             </div>
           </div>
           ${userInscricao.status==='aprovado'?'<div style="text-align:center"><a class="btn btn-p" onclick="navigate(\'palpites\')">🎯 Palpites 1ª Fase →</a></div>':''}
-          ${userInscricao.status==='pendente'?'<p style="text-align:center;color:var(--text-muted);font-size:.85rem">Envie o comprovante PIX no grupo do WhatsApp. O admin irá aprovar seu pagamento.</p>':''}
+          ${userInscricao.status==='pendente'?`<p style="text-align:center;color:var(--text-muted);font-size:.85rem;margin-top:.8rem">📱 Envie o comprovante PIX no <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">grupo do WhatsApp</a>. O admin irá aprovar seu pagamento.</p>`:''}
         </div>`;
+    }else if(userInscricao && userInscricao.status === 'rejeitado'){
+      // Inscrição rejeitada — mostrar aviso e permitir nova tentativa
+      inscEl.innerHTML=`
+        <div class="fc">
+          <div style="text-align:center;padding:1rem;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;margin-bottom:1.2rem">
+            <p style="font-size:1.5rem;margin-bottom:.4rem">❌</p>
+            <p style="font-family:'Oswald',sans-serif;font-size:1rem;color:var(--error);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Inscrição Rejeitada</p>
+            <p style="color:var(--text-muted);font-size:.85rem;line-height:1.5">Sua inscrição anterior foi rejeitada pelo admin (pagamento não confirmado).<br>
+            Você pode fazer uma nova inscrição pagando o PIX e confirmando abaixo.</p>
+          </div>
+          <h3 class="fst" style="margin-bottom:.3rem">Nova Inscrição</h3>
+          <p class="fsd">Escolha suas cotas e pague via PIX para participar.</p>
+          <label style="font-family:'Barlow Condensed';font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:.5rem;display:block">Quantidade de Cotas</label>
+          <div class="cs">
+            <div class="co sel" onclick="selCota(1)" id="c1"><div class="cn">1</div><div class="cl">Cota</div><div class="cp">R$ 33</div><div class="cd">R$30 + R$3 taxa</div></div>
+            <div class="co" onclick="selCota(2)" id="c2"><div class="cn">2</div><div class="cl">Cotas</div><div class="cp">R$ 60</div><div class="cd">R$54 + R$6 taxa</div><div class="csv">Economia R$ 6</div></div>
+            <div class="co" onclick="selCota(3)" id="c3"><div class="cn">3</div><div class="cl">Cotas</div><div class="cp">R$ 81</div><div class="cd">R$72 + R$9 taxa</div><div class="csv">Economia R$ 18</div></div>
+          </div>
+          <div class="csum" id="checkout-sum">
+            <div class="cln"><span>1 cota de participação</span><span>R$ 30,00</span></div>
+            <div class="cln"><span>Taxa de serviço</span><span>R$ 3,00</span></div>
+            <div class="cln tot"><span>Total</span><span>R$ 33,00</span></div>
+          </div>
+          <div class="pixs">
+            <div class="pixt">Pague via PIX</div>
+            <div class="qrc"></div>
+            <div class="pkd"><code>33567108859</code><button onclick="cpk()">Copiar</button></div>
+            <p class="pixn">Chave PIX: CPF · <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">Envie o comprovante no grupo</a></p>
+          </div>
+          <div style="text-align:center"><button id="btn-confirmar-inscricao" class="btn btn-p" style="min-height:52px;font-size:.9rem" onclick="submitNovaInscricao()">✓ Já fiz o PIX — Nova Inscrição!</button></div>
+        </div>`;
+      selC=1;
+      setTimeout(gqr,100);
     }else{
       renderInscricaoForm();
     }
@@ -931,6 +965,35 @@ function updateUI(){
       <button class="btn btn-p" onclick="scrollToSection('insc')">Participar Agora</button>
       <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w">Grupo WhatsApp</a>`;
     inscEl.innerHTML=loginBoxHTML();
+  }
+}
+
+
+// ===== NOVA INSCRIÇÃO (após rejeição) =====
+async function submitNovaInscricao(){
+  if(!currentUser){toast('Faça login primeiro!','e');return;}
+  const btn=document.getElementById('btn-confirmar-inscricao');
+  if(btn){btn.textContent='Enviando...';btn.disabled=true;}
+  try{
+    // Deleta a inscrição rejeitada anterior
+    if(userInscricao?.id){
+      await sb.from('inscricoes').delete().eq('id',userInscricao.id).eq('status','rejeitado');
+    }
+    // Cria nova inscrição
+    const p=PR[selC];
+    const{error}=await sb.from('inscricoes').insert({
+      user_id:currentUser.id,cotas:selC,valor_cotas:p.c,taxa_servico:p.t,valor_total:p.v
+    });
+    if(error){
+      toast('Erro: '+error.message,'e');
+      if(btn){btn.textContent='✓ Já fiz o PIX — Nova Inscrição!';btn.disabled=false;}
+      return;
+    }
+    await loadUserData();updateUI();loadStats();
+    toast('✅ Nova inscrição enviada! Aguarde aprovação do admin.','s');
+  }catch(e){
+    toast('Erro ao enviar. Tente novamente.','e');
+    if(btn){btn.textContent='✓ Já fiz o PIX — Nova Inscrição!';btn.disabled=false;}
   }
 }
 
@@ -1367,7 +1430,12 @@ async function loadAdmin(){
             <td>${p.como_conheceu||'-'}</td>
             <td>${p.indicado_por||'-'}</td>
             <td class="${isPending?'stp':'sta'}">${isPending?'⏳ Pendente':'✅ Aprovado'}</td>
-            <td>${isPending?`<button class="ba" onclick="adminApprove(${i.id})">Aprovar</button><button class="br2" onclick="adminReject(${i.id})">Rejeitar</button>`:emailUser?`<button style="background:var(--accent-teal);color:white;padding:.2rem .45rem;border:none;border-radius:4px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.6rem;text-transform:uppercase" onclick="preencherReset('${emailUser}')">🔑 Reset</button>`:'—'}</td>
+            <td style="white-space:nowrap">
+              ${isPending?`<button class="ba" onclick="adminApprove(${i.id})">✅ Aprovar</button><button class="br2" onclick="adminReject(${i.id})">❌ Rejeitar</button>`:''}
+              ${i.status==='rejeitado'?`<button style="background:var(--warning);color:var(--bg-dark);padding:.25rem .5rem;border:none;border-radius:4px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.62rem;text-transform:uppercase;letter-spacing:.5px" onclick="adminReativar(${i.id})">🔄 Reativar</button>`:''}
+              ${i.status==='aprovado'&&emailUser?`<button style="background:var(--accent-teal);color:white;padding:.25rem .45rem;border:none;border-radius:4px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.6rem;text-transform:uppercase" onclick="preencherReset('${emailUser}')">🔑 Reset</button>`:''}
+              <button style="background:rgba(239,68,68,.15);color:var(--error);border:1px solid rgba(239,68,68,.3);padding:.25rem .5rem;border-radius:4px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.6rem;text-transform:uppercase;margin-left:.15rem" onclick="adminExcluirCadastro('${i.user_id}',${i.id},'${i.user_id?.substring(0,8)}')">🗑 Excluir</button>
+            </td>
           </tr>`;}).join('')}</tbody></table>
       </div>`;
     // Load compra_cotas pendentes
@@ -1409,6 +1477,36 @@ async function loadAdmin(){
     el.appendChild(resetSection);
 
   }catch(e){el.innerHTML='<p>Erro: '+e.message+'</p>';}
+}
+
+
+async function adminReativar(id){
+  // Volta inscrição rejeitada para pendente — dá nova chance ao participante
+  if(!confirm('Reativar esta inscrição? O status voltará para Pendente, aguardando novo comprovante.'))return;
+  await sb.from('inscricoes').update({status:'pendente'}).eq('id',id);
+  toast('✅ Inscrição reativada! Status voltou para Pendente.','s');
+  loadAdmin();loadStats();
+}
+
+async function adminExcluirCadastro(userId, inscId, nomeAbrev){
+  if(!confirm(`⚠️ Excluir o cadastro do usuário ${nomeAbrev}...?\n\nIsso irá:\n• Remover a inscrição\n• Remover o perfil\n• Remover os palpites\n\nO usuário poderá se recadastrar. Confirma?`))return;
+  const btn=event?.target;
+  if(btn){btn.textContent='Excluindo...';btn.disabled=true;}
+  try{
+    // Deleta palpites
+    await sb.from('palpites').delete().eq('user_id',userId);
+    // Deleta compra_cotas
+    try{await sb.from('compra_cotas').delete().eq('user_id',userId);}catch(e){}
+    // Deleta inscrição
+    await sb.from('inscricoes').delete().eq('id',inscId);
+    // Deleta perfil
+    await sb.from('profiles').delete().eq('id',userId);
+    toast('✅ Cadastro excluído. O usuário pode se recadastrar.','s');
+    loadAdmin();loadStats();
+  }catch(e){
+    toast('Erro ao excluir: '+e.message,'e');
+    if(btn){btn.textContent='🗑 Excluir';btn.disabled=false;}
+  }
 }
 
 async function adminApprove(id){
