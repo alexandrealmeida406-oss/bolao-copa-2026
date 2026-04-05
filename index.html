@@ -1568,62 +1568,462 @@ function preencherReset(email){
   }
 }
 
+
 // ===== ADMIN RESET SENHA via RPC seguro =====
 async function adminResetSenha(){
-  const email = document.getElementById('reset-email-user')?.value.trim();
-  const novaSenha = document.getElementById('reset-nova-senha')?.value.trim();
-  if(!email){
-    document.getElementById('reset-email-user')?.focus();
-    toast('Informe o e-mail do usuário!','e');return;
-  }
-  if(!novaSenha||novaSenha.length<8){
-    document.getElementById('reset-nova-senha')?.focus();
-    toast('A senha deve ter no mínimo 8 caracteres!','e');return;
-  }
-
+  const email=document.getElementById('reset-email-user')?.value.trim();
+  const novaSenha=document.getElementById('reset-nova-senha')?.value.trim();
+  if(!email){document.getElementById('reset-email-user')?.focus();toast('Informe o e-mail!','e');return;}
+  if(!novaSenha||novaSenha.length<6){document.getElementById('reset-nova-senha')?.focus();toast('Senha: mínimo 6 caracteres!','e');return;}
   const btn=document.getElementById('btn-reset-senha');
   if(btn){btn.textContent='Resetando...';btn.disabled=true;}
-
   try{
-    // Chama a função RPC criada no Supabase (não precisa de service role key)
     const{data,error}=await sb.rpc('reset_user_password',{
-      p_email: email,
-      p_new_password: novaSenha,
-      p_admin_id: currentUser.id
+      p_email:email,p_new_password:novaSenha,p_admin_id:currentUser.id
     });
-
-    if(error){
-      toast('Erro: '+error.message,'e');
-      if(btn){btn.textContent='🔑 Resetar Senha';btn.disabled=false;}
-      return;
-    }
-
-    if(!data?.success){
-      toast('Erro: '+(data?.error||'Falha desconhecida'),'e');
-      if(btn){btn.textContent='🔑 Resetar Senha';btn.disabled=false;}
-      return;
-    }
-
-    // Sucesso — mostrar confirmação
+    if(error){toast('Erro: '+error.message,'e');if(btn){btn.textContent='🔑 Resetar Senha';btn.disabled=false;}return;}
+    if(!data?.success){toast('Erro: '+(data?.error||'Falha'),'e');if(btn){btn.textContent='🔑 Resetar Senha';btn.disabled=false;}return;}
     const res=document.getElementById('reset-resultado');
     if(res){
       res.style.display='block';
       res.innerHTML=`<div style="padding:.9rem;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:8px;font-size:.84rem;line-height:1.6">
-        ✅ <strong>Senha resetada com sucesso!</strong><br><br>
+        ✅ <strong>Senha resetada!</strong><br><br>
         Usuário: <strong>${email}</strong><br>
-        Senha temporária: <code style="color:var(--accent-teal);background:var(--bg-dark);padding:.15rem .5rem;border-radius:4px;font-family:monospace;font-size:.95rem">${novaSenha}</code><br><br>
-        <span style="color:var(--warning)">⚠️ Avise o usuário:</span> ao fazer login com esta senha, um <strong>modal obrigatório</strong> vai aparecer pedindo para criar uma senha definitiva.
+        Senha temporária: <code style="color:var(--accent-teal);background:var(--bg-dark);padding:.15rem .5rem;border-radius:4px;font-family:monospace">${novaSenha}</code><br><br>
+        <span style="color:var(--warning)">⚠️ Avise o usuário</span>: ao fazer login com essa senha, um modal vai pedir para criar uma definitiva.
       </div>`;
     }
-    toast('✅ Senha de '+email+' resetada! Avise o usuário.','s');
+    toast('✅ Senha de '+email+' resetada!','s');
     document.getElementById('reset-email-user').value='';
     document.getElementById('reset-nova-senha').value='';
+  }catch(e){toast('Erro: '+e.message,'e');}
+  finally{if(btn){btn.textContent='🔑 Resetar Senha';btn.disabled=false;}}
+}
 
+
+async function loadConta(){
+  const el=document.getElementById('conta-content');
+  if(!currentUser){el.innerHTML='<div class="login-box"><h3>Faça login</h3><button class="btn-google" onclick="loginGoogle()">Entrar com Google</button></div>';return;}
+  
+  await loadUserData();
+  const name=currentUser.user_metadata?.full_name||'Usuário';
+  const avatar=currentUser.user_metadata?.avatar_url||'';
+  
+  el.innerHTML=`
+    <div class="fc">
+      <div class="user-status">
+        <div class="us-info">
+          ${avatar?`<img src="${avatar}">`:''}
+          <div><div class="us-name">${name}</div><div class="us-email">${currentUser.email}</div></div>
+        </div>
+        <div>
+          ${userInscricao?`
+            <div style="font-size:.7rem;color:var(--text-muted);text-transform:uppercase">${userInscricao.cotas} cota${userInscricao.cotas>1?'s':''} · R$ ${userInscricao.valor_total}</div>
+            <span class="us-badge ${userInscricao.status==='aprovado'?'badge-approved':'badge-pending'}">${userInscricao.status==='aprovado'?'✅ Aprovado':'⏳ Pendente'}</span>
+          `:'<span class="us-badge badge-none">Sem inscrição</span>'}
+        </div>
+      </div>
+      ${!userInscricao?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'home\');scrollToSection(\'insc\')">Fazer Inscrição</a></div>':''}
+      ${userInscricao?.status==='aprovado'?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'palpites\')">🎯 Palpites 1ª Fase →</a></div>':''}\n      ${userInscricao?.status==='aprovado'?renderCompraCotas(userInscricao.cotas):''}
+      <div style="text-align:center;margin-top:1rem"><button class="btn btn-danger btn-sm" onclick="logout()">Sair da Conta</button></div>
+    </div>`;
+}
+
+// ===== STATS =====
+async function loadStats(){
+  try{
+    const{data:inscs,error}=await sb.from('inscricoes').select('cotas,valor_cotas').eq('status','aprovado');
+    if(error||!inscs)return;
+    const tp=inscs.reduce((s,i)=>s+Number(i.valor_cotas),0);
+    document.getElementById('sp').textContent=inscs.length;
+    document.getElementById('spz').textContent=`R$ ${tp.toLocaleString('pt-BR')}`;
+    document.getElementById('pz1').textContent=`R$ ${(tp*.6).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+    document.getElementById('pz2').textContent=`R$ ${(tp*.3).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+    document.getElementById('pz3').textContent=`R$ ${(tp*.1).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+  }catch(e){console.warn('Stats error:',e)}
+}
+
+// ===== FLAGS =====
+function renderFlags(){
+  const fl=document.getElementById('fl'),fr2=document.getElementById('fr');
+  flagsLeft.forEach(c=>{const i=document.createElement('img');i.src=`https://flagcdn.com/w40/${c}.png`;i.alt=c;i.loading='lazy';fl.appendChild(i)});
+  flagsRight.forEach(c=>{const i=document.createElement('img');i.src=`https://flagcdn.com/w40/${c}.png`;i.alt=c;i.loading='lazy';fr2.appendChild(i)});
+}
+
+// ===== COUNTDOWN =====
+function uc(){const n=new Date(),d=CS-n;if(d>0){const dd=Math.floor(d/864e5),hh=Math.floor(d%864e5/36e5),mm=Math.floor(d%36e5/6e4),ss=Math.floor(d%6e4/1e3);document.getElementById('cdc').textContent=`${dd}d ${hh}h ${mm}m ${ss}s`}else document.getElementById('cdc').textContent='Já começou!'}
+
+// ===== QR CODE =====
+function gqr(){
+  const container=document.querySelector('.qrc');
+  if(!container)return;
+  // Generate real PIX payload
+  function pixPayload(key){
+    const gui='br.gov.bcb.pix';
+    const merchant='BOLAO DO ALMEIDA';
+    const city='SAO PAULO';
+    function tlv(id,val){return id+String(val.length).padStart(2,'0')+val}
+    let payload='';
+    payload+=tlv('00','01'); // format
+    payload+=tlv('26',tlv('00',gui)+tlv('01',key)); // merchant account
+    payload+=tlv('52','0000'); // merchant category
+    payload+=tlv('53','986'); // currency BRL
+    payload+=tlv('58','BR'); // country
+    payload+=tlv('59',merchant);
+    payload+=tlv('60',city);
+    payload+=tlv('62',tlv('05','***')); // additional data
+    payload+='6304'; // CRC placeholder
+    // Calculate CRC16
+    let crc=0xFFFF;
+    for(let i=0;i<payload.length;i++){
+      crc^=payload.charCodeAt(i)<<8;
+      for(let j=0;j<8;j++)crc=crc&0x8000?(crc<<1)^0x1021:crc<<1;
+      crc&=0xFFFF;
+    }
+    return payload+crc.toString(16).toUpperCase().padStart(4,'0');
+  }
+  const pix=pixPayload(PK);
+  try{
+    const qr=qrcode(0,'M');
+    qr.addData(pix);
+    qr.make();
+    container.innerHTML=qr.createImgTag(4,8);
+    container.querySelector('img').style.borderRadius='4px';
   }catch(e){
-    toast('Erro inesperado: '+e.message,'e');
-  }finally{
-    if(btn){btn.textContent='🔑 Resetar Senha';btn.disabled=false;}
+    // Fallback: show text
+    container.innerHTML='<div style="padding:1rem;font-size:.8rem;color:var(--text-muted)">Use a chave PIX abaixo</div>';
+  }
+}
+
+function cpk(){navigator.clipboard.writeText(PK).then(()=>toast('Chave PIX copiada!','s')).catch(()=>toast('Chave: '+PK,'s'))}
+
+function startInscricao(n){
+  selC=n;
+  if(!currentUser){loginGoogle();return;}
+  navigate('home');scrollToSection('insc');
+}
+
+
+// ===== COUNTDOWN PRAZO PALPITES =====
+function updDeadline(){
+  const n=new Date(),d=DEADLINE-n;
+  const el=document.getElementById('cdp-count');
+  const badge=document.getElementById('cdp-badge');
+  if(!el)return;
+  if(d>0){
+    const dd=Math.floor(d/864e5),hh=Math.floor(d%864e5/36e5),mm=Math.floor(d%36e5/6e4),ss=Math.floor(d%6e4/1e3);
+    el.textContent=`${dd}d ${hh}h ${mm}m ${ss}s`;
+    el.style.color='var(--error)';
+  }else{
+    el.textContent='Encerrado';
+    el.style.color='var(--error)';
+    if(badge){badge.textContent='🔒 Bloqueado';badge.className='cds2 locked';}
   }
 }
 
 
+// ===== LOGIN BOX HTML (Google + Email/Senha) =====
+function loginBoxHTML(){
+  const googleSVG=`<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>`;
+  return `<div class="login-box-inner">
+    <h3>🔐 Acesse sua Conta</h3>
+    <p class="lb-sub" style="font-size:.82rem">Recomendamos entrar com Google — mais rápido e sem senha!</p>
+    <div class="ltabs">
+      <button class="ltab on" id="lt-google" onclick="showLTab('google')">Google</button>
+      <button class="ltab off" id="lt-email" onclick="showLTab('email')">E-mail &amp; Senha</button>
+    </div>
+    <div id="lp-google">
+      <button class="btn-google" onclick="loginGoogle()" style="width:100%;justify-content:center;min-height:52px;font-size:1rem;border-radius:8px">
+        ${googleSVG} Entrar com Google
+      </button>
+    </div>
+    <div id="lp-email" style="display:none">
+      <div class="emtabs">
+        <button class="emtab on" id="emt-in" onclick="showEMTab('in')">Entrar</button>
+        <button class="emtab" id="emt-reg" onclick="showEMTab('reg')">Criar Conta</button>
+      </div>
+      <div id="ef-in">
+        <div class="fg"><label>E-mail</label><input type="email" id="em-email" placeholder="seuemail@exemplo.com" onkeydown="if(event.key==='Enter')loginEmail()"></div>
+        <div class="fg"><label>Senha</label><input type="password" id="em-senha" placeholder="Sua senha" onkeydown="if(event.key==='Enter')loginEmail()"></div>
+        <button id="btn-login-email" class="btn btn-p" style="width:100%;justify-content:center;min-height:48px" onclick="loginEmail()">Entrar</button>
+        <p style="text-align:center;margin-top:.8rem;font-size:.75rem;color:var(--text-muted)">
+          Esqueceu a senha? Solicite ao <strong style="color:var(--text-primary)">Administrador Alexandre Almeida</strong> via
+          <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success);font-weight:600;text-decoration:none">📱 WhatsApp</a>
+        </p>
+      </div>
+      <div id="ef-reg" style="display:none">
+        <div class="fg"><label>Nome Completo *</label><input type="text" id="reg-nome" placeholder="Seu nome completo"></div>
+        <div class="fg"><label>E-mail *</label><input type="email" id="reg-email" placeholder="seuemail@exemplo.com"></div>
+        <div class="fg"><label>Senha * <span style="font-size:.68rem;color:var(--text-muted)">(mín. 8 caracteres)</span></label><input type="password" id="reg-senha" placeholder="Crie uma senha forte"></div>
+        <div class="fg"><label>WhatsApp *</label><input type="tel" id="reg-wpp" placeholder="(11) 99999-9999"></div>
+        <button id="btn-registrar" class="btn btn-p" style="width:100%;justify-content:center;min-height:48px" onclick="registrarEmail()">Criar Conta</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function showLTab(tab){
+  const gp=document.getElementById('lp-google'),ep=document.getElementById('lp-email');
+  const tg=document.getElementById('lt-google'),te=document.getElementById('lt-email');
+  if(!gp||!ep)return;
+  if(tab==='google'){
+    gp.style.display='block';ep.style.display='none';
+    tg.className='ltab on';te.className='ltab off';
+  }else{
+    gp.style.display='none';ep.style.display='block';
+    te.className='ltab on';tg.className='ltab off';
+    setTimeout(()=>document.getElementById('em-email')?.focus(),50);
+  }
+}
+
+function showEMTab(mode){
+  const fi=document.getElementById('ef-in'),fr=document.getElementById('ef-reg');
+  const ti=document.getElementById('emt-in'),tr=document.getElementById('emt-reg');
+  if(!fi||!fr)return;
+  if(mode==='in'){fi.style.display='block';fr.style.display='none';ti.className='emtab on';tr.className='emtab';}
+  else{fi.style.display='none';fr.style.display='block';ti.className='emtab';tr.className='emtab on';setTimeout(()=>document.getElementById('reg-nome')?.focus(),50);}
+}
+
+async function loginEmail(){
+  const btn=document.getElementById('btn-login-email');
+  const email=document.getElementById('em-email')?.value.trim();
+  const senha=document.getElementById('em-senha')?.value;
+  if(!email){document.getElementById('em-email').focus();toast('Informe seu e-mail!','e');return;}
+  if(!senha){document.getElementById('em-senha').focus();toast('Informe sua senha!','e');return;}
+  if(btn){btn.textContent='Entrando...';btn.disabled=true;}
+  try{
+    const{data,error}=await sb.auth.signInWithPassword({email,password:senha});
+    if(error){
+      const msg=error.message.toLowerCase().includes('invalid')?'E-mail ou senha incorretos.':error.message;
+      toast('Erro: '+msg,'e');
+      if(btn){btn.textContent='Entrar';btn.disabled=false;}
+      return;
+    }
+    currentUser=data.user;await loadUserData();updateUI();loadStats();
+    toast('Login realizado! Bem-vindo(a) 🎉','s');
+  }catch(e){toast('Erro ao fazer login.','e');if(btn){btn.textContent='Entrar';btn.disabled=false;}}
+}
+
+async function registrarEmail(){
+  // Usar getElementById (não event.target) — compatível com Android/innerHTML
+  const btn=document.getElementById('btn-registrar');
+  const nome=document.getElementById('reg-nome')?.value.trim();
+  const email=document.getElementById('reg-email')?.value.trim();
+  const senha=document.getElementById('reg-senha')?.value;
+  const wpp=document.getElementById('reg-wpp')?.value.trim();
+
+  // Validação com feedback visual
+  if(!nome){document.getElementById('reg-nome').focus();toast('Informe seu nome completo!','e');return;}
+  if(!email){document.getElementById('reg-email').focus();toast('Informe seu e-mail!','e');return;}
+  if(!senha||senha.length<8){document.getElementById('reg-senha').focus();toast('Senha deve ter no mínimo 8 caracteres!','e');return;}
+  if(!wpp){document.getElementById('reg-wpp').focus();toast('Informe seu WhatsApp!','e');return;}
+
+  if(btn){btn.textContent='Criando conta...';btn.disabled=true;}
+  try{
+    const{data,error}=await sb.auth.signUp({email,password:senha,options:{data:{full_name:nome}}});
+    if(error){
+      const msg=error.message.includes('already')?'E-mail já cadastrado! Tente fazer login.':error.message;
+      toast('Erro: '+msg,'e');
+      if(btn){btn.textContent='Criar Conta';btn.disabled=false;}
+      return;
+    }
+    if(data?.user){
+      await sb.from('profiles').upsert({id:data.user.id,nome,whatsapp:wpp});
+      // Tenta logar direto
+      const{data:ld,error:le}=await sb.auth.signInWithPassword({email,password:senha});
+      if(!le&&ld?.user){
+        currentUser=ld.user;await loadUserData();updateUI();loadStats();
+        toast('Conta criada! Bem-vindo(a), '+nome.split(' ')[0]+'! 🎉','s');
+      }else{
+        const rf=document.getElementById('ef-reg');
+        if(rf)rf.innerHTML=`<div style="text-align:center;padding:1.5rem;color:var(--text-secondary)">
+          <p style="font-size:2rem;margin-bottom:.5rem">✅</p>
+          <p style="font-size:1rem;color:var(--text-primary);font-weight:600;margin-bottom:.5rem">Conta criada!</p>
+          <p>Clique em <strong>Entrar</strong> acima e faça login com seu e-mail e senha.</p>
+        </div>`;
+        toast('Conta criada! Faça login para continuar.','s');
+        setTimeout(()=>showEMTab('in'),1800);
+      }
+    }
+  }catch(e){toast('Erro ao criar conta. Tente novamente.','e');if(btn){btn.textContent='Criar Conta';btn.disabled=false;}}
+}
+
+function solicitarReset(){
+  // Reset por email desativado — usuário deve contatar o admin
+  const email=document.getElementById('em-email')?.value.trim();
+  const msg=email
+    ?`Para redefinir sua senha, entre em contato com o Administrador Alexandre Almeida via WhatsApp informando seu e-mail: ${email}`
+    :'Para redefinir sua senha, entre em contato com o Administrador Alexandre Almeida via WhatsApp.';
+  toast('📱 '+msg,'s');
+  setTimeout(()=>{
+    window.open('https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t','_blank');
+  },500);
+}
+
+// ===== COMPRA DE COTAS ADICIONAIS =====
+let _novasCotas=null;
+
+function renderCompraCotas(cotasAtuais){
+  if(cotasAtuais>=3)return`<div class="cotas-extra-box"><h4>🏆 Suas Cotas</h4><p style="color:var(--text-muted);font-size:.83rem">Você já tem o máximo de <strong>3 cotas</strong>. Boa sorte!</p></div>`;
+  const opts=[];
+  for(let n=cotasAtuais+1;n<=3;n++){
+    const add=PR[n].v-PR[cotasAtuais].v;
+    opts.push(`<div class="co" onclick="selCotas(${n})" id="nc${n}"><div class="cn">${n}</div><div class="cl">Cotas total</div><div class="cp">+R$ ${add}</div><div class="cd">Total: R$ ${PR[n].v}</div></div>`);
+  }
+  return`<div class="cotas-extra-box">
+    <h4>➕ Comprar Mais Cotas</h4>
+    <p style="color:var(--text-muted);font-size:.82rem;margin-bottom:.8rem">Você tem <strong style="color:var(--text-primary)">${cotasAtuais} cota${cotasAtuais>1?'s':''}</strong>. Mais cotas = mais chances!</p>
+    <div class="cs" style="grid-template-columns:repeat(${3-cotasAtuais},1fr)">${opts.join('')}</div>
+    <div id="extra-det" style="display:none;margin-top:1rem">
+      <div class="pixs" style="margin-bottom:.8rem">
+        <div class="pixt">Pague a diferença via PIX</div>
+        <div class="qrc" id="qrc-extra" style="margin:.4rem auto"></div>
+        <div class="pkd"><code>33567108859</code><button onclick="cpk()">Copiar</button></div>
+        <p class="pixn" id="extra-inf"></p>
+      </div>
+      <div style="text-align:center"><button class="btn btn-p" onclick="confirmarCotas()">✓ Já fiz o PIX — Solicitar!</button></div>
+    </div>
+  </div>`;
+}
+
+function selCotas(n){
+  _novasCotas=n;
+  document.querySelectorAll('[id^="nc"]').forEach(e=>e.classList.remove('sel'));
+  document.getElementById('nc'+n)?.classList.add('sel');
+  const add=PR[n].v-PR[userInscricao?.cotas||1].v;
+  const det=document.getElementById('extra-det'),inf=document.getElementById('extra-inf');
+  if(det)det.style.display='block';
+  if(inf)inf.textContent=`Pague R$ ${add},00 (de ${userInscricao?.cotas||1}→${n} cotas) · Envie o comprovante no WhatsApp`;
+  setTimeout(()=>{const c=document.getElementById('qrc-extra');if(!c)return;try{const q=qrcode(0,'M');q.addData(PK);q.make();c.innerHTML=q.createImgTag(3,6);c.querySelector('img').style.borderRadius='4px';}catch(e){}},80);
+}
+
+async function confirmarCotas(){
+  if(!_novasCotas||!currentUser||!userInscricao){toast('Selecione a quantidade!','e');return;}
+  const add=PR[_novasCotas].v-PR[userInscricao.cotas].v;
+  let ok=false;
+  try{
+    const{error}=await sb.from('compra_cotas').insert({user_id:currentUser.id,inscricao_id:userInscricao.id,cotas_atual:userInscricao.cotas,cotas_nova:_novasCotas,valor_adicional:add,status:'pendente'});
+    ok=!error;
+  }catch(e){}
+  toast(ok?`Solicitação enviada! Admin irá aprovar para ${_novasCotas} cotas. 🎉`:`Envie no WhatsApp: "Quero ir para ${_novasCotas} cotas (+R$ ${add})" com o comprovante.`,'s');
+  const det=document.getElementById('extra-det');if(det)det.style.display='none';
+  _novasCotas=null;
+}
+
+// ===== COMPRA DE COTAS — PÁGINA DE PALPITES (IDs únicos) =====
+let _novasCotasPalp=null;
+
+function toggleCotasPalp(){
+  const det=document.getElementById('cotas-palp-detail');
+  const btn=document.getElementById('btn-toggle-cotas-palp');
+  if(!det)return;
+  const open=det.style.display==='block';
+  det.style.display=open?'none':'block';
+  if(btn)btn.textContent=open?'Ver opções ▾':'Fechar ▴';
+}
+
+function selCotasPalp(n){
+  _novasCotasPalp=n;
+  document.querySelectorAll('[id^="pnc"]').forEach(e=>e.classList.remove('sel'));
+  document.getElementById('pnc'+n)?.classList.add('sel');
+  const add=PR[n].v-PR[userInscricao?.cotas||1].v;
+  const det=document.getElementById('palp-extra-det');
+  const inf=document.getElementById('palp-extra-inf');
+  if(det)det.style.display='block';
+  if(inf)inf.textContent=`Pague R$ ${add},00 (de ${userInscricao?.cotas||1}→${n} cotas) · Envie comprovante no grupo do WhatsApp`;
+  setTimeout(()=>{
+    const c=document.getElementById('palp-qrc-extra');
+    if(!c)return;
+    try{const q=qrcode(0,'M');q.addData(PK);q.make();c.innerHTML=q.createImgTag(3,6);c.querySelector('img').style.borderRadius='4px';}catch(e){}
+  },80);
+}
+
+async function confirmarCotasPalp(){
+  if(!_novasCotasPalp||!currentUser||!userInscricao){toast('Selecione a quantidade de cotas!','e');return;}
+  const add=PR[_novasCotasPalp].v-PR[userInscricao.cotas].v;
+  let ok=false;
+  try{
+    const{error}=await sb.from('compra_cotas').insert({
+      user_id:currentUser.id,
+      inscricao_id:userInscricao.id,
+      cotas_atual:userInscricao.cotas,
+      cotas_nova:_novasCotasPalp,
+      valor_adicional:add,
+      status:'pendente'
+    });
+    ok=!error;
+  }catch(e){}
+  toast(
+    ok
+      ?`✅ Solicitação enviada! Admin irá aprovar para ${_novasCotasPalp} cotas. 🎉`
+      :`Envie no WhatsApp: "Quero ir para ${_novasCotasPalp} cotas (+R$ ${add})" + comprovante PIX.`,
+    's'
+  );
+  const det=document.getElementById('palp-extra-det');
+  if(det)det.style.display='none';
+  _novasCotasPalp=null;
+}
+
+// Admin: aprovar/rejeitar cotas extras
+async function adminApproveCotas(id,inscId,cotasNova){
+  await sb.from('compra_cotas').update({status:'aprovado',approved_at:new Date().toISOString()}).eq('id',id);
+  await sb.from('inscricoes').update({cotas:cotasNova}).eq('id',inscId);
+  toast(`Aprovado! Atualizado para ${cotasNova} cotas.`,'s');loadAdmin();
+}
+async function adminRejectCotas(id){
+  await sb.from('compra_cotas').update({status:'rejeitado'}).eq('id',id);
+  toast('Solicitação rejeitada.','e');loadAdmin();
+}
+
+
+// ===== MODAL TROCA DE SENHA =====
+function mostrarModalTrocaSenha(){
+  const modal = document.getElementById('modal-troca-senha');
+  if(modal){
+    modal.style.display='flex';
+    setTimeout(()=>document.getElementById('nova-senha-def')?.focus(),200);
+  }
+}
+
+async function salvarNovaSenha(){
+  const nova = document.getElementById('nova-senha-def')?.value;
+  const conf = document.getElementById('nova-senha-conf')?.value;
+  if(!nova||nova.length<8){
+    document.getElementById('nova-senha-def').focus();
+    toast('A senha deve ter no mínimo 8 caracteres!','e');
+    return;
+  }
+  if(nova!==conf){
+    document.getElementById('nova-senha-conf').focus();
+    toast('As senhas não conferem!','e');
+    return;
+  }
+  const btn = document.getElementById('btn-salvar-senha');
+  if(btn){btn.textContent='Salvando...';btn.disabled=true;}
+  try{
+    const{error}=await sb.auth.updateUser({
+      password: nova,
+      data: {...(currentUser.user_metadata||{}), must_change_password: false}
+    });
+    if(error){
+      toast('Erro ao salvar: '+error.message,'e');
+      if(btn){btn.textContent='✓ Salvar Nova Senha';btn.disabled=false;}
+      return;
+    }
+    // Fechar modal
+    const modal = document.getElementById('modal-troca-senha');
+    if(modal)modal.style.display='none';
+    // Atualizar currentUser
+    const{data:{user}}=await sb.auth.getUser();
+    if(user)currentUser=user;
+    toast('✅ Senha atualizada com sucesso! Bem-vindo(a) 🎉','s');
+  }catch(e){
+    toast('Erro: '+e.message,'e');
+    if(btn){btn.textContent='✓ Salvar Nova Senha';btn.disabled=false;}
+  }
+}
+
+function toast(m,t){const ts=document.getElementById('toast');ts.textContent=m;ts.style.background=t==='e'?'var(--error)':'var(--success)';ts.classList.add('show');setTimeout(()=>ts.classList.remove('show'),3500)}
+</script>
+</body>
+</html>
