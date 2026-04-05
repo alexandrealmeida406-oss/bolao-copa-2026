@@ -386,6 +386,37 @@ button:active,.co:active{opacity:.8}
   }
 }
 
+
+/* MOBILE — inputs de placar maiores e mais fáceis de tocar */
+@media(max-width:500px){
+  .match-score-input{
+    width:48px!important;
+    height:48px!important;
+    font-size:1.1rem!important;
+    text-align:center;
+  }
+  /* Evitar que teclado quebre layout — scroll suave */
+  .page{overflow-x:hidden}
+  /* Botão Google extra grande no mobile */
+  .btn-google{
+    min-height:56px!important;
+    font-size:1rem!important;
+  }
+  /* Cards de cotas maiores no mobile */
+  .co{min-height:90px!important}
+  /* Toast mais visível no mobile */
+  .toast{
+    font-size:.9rem!important;
+    padding:.9rem 1.2rem!important;
+    max-width:92vw!important;
+    bottom:1.2rem!important;
+  }
+}
+/* Scroll suave global */
+*{-webkit-overflow-scrolling:touch}
+/* Inputs não pulam o layout quando teclado abre */
+.fg input:focus,.fg select:focus{scroll-margin-bottom:120px}
+
 </style>
 </head>
 <body>
@@ -590,7 +621,7 @@ button:active,.co:active{opacity:.8}
   <li>🥈 <strong>2º Lugar:</strong> 30% do total arrecadado</li>
   <li>🥉 <strong>3º Lugar:</strong> 10% do total arrecadado</li>
 </ul>
-<p style="margin-top:.5rem">O prêmio atualiza automaticamente com cada nova inscrição aprovada. Em caso de empate no ranking, o prêmio daquela posição será <strong>dividido igualmente</strong> entre os empatados.</p>
+<p style="margin-top:.5rem">O prêmio atualiza automaticamente com cada nova inscrição aprovada. <strong style="color:var(--accent-gold)">Não existe critério de desempate.</strong> Se dois ou mais participantes terminarem com a mesma pontuação em uma posição premiada, o valor do prêmio daquela posição é <strong>dividido em partes iguais</strong> entre todos os empatados.</p>
 </div>
 </div>
 
@@ -880,15 +911,27 @@ document.addEventListener('DOMContentLoaded',async()=>{
 
 // ===== AUTH =====
 async function loginGoogle(){
-  const{error}=await sb.auth.signInWithOAuth({
-    provider:'google',
-    options:{
-      redirectTo:window.location.origin,
-      queryParams:{prompt:'select_account'}
+  const btns=document.querySelectorAll('.btn-google');
+  btns.forEach(b=>{b.innerHTML='⏳ Conectando...';b.disabled=true;});
+  try{
+    const{error}=await sb.auth.signInWithOAuth({
+      provider:'google',
+      options:{redirectTo:window.location.origin,queryParams:{prompt:'select_account'}}
+    });
+    if(error){
+      btns.forEach(b=>{b.disabled=false;b.innerHTML=googleBtnHTML();});
+      toast('Erro ao conectar com Google: '+error.message,'e');
     }
-  });
-  if(error)toast('Erro ao fazer login: '+error.message,'e');
+  }catch(e){
+    btns.forEach(b=>{b.disabled=false;});
+    toast('Sem conexão. Verifique sua internet e tente novamente.','e');
+  }
 }
+
+function googleBtnHTML(){
+  return '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Entrar com Google';
+}
+
 
 async function logout(){
   await sb.auth.signOut();
@@ -1050,7 +1093,7 @@ async function submitNovaInscricao(){
     await loadUserData();updateUI();loadStats();
     toast('✅ Nova inscrição enviada! Aguarde aprovação do admin.','s');
   }catch(e){
-    toast('Erro ao enviar. Tente novamente.','e');
+    toast('Erro ao enviar. Verifique sua conexão e tente novamente.','e');
     if(btn){btn.textContent='✓ Já fiz o PIX — Nova Inscrição!';btn.disabled=false;}
   }
 }
@@ -1137,7 +1180,7 @@ async function submitInscricao(){
     await loadUserData();updateUI();loadStats();
     toast('✅ Inscrição enviada! Aguarde aprovação do admin.','s');
   }catch(e){
-    toast('Erro ao enviar. Tente novamente.','e');
+    toast('Erro ao enviar. Verifique sua conexão e tente novamente.','e');
     if(btn){btn.textContent='✓ Já fiz o PIX, Confirmar!';btn.disabled=false;}
   }
 }
@@ -1751,6 +1794,15 @@ async function loadStats(){
     document.getElementById('pz1').textContent=`R$ ${(tp*.6).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
     document.getElementById('pz2').textContent=`R$ ${(tp*.3).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
     document.getElementById('pz3').textContent=`R$ ${(tp*.1).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+    // Barra de progresso — meta dinâmica baseada em inscrições
+    const meta = Math.max(300, Math.ceil((tp+60)/100)*100); // próxima centena acima
+    const pct = Math.min(100, Math.round(tp/meta*100));
+    const barra = document.getElementById('premio-barra');
+    const barraVal = document.getElementById('premio-barra-val');
+    const barraMeta = document.getElementById('premio-barra-meta');
+    if(barra){setTimeout(()=>{barra.style.width=pct+'%';},200);}
+    if(barraVal)barraVal.textContent=`R$ ${tp.toLocaleString('pt-BR')}`;
+    if(barraMeta)barraMeta.textContent=`Meta: R$ ${meta}`;
   }catch(e){console.warn('Stats error:',e)}
 }
 
