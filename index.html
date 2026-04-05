@@ -495,8 +495,8 @@ button:active,.co:active{opacity:.8}
   </div>
   <ul style="margin-left:1rem">
     <li style="margin-bottom:.3rem">Você palpita o placar de todos os <strong>36 jogos</strong> da fase de grupos (12 grupos × 3 jogos)</li>
-    <li style="margin-bottom:.3rem">Todos os placares devem ser preenchidos de uma vez — não é possível salvar parcialmente</li>
-    <li style="margin-bottom:.3rem">Você pode editar seus palpites quantas vezes quiser até o prazo final</li>
+    <li style="margin-bottom:.3rem">Todos os 36 palpites devem ser preenchidos para salvar — você pode <strong>voltar e editar</strong> quantas vezes quiser até o prazo</li>
+    <li style="margin-bottom:.3rem">📝 <strong>Pode editar à vontade até o prazo!</strong> Entre na página de Palpites, altere os placares e salve novamente</li>
     <li style="margin-bottom:.3rem"><strong style="color:var(--error)">Prazo final: 10/06/2026 às 19h00</strong> (véspera do início da Copa) — após esse horário os palpites são bloqueados definitivamente</li>
     <li>Pontuação: placar exato = <strong>3 pts</strong> · acertou gols de 1 equipe = <strong>1 pt</strong> · errou = 0 pts</li>
   </ul>
@@ -539,7 +539,7 @@ button:active,.co:active{opacity:.8}
 <!-- PAGAMENTO -->
 <div class="manual-box">
 <h4>💰 Pagamento &amp; Inscrição</h4>
-<p>Pague via <strong>PIX</strong> para a chave <code style="color:var(--accent-teal);font-family:monospace">33567108859</code> (CPF). Após pagar:</p>
+<p>Pague via <strong>PIX</strong> para a chave <code style="color:var(--accent-teal);font-family:monospace">2b03f68f-4aae-49b9-99a5-705b31982b7b</code> (CPF). Após pagar:</p>
 <ol>
   <li>Envie o comprovante no grupo do WhatsApp — <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success);font-weight:600;text-decoration:none">📱 clique aqui para entrar no grupo</a></li>
   <li>O admin aprova sua inscrição</li>
@@ -551,18 +551,37 @@ button:active,.co:active{opacity:.8}
 <!-- PONTUAÇÃO -->
 <div class="manual-box">
 <h4>🎯 Tabela de Pontuação</h4>
-<table class="pts-tbl">
-<thead><tr><th>Situação</th><th>Fase de Grupos</th><th>Eliminatórias</th></tr></thead>
-<tbody>
-<tr><td>🎯 Acertou o placar exato (ex: 2×1 → você disse 2×1)</td><td><span class="pb pb-g">3 pts</span></td><td><span class="pb pb-g">4 pts</span></td></tr>
-<tr><td>⚽ Acertou os gols de <em>uma</em> equipe (ex: 2×1 → você disse 2×0)</td><td><span class="pb pb-w">1 pt</span></td><td><span class="pb pb-w">1 pt</span></td></tr>
-<tr><td>❌ Errou os gols das duas equipes</td><td><span class="pb pb-e">0 pts</span></td><td><span class="pb pb-e">0 pts</span></td></tr>
-</tbody>
-</table>
-<p style="margin-top:.7rem;font-size:.78rem;color:var(--text-muted)">⚠️ Nas eliminatórias, o placar considerado é o do <strong>tempo regulamentar + prorrogação</strong>. Disputa de pênaltis não conta para pontuação.</p>
+
+<!-- FASE DE GRUPOS -->
+<div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.18);border-radius:8px;padding:1rem;margin-bottom:1rem">
+  <div style="font-family:'Oswald',sans-serif;font-size:.85rem;text-transform:uppercase;letter-spacing:1px;color:var(--success);margin-bottom:.7rem">✅ 1ª Fase — Grupos (36 jogos)</div>
+  <table class="pts-tbl">
+    <thead><tr><th>Situação</th><th>Pontos</th></tr></thead>
+    <tbody>
+      <tr><td>🎯 Placar exato (ex: 2×1 → você disse 2×1)</td><td><span class="pb pb-g">3 pts</span></td></tr>
+      <tr><td>⚽ Acertou gols de 1 equipe (ex: 2×1 → você disse 2×0)</td><td><span class="pb pb-w">1 pt</span></td></tr>
+      <tr><td>❌ Errou os gols das duas equipes</td><td><span class="pb pb-e">0 pts</span></td></tr>
+    </tbody>
+  </table>
 </div>
 
-<!-- PREMIAÇÃO -->
+<!-- FASE ELIMINATÓRIA -->
+<div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.18);border-radius:8px;padding:1rem;margin-bottom:.5rem">
+  <div style="font-family:'Oswald',sans-serif;font-size:.85rem;text-transform:uppercase;letter-spacing:1px;color:var(--warning);margin-bottom:.7rem">🔒 2ª Fase — Eliminatórias (pontuação progressiva)</div>
+  <table class="pts-tbl">
+    <thead><tr><th>Fase</th><th>Placar Exato</th><th>1 Equipe Certa</th><th>Errou</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:600">16-avos de final</td><td><span class="pb pb-g">4 pts</span></td><td><span class="pb pb-w">2 pts</span></td><td><span class="pb pb-e">0</span></td></tr>
+      <tr><td style="font-weight:600">Oitavas de final</td><td><span class="pb pb-g">5 pts</span></td><td><span class="pb pb-w">3 pts</span></td><td><span class="pb pb-e">0</span></td></tr>
+      <tr><td style="font-weight:600">Quartas de final</td><td><span class="pb pb-g">6 pts</span></td><td><span class="pb pb-w">4 pts</span></td><td><span class="pb pb-e">0</span></td></tr>
+      <tr><td style="font-weight:600">Semifinais</td><td><span class="pb pb-g">7 pts</span></td><td><span class="pb pb-w">5 pts</span></td><td><span class="pb pb-e">0</span></td></tr>
+      <tr style="background:rgba(212,168,67,.06)"><td style="font-weight:700;color:var(--accent-gold)">🏆 Final</td><td><span class="pb pb-g" style="font-size:.85rem">10 pts</span></td><td><span class="pb pb-w">6 pts</span></td><td><span class="pb pb-e">0</span></td></tr>
+    </tbody>
+  </table>
+</div>
+<p style="font-size:.78rem;color:var(--text-muted);margin-top:.6rem">⚠️ Nas eliminatórias considera-se o placar do <strong>tempo regulamentar + prorrogação</strong>. Pênaltis não contam para a pontuação.</p>
+</div>
+
 <div class="manual-box">
 <h4>🏆 Premiação</h4>
 <p>O prêmio total é formado pelas <strong>cotas de participação</strong> (as taxas de serviço não entram no prêmio). Distribuição:</p>
@@ -571,7 +590,7 @@ button:active,.co:active{opacity:.8}
   <li>🥈 <strong>2º Lugar:</strong> 30% do total arrecadado</li>
   <li>🥉 <strong>3º Lugar:</strong> 10% do total arrecadado</li>
 </ul>
-<p style="margin-top:.5rem">O prêmio atualiza automaticamente com cada nova inscrição aprovada. Em caso de empate no ranking, o critério de desempate será comunicado no grupo do WhatsApp.</p>
+<p style="margin-top:.5rem">O prêmio atualiza automaticamente com cada nova inscrição aprovada. Em caso de empate no ranking, o prêmio daquela posição será <strong>dividido igualmente</strong> entre os empatados.</p>
 </div>
 </div>
 
@@ -714,8 +733,16 @@ button:active,.co:active{opacity:.8}
 
 <!-- Ranking -->
 <section class="sec" id="rank">
-<div class="sh"><div class="stag">Classificação</div><h2 class="stitle">Ranking</h2><p class="sdesc">Acompanhe a posição de todos os participantes</p></div>
-<div class="re"><p style="font-size:2rem;margin-bottom:.4rem">🏆</p><p style="font-family:'Oswald',sans-serif;font-size:1.1rem">O ranking será atualizado após o início da Copa</p><p style="color:var(--text-muted);font-size:.8rem;margin-top:.2rem">Inscreva-se agora e garanta sua vaga!</p></div>
+<div class="sh"><div class="stag">Classificação</div><h2 class="stitle">Ranking ao Vivo</h2>
+<p class="sdesc">Acompanhe a classificação em tempo real</p></div>
+<div style="text-align:center;padding:3rem 1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;max-width:600px;margin:0 auto">
+  <p style="font-size:3rem;margin-bottom:.8rem">🏆</p>
+  <p style="font-family:'Oswald',sans-serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-gold);margin-bottom:.6rem">Em breve!</p>
+  <p style="color:var(--text-secondary);font-size:.9rem;line-height:1.6;max-width:420px;margin:0 auto">
+    O ranking será exibido após a <strong style="color:var(--text-primary)">conclusão da 1ª rodada</strong> da fase de grupos.<br><br>
+    A classificação será atualizada automaticamente ao final de cada rodada. Fique ligado no <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">grupo do WhatsApp</a> para acompanhar!
+  </p>
+</div>
 </section>
 
 <!-- Premiação -->
@@ -792,7 +819,7 @@ const SUPABASE_URL='https://vuomkohlwomdeyobddhw.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1b21rb2hsd29tZGV5b2JkZGh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MTE3ODMsImV4cCI6MjA5MDM4Nzc4M30.vexm5sTH3TChhkVmA5lyNUNVrE-G6g2ZRNKdSyGnoKc';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const PK='33567108859';
+const PK='2b03f68f-4aae-49b9-99a5-705b31982b7b';
 const CS=new Date('2026-06-11T16:00:00-03:00');
 const DEADLINE=new Date('2026-06-10T19:00:00-03:00');
 const PR={1:{c:30,t:3,v:33},2:{c:54,t:6,v:60},3:{c:72,t:9,v:81}};
@@ -806,11 +833,12 @@ let currentUser=null,userProfile=null,userInscricao=null,selC=1;
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded',async()=>{
   // Fallback: se sb não carregar em 3s, recarregar com cache bust
+  // Se sb não carregar em 2s = cache antigo → recarregar
   setTimeout(()=>{
     if(typeof sb==='undefined'){
       window.location.href=window.location.origin+window.location.pathname+'?nc='+Date.now();
     }
-  },3000);
+  },2000);
   renderFlags();
   uc();setInterval(uc,1000);
   updDeadline();setInterval(updDeadline,1000);
@@ -979,8 +1007,8 @@ function updateUI(){
           <div class="pixs">
             <div class="pixt">Pague via PIX</div>
             <div class="qrc"></div>
-            <div class="pkd"><code>33567108859</code><button onclick="cpk()">Copiar</button></div>
-            <p class="pixn">Chave PIX: CPF · <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">Envie o comprovante no grupo</a></p>
+            <div class="pkd"><code>2b03f68f-4aae-49b9-99a5-705b31982b7b</code><button onclick="cpk()">Copiar</button></div>
+            <p class="pixn">Chave PIX: Aleatória · <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">Envie o comprovante no grupo</a></p>
           </div>
           <div style="text-align:center"><button id="btn-confirmar-inscricao" class="btn btn-p" style="min-height:52px;font-size:.9rem" onclick="submitNovaInscricao()">✓ Já fiz o PIX — Nova Inscrição!</button></div>
         </div>`;
@@ -1059,8 +1087,8 @@ function renderInscricaoForm(){
       <div class="pixs">
         <div class="pixt">Pague via PIX</div>
         <div class="qrc"></div>
-        <div class="pkd"><code>33567108859</code><button onclick="cpk()">Copiar</button></div>
-        <p class="pixn">Chave PIX: CPF · Envie o comprovante no grupo do WhatsApp</p>
+        <div class="pkd"><code>2b03f68f-4aae-49b9-99a5-705b31982b7b</code><button onclick="cpk()">Copiar</button></div>
+        <p class="pixn">Chave PIX: Aleatória · Envie o comprovante no grupo do WhatsApp</p>
       </div>
       
       <div style="text-align:center"><button id="btn-confirmar-inscricao" class="btn btn-p" style="min-height:52px;font-size:.9rem" onclick="submitInscricao()">✓ Já fiz o PIX — Confirmar Inscrição!</button></div>
@@ -1181,7 +1209,7 @@ async function loadPalpites(){
           <div class="pixs" style="margin-bottom:.8rem">
             <div class="pixt">Pague a diferença via PIX</div>
             <div class="qrc" id="palp-qrc-extra" style="margin:.4rem auto"></div>
-            <div class="pkd"><code>33567108859</code><button onclick="cpk()">Copiar</button></div>
+            <div class="pkd"><code>2b03f68f-4aae-49b9-99a5-705b31982b7b</code><button onclick="cpk()">Copiar</button></div>
             <p class="pixn" id="palp-extra-inf"></p>
           </div>
           <div style="text-align:center">
@@ -1216,7 +1244,7 @@ async function loadPalpites(){
     </div>
     <div style="background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.2);border-radius:8px;padding:1rem;margin-bottom:1.5rem;font-size:.85rem">
       <strong style="color:var(--accent-gold)">Regra de Pontuação${faseAtiva==='grupos'?' — Fase de Grupos':' — Eliminatórias'}:</strong><br>
-      🎯 Placar exato = <strong>${ptsExato} pontos</strong> · ⚽ Acertou gols de 1 equipe = <strong>1 ponto</strong> · ❌ Errou tudo = 0 pontos
+      🎯 Placar exato = <strong>${ptsExato} pts</strong> (grupos) a <strong>10 pts</strong> (final) · ⚽ 1 equipe certa = 1–6 pts · ❌ Errou = 0 pts
     </div>`;
   
   // Build UI per cota
@@ -1673,8 +1701,8 @@ async function loadConta(){
       <div class="pixs">
         <div class="pixt">Pague via PIX</div>
         <div class="qrc"></div>
-        <div class="pkd"><code>33567108859</code><button onclick="cpk()">Copiar</button></div>
-        <p class="pixn">Chave PIX: CPF · <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">Envie o comprovante no grupo</a></p>
+        <div class="pkd"><code>2b03f68f-4aae-49b9-99a5-705b31982b7b</code><button onclick="cpk()">Copiar</button></div>
+        <p class="pixn">Chave PIX: Aleatória · <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">Envie o comprovante no grupo</a></p>
       </div>
       <div style="text-align:center"><button id="btn-confirmar-inscricao" class="btn btn-p" style="min-height:52px" onclick="submitNovaInscricao()">✓ Já fiz o PIX — Nova Inscrição!</button></div>
       <div style="text-align:center;margin-top:1rem"><button class="btn btn-danger btn-sm" onclick="logout()">Sair da Conta</button></div>
@@ -1810,126 +1838,24 @@ function loginBoxHTML(){
   const googleSVG=`<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>`;
   return `<div class="login-box-inner">
     <h3>🔐 Acesse sua Conta</h3>
-    <p class="lb-sub" style="font-size:.82rem">Recomendamos entrar com Google — mais rápido e sem senha!</p>
-    <div class="ltabs">
-      <button class="ltab on" id="lt-google" onclick="showLTab('google')">Google</button>
-      <button class="ltab off" id="lt-email" onclick="showLTab('email')">E-mail &amp; Senha</button>
-    </div>
-    <div id="lp-google">
-      <button class="btn-google" onclick="loginGoogle()" style="width:100%;justify-content:center;min-height:52px;font-size:1rem;border-radius:8px">
-        ${googleSVG} Entrar com Google
-      </button>
-    </div>
-    <div id="lp-email" style="display:none">
-      <div class="emtabs">
-        <button class="emtab on" id="emt-in" onclick="showEMTab('in')">Entrar</button>
-        <button class="emtab" id="emt-reg" onclick="showEMTab('reg')">Criar Conta</button>
-      </div>
-      <div id="ef-in">
-        <div class="fg"><label>E-mail</label><input type="email" id="em-email" placeholder="seuemail@exemplo.com" onkeydown="if(event.key==='Enter')loginEmail()"></div>
-        <div class="fg"><label>Senha</label><input type="password" id="em-senha" placeholder="Sua senha" onkeydown="if(event.key==='Enter')loginEmail()"></div>
-        <button id="btn-login-email" class="btn btn-p" style="width:100%;justify-content:center;min-height:48px" onclick="loginEmail()">Entrar</button>
-        <p style="text-align:center;margin-top:.8rem;font-size:.75rem;color:var(--text-muted)">
-          Esqueceu a senha? Solicite ao <strong style="color:var(--text-primary)">Administrador Alexandre Almeida</strong> via
-          <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success);font-weight:600;text-decoration:none">📱 WhatsApp</a>
-        </p>
-      </div>
-      <div id="ef-reg" style="display:none">
-        <div class="fg"><label>Nome Completo *</label><input type="text" id="reg-nome" placeholder="Seu nome completo"></div>
-        <div class="fg"><label>E-mail *</label><input type="email" id="reg-email" placeholder="seuemail@exemplo.com"></div>
-        <div class="fg"><label>Senha * <span style="font-size:.68rem;color:var(--text-muted)">(mín. 8 caracteres)</span></label><input type="password" id="reg-senha" placeholder="Crie uma senha forte"></div>
-        <div class="fg"><label>WhatsApp *</label><input type="tel" id="reg-wpp" placeholder="(11) 99999-9999"></div>
-        <button id="btn-registrar" class="btn btn-p" style="width:100%;justify-content:center;min-height:48px" onclick="registrarEmail()">Criar Conta</button>
-      </div>
-    </div>
+    <p class="lb-sub" style="font-size:.85rem;color:var(--text-muted);margin-bottom:1.2rem">Entre com sua conta Google para participar do Bolão</p>
+    <button class="btn-google" onclick="loginGoogle()" style="width:100%;justify-content:center;min-height:52px;font-size:1rem;border-radius:8px">
+      ${googleSVG} Entrar com Google
+    </button>
+    <p style="text-align:center;margin-top:1rem;font-size:.75rem;color:var(--text-muted)">
+      Sem conta Google? <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">Fale com o Administrador</a>
+    </p>
   </div>`;
 }
 
-function showLTab(tab){
-  const gp=document.getElementById('lp-google'),ep=document.getElementById('lp-email');
-  const tg=document.getElementById('lt-google'),te=document.getElementById('lt-email');
-  if(!gp||!ep)return;
-  if(tab==='google'){
-    gp.style.display='block';ep.style.display='none';
-    tg.className='ltab on';te.className='ltab off';
-  }else{
-    gp.style.display='none';ep.style.display='block';
-    te.className='ltab on';tg.className='ltab off';
-    setTimeout(()=>document.getElementById('em-email')?.focus(),50);
-  }
-}
 
-function showEMTab(mode){
-  const fi=document.getElementById('ef-in'),fr=document.getElementById('ef-reg');
-  const ti=document.getElementById('emt-in'),tr=document.getElementById('emt-reg');
-  if(!fi||!fr)return;
-  if(mode==='in'){fi.style.display='block';fr.style.display='none';ti.className='emtab on';tr.className='emtab';}
-  else{fi.style.display='none';fr.style.display='block';ti.className='emtab';tr.className='emtab on';setTimeout(()=>document.getElementById('reg-nome')?.focus(),50);}
-}
+function showLTab(){}
 
-async function loginEmail(){
-  const btn=document.getElementById('btn-login-email');
-  const email=document.getElementById('em-email')?.value.trim();
-  const senha=document.getElementById('em-senha')?.value;
-  if(!email){document.getElementById('em-email').focus();toast('Informe seu e-mail!','e');return;}
-  if(!senha){document.getElementById('em-senha').focus();toast('Informe sua senha!','e');return;}
-  if(btn){btn.textContent='Entrando...';btn.disabled=true;}
-  try{
-    const{data,error}=await sb.auth.signInWithPassword({email,password:senha});
-    if(error){
-      const msg=error.message.toLowerCase().includes('invalid')?'E-mail ou senha incorretos.':error.message;
-      toast('Erro: '+msg,'e');
-      if(btn){btn.textContent='Entrar';btn.disabled=false;}
-      return;
-    }
-    currentUser=data.user;await loadUserData();updateUI();loadStats();
-    toast('Login realizado! Bem-vindo(a) 🎉','s');
-  }catch(e){toast('Erro ao fazer login.','e');if(btn){btn.textContent='Entrar';btn.disabled=false;}}
-}
+function showEMTab(){}
 
-async function registrarEmail(){
-  // Usar getElementById (não event.target) — compatível com Android/innerHTML
-  const btn=document.getElementById('btn-registrar');
-  const nome=document.getElementById('reg-nome')?.value.trim();
-  const email=document.getElementById('reg-email')?.value.trim();
-  const senha=document.getElementById('reg-senha')?.value;
-  const wpp=document.getElementById('reg-wpp')?.value.trim();
+async function loginEmail(){}
 
-  // Validação com feedback visual
-  if(!nome){document.getElementById('reg-nome').focus();toast('Informe seu nome completo!','e');return;}
-  if(!email){document.getElementById('reg-email').focus();toast('Informe seu e-mail!','e');return;}
-  if(!senha||senha.length<8){document.getElementById('reg-senha').focus();toast('Senha deve ter no mínimo 8 caracteres!','e');return;}
-  if(!wpp){document.getElementById('reg-wpp').focus();toast('Informe seu WhatsApp!','e');return;}
-
-  if(btn){btn.textContent='Criando conta...';btn.disabled=true;}
-  try{
-    const{data,error}=await sb.auth.signUp({email,password:senha,options:{data:{full_name:nome}}});
-    if(error){
-      const msg=error.message.includes('already')?'E-mail já cadastrado! Tente fazer login.':error.message;
-      toast('Erro: '+msg,'e');
-      if(btn){btn.textContent='Criar Conta';btn.disabled=false;}
-      return;
-    }
-    if(data?.user){
-      await sb.from('profiles').upsert({id:data.user.id,nome,whatsapp:wpp});
-      // Tenta logar direto
-      const{data:ld,error:le}=await sb.auth.signInWithPassword({email,password:senha});
-      if(!le&&ld?.user){
-        currentUser=ld.user;await loadUserData();updateUI();loadStats();
-        toast('Conta criada! Bem-vindo(a), '+nome.split(' ')[0]+'! 🎉','s');
-      }else{
-        const rf=document.getElementById('ef-reg');
-        if(rf)rf.innerHTML=`<div style="text-align:center;padding:1.5rem;color:var(--text-secondary)">
-          <p style="font-size:2rem;margin-bottom:.5rem">✅</p>
-          <p style="font-size:1rem;color:var(--text-primary);font-weight:600;margin-bottom:.5rem">Conta criada!</p>
-          <p>Clique em <strong>Entrar</strong> acima e faça login com seu e-mail e senha.</p>
-        </div>`;
-        toast('Conta criada! Faça login para continuar.','s');
-        setTimeout(()=>showEMTab('in'),1800);
-      }
-    }
-  }catch(e){toast('Erro ao criar conta. Tente novamente.','e');if(btn){btn.textContent='Criar Conta';btn.disabled=false;}}
-}
+async function registrarEmail(){}
 
 function solicitarReset(){
   // Reset por email desativado — usuário deve contatar o admin
@@ -1961,7 +1887,7 @@ function renderCompraCotas(cotasAtuais){
       <div class="pixs" style="margin-bottom:.8rem">
         <div class="pixt">Pague a diferença via PIX</div>
         <div class="qrc" id="qrc-extra" style="margin:.4rem auto"></div>
-        <div class="pkd"><code>33567108859</code><button onclick="cpk()">Copiar</button></div>
+        <div class="pkd"><code>2b03f68f-4aae-49b9-99a5-705b31982b7b</code><button onclick="cpk()">Copiar</button></div>
         <p class="pixn" id="extra-inf"></p>
       </div>
       <div style="text-align:center"><button class="btn btn-p" onclick="confirmarCotas()">✓ Já fiz o PIX — Solicitar!</button></div>
