@@ -1519,24 +1519,46 @@ async function adminReativar(id){
 }
 
 async function adminExcluirCadastro(userId, inscId, nomeAbrev){
-  if(!confirm(`⚠️ Excluir o cadastro do usuário ${nomeAbrev}...?\n\nIsso irá:\n• Remover a inscrição\n• Remover o perfil\n• Remover os palpites\n\nO usuário poderá se recadastrar. Confirma?`))return;
-  const btn=event?.target;
-  if(btn){btn.textContent='Excluindo...';btn.disabled=true;}
+  if(!confirm('⚠️ Excluir cadastro de ' + nomeAbrev + '?\n\nIsso irá remover:\n• Inscrição\n• Perfil\n• Palpites\n\nO usuário poderá se recadastrar.'))return;
+
+  // Mostrar feedback visual no botão — sem usar event.target (bug Android)
+  const btns = document.querySelectorAll(`[onclick*="${userId}"]`);
+  btns.forEach(b => { b.textContent='Excluindo...'; b.disabled=true; });
+
+  const erros = [];
   try{
-    // Deleta palpites
-    await sb.from('palpites').delete().eq('user_id',userId);
-    // Deleta compra_cotas
-    try{await sb.from('compra_cotas').delete().eq('user_id',userId);}catch(e){}
-    // Deleta inscrição
-    await sb.from('inscricoes').delete().eq('id',inscId);
-    // Deleta perfil
-    await sb.from('profiles').delete().eq('id',userId);
-    toast('✅ Cadastro excluído. O usuário pode se recadastrar.','s');
-    loadAdmin();loadStats();
-  }catch(e){
-    toast('Erro ao excluir: '+e.message,'e');
-    if(btn){btn.textContent='🗑 Excluir';btn.disabled=false;}
+    // 1. Palpites
+    const r1 = await sb.from('palpites').delete().eq('user_id', userId);
+    if(r1.error) erros.push('palpites: '+r1.error.message);
+  }catch(e){ erros.push('palpites: '+e.message); }
+
+  try{
+    // 2. Compra cotas
+    await sb.from('compra_cotas').delete().eq('user_id', userId);
+  }catch(e){}
+
+  try{
+    // 3. Inscrição (por id — mais seguro que por user_id)
+    const r3 = await sb.from('inscricoes').delete().eq('id', inscId);
+    if(r3.error) erros.push('inscrição: '+r3.error.message);
+  }catch(e){ erros.push('inscrição: '+e.message); }
+
+  try{
+    // 4. Perfil
+    const r4 = await sb.from('profiles').delete().eq('id', userId);
+    if(r4.error) erros.push('perfil: '+r4.error.message);
+  }catch(e){ erros.push('perfil: '+e.message); }
+
+  if(erros.length > 0){
+    // Tem erros — provavelmente RLS bloqueando
+    toast('Erro ao excluir: '+erros.join(' | ')+' — Verifique o SQL de RLS.', 'e');
+    console.error('Erros ao excluir:', erros);
+    btns.forEach(b => { b.textContent='🗑 Excluir'; b.disabled=false; });
+    return;
   }
+
+  toast('✅ Cadastro de '+nomeAbrev+' excluído com sucesso!','s');
+  loadAdmin(); loadStats();
 }
 
 async function adminApprove(id){
