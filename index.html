@@ -90,7 +90,7 @@ body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-
 .sl{font-size:.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
 
 /* SECTIONS */
-.sec{padding:4.5rem 1.5rem;max-width:1050px;margin:0 auto}
+.sec{padding:4rem 1.2rem;max-width:1050px;margin:0 auto}@media(max-width:768px){.sec{padding:2.8rem 1rem}}
 .sh{text-align:center;margin-bottom:2.5rem}
 .stag{font-family:'Barlow Condensed',sans-serif;font-size:.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-teal);margin-bottom:.3rem}
 .stitle{font-family:'Oswald',sans-serif;font-size:clamp(1.6rem,5vw,2.8rem);font-weight:700;text-transform:uppercase;line-height:1}
@@ -129,7 +129,7 @@ body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-
 .fsd{color:var(--text-muted);margin-bottom:1.3rem;font-size:.85rem}
 .fg{margin-bottom:1rem}
 .fg label{display:block;font-family:'Barlow Condensed',sans-serif;font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:.3rem}
-.fg input,.fg select{width:100%;padding:.7rem .8rem;background:var(--bg-dark);border:1px solid var(--border);border-radius:4px;color:var(--text-primary);font-family:'Barlow',sans-serif;font-size:.9rem;transition:border-color .3s}
+.fg input,.fg select{width:100%;padding:.75rem .9rem;background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:'Barlow',sans-serif;font-size:1rem;transition:border-color .3s;min-height:48px;-webkit-appearance:none;appearance:none}
 .fg input:focus,.fg select:focus{outline:none;border-color:var(--accent-teal)}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
 @media(max-width:600px){.fr{grid-template-columns:1fr}.fc{padding:1.3rem}}
@@ -338,6 +338,52 @@ body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-
 .ad-slot{text-align:center;min-height:90px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.008);border:1px dashed rgba(255,255,255,.04);border-radius:4px;margin:1.5rem auto;max-width:728px;overflow:hidden}
 @media(max-width:768px){.ad-slot{min-height:50px}}
 
+
+/* MOBILE UX — touch targets e acessibilidade */
+@media(max-width:768px){
+  .btn{min-height:48px;font-size:.82rem;padding:.75rem 1.4rem}
+  .btn-sm{min-height:44px}
+  .co{padding:1.1rem .6rem;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .btn:active{transform:scale(.97);transition:transform .1s}
+  .btn-p:active{transform:scale(.97)}
+  .fc{padding:1.2rem}
+  input,select,button{-webkit-tap-highlight-color:transparent}
+  .fg input,.fg select{font-size:16px}/* evita zoom no iOS/Android */
+  .ltab{min-height:44px}
+  .emtab{min-height:44px;font-size:.8rem}
+  .btn-google{min-height:52px!important;width:100%!important;justify-content:center!important;border-radius:8px!important}
+}
+/* Feedback toque em qualquer botão */
+button:active,.co:active{opacity:.8}
+
+
+/* PALPITES NAV LINK — destaque especial quando logado */
+.nav-palpites{
+  color:var(--accent-gold)!important;
+  font-weight:700!important;
+  border:1px solid rgba(212,168,67,.4);
+  padding:.2rem .65rem!important;
+  border-radius:4px;
+  font-size:.72rem!important;
+  white-space:nowrap;
+  background:rgba(212,168,67,.07);
+  transition:all .2s!important;
+}
+.nav-palpites:hover{
+  background:rgba(212,168,67,.18)!important;
+  border-color:var(--accent-gold)!important;
+  color:var(--accent-gold)!important;
+}
+@media(max-width:768px){
+  .nav-palpites{
+    margin:.2rem 1rem;
+    display:block;
+    text-align:center;
+    padding:.6rem 1rem!important;
+    font-size:.82rem!important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -381,10 +427,9 @@ body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-
 <div class="hbadge">Inscrições Abertas</div>
 <h1><span class="l1">Bolão do Almeida</span><span class="l2">Copa do Mundo</span><span class="l3">2026</span></h1>
 <p class="hh"><img src="https://flagcdn.com/w40/us.png" alt="EUA"> EUA <img src="https://flagcdn.com/w40/mx.png" alt="México"> México <img src="https://flagcdn.com/w40/ca.png" alt="Canadá"> Canadá</p>
-<div class="cds">
-<div class="cdb"><div class="cdl">Inscrições</div><div class="cdv green">Abertas!</div><div class="cds2 active">● Ativo</div></div>
-<div class="cdb"><div class="cdl">Início da Copa</div><div class="cdv gold" id="cdc"></div><div class="cds2 pending">11 Jun 2026</div></div>
-<div class="cdb"><div class="cdl">Prazo dos Palpites</div><div class="cdv" id="cdp-count" style="color:var(--error)">--</div><div class="cds2 locked" id="cdp-badge">⏰ 10 Jun · 19h</div></div>
+<div class="cds" style="grid-template-columns:1fr 1fr;max-width:500px;margin:0 auto 1.5rem">
+<div class="cdb"><div class="cdl">⏱ Início da Copa</div><div class="cdv gold" id="cdc"></div><div class="cds2 pending">11 Jun 2026</div></div>
+<div class="cdb"><div class="cdl">⚠️ Prazo Palpites</div><div class="cdv" id="cdp-count" style="color:var(--error)">--</div><div class="cds2 locked" id="cdp-badge">10 Jun · 19h</div></div>
 </div>
 <div class="hcta" id="hero-cta">
 <!-- Dynamic: shows login or inscription button -->
@@ -659,7 +704,7 @@ body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-
 
 <!-- Inscrição -->
 <section class="sec" id="insc">
-<div class="sh"><div class="stag">Participe Agora</div><h2 class="stitle">Inscrição</h2><p class="sdesc">Entre com Google ou crie uma conta com e-mail e senha</p></div>
+<div class="sh"><div class="stag">Participe Agora</div><h2 class="stitle">Inscrição</h2><p class="sdesc">Login rápido com Google ou crie sua conta com e-mail</p></div>
 <div id="inscricao-content">
 <!-- Dynamic content: login or form -->
 </div>
@@ -695,7 +740,7 @@ body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-
 <!-- ===================== PALPITES PAGE ===================== -->
 <div class="page" id="page-palpites">
 <div class="sec" style="margin-top:4rem">
-<h2 class="stitle" style="margin-bottom:1.5rem">Meus Palpites</h2>
+<h2 class="stitle" style="margin-bottom:1.5rem">🎯 Palpites — 1ª Fase</h2>
 <div id="palpites-content"><div class="loading"><div class="spinner"></div>Carregando...</div></div>
 </div>
 </div>
@@ -845,14 +890,15 @@ function updateUI(){
       <div class="nav-user">
         ${avatar?`<img src="${avatar}" alt="${name}">`:''}
         <span>${name.split(' ')[0]}</span>
-        <a onclick="navigate('conta')" style="margin-left:.3rem">Conta</a>
-        ${userProfile?.is_admin?'<a onclick="navigate(\'admin\')" style="color:var(--accent-gold)">Admin</a>':''}
+        ${userInscricao?.status==='aprovado'?`<a onclick="navigate('palpites')" class="nav-palpites">🎯 Palpites 1ª Fase</a>`:''}
+        <a onclick="navigate('conta')">Conta</a>
+        ${userProfile?.is_admin?'<a onclick="navigate(\'admin\')" style="color:var(--warning)">Admin</a>':''}
         <a onclick="logout()" style="color:var(--error);font-size:.7rem">Sair</a>
       </div>`;
     
     heroEl.innerHTML=`
       ${!userInscricao?'<a class="btn btn-p" onclick="scrollToSection(\'insc\')">Fazer Inscrição</a>':''}
-      ${userInscricao?.status==='aprovado'?'<a class="btn btn-p" onclick="navigate(\'palpites\')">Meus Palpites</a>':''}
+      ${userInscricao?.status==='aprovado'?'<a class="btn btn-p" onclick="navigate(\'palpites\')">🎯 Palpites 1ª Fase</a>':''}
       <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w">Grupo WhatsApp</a>`;
     
     // Inscription section
@@ -873,7 +919,7 @@ function updateUI(){
               <span class="us-badge ${statusClass}">${statusText}</span>
             </div>
           </div>
-          ${userInscricao.status==='aprovado'?'<div style="text-align:center"><a class="btn btn-p" onclick="navigate(\'palpites\')">Ir para Palpites →</a></div>':''}
+          ${userInscricao.status==='aprovado'?'<div style="text-align:center"><a class="btn btn-p" onclick="navigate(\'palpites\')">🎯 Palpites 1ª Fase →</a></div>':''}
           ${userInscricao.status==='pendente'?'<p style="text-align:center;color:var(--text-muted);font-size:.85rem">Envie o comprovante PIX no grupo do WhatsApp. O admin irá aprovar seu pagamento.</p>':''}
         </div>`;
     }else{
@@ -902,7 +948,7 @@ function renderInscricaoForm(){
         <div class="fg"><label>WhatsApp *</label><input type="tel" id="whatsapp" placeholder="(11) 99999-9999"></div>
         <div class="fg"><label>Como conheceu o bolão?</label><select id="ck"><option value="">Selecione...</option><option value="amigo">Indicação de amigo</option><option value="whatsapp">Grupo de WhatsApp</option><option value="social">Redes sociais</option><option value="trabalho">Trabalho</option><option value="familia">Família</option><option value="outro">Outro</option></select></div>
       </div>
-      <div class="fg"><label>Indicado por quem?</label><input type="text" id="ind" placeholder="Nome de quem indicou"></div>
+
       
       <label style="font-family:'Barlow Condensed';font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:.5rem;display:block">Quantidade de Cotas</label>
       <div class="cs">
@@ -924,7 +970,7 @@ function renderInscricaoForm(){
         <p class="pixn">Chave PIX: CPF · Envie o comprovante no grupo do WhatsApp</p>
       </div>
       
-      <div style="text-align:center"><button class="btn btn-p" onclick="submitInscricao()">✓ Já fiz o PIX, Confirmar Inscrição!</button></div>
+      <div style="text-align:center"><button id="btn-confirmar-inscricao" class="btn btn-p" style="min-height:52px;font-size:.9rem" onclick="submitInscricao()">✓ Já fiz o PIX — Confirmar Inscrição!</button></div>
     </div>`;
   selC=1;
   setTimeout(gqr,100);
@@ -942,31 +988,37 @@ function selCota(n){
 
 async function submitInscricao(){
   if(!currentUser){toast('Faça login primeiro!','e');return;}
+  const btn=document.getElementById('btn-confirmar-inscricao');
   const nome=document.getElementById('nome')?.value.trim();
   const apelido=document.getElementById('apelido')?.value.trim();
   const whatsapp=document.getElementById('whatsapp')?.value.trim();
   const ck=document.getElementById('ck')?.value;
-  const ind=document.getElementById('ind')?.value.trim();
-  
-  if(!nome||!whatsapp){toast('Preencha nome e WhatsApp!','e');return;}
-  
-  // Update profile
-  await sb.from('profiles').upsert({
-    id:currentUser.id,nome,apelido,whatsapp,como_conheceu:ck,indicado_por:ind
-  });
-  
-  // Create inscription
-  const p=PR[selC];
-  const{error}=await sb.from('inscricoes').insert({
-    user_id:currentUser.id,cotas:selC,valor_cotas:p.c,taxa_servico:p.t,valor_total:p.v
-  });
-  
-  if(error){toast('Erro: '+error.message,'e');return;}
-  
-  await loadUserData();
-  updateUI();
-  loadStats();
-  toast('Inscrição enviada! Aguarde aprovação do admin.','s');
+  const ind='';
+
+  if(!nome){document.getElementById('nome').focus();toast('Informe seu nome!','e');return;}
+  if(!whatsapp){document.getElementById('whatsapp').focus();toast('Informe seu WhatsApp!','e');return;}
+
+  if(btn){btn.textContent='Enviando...';btn.disabled=true;}
+
+  try{
+    await sb.from('profiles').upsert({
+      id:currentUser.id,nome,apelido,whatsapp,como_conheceu:ck,indicado_por:ind
+    });
+    const p=PR[selC];
+    const{error}=await sb.from('inscricoes').insert({
+      user_id:currentUser.id,cotas:selC,valor_cotas:p.c,taxa_servico:p.t,valor_total:p.v
+    });
+    if(error){
+      toast('Erro: '+error.message,'e');
+      if(btn){btn.textContent='✓ Já fiz o PIX, Confirmar!';btn.disabled=false;}
+      return;
+    }
+    await loadUserData();updateUI();loadStats();
+    toast('✅ Inscrição enviada! Aguarde aprovação do admin.','s');
+  }catch(e){
+    toast('Erro ao enviar. Tente novamente.','e');
+    if(btn){btn.textContent='✓ Já fiz o PIX, Confirmar!';btn.disabled=false;}
+  }
 }
 
 // ===== PALPITES =====
@@ -1462,7 +1514,7 @@ async function loadConta(){
         </div>
       </div>
       ${!userInscricao?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'home\');scrollToSection(\'insc\')">Fazer Inscrição</a></div>':''}
-      ${userInscricao?.status==='aprovado'?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'palpites\')">Meus Palpites →</a></div>':''}\n      ${userInscricao?.status==='aprovado'?renderCompraCotas(userInscricao.cotas):''}
+      ${userInscricao?.status==='aprovado'?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'palpites\')">🎯 Palpites 1ª Fase →</a></div>':''}\n      ${userInscricao?.status==='aprovado'?renderCompraCotas(userInscricao.cotas):''}
       <div style="text-align:center;margin-top:1rem"><button class="btn btn-danger btn-sm" onclick="logout()">Sair da Conta</button></div>
     </div>`;
 }
@@ -1565,13 +1617,13 @@ function loginBoxHTML(){
   const googleSVG=`<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>`;
   return `<div class="login-box-inner">
     <h3>🔐 Acesse sua Conta</h3>
-    <p class="lb-sub">Escolha como deseja entrar</p>
+    <p class="lb-sub" style="font-size:.82rem">Recomendamos entrar com Google — mais rápido e sem senha!</p>
     <div class="ltabs">
       <button class="ltab on" id="lt-google" onclick="showLTab('google')">Google</button>
       <button class="ltab off" id="lt-email" onclick="showLTab('email')">E-mail &amp; Senha</button>
     </div>
     <div id="lp-google">
-      <button class="btn-google" onclick="loginGoogle()" style="width:100%;justify-content:center">
+      <button class="btn-google" onclick="loginGoogle()" style="width:100%;justify-content:center;min-height:52px;font-size:1rem;border-radius:8px">
         ${googleSVG} Entrar com Google
       </button>
     </div>
@@ -1583,7 +1635,7 @@ function loginBoxHTML(){
       <div id="ef-in">
         <div class="fg"><label>E-mail</label><input type="email" id="em-email" placeholder="seuemail@exemplo.com" onkeydown="if(event.key==='Enter')loginEmail()"></div>
         <div class="fg"><label>Senha</label><input type="password" id="em-senha" placeholder="Sua senha" onkeydown="if(event.key==='Enter')loginEmail()"></div>
-        <button class="btn btn-p" style="width:100%;justify-content:center" onclick="loginEmail()">Entrar</button>
+        <button id="btn-login-email" class="btn btn-p" style="width:100%;justify-content:center;min-height:48px" onclick="loginEmail()">Entrar</button>
         <p style="text-align:center;margin-top:.8rem;font-size:.75rem;color:var(--text-muted)">
           Esqueceu a senha? Solicite ao <strong style="color:var(--text-primary)">Administrador Alexandre Almeida</strong> via
           <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success);font-weight:600;text-decoration:none">📱 WhatsApp</a>
@@ -1594,7 +1646,7 @@ function loginBoxHTML(){
         <div class="fg"><label>E-mail *</label><input type="email" id="reg-email" placeholder="seuemail@exemplo.com"></div>
         <div class="fg"><label>Senha * <span style="font-size:.68rem;color:var(--text-muted)">(mín. 8 caracteres)</span></label><input type="password" id="reg-senha" placeholder="Crie uma senha forte"></div>
         <div class="fg"><label>WhatsApp *</label><input type="tel" id="reg-wpp" placeholder="(11) 99999-9999"></div>
-        <button class="btn btn-p" style="width:100%;justify-content:center" onclick="registrarEmail()">Criar Conta</button>
+        <button id="btn-registrar" class="btn btn-p" style="width:100%;justify-content:center;min-height:48px" onclick="registrarEmail()">Criar Conta</button>
       </div>
     </div>
   </div>`;
@@ -1623,10 +1675,12 @@ function showEMTab(mode){
 }
 
 async function loginEmail(){
+  const btn=document.getElementById('btn-login-email');
   const email=document.getElementById('em-email')?.value.trim();
   const senha=document.getElementById('em-senha')?.value;
-  if(!email||!senha){toast('Preencha e-mail e senha!','e');return;}
-  const btn=event?.target;if(btn&&btn.tagName==='BUTTON'){btn.textContent='Entrando...';btn.disabled=true;}
+  if(!email){document.getElementById('em-email').focus();toast('Informe seu e-mail!','e');return;}
+  if(!senha){document.getElementById('em-senha').focus();toast('Informe sua senha!','e');return;}
+  if(btn){btn.textContent='Entrando...';btn.disabled=true;}
   try{
     const{data,error}=await sb.auth.signInWithPassword({email,password:senha});
     if(error){
@@ -1636,38 +1690,52 @@ async function loginEmail(){
       return;
     }
     currentUser=data.user;await loadUserData();updateUI();loadStats();
-    toast('Login realizado! Bem-vindo(a) de volta 🎉','s');
+    toast('Login realizado! Bem-vindo(a) 🎉','s');
   }catch(e){toast('Erro ao fazer login.','e');if(btn){btn.textContent='Entrar';btn.disabled=false;}}
 }
 
 async function registrarEmail(){
+  // Usar getElementById (não event.target) — compatível com Android/innerHTML
+  const btn=document.getElementById('btn-registrar');
   const nome=document.getElementById('reg-nome')?.value.trim();
   const email=document.getElementById('reg-email')?.value.trim();
   const senha=document.getElementById('reg-senha')?.value;
   const wpp=document.getElementById('reg-wpp')?.value.trim();
-  if(!nome||!email||!senha||!wpp){toast('Preencha todos os campos!','e');return;}
-  if(senha.length<8){toast('Senha deve ter no mínimo 8 caracteres!','e');return;}
-  const btn=event?.target;if(btn){btn.textContent='Criando...';btn.disabled=true;}
+
+  // Validação com feedback visual
+  if(!nome){document.getElementById('reg-nome').focus();toast('Informe seu nome completo!','e');return;}
+  if(!email){document.getElementById('reg-email').focus();toast('Informe seu e-mail!','e');return;}
+  if(!senha||senha.length<8){document.getElementById('reg-senha').focus();toast('Senha deve ter no mínimo 8 caracteres!','e');return;}
+  if(!wpp){document.getElementById('reg-wpp').focus();toast('Informe seu WhatsApp!','e');return;}
+
+  if(btn){btn.textContent='Criando conta...';btn.disabled=true;}
   try{
     const{data,error}=await sb.auth.signUp({email,password:senha,options:{data:{full_name:nome}}});
-    if(error){toast('Erro: '+error.message,'e');if(btn){btn.textContent='Criar Conta';btn.disabled=false;}return;}
+    if(error){
+      const msg=error.message.includes('already')?'E-mail já cadastrado! Tente fazer login.':error.message;
+      toast('Erro: '+msg,'e');
+      if(btn){btn.textContent='Criar Conta';btn.disabled=false;}
+      return;
+    }
     if(data?.user){
       await sb.from('profiles').upsert({id:data.user.id,nome,whatsapp:wpp});
-      // Tenta logar direto (sem precisar confirmar email)
-      const{data:loginData,error:loginErr}=await sb.auth.signInWithPassword({email,password:senha});
-      if(!loginErr&&loginData?.user){
-        currentUser=loginData.user;await loadUserData();updateUI();loadStats();
+      // Tenta logar direto
+      const{data:ld,error:le}=await sb.auth.signInWithPassword({email,password:senha});
+      if(!le&&ld?.user){
+        currentUser=ld.user;await loadUserData();updateUI();loadStats();
         toast('Conta criada! Bem-vindo(a), '+nome.split(' ')[0]+'! 🎉','s');
       }else{
-        // Se não logou direto, informa para fazer login manualmente
         const rf=document.getElementById('ef-reg');
-        if(rf)rf.innerHTML=`<div style="text-align:center;padding:1.5rem;color:var(--text-secondary)"><p style="font-size:1.5rem;margin-bottom:.5rem">✅</p><p>Conta criada com sucesso!<br><br>Clique em <strong style="color:var(--text-primary)">Entrar</strong> acima e faça login com o e-mail e senha que você criou.</p></div>`;
+        if(rf)rf.innerHTML=`<div style="text-align:center;padding:1.5rem;color:var(--text-secondary)">
+          <p style="font-size:2rem;margin-bottom:.5rem">✅</p>
+          <p style="font-size:1rem;color:var(--text-primary);font-weight:600;margin-bottom:.5rem">Conta criada!</p>
+          <p>Clique em <strong>Entrar</strong> acima e faça login com seu e-mail e senha.</p>
+        </div>`;
         toast('Conta criada! Faça login para continuar.','s');
-        // Mudar para aba de login
-        setTimeout(()=>showEMTab('in'),1500);
+        setTimeout(()=>showEMTab('in'),1800);
       }
     }
-  }catch(e){toast('Erro ao criar conta.','e');if(btn){btn.textContent='Criar Conta';btn.disabled=false;}}
+  }catch(e){toast('Erro ao criar conta. Tente novamente.','e');if(btn){btn.textContent='Criar Conta';btn.disabled=false;}}
 }
 
 function solicitarReset(){
