@@ -497,8 +497,39 @@ button:active,.co:active{opacity:.8}
 <div class="rg">
 <div class="rc"><div class="rn">01</div><div class="ri">🔐</div><h3>Login com Google</h3><p>Faça login com sua conta Google para se inscrever. Rápido, seguro e sem precisar criar senha!</p></div>
 <div class="rc"><div class="rn">02</div><div class="ri">📋</div><h3>Inscrição + PIX</h3><p>Escolha 1, 2 ou 3 cotas e pague via PIX. O admin confirma seu pagamento e libera o acesso.</p></div>
-<div class="rc"><div class="rn">03</div><div class="ri">🎯</div><h3>Palpites — 2 Fases</h3><p><strong>1ª Rodada (já liberada!):</strong> 36 jogos da fase de grupos — prazo até 10/06 às 19h.<br><strong>2ª Rodada:</strong> jogos do mata-mata, liberada pelo admin após os classificados da fase de grupos serem definidos.</p></div>
-<div class="rc"><div class="rn">04</div><div class="ri">⭐</div><h3>Pontuação</h3><p><strong>Fase de Grupos:</strong> Placar exato = <strong>3 pts</strong>. Acertou gols de 1 equipe = <strong>1 pt</strong>.<br><strong>Eliminatórias:</strong> Placar exato = <strong>4 pts</strong>. Acertou gols de 1 equipe = <strong>1 pt</strong>.</p></div>
+<div class="rc" style="border-color:rgba(34,197,94,.25)">
+  <div class="rn">03</div><div class="ri">✅</div>
+  <h3>1ª Fase — Grupos <span style="font-size:.6em;color:var(--success);margin-left:.3rem">Liberada!</span></h3>
+  <p style="margin-bottom:.7rem">36 jogos, prazo até <strong>10/06 às 19h</strong>. Pode editar à vontade até lá.</p>
+  <div style="background:rgba(0,0,0,.2);border-radius:6px;padding:.6rem .7rem;font-size:.78rem">
+    <div style="display:flex;justify-content:space-between;padding:.2rem 0;border-bottom:1px solid rgba(255,255,255,.06)">
+      <span style="color:var(--text-muted)">🎯 Placar exato</span><strong style="color:var(--success)">3 pts</strong>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:.2rem 0;border-bottom:1px solid rgba(255,255,255,.06)">
+      <span style="color:var(--text-muted)">⚽ 1 equipe certa</span><strong style="color:var(--warning)">1 pt</strong>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:.2rem 0">
+      <span style="color:var(--text-muted)">❌ Errou tudo</span><strong style="color:var(--text-muted)">0 pts</strong>
+    </div>
+  </div>
+</div>
+<div class="rc" style="border-color:rgba(245,158,11,.25)">
+  <div class="rn">04</div><div class="ri">🔒</div>
+  <h3>2ª Fase — Eliminatórias <span style="font-size:.6em;color:var(--warning);margin-left:.3rem">Em breve</span></h3>
+  <p style="margin-bottom:.7rem">Do mata-mata à final. Pontuação cresce a cada fase!</p>
+  <div style="background:rgba(0,0,0,.2);border-radius:6px;padding:.6rem .7rem;font-size:.75rem">
+    <div style="display:grid;grid-template-columns:1fr auto auto;gap:.15rem .6rem;align-items:center">
+      <span style="color:var(--text-muted);font-size:.68rem;padding:.15rem 0;border-bottom:1px solid rgba(255,255,255,.06)">Fase</span>
+      <span style="color:var(--text-muted);font-size:.68rem;border-bottom:1px solid rgba(255,255,255,.06)">Exato</span>
+      <span style="color:var(--text-muted);font-size:.68rem;border-bottom:1px solid rgba(255,255,255,.06)">1 equipe</span>
+      <span style="color:var(--text-secondary)">16-avos</span><strong style="color:var(--success)">4</strong><strong style="color:var(--warning)">2</strong>
+      <span style="color:var(--text-secondary)">Oitavas</span><strong style="color:var(--success)">5</strong><strong style="color:var(--warning)">3</strong>
+      <span style="color:var(--text-secondary)">Quartas</span><strong style="color:var(--success)">6</strong><strong style="color:var(--warning)">4</strong>
+      <span style="color:var(--text-secondary)">Semifinais</span><strong style="color:var(--success)">7</strong><strong style="color:var(--warning)">5</strong>
+      <span style="color:var(--accent-gold);font-weight:700">🏆 Final</span><strong style="color:var(--accent-gold)">10</strong><strong style="color:var(--warning)">6</strong>
+    </div>
+  </div>
+</div>
 <div class="rc"><div class="rn">05</div><div class="ri">📊</div><h3>Ranking</h3><p>Cada cota concorre de forma independente. Acompanhe sua posição em tempo real durante toda a Copa!</p></div>
 <div class="rc"><div class="rn">06</div><div class="ri">🏆</div><h3>Premiação</h3><p>1º: <strong>60%</strong> · 2º: <strong>30%</strong> · 3º: <strong>10%</strong> do total arrecadado. O prêmio aumenta com cada nova inscrição!</p></div>
 </div>
@@ -529,7 +560,7 @@ button:active,.co:active{opacity:.8}
     <li style="margin-bottom:.3rem">Todos os 36 palpites devem ser preenchidos para salvar — você pode <strong>voltar e editar</strong> quantas vezes quiser até o prazo</li>
     <li style="margin-bottom:.3rem">📝 <strong>Pode editar à vontade até o prazo!</strong> Entre na página de Palpites, altere os placares e salve novamente</li>
     <li style="margin-bottom:.3rem"><strong style="color:var(--error)">Prazo final: 10/06/2026 às 19h00</strong> (véspera do início da Copa) — após esse horário os palpites são bloqueados definitivamente</li>
-    <li>Pontuação: placar exato = <strong>3 pts</strong> · acertou gols de 1 equipe = <strong>1 pt</strong> · errou = 0 pts</li>
+    <li>⭐ <strong>Pontuação:</strong> placar exato = <strong style="color:var(--success)">3 pts</strong> · 1 equipe certa = <strong style="color:var(--warning)">1 pt</strong> · errou = 0 pts</li>
   </ul>
 </div>
 
@@ -544,7 +575,7 @@ button:active,.co:active{opacity:.8}
     <li style="margin-bottom:.3rem">Você palpita os jogos do <strong>mata-mata</strong>: 16-avos, oitavas, quartas, semifinais, disputa de 3º lugar e final</li>
     <li style="margin-bottom:.3rem">Os confrontos só serão conhecidos depois que todos os classificados da fase de grupos forem definidos — por isso a liberação é separada</li>
     <li style="margin-bottom:.3rem">Você receberá um aviso no grupo do WhatsApp quando a 2ª rodada for liberada</li>
-    <li>Pontuação maior: placar exato = <strong>4 pts</strong> · acertou gols de 1 equipe = <strong>1 pt</strong> · errou = 0 pts</li>
+    <li>⭐ <strong>Pontuação progressiva:</strong> varia por fase — de <strong style="color:var(--success)">4 pts</strong> (16-avos) até <strong style="color:var(--accent-gold)">10 pts</strong> (final) no placar exato. Veja a tabela em "Como Funciona" acima.</li>
   </ul>
 </div>
 
@@ -580,39 +611,6 @@ button:active,.co:active{opacity:.8}
 </div>
 
 <!-- PONTUAÇÃO -->
-<div class="manual-box">
-<h4>🎯 Tabela de Pontuação</h4>
-
-<!-- FASE DE GRUPOS -->
-<div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.18);border-radius:8px;padding:1rem;margin-bottom:1rem">
-  <div style="font-family:'Oswald',sans-serif;font-size:.85rem;text-transform:uppercase;letter-spacing:1px;color:var(--success);margin-bottom:.7rem">✅ 1ª Fase — Grupos (36 jogos)</div>
-  <table class="pts-tbl">
-    <thead><tr><th>Situação</th><th>Pontos</th></tr></thead>
-    <tbody>
-      <tr><td>🎯 Placar exato (ex: 2×1 → você disse 2×1)</td><td><span class="pb pb-g">3 pts</span></td></tr>
-      <tr><td>⚽ Acertou gols de 1 equipe (ex: 2×1 → você disse 2×0)</td><td><span class="pb pb-w">1 pt</span></td></tr>
-      <tr><td>❌ Errou os gols das duas equipes</td><td><span class="pb pb-e">0 pts</span></td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- FASE ELIMINATÓRIA -->
-<div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.18);border-radius:8px;padding:1rem;margin-bottom:.5rem">
-  <div style="font-family:'Oswald',sans-serif;font-size:.85rem;text-transform:uppercase;letter-spacing:1px;color:var(--warning);margin-bottom:.7rem">🔒 2ª Fase — Eliminatórias (pontuação progressiva)</div>
-  <table class="pts-tbl">
-    <thead><tr><th>Fase</th><th>Placar Exato</th><th>1 Equipe Certa</th><th>Errou</th></tr></thead>
-    <tbody>
-      <tr><td style="font-weight:600">16-avos de final</td><td><span class="pb pb-g">4 pts</span></td><td><span class="pb pb-w">2 pts</span></td><td><span class="pb pb-e">0</span></td></tr>
-      <tr><td style="font-weight:600">Oitavas de final</td><td><span class="pb pb-g">5 pts</span></td><td><span class="pb pb-w">3 pts</span></td><td><span class="pb pb-e">0</span></td></tr>
-      <tr><td style="font-weight:600">Quartas de final</td><td><span class="pb pb-g">6 pts</span></td><td><span class="pb pb-w">4 pts</span></td><td><span class="pb pb-e">0</span></td></tr>
-      <tr><td style="font-weight:600">Semifinais</td><td><span class="pb pb-g">7 pts</span></td><td><span class="pb pb-w">5 pts</span></td><td><span class="pb pb-e">0</span></td></tr>
-      <tr style="background:rgba(212,168,67,.06)"><td style="font-weight:700;color:var(--accent-gold)">🏆 Final</td><td><span class="pb pb-g" style="font-size:.85rem">10 pts</span></td><td><span class="pb pb-w">6 pts</span></td><td><span class="pb pb-e">0</span></td></tr>
-    </tbody>
-  </table>
-</div>
-<p style="font-size:.78rem;color:var(--text-muted);margin-top:.6rem">⚠️ Nas eliminatórias considera-se o placar do <strong>tempo regulamentar + prorrogação</strong>. Pênaltis não contam para a pontuação.</p>
-</div>
-
 <div class="manual-box">
 <h4>🏆 Premiação</h4>
 <p>O prêmio total é formado pelas <strong>cotas de participação</strong> (as taxas de serviço não entram no prêmio). Distribuição:</p>
