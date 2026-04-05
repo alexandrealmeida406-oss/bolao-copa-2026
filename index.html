@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<!-- build: 2026-04-05 13:53:50 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bolão do Almeida - Copa do Mundo 2026</title>
 <meta name="description" content="Bolão do Almeida - Copa do Mundo 2026. Faça sua inscrição e concorra a prêmios!">
@@ -1988,37 +1989,53 @@ function mostrarModalTrocaSenha(){
 async function salvarNovaSenha(){
   const nova = document.getElementById('nova-senha-def')?.value;
   const conf = document.getElementById('nova-senha-conf')?.value;
+  const btn  = document.getElementById('btn-salvar-senha');
+
   if(!nova||nova.length<8){
-    document.getElementById('nova-senha-def').focus();
+    document.getElementById('nova-senha-def')?.focus();
     toast('A senha deve ter no mínimo 8 caracteres!','e');
     return;
   }
   if(nova!==conf){
-    document.getElementById('nova-senha-conf').focus();
+    document.getElementById('nova-senha-conf')?.focus();
     toast('As senhas não conferem!','e');
     return;
   }
-  const btn = document.getElementById('btn-salvar-senha');
+
+  // Verificar se o cliente Supabase existe
+  if(typeof sb==='undefined'||!sb?.auth){
+    toast('Erro interno: recarregue a página e tente novamente.','e');
+    return;
+  }
+
   if(btn){btn.textContent='Salvando...';btn.disabled=true;}
+
   try{
     const{error}=await sb.auth.updateUser({
       password: nova,
-      data: {...(currentUser.user_metadata||{}), must_change_password: false}
+      data: {...(currentUser?.user_metadata||{}), must_change_password: false}
     });
+
     if(error){
-      toast('Erro ao salvar: '+error.message,'e');
+      toast('Erro: '+error.message,'e');
       if(btn){btn.textContent='✓ Salvar Nova Senha';btn.disabled=false;}
       return;
     }
+
     // Fechar modal
-    const modal = document.getElementById('modal-troca-senha');
+    const modal=document.getElementById('modal-troca-senha');
     if(modal)modal.style.display='none';
-    // Atualizar currentUser
-    const{data:{user}}=await sb.auth.getUser();
-    if(user)currentUser=user;
-    toast('✅ Senha atualizada com sucesso! Bem-vindo(a) 🎉','s');
+
+    // Atualizar sessão local
+    try{
+      const{data}=await sb.auth.getUser();
+      if(data?.user)currentUser=data.user;
+    }catch(e2){}
+
+    toast('✅ Senha criada com sucesso! Bem-vindo(a) 🎉','s');
+
   }catch(e){
-    toast('Erro: '+e.message,'e');
+    toast('Erro inesperado: '+e.message,'e');
     if(btn){btn.textContent='✓ Salvar Nova Senha';btn.disabled=false;}
   }
 }
