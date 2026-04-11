@@ -565,7 +565,7 @@ button:active,.co:active{opacity:.8}
 </div>
 
 
-<div style="height:1px;background:var(--border);margin:1.5rem 0;opacity:.5"></div>
+<div style="height:1px;background:var(--border);margin:1.5rem 0;opacity:.4"></div>
 <!-- Manual do Bolão -->
 <div style="margin-top:2.5rem" id="manual">
 <div class="sh" style="margin-bottom:1.2rem"><div class="stag">Leia com atenção</div><h3 class="stitle" style="font-size:1.8rem">Manual do Bolão</h3></div>
@@ -927,6 +927,9 @@ let currentUser=null,userProfile=null,userInscricao=null,selC=1;
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded',async()=>{
+  // Garantir que updateUI roda mesmo se sb demorar
+  setTimeout(()=>{ if(typeof updateUI==='function') updateUI(); }, 100);
+
   // Fallback: se sb não carregar em 3s, recarregar com cache bust
   // Se sb não carregar em 2s = cache antigo → recarregar
   setTimeout(()=>{
@@ -1061,14 +1064,47 @@ function updateUI(){
   const inscEl=document.getElementById('inscricao-content');
   
   if(currentUser){
+    // Stepper visual — atualiza com estado real do usuário
     const _hs=document.querySelectorAll('.hero-step');
     if(_hs.length>=4){
-      const _md=(i)=>{_hs[i].style.background='rgba(34,197,94,.25)';_hs[i].style.borderColor='var(--success)';_hs[i].style.color='var(--success)';_hs[i].textContent='✓';};
-      const _ma=(i)=>{_hs[i].style.background='rgba(212,168,67,.3)';_hs[i].style.borderColor='var(--accent-gold)';_hs[i].style.color='var(--accent-gold)';_hs[i].style.boxShadow='0 0 10px rgba(212,168,67,.35)';};
-      _md(0);
-      if(userInscricao&&userInscricao.status!=='rejeitado'){_md(1);}else{_ma(1);}
-      if(userInscricao?.status==='aprovado'){_md(2);_ma(3);}
-      else if(userInscricao?.status==='pendente'){_ma(2);}
+      // Reset todos para o estado inicial
+      Array.from(_hs).forEach((h,i)=>{
+        h.style.background='rgba(212,168,67,.15)';
+        h.style.borderColor='var(--accent-gold)';
+        h.style.color='var(--accent-gold)';
+        h.style.boxShadow='';
+        h.textContent=String(i+1);
+      });
+      // Passo 1: Login — sempre verde se logado
+      _hs[0].style.background='rgba(34,197,94,.25)';
+      _hs[0].style.borderColor='var(--success)';
+      _hs[0].style.color='var(--success)';
+      _hs[0].textContent='✓';
+      // Passo 2: Inscrição
+      if(userInscricao&&userInscricao.status!=='rejeitado'){
+        _hs[1].style.background='rgba(34,197,94,.25)';
+        _hs[1].style.borderColor='var(--success)';
+        _hs[1].style.color='var(--success)';
+        _hs[1].textContent='✓';
+      } else {
+        _hs[1].style.background='rgba(212,168,67,.3)';
+        _hs[1].style.boxShadow='0 0 10px rgba(212,168,67,.35)';
+      }
+      // Passo 3: Aprovação
+      if(userInscricao?.status==='aprovado'){
+        _hs[2].style.background='rgba(34,197,94,.25)';
+        _hs[2].style.borderColor='var(--success)';
+        _hs[2].style.color='var(--success)';
+        _hs[2].textContent='✓';
+        // Passo 4: Palpites — ativo
+        _hs[3].style.background='rgba(212,168,67,.3)';
+        _hs[3].style.borderColor='var(--accent-gold)';
+        _hs[3].style.color='var(--accent-gold)';
+        _hs[3].style.boxShadow='0 0 12px rgba(212,168,67,.5)';
+      } else if(userInscricao?.status==='pendente'){
+        _hs[2].style.background='rgba(212,168,67,.3)';
+        _hs[2].style.boxShadow='0 0 10px rgba(212,168,67,.35)';
+      }
     }
     const name=currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'Usuário';
     const avatar=currentUser.user_metadata?.avatar_url||'';
