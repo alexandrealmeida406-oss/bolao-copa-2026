@@ -1182,6 +1182,15 @@ function updateUI(){
       renderInscricaoForm();
     }
   }else{
+    // Não logado — resetar stepper para estado inicial (sem cores)
+    const _hs2=document.querySelectorAll('.hero-step');
+    Array.from(_hs2).forEach((h2,i)=>{
+      h2.style.background='rgba(212,168,67,.15)';
+      h2.style.borderColor='var(--accent-gold)';
+      h2.style.color='var(--accent-gold)';
+      h2.style.boxShadow='';
+      h2.textContent=String(i+1);
+    });
     authEl.innerHTML='<a onclick="navigate(\'home\');setTimeout(()=>scrollToSection(\'insc\'),80)" style="color:var(--accent-gold)">Entrar</a>';
     heroEl.innerHTML=`
       <button class="btn btn-p" onclick="scrollToSection('insc')">Participar Agora</button>
