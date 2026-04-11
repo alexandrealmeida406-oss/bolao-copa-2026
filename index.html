@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<!-- build: 2026-04-05 13:53:50 -->
 
   <!-- Open Graph / WhatsApp preview -->
   <meta property="og:type" content="website">
@@ -21,15 +22,28 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="preconnect" href="https://flagcdn.com">
   <link rel="dns-prefetch" href="https://vuomkohlwomdeyobddhw.supabase.co">
+
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#D4A843">
   <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- iOS PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Bolão 2026">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+
+  <!-- Splash screens iOS (cor de fundo enquanto carrega) -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <!-- Windows PWA -->
+  <meta name="msapplication-TileColor" content="#0A0E17">
+  <meta name="msapplication-TileImage" content="/icon-192.png">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bolão do Almeida - Copa do Mundo 2026</title>
@@ -414,6 +428,37 @@ button:active,.co:active{opacity:.8}
   }
 }
 
+
+/* MOBILE — inputs de placar maiores e mais fáceis de tocar */
+@media(max-width:500px){
+  .match-score-input{
+    width:48px!important;
+    height:48px!important;
+    font-size:1.1rem!important;
+    text-align:center;
+  }
+  /* Evitar que teclado quebre layout — scroll suave */
+  .page{overflow-x:hidden}
+  /* Botão Google extra grande no mobile */
+  .btn-google{
+    min-height:56px!important;
+    font-size:1rem!important;
+  }
+  /* Cards de cotas maiores no mobile */
+  .co{min-height:90px!important}
+  /* Toast mais visível no mobile */
+  .toast{
+    font-size:.9rem!important;
+    padding:.9rem 1.2rem!important;
+    max-width:92vw!important;
+    bottom:1.2rem!important;
+  }
+}
+/* Scroll suave global */
+*{-webkit-overflow-scrolling:touch}
+/* Inputs não pulam o layout quando teclado abre */
+.fg input:focus,.fg select:focus{scroll-margin-bottom:120px}
+
 </style>
 </head>
 <body>
@@ -476,67 +521,167 @@ button:active,.co:active{opacity:.8}
 <!-- Como Funciona -->
 <section class="sec" id="cf">
 <div class="sh"><div class="stag">Regras do Jogo</div><h2 class="stitle">Como Funciona</h2><p class="sdesc">O sistema consagrado do Bolão do Almeida, agora para 48 seleções!</p></div>
+
+
+
 <div class="rg">
 <div class="rc"><div class="rn">01</div><div class="ri">🔐</div><h3>Login com Google</h3><p>Faça login com sua conta Google para se inscrever. Rápido, seguro e sem precisar criar senha!</p></div>
 <div class="rc"><div class="rn">02</div><div class="ri">📋</div><h3>Inscrição + PIX</h3><p>Escolha 1, 2 ou 3 cotas e pague via PIX. O admin confirma seu pagamento e libera o acesso.</p></div>
-<div class="rc"><div class="rn">03</div><div class="ri">🎯</div><h3>Palpites — 2 Fases</h3><p><strong>1ª Rodada (já liberada!):</strong> 36 jogos da fase de grupos — prazo até 10/06 às 19h.<br><strong>2ª Rodada:</strong> jogos do mata-mata, liberada pelo admin após os classificados da fase de grupos serem definidos.</p></div>
-<div class="rc"><div class="rn">04</div><div class="ri">⭐</div><h3>Pontuação</h3><p><strong>Fase de Grupos:</strong> Placar exato = <strong>3 pts</strong>. Acertou gols de 1 equipe = <strong>1 pt</strong>.<br><strong>Eliminatórias:</strong> Placar exato = <strong>4 pts</strong>. Acertou gols de 1 equipe = <strong>1 pt</strong>.</p></div>
+<div class="rc" style="border-color:rgba(34,197,94,.25)">
+  <div class="rn">03</div><div class="ri">✅</div>
+  <h3>1ª Fase — Grupos <span style="font-size:.6em;color:var(--success);margin-left:.3rem">Liberada!</span></h3>
+  <p style="margin-bottom:.7rem">36 jogos, prazo até <strong>10/06 às 19h</strong>. Pode editar à vontade até lá.</p>
+  <div style="background:rgba(0,0,0,.2);border-radius:6px;padding:.6rem .7rem;font-size:.75rem">
+    <div style="display:grid;grid-template-columns:1fr auto auto;gap:.12rem .5rem;align-items:center">
+      <span style="color:var(--text-muted);font-size:.68rem;padding:.15rem 0;border-bottom:1px solid rgba(255,255,255,.06)">Situação</span>
+      <span style="color:var(--text-muted);font-size:.68rem;border-bottom:1px solid rgba(255,255,255,.06)">Pontos</span>
+      <span style="border-bottom:1px solid rgba(255,255,255,.06)"></span>
+      <span style="color:var(--text-secondary)">🎯 Placar exato</span><strong style="color:var(--success)">3</strong><span style="color:var(--text-muted);font-size:.68rem">pts</span>
+      <span style="color:var(--text-secondary)">⚽ 1 equipe certa</span><strong style="color:var(--warning)">1</strong><span style="color:var(--text-muted);font-size:.68rem">pt</span>
+      <span style="color:var(--text-secondary)">❌ Errou tudo</span><strong style="color:var(--text-muted)">0</strong><span style="color:var(--text-muted);font-size:.68rem">pts</span>
+    </div>
+  </div>
+</div>
+<div class="rc" style="border-color:rgba(245,158,11,.25)">
+  <div class="rn">04</div><div class="ri">🔒</div>
+  <h3>2ª Fase — Eliminatórias <span style="font-size:.6em;color:var(--warning);margin-left:.3rem">Em breve</span></h3>
+  <p style="margin-bottom:.7rem">Do mata-mata à final. Pontuação cresce a cada fase!</p>
+  <div style="background:rgba(0,0,0,.2);border-radius:6px;padding:.6rem .7rem;font-size:.75rem">
+    <div style="display:grid;grid-template-columns:1fr auto auto;gap:.15rem .6rem;align-items:center">
+      <span style="color:var(--text-muted);font-size:.68rem;padding:.15rem 0;border-bottom:1px solid rgba(255,255,255,.06)">Fase</span>
+      <span style="color:var(--text-muted);font-size:.68rem;border-bottom:1px solid rgba(255,255,255,.06)">Exato</span>
+      <span style="color:var(--text-muted);font-size:.68rem;border-bottom:1px solid rgba(255,255,255,.06)">1 equipe</span>
+      <span style="color:var(--text-secondary)">16-avos</span><strong style="color:var(--success)">4</strong><strong style="color:var(--warning)">2</strong>
+      <span style="color:var(--text-secondary)">Oitavas</span><strong style="color:var(--success)">5</strong><strong style="color:var(--warning)">3</strong>
+      <span style="color:var(--text-secondary)">Quartas</span><strong style="color:var(--success)">6</strong><strong style="color:var(--warning)">4</strong>
+      <span style="color:var(--text-secondary)">Semifinais</span><strong style="color:var(--success)">7</strong><strong style="color:var(--warning)">5</strong>
+      <span style="color:var(--accent-gold);font-weight:700">🏆 Final</span><strong style="color:var(--accent-gold)">10</strong><strong style="color:var(--warning)">6</strong>
+    </div>
+  </div>
+</div>
 <div class="rc"><div class="rn">05</div><div class="ri">📊</div><h3>Ranking</h3><p>Cada cota concorre de forma independente. Acompanhe sua posição em tempo real durante toda a Copa!</p></div>
 <div class="rc"><div class="rn">06</div><div class="ri">🏆</div><h3>Premiação</h3><p>1º: <strong>60%</strong> · 2º: <strong>30%</strong> · 3º: <strong>10%</strong> do total arrecadado. O prêmio aumenta com cada nova inscrição!</p></div>
 </div>
-</section>
 
-<!-- Valores -->
-<section class="sec ps" id="val">
-<div class="sh"><div class="stag">Invista no Seu Palpite</div><h2 class="stitle">Valores</h2><p class="sdesc">Mais cotas, mais chances! Taxa de serviço inclusa.</p></div>
-<div class="pg">
-<div class="pc"><div class="pcc">1 Cota</div><div class="pvl">R$ 33<small>,00</small></div><div class="pbd">R$ 30 cota + R$ 3 taxa</div><ul class="pf"><li>1 palpite completo</li><li>Ranking ao vivo</li><li>Concorre aos 3 prêmios</li></ul><a class="btn btn-s btn-sm" onclick="startInscricao(1)">Escolher</a></div>
-<div class="pc ft"><div class="pcc">2 Cotas</div><div class="pvl">R$ 60<small>,00</small></div><div class="pbd">R$ 54 cotas + R$ 6 taxa</div><div class="ppd">Economia R$ 6</div><ul class="pf"><li>2 palpites independentes</li><li>Desconto de 10%</li><li>Ranking ao vivo</li></ul><a class="btn btn-p btn-sm" onclick="startInscricao(2)">Escolher</a></div>
-<div class="pc"><div class="pcc">3 Cotas</div><div class="pvl">R$ 81<small>,00</small></div><div class="pbd">R$ 72 cotas + R$ 9 taxa</div><div class="ppd">Economia R$ 18</div><ul class="pf"><li>3 palpites independentes</li><li>Máximo de chances!</li><li>Maior desconto/cota</li></ul><a class="btn btn-s btn-sm" onclick="startInscricao(3)">Escolher</a></div>
+<!-- AD SLOT -->
+<div class="ad-slot" id="ad-cf" style="margin:2rem auto 0">
+  <!-- Cole aqui o código do Google AdSense quando aprovado -->
+  <!-- <ins class="adsbygoogle" data-ad-client="ca-pub-XXXXXXXX" data-ad-slot="XXXXXXXX" data-ad-format="auto" style="display:block"></ins> -->
 </div>
-</section>
 
-<!-- Inscrição -->
-<section class="sec" id="insc">
-<div class="sh"><div class="stag">Participe Agora</div><h2 class="stitle">Inscrição</h2><p class="sdesc">Login rápido com Google ou crie sua conta com e-mail</p></div>
-<div id="inscricao-content">
-<!-- Dynamic content: login or form -->
-</div>
-</section>
+<!-- Manual do Bolão -->
+<div style="margin-top:2.5rem" id="manual">
+<div class="sh" style="margin-bottom:1.2rem"><div class="stag">Leia com atenção</div><h3 class="stitle" style="font-size:1.8rem">Manual do Bolão</h3></div>
 
-<!-- Premiação -->
-<section class="sec" id="prem">
-<div class="sh">
-  <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;justify-content:center">
-    <div class="stag">Prêmios</div>
-    <span style="display:inline-flex;align-items:center;gap:.35rem;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--success);font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .6rem;border-radius:50px"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse 1.5s infinite"></span>Ao Vivo</span>
+<!-- COMO FUNCIONA OS PALPITES -->
+<div class="manual-box" style="border-color:rgba(0,180,216,.25);background:linear-gradient(135deg,rgba(0,180,216,.05),var(--bg-card))">
+<h4 style="color:var(--accent-teal)">🎯 Como Funciona — As Duas Rodadas de Palpites</h4>
+<p style="margin-bottom:1rem">O Bolão do Almeida tem <strong style="color:var(--text-primary)">duas rodadas de palpites</strong>, uma para cada fase da Copa. Você precisa preencher as duas para maximizar seus pontos!</p>
+
+<!-- 1ª Rodada -->
+<div style="background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:1rem;margin-bottom:.8rem">
+  <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">
+    <span style="background:var(--success);color:white;font-family:'Oswald',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:1px;padding:.2rem .6rem;border-radius:50px;text-transform:uppercase">✅ Liberada agora</span>
+    <strong style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">1ª Rodada — Fase de Grupos</strong>
   </div>
-  <h2 class="stitle">Premiação</h2><p class="sdesc">O prêmio <strong style="color:var(--accent-gold)">cresce automaticamente</strong> com cada nova inscrição aprovada</p>
-<div style="max-width:480px;margin:.8rem auto 0;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:.9rem 1.1rem"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem"><span style="font-size:.75rem;color:var(--text-muted)">Prêmio acumulado</span><span style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--accent-gold)" id="premio-barra-val">R$ 0</span></div><div style="background:var(--bg-dark);border-radius:50px;height:8px;overflow:hidden"><div id="premio-barra" style="height:100%;border-radius:50px;background:var(--gradient-gold);width:0%;transition:width 1s ease"></div></div><div style="display:flex;justify-content:space-between;margin-top:.3rem;font-size:.65rem;color:var(--text-muted)"><span>Agora</span><span id="premio-barra-meta">Meta: R$ 300</span></div></div></div>
-<div class="prg">
-<div class="prc sv"><div class="prm">🥈</div><div class="prpl">2º Lugar</div><div class="prpc">30%</div><div class="prpv" id="pz2">R$ 0,00</div></div>
-<div class="prc gd"><div class="prm">🥇</div><div class="prpl">1º Lugar</div><div class="prpc">60%</div><div class="prpv" id="pz1">R$ 0,00</div></div>
-<div class="prc bz"><div class="prm">🥉</div><div class="prpl">3º Lugar</div><div class="prpc">10%</div><div class="prpv" id="pz3">R$ 0,00</div></div>
+  <ul style="margin-left:1rem">
+    <li style="margin-bottom:.3rem">Você palpita o placar de todos os <strong>36 jogos</strong> da fase de grupos (12 grupos × 3 jogos)</li>
+    <li style="margin-bottom:.3rem">Todos os 36 palpites devem ser preenchidos para salvar — você pode <strong>voltar e editar</strong> quantas vezes quiser até o prazo</li>
+    <li style="margin-bottom:.3rem">📝 <strong>Pode editar à vontade até o prazo!</strong> Entre na página de Palpites, altere os placares e salve novamente</li>
+    <li style="margin-bottom:.3rem"><strong style="color:var(--error)">Prazo final: 10/06/2026 às 19h00</strong> (véspera do início da Copa) — após esse horário os palpites são bloqueados definitivamente</li>
+  </ul>
+  <!-- Tabela pontuação fase 1 -->
+  <div style="margin-top:.8rem;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:8px;padding:.8rem .9rem">
+    <div style="font-family:'Oswald',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--success);margin-bottom:.5rem">⭐ Pontuação — Fase de Grupos</div>
+    <div style="display:grid;grid-template-columns:1fr auto;gap:.25rem .8rem;font-size:.82rem">
+      <span style="color:var(--text-secondary)">🎯 Placar exato</span><strong style="color:var(--success)">3 pts</strong>
+      <span style="color:var(--text-secondary)">⚽ Acertou gols de 1 equipe</span><strong style="color:var(--warning)">1 pt</strong>
+      <span style="color:var(--text-secondary)">❌ Errou as duas equipes</span><strong style="color:var(--text-muted)">0 pts</strong>
+    </div>
+  </div>
+  <div style="margin-top:.7rem;padding:.7rem .9rem;background:rgba(212,168,67,.08);border-left:3px solid var(--accent-gold);border-radius:0 6px 6px 0;font-size:.82rem;color:var(--text-secondary)">
+    💡 <strong style="color:var(--accent-gold)">Dica:</strong> Não deixe para a última hora! Preencha seus palpites da Fase de Grupos o quanto antes para não perder o prazo de 10/06 às 19h. Fique ligado no WhatsApp para não perder o aviso da 2ª rodada!
+  </div>
 </div>
-<div class="wab"><h3>📱 Grupo do WhatsApp</h3><p>Fique por dentro de tudo!</p><a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w btn-sm">Entrar no Grupo</a></div>
-</section>
-<!-- Ranking -->
-<section class="sec" id="rank">
-<div class="sh"><div class="stag">Classificação</div><h2 class="stitle">Ranking ao Vivo</h2>
-<p class="sdesc">Acompanhe a classificação em tempo real</p></div>
-<div style="text-align:center;padding:3rem 1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;max-width:600px;margin:0 auto">
-  <p style="font-size:3rem;margin-bottom:.8rem">🏆</p>
-  <p style="font-family:'Oswald',sans-serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-gold);margin-bottom:.6rem">Em breve!</p>
-  <p style="color:var(--text-secondary);font-size:.9rem;line-height:1.6;max-width:420px;margin:0 auto">
-    O ranking será exibido após a <strong style="color:var(--text-primary)">conclusão da 1ª rodada</strong> da fase de grupos.<br><br>
-    A classificação será atualizada ao final de cada rodada. Fique ligado no <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">grupo do WhatsApp</a>!
-  </p>
+
+<!-- 2ª Rodada -->
+<div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:1rem">
+  <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">
+    <span style="background:var(--warning);color:var(--bg-dark);font-family:'Oswald',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:1px;padding:.2rem .6rem;border-radius:50px;text-transform:uppercase">🔒 Em breve</span>
+    <strong style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">2ª Rodada — Fase Eliminatória</strong>
+  </div>
+  <ul style="margin-left:1rem">
+    <li style="margin-bottom:.3rem">Após o encerramento da fase de grupos, o admin liberará uma <strong>nova rodada de palpites</strong> para o mata-mata</li>
+    <li style="margin-bottom:.3rem">Você palpita os jogos do <strong>mata-mata</strong>: 16-avos, oitavas, quartas, semifinais, disputa de 3º lugar e final</li>
+    <li style="margin-bottom:.3rem">Os confrontos só serão conhecidos depois que todos os classificados da fase de grupos forem definidos — por isso a liberação é separada</li>
+    <li style="margin-bottom:.3rem">Você receberá um aviso no grupo do WhatsApp quando a 2ª rodada for liberada</li>
+    <li style="margin-bottom:.3rem">⭐ <strong>Pontuação progressiva</strong> — quanto mais longe na Copa, mais pontos vale:</li>
+  </ul>
+  <!-- Tabela pontuação fase 2 -->
+  <div style="margin-top:.7rem;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:8px;padding:.8rem .9rem;overflow-x:auto">
+    <div style="font-family:'Oswald',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--warning);margin-bottom:.6rem">⭐ Pontuação — Fase Eliminatória</div>
+    <table style="width:100%;font-size:.8rem;border-collapse:collapse">
+      <thead><tr style="color:var(--text-muted);font-size:.7rem">
+        <th style="text-align:left;padding:.25rem .4rem;border-bottom:1px solid var(--border)">Fase</th>
+        <th style="text-align:center;padding:.25rem .4rem;border-bottom:1px solid var(--border)">🎯 Exato</th>
+        <th style="text-align:center;padding:.25rem .4rem;border-bottom:1px solid var(--border)">⚽ 1 equipe</th>
+        <th style="text-align:center;padding:.25rem .4rem;border-bottom:1px solid var(--border)">❌ Errou</th>
+      </tr></thead>
+      <tbody>
+        <tr><td style="padding:.25rem .4rem;color:var(--text-secondary)">16-avos de final</td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--success)">4 pts</strong></td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--warning)">2 pts</strong></td><td style="text-align:center;padding:.25rem .4rem;color:var(--text-muted)">0</td></tr>
+        <tr style="background:rgba(255,255,255,.02)"><td style="padding:.25rem .4rem;color:var(--text-secondary)">Oitavas de final</td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--success)">5 pts</strong></td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--warning)">3 pts</strong></td><td style="text-align:center;padding:.25rem .4rem;color:var(--text-muted)">0</td></tr>
+        <tr><td style="padding:.25rem .4rem;color:var(--text-secondary)">Quartas de final</td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--success)">6 pts</strong></td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--warning)">4 pts</strong></td><td style="text-align:center;padding:.25rem .4rem;color:var(--text-muted)">0</td></tr>
+        <tr style="background:rgba(255,255,255,.02)"><td style="padding:.25rem .4rem;color:var(--text-secondary)">Semifinais</td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--success)">7 pts</strong></td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--warning)">5 pts</strong></td><td style="text-align:center;padding:.25rem .4rem;color:var(--text-muted)">0</td></tr>
+        <tr style="background:rgba(212,168,67,.06)"><td style="padding:.25rem .4rem;font-weight:700;color:var(--accent-gold)">🏆 Final</td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--accent-gold)">10 pts</strong></td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--warning)">6 pts</strong></td><td style="text-align:center;padding:.25rem .4rem;color:var(--text-muted)">0</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:.72rem;color:var(--text-muted);margin-top:.5rem">⚠️ Placar do tempo regulamentar + prorrogação. Pênaltis não contam.</p>
+  </div>
 </div>
+</div>
+<div class="manual-box">
+<h4>📅 Datas Importantes</h4>
+<ul>
+  <li><strong>Inscrições:</strong> Abertas — encerram em 10/06/2026 às 19h</li>
+  <li><strong>1ª Rodada de palpites (Fase de Grupos):</strong> <strong style="color:var(--success)">Liberada agora!</strong> Preencha os 36 jogos</li>
+  <li><strong>Prazo da 1ª Rodada:</strong> <strong style="color:var(--error)">10/06/2026 às 19h00</strong> — bloqueado definitivamente após esse horário</li>
+  <li><strong>Início da Copa:</strong> 11/06/2026 — México × África do Sul no Estádio Azteca</li>
+  <li><strong>Encerramento da Fase de Grupos:</strong> aproximadamente 26/06/2026</li>
+  <li><strong>2ª Rodada de palpites (Eliminatórias):</strong> Liberada pelo admin após os classificados estarem definidos — aviso no WhatsApp</li>
+  <li><strong>Final da Copa:</strong> 19/07/2026</li>
+</ul>
+</div>
+
+<!-- PAGAMENTO -->
+<div class="manual-box">
+<h4>💰 Pagamento &amp; Inscrição</h4>
+<p>Pague via <strong>PIX</strong> para a chave <code style="color:var(--accent-teal);font-family:monospace">2b03f68f-4aae-49b9-99a5-705b31982b7b</code> (Alexandre de Almeida dos Santos). Após pagar:</p>
+<ol>
+  <li>Envie o comprovante no grupo do WhatsApp — <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success);font-weight:600;text-decoration:none">📱 clique aqui para entrar no grupo</a></li>
+  <li>O admin aprova sua inscrição</li>
+  <li>Após aprovação, seus palpites são liberados automaticamente</li>
+</ol>
+<p style="margin-top:.5rem">Você pode adquirir <strong>até 3 cotas</strong>. Cada cota concorre de forma independente no ranking — mais cotas, mais chances de ganhar!</p>
+</div>
+
+<!-- PONTUAÇÃO -->
+<div class="manual-box">
+<h4>🏆 Premiação</h4>
+<p>O prêmio total é formado pelas <strong>cotas de participação</strong> (as taxas de serviço não entram no prêmio). Distribuição:</p>
+<ul style="margin-top:.5rem">
+  <li>🥇 <strong>1º Lugar:</strong> 60% do total arrecadado</li>
+  <li>🥈 <strong>2º Lugar:</strong> 30% do total arrecadado</li>
+  <li>🥉 <strong>3º Lugar:</strong> 10% do total arrecadado</li>
+</ul>
+<p style="margin-top:.5rem">O prêmio atualiza automaticamente com cada nova inscrição aprovada. <strong style="color:var(--accent-gold)">Não existe critério de desempate.</strong> Se dois ou mais participantes terminarem com a mesma pontuação em uma posição premiada, o valor do prêmio daquela posição é <strong>dividido em partes iguais</strong> entre todos os empatados.</p>
+</div>
+</div>
+
 </section>
+
 <!-- Grupos da Copa 2026 -->
-<section class="sec" id="sec-grupos">
-<div class="sh"><div class="stag">Copa do Mundo 2026</div><h2 class="stitle">Grupos da Copa</h2><p class="sdesc">48 seleções classificadas em 12 grupos — pós-repescagem</p></div>
-<h2 class="stitle">Os 12 Grupos</h2><p class="sdesc">48 seleções classificadas após todas as repescagens. Grupos definitivos.</p></div>
+<section class="sec" id="grupos" style="padding-top:0">
+<div class="sh"><div class="stag">Copa do Mundo 2026</div><h2 class="stitle">Os 12 Grupos</h2><p class="sdesc">48 seleções classificadas após todas as repescagens. Grupos definitivos.</p></div>
 <div class="groups-grid" style="grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:.9rem">
 
 <div class="group-card">
@@ -651,112 +796,55 @@ button:active,.co:active{opacity:.8}
 <p style="text-align:center;color:var(--text-muted);font-size:.73rem;margin-top:1rem">🏟️ = Sede · Dados após repescagem europeia e intercontinental concluídas em 01/04/2026</p>
 
 
-
-<!-- Manual do Bolão -->
-<section class="sec" id="sec-manual">
-<div class="sh"><div class="stag">Leia com atenção</div><h2 class="stitle">Manual do Bolão</h2></div>
-<div style="margin-top:2.5rem" id="manual">
-<div class="sh" style="margin-bottom:1.2rem"><div class="stag">Leia com atenção</div><h3 class="stitle" style="font-size:1.8rem">Manual do Bolão</h3></div>
-
-<!-- COMO FUNCIONA OS PALPITES -->
-<div class="manual-box" style="border-color:rgba(0,180,216,.25);background:linear-gradient(135deg,rgba(0,180,216,.05),var(--bg-card))">
-<h4 style="color:var(--accent-teal)">🎯 Como Funciona — As Duas Rodadas de Palpites</h4>
-<p style="margin-bottom:1rem">O Bolão do Almeida tem <strong style="color:var(--text-primary)">duas rodadas de palpites</strong>, uma para cada fase da Copa. Você precisa preencher as duas para maximizar seus pontos!</p>
-
-<!-- Fase 1 -->
-<div style="background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:1rem;margin-bottom:.8rem">
-  <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">
-    <span style="background:var(--success);color:white;font-family:'Oswald',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:1px;padding:.2rem .6rem;border-radius:50px;text-transform:uppercase">✅ Liberada agora</span>
-    <strong style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">1ª Rodada — Fase de Grupos</strong>
-  </div>
-  <ul style="margin-left:1rem">
-    <li style="margin-bottom:.3rem">Você palpita o placar de todos os <strong>36 jogos</strong> da fase de grupos (12 grupos × 3 jogos)</li>
-    <li style="margin-bottom:.3rem">Todos os placares devem ser preenchidos de uma vez — não é possível salvar parcialmente</li>
-    <li style="margin-bottom:.3rem">Você pode editar seus palpites quantas vezes quiser até o prazo final</li>
-    <li style="margin-bottom:.3rem"><strong style="color:var(--error)">Prazo final: 10/06/2026 às 19h00</strong> (véspera do início da Copa) — após esse horário os palpites são bloqueados definitivamente</li>
-    <li>Pontuação: placar exato = <strong>3 pts</strong> · acertou gols de 1 equipe = <strong>1 pt</strong> · errou = 0 pts</li>
-  </ul>
+<!-- Valores -->
+<section class="sec ps" id="val">
+<div class="sh"><div class="stag">Invista no Seu Palpite</div><h2 class="stitle">Valores</h2><p class="sdesc">Mais cotas, mais chances! Taxa de serviço inclusa.</p></div>
+<div class="pg">
+<div class="pc"><div class="pcc">1 Cota</div><div class="pvl">R$ 33<small>,00</small></div><div class="pbd">R$ 30 cota + R$ 3 taxa</div><ul class="pf"><li>1 palpite completo</li><li>Ranking ao vivo</li><li>Concorre aos 3 prêmios</li></ul><a class="btn btn-s btn-sm" onclick="startInscricao(1)">Escolher</a></div>
+<div class="pc ft"><div class="pcc">2 Cotas</div><div class="pvl">R$ 60<small>,00</small></div><div class="pbd">R$ 54 cotas + R$ 6 taxa</div><div class="ppd">Economia R$ 6</div><ul class="pf"><li>2 palpites independentes</li><li>Desconto de 10%</li><li>Ranking ao vivo</li></ul><a class="btn btn-p btn-sm" onclick="startInscricao(2)">Escolher</a></div>
+<div class="pc"><div class="pcc">3 Cotas</div><div class="pvl">R$ 81<small>,00</small></div><div class="pbd">R$ 72 cotas + R$ 9 taxa</div><div class="ppd">Economia R$ 18</div><ul class="pf"><li>3 palpites independentes</li><li>Máximo de chances!</li><li>Maior desconto/cota</li></ul><a class="btn btn-s btn-sm" onclick="startInscricao(3)">Escolher</a></div>
 </div>
-
-<!-- Fase 2 -->
-<div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:1rem">
-  <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">
-    <span style="background:var(--warning);color:var(--bg-dark);font-family:'Oswald',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:1px;padding:.2rem .6rem;border-radius:50px;text-transform:uppercase">🔒 Em breve</span>
-    <strong style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">2ª Rodada — Fase Eliminatória</strong>
-  </div>
-  <ul style="margin-left:1rem">
-    <li style="margin-bottom:.3rem">Após o encerramento da fase de grupos, o admin liberará uma <strong>nova rodada de palpites</strong> para o mata-mata</li>
-    <li style="margin-bottom:.3rem">Você palpita os jogos do <strong>mata-mata</strong>: 16-avos, oitavas, quartas, semifinais, disputa de 3º lugar e final</li>
-    <li style="margin-bottom:.3rem">Os confrontos só serão conhecidos depois que todos os classificados da fase de grupos forem definidos — por isso a liberação é separada</li>
-    <li style="margin-bottom:.3rem">Você receberá um aviso no grupo do WhatsApp quando a 2ª rodada for liberada</li>
-    <li>Pontuação maior: placar exato = <strong>4 pts</strong> · acertou gols de 1 equipe = <strong>1 pt</strong> · errou = 0 pts</li>
-  </ul>
-</div>
-
-<div style="margin-top:.8rem;padding:.7rem .9rem;background:rgba(212,168,67,.08);border-left:3px solid var(--accent-gold);border-radius:0 6px 6px 0;font-size:.82rem;color:var(--text-secondary)">
-  💡 <strong style="color:var(--accent-gold)">Dica:</strong> Não deixe para a última hora! Preencha seus palpites da Fase de Grupos o quanto antes para não perder o prazo de 10/06 às 19h. Fique ligado no WhatsApp para não perder o aviso da 2ª rodada!
-</div>
-</div>
-
-<!-- DATAS -->
-<div class="manual-box">
-<h4>📅 Datas Importantes</h4>
-<ul>
-  <li><strong>Inscrições:</strong> Abertas — encerram em 10/06/2026 às 19h</li>
-  <li><strong>1ª Rodada de palpites (Fase de Grupos):</strong> <strong style="color:var(--success)">Liberada agora!</strong> Preencha os 36 jogos</li>
-  <li><strong>Prazo da 1ª Rodada:</strong> <strong style="color:var(--error)">10/06/2026 às 19h00</strong> — bloqueado definitivamente após esse horário</li>
-  <li><strong>Início da Copa:</strong> 11/06/2026 — México × África do Sul no Estádio Azteca</li>
-  <li><strong>Encerramento da Fase de Grupos:</strong> aproximadamente 26/06/2026</li>
-  <li><strong>2ª Rodada de palpites (Eliminatórias):</strong> Liberada pelo admin após os classificados estarem definidos — aviso no WhatsApp</li>
-  <li><strong>Final da Copa:</strong> 19/07/2026</li>
-</ul>
-</div>
-
-<!-- PAGAMENTO -->
-<div class="manual-box">
-<h4>💰 Pagamento &amp; Inscrição</h4>
-<p>Pague via <strong>PIX</strong> para a chave <code style="color:var(--accent-teal);font-family:monospace">2b03f68f-4aae-49b9-99a5-705b31982b7b</code> (Alexandre de Almeida dos Santos). Após pagar:</p>
-<ol>
-  <li>Envie o comprovante no grupo do WhatsApp — <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success);font-weight:600;text-decoration:none">📱 clique aqui para entrar no grupo</a></li>
-  <li>O admin aprova sua inscrição</li>
-  <li>Após aprovação, seus palpites são liberados automaticamente</li>
-</ol>
-<p style="margin-top:.5rem">Você pode adquirir <strong>até 3 cotas</strong>. Cada cota concorre de forma independente no ranking — mais cotas, mais chances de ganhar!</p>
-</div>
-
-<!-- PONTUAÇÃO -->
-<div class="manual-box">
-<h4>🎯 Tabela de Pontuação</h4>
-<table class="pts-tbl">
-<thead><tr><th>Situação</th><th>Fase de Grupos</th><th>Eliminatórias</th></tr></thead>
-<tbody>
-<tr><td>🎯 Acertou o placar exato (ex: 2×1 → você disse 2×1)</td><td><span class="pb pb-g">3 pts</span></td><td><span class="pb pb-g">4 pts</span></td></tr>
-<tr><td>⚽ Acertou os gols de <em>uma</em> equipe (ex: 2×1 → você disse 2×0)</td><td><span class="pb pb-w">1 pt</span></td><td><span class="pb pb-w">1 pt</span></td></tr>
-<tr><td>❌ Errou os gols das duas equipes</td><td><span class="pb pb-e">0 pts</span></td><td><span class="pb pb-e">0 pts</span></td></tr>
-</tbody>
-</table>
-<p style="margin-top:.7rem;font-size:.78rem;color:var(--text-muted)">⚠️ Nas eliminatórias, o placar considerado é o do <strong>tempo regulamentar + prorrogação</strong>. Disputa de pênaltis não conta para pontuação.</p>
-</div>
-
-<!-- PREMIAÇÃO -->
-<div class="manual-box">
-<h4>🏆 Premiação</h4>
-<p>O prêmio total é formado pelas <strong>cotas de participação</strong> (as taxas de serviço não entram no prêmio). Distribuição:</p>
-<ul style="margin-top:.5rem">
-  <li>🥇 <strong>1º Lugar:</strong> 60% do total arrecadado</li>
-  <li>🥈 <strong>2º Lugar:</strong> 30% do total arrecadado</li>
-  <li>🥉 <strong>3º Lugar:</strong> 10% do total arrecadado</li>
-</ul>
-<p style="margin-top:.5rem">O prêmio atualiza automaticamente com cada nova inscrição aprovada. <strong style="color:var(--accent-gold)">Não existe critério de desempate.</strong> Em caso de empate, o prêmio da posição é <strong>dividido em partes iguais</strong> entre os empatados.</p>
-</div>
-</div>
-
-</section>
 </section>
 
-<!-- Mensagem Especial -->
+<!-- Inscrição -->
+<section class="sec" id="insc">
+<div class="sh"><div class="stag">Participe Agora</div><h2 class="stitle">Inscrição</h2><p class="sdesc">Login rápido com Google ou crie sua conta com e-mail</p></div>
+<div id="inscricao-content">
+<!-- Dynamic content: login or form -->
 </div>
-<!-- end page-home -->
+</section>
+
+<!-- Ranking -->
+<section class="sec" id="rank">
+<div class="sh"><div class="stag">Classificação</div><h2 class="stitle">Ranking ao Vivo</h2>
+<p class="sdesc">Acompanhe a classificação em tempo real</p></div>
+<div style="text-align:center;padding:3rem 1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;max-width:600px;margin:0 auto">
+  <p style="font-size:3rem;margin-bottom:.8rem">🏆</p>
+  <p style="font-family:'Oswald',sans-serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-gold);margin-bottom:.6rem">Em breve!</p>
+  <p style="color:var(--text-secondary);font-size:.9rem;line-height:1.6;max-width:420px;margin:0 auto">
+    O ranking será exibido após a <strong style="color:var(--text-primary)">conclusão da 1ª rodada</strong> da fase de grupos.<br><br>
+    A classificação será atualizada automaticamente ao final de cada rodada. Fique ligado no <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">grupo do WhatsApp</a> para acompanhar!
+  </p>
+</div>
+</section>
+
+<!-- Premiação -->
+<section class="sec" id="prem">
+<div class="sh">
+  <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;justify-content:center">
+    <div class="stag">Prêmios</div>
+    <span style="display:inline-flex;align-items:center;gap:.35rem;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--success);font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .6rem;border-radius:50px"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse 1.5s infinite"></span>Ao Vivo</span>
+  </div>
+  <h2 class="stitle">Premiação</h2><p class="sdesc">Os valores atualizam automaticamente com cada nova inscrição</p></div>
+<div class="prg">
+<div class="prc sv"><div class="prm">🥈</div><div class="prpl">2º Lugar</div><div class="prpc">30%</div><div class="prpv" id="pz2">R$ 0,00</div></div>
+<div class="prc gd"><div class="prm">🥇</div><div class="prpl">1º Lugar</div><div class="prpc">60%</div><div class="prpv" id="pz1">R$ 0,00</div></div>
+<div class="prc bz"><div class="prm">🥉</div><div class="prpl">3º Lugar</div><div class="prpc">10%</div><div class="prpv" id="pz3">R$ 0,00</div></div>
+</div>
+<div class="wab"><h3>📱 Grupo do WhatsApp</h3><p>Fique por dentro de tudo!</p><a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w btn-sm">Entrar no Grupo</a></div>
+</section>
+
+</div><!-- end page-home -->
 
 <!-- ===================== MINHA CONTA PAGE ===================== -->
 <div class="page" id="page-conta">
@@ -804,7 +892,10 @@ button:active,.co:active{opacity:.8}
     <div class="fg"><label>Nova Senha *</label><input type="password" id="nova-senha-def" placeholder="Mínimo 8 caracteres" style="font-size:16px"></div>
     <div class="fg"><label>Confirmar Nova Senha *</label><input type="password" id="nova-senha-conf" placeholder="Repita a nova senha" style="font-size:16px" onkeydown="if(event.key==='Enter')salvarNovaSenha()"></div>
     <button id="btn-salvar-senha" class="btn btn-p" style="width:100%;justify-content:center;min-height:48px;margin-top:.4rem" onclick="salvarNovaSenha()">✓ Salvar Nova Senha</button>
-    <p style="text-align:center;margin-top:.8rem;font-size:.75rem;color:var(--text-muted)">Você não pode fechar esta janela sem criar uma nova senha.</p>
+    <p style="text-align:center;margin-top:.8rem;font-size:.75rem;color:var(--text-muted)" id="modal-senha-info">Crie uma senha definitiva para continuar.</p>
+    <div style="text-align:center;margin-top:.6rem">
+      <button onclick="fecharModalEmergencia()" style="background:none;border:none;color:var(--text-muted);font-size:.72rem;cursor:pointer;text-decoration:underline">Cancelar e sair da conta</button>
+    </div>
   </div>
 </div>
 
@@ -829,7 +920,13 @@ let currentUser=null,userProfile=null,userInscricao=null,selC=1;
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded',async()=>{
-  setTimeout(()=>{if(typeof sb==='undefined'){window.location.href=window.location.origin+window.location.pathname+'?nc='+Date.now();}},2000);
+  // Fallback: se sb não carregar em 3s, recarregar com cache bust
+  // Se sb não carregar em 2s = cache antigo → recarregar
+  setTimeout(()=>{
+    if(typeof sb==='undefined'){
+      window.location.href=window.location.origin+window.location.pathname+'?nc='+Date.now();
+    }
+  },2000);
   renderFlags();
   uc();setInterval(uc,1000);
   updDeadline();setInterval(updDeadline,1000);
@@ -871,24 +968,46 @@ document.addEventListener('DOMContentLoaded',async()=>{
 
 // ===== AUTH =====
 async function loginGoogle(){
-  const{error}=await sb.auth.signInWithOAuth({
-    provider:'google',
-    options:{
-      redirectTo:window.location.origin,
-      queryParams:{prompt:'select_account'}
+  const btns=document.querySelectorAll('.btn-google');
+  btns.forEach(b=>{b.innerHTML='⏳ Conectando...';b.disabled=true;});
+  try{
+    const{error}=await sb.auth.signInWithOAuth({
+      provider:'google',
+      options:{redirectTo:window.location.origin,queryParams:{prompt:'select_account'}}
+    });
+    if(error){
+      btns.forEach(b=>{b.disabled=false;b.innerHTML=googleBtnHTML();});
+      toast('Erro ao conectar com Google: '+error.message,'e');
     }
-  });
-  if(error)toast('Erro ao fazer login: '+error.message,'e');
+  }catch(e){
+    btns.forEach(b=>{b.disabled=false;});
+    toast('Sem conexão. Verifique sua internet e tente novamente.','e');
+  }
 }
 
+function googleBtnHTML(){
+  return '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Entrar com Google';
+}
+
+
 async function logout(){
+  // Feedback imediato — não esperar o servidor
   const btns=document.querySelectorAll('[onclick="logout()"]');
   btns.forEach(b=>{b.textContent='Saindo...';b.disabled=true;});
-  currentUser=null;userProfile=null;userInscricao=null;
-  navigate('home');updateUI();
+
+  // Limpar estado local imediatamente
+  currentUser=null; userProfile=null; userInscricao=null;
+  navigate('home');
+  updateUI();
   toast('Você saiu da conta.','s');
-  try{await Promise.race([sb.auth.signOut(),new Promise((_,r)=>setTimeout(()=>r('timeout'),3000))]);}
-  catch(e){console.warn('signOut:',e);}
+
+  // Avisar o Supabase em background (timeout 3s, não bloqueia)
+  try{
+    await Promise.race([
+      sb.auth.signOut(),
+      new Promise((_,rej)=>setTimeout(()=>rej('timeout'),3000))
+    ]);
+  }catch(e){ console.warn('signOut bg:', e); }
 }
 
 async function loadUserData(){
@@ -941,7 +1060,7 @@ function updateUI(){
     if(heroSteps.length>=4){
       const markDone=(i)=>{heroSteps[i].style.background='rgba(34,197,94,.25)';heroSteps[i].style.borderColor='var(--success)';heroSteps[i].style.color='var(--success)';heroSteps[i].textContent='✓';};
       const markActive=(i)=>{heroSteps[i].style.background='rgba(212,168,67,.3)';heroSteps[i].style.borderColor='var(--accent-gold)';heroSteps[i].style.color='var(--accent-gold)';heroSteps[i].style.boxShadow='0 0 10px rgba(212,168,67,.35)';};
-      markDone(0); // Login feito
+      markDone(0);
       if(userInscricao&&userInscricao.status!=='rejeitado'){markDone(1);}else{markActive(1);}
       if(userInscricao?.status==='aprovado'||userInscricao?.status==='pendente'){markDone(1);}
       if(userInscricao?.status==='aprovado'){markDone(2);markActive(3);}
@@ -1054,7 +1173,7 @@ async function submitNovaInscricao(){
     await loadUserData();updateUI();loadStats();
     toast('✅ Nova inscrição enviada! Aguarde aprovação do admin.','s');
   }catch(e){
-    toast('Erro ao enviar. Tente novamente.','e');
+    toast('Erro ao enviar. Verifique sua conexão e tente novamente.','e');
     if(btn){btn.textContent='✓ Já fiz o PIX — Nova Inscrição!';btn.disabled=false;}
   }
 }
@@ -1141,7 +1260,7 @@ async function submitInscricao(){
     await loadUserData();updateUI();loadStats();
     toast('✅ Inscrição enviada! Aguarde aprovação do admin.','s');
   }catch(e){
-    toast('Erro ao enviar. Tente novamente.','e');
+    toast('Erro ao enviar. Verifique sua conexão e tente novamente.','e');
     if(btn){btn.textContent='✓ Já fiz o PIX, Confirmar!';btn.disabled=false;}
   }
 }
@@ -1248,7 +1367,7 @@ async function loadPalpites(){
     </div>
     <div style="background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.2);border-radius:8px;padding:1rem;margin-bottom:1.5rem;font-size:.85rem">
       <strong style="color:var(--accent-gold)">Regra de Pontuação${faseAtiva==='grupos'?' — Fase de Grupos':' — Eliminatórias'}:</strong><br>
-      🎯 Placar exato = <strong>${ptsExato} pontos</strong> · ⚽ Acertou gols de 1 equipe = <strong>1 ponto</strong> · ❌ Errou tudo = 0 pontos
+      🎯 Placar exato = <strong>${ptsExato} pts</strong> (grupos) a <strong>10 pts</strong> (final) · ⚽ 1 equipe certa = 1–6 pts · ❌ Errou = 0 pts
     </div>`;
   
   // Build UI per cota
@@ -1551,44 +1670,46 @@ async function adminReativar(id){
 }
 
 async function adminExcluirCadastro(userId, inscId, nomeAbrev){
-  if(!confirm(`⚠️ Excluir o cadastro do usuário ${nomeAbrev}...?\n\nIsso irá:\n• Remover a inscrição\n• Remover o perfil\n• Remover os palpites\n\nO usuário poderá se recadastrar. Confirma?`))return;
-  const btns2=document.querySelectorAll(`[onclick*="${userId}"]`);
-  const btn=btns2[0]||null;
-  if(btn){btn.textContent='Excluindo...';btn.disabled=true;}
-  try{
-    // Deleta palpites
-    await sb.from('palpites').delete().eq('user_id',userId);
-    // Deleta compra_cotas
-    try{await sb.from('compra_cotas').delete().eq('user_id',userId);}catch(e){}
-    // Deleta inscrição
-    await sb.from('inscricoes').delete().eq('id',inscId);
-    // Deleta perfil
-    await sb.from('profiles').delete().eq('id',userId);
-    toast('✅ Cadastro excluído. O usuário pode se recadastrar.','s');
-    loadAdmin();loadStats();
-  }catch(e){
-    toast('Erro ao excluir: '+e.message,'e');
-    if(btn){btn.textContent='🗑 Excluir';btn.disabled=false;}
-  }
-}
+  if(!confirm('⚠️ Excluir cadastro de ' + nomeAbrev + '?\n\nIsso irá remover:\n• Inscrição\n• Perfil\n• Palpites\n\nO usuário poderá se recadastrar.'))return;
 
-async function adminResetSenha(){
-  const email=document.getElementById('reset-email-user')?.value.trim();
-  const novaSenha=document.getElementById('reset-nova-senha')?.value.trim();
-  if(!email){document.getElementById('reset-email-user')?.focus();toast('Informe o e-mail!','e');return;}
-  if(!novaSenha||novaSenha.length<6){document.getElementById('reset-nova-senha')?.focus();toast('Mínimo 6 caracteres!','e');return;}
-  const btn=document.getElementById('btn-reset-senha');
-  if(btn){btn.textContent='Resetando...';btn.disabled=true;}
+  // Mostrar feedback visual no botão — sem usar event.target (bug Android)
+  const btns = document.querySelectorAll(`[onclick*="${userId}"]`);
+  btns.forEach(b => { b.textContent='Excluindo...'; b.disabled=true; });
+
+  const erros = [];
   try{
-    const{data,error}=await sb.rpc('reset_user_password',{p_email:email,p_new_password:novaSenha,p_admin_id:currentUser.id});
-    if(error){toast('Erro: '+error.message,'e');if(btn){btn.textContent='🔑 Resetar Senha';btn.disabled=false;}return;}
-    if(!data?.success){toast('Erro: '+(data?.error||'Falha'),'e');if(btn){btn.textContent='🔑 Resetar Senha';btn.disabled=false;}return;}
-    const res=document.getElementById('reset-resultado');
-    if(res){res.style.display='block';res.innerHTML=`<div style="padding:.9rem;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:8px;font-size:.84rem;line-height:1.6">✅ <strong>Senha resetada!</strong><br>Usuário: <strong>${email}</strong><br>Senha temporária: <code style="color:var(--accent-teal)">${novaSenha}</code><br><br><span style="color:var(--warning)">⚠️ Avise o usuário</span> para logar e criar nova senha.</div>`;}
-    toast('✅ Senha de '+email+' resetada!','s');
-    document.getElementById('reset-email-user').value='';document.getElementById('reset-nova-senha').value='';
-  }catch(e){toast('Erro: '+e.message,'e');}
-  finally{if(btn){btn.textContent='🔑 Resetar Senha';btn.disabled=false;}}
+    // 1. Palpites
+    const r1 = await sb.from('palpites').delete().eq('user_id', userId);
+    if(r1.error) erros.push('palpites: '+r1.error.message);
+  }catch(e){ erros.push('palpites: '+e.message); }
+
+  try{
+    // 2. Compra cotas
+    await sb.from('compra_cotas').delete().eq('user_id', userId);
+  }catch(e){}
+
+  try{
+    // 3. Inscrição (por id — mais seguro que por user_id)
+    const r3 = await sb.from('inscricoes').delete().eq('id', inscId);
+    if(r3.error) erros.push('inscrição: '+r3.error.message);
+  }catch(e){ erros.push('inscrição: '+e.message); }
+
+  try{
+    // 4. Perfil
+    const r4 = await sb.from('profiles').delete().eq('id', userId);
+    if(r4.error) erros.push('perfil: '+r4.error.message);
+  }catch(e){ erros.push('perfil: '+e.message); }
+
+  if(erros.length > 0){
+    // Tem erros — provavelmente RLS bloqueando
+    toast('Erro ao excluir: '+erros.join(' | ')+' — Verifique o SQL de RLS.', 'e');
+    console.error('Erros ao excluir:', erros);
+    btns.forEach(b => { b.textContent='🗑 Excluir'; b.disabled=false; });
+    return;
+  }
+
+  toast('✅ Cadastro de '+nomeAbrev+' excluído com sucesso!','s');
+  loadAdmin(); loadStats();
 }
 
 async function adminApprove(id){
@@ -1630,21 +1751,31 @@ function preencherReset(email){
   }
 }
 
-// Service role key — fica só na memória, nunca salvo
-// ===== ADMIN RESET SENHA via RPC =====
+
+// ===== ADMIN RESET SENHA via RPC seguro =====
 async function adminResetSenha(){
   const email=document.getElementById('reset-email-user')?.value.trim();
   const novaSenha=document.getElementById('reset-nova-senha')?.value.trim();
   if(!email){document.getElementById('reset-email-user')?.focus();toast('Informe o e-mail!','e');return;}
-  if(!novaSenha||novaSenha.length<6){document.getElementById('reset-nova-senha')?.focus();toast('Senha: mín. 6 caracteres!','e');return;}
+  if(!novaSenha||novaSenha.length<6){document.getElementById('reset-nova-senha')?.focus();toast('Senha: mínimo 6 caracteres!','e');return;}
   const btn=document.getElementById('btn-reset-senha');
   if(btn){btn.textContent='Resetando...';btn.disabled=true;}
   try{
-    const{data,error}=await sb.rpc('reset_user_password',{p_email:email,p_new_password:novaSenha,p_admin_id:currentUser.id});
+    const{data,error}=await sb.rpc('reset_user_password',{
+      p_email:email,p_new_password:novaSenha,p_admin_id:currentUser.id
+    });
     if(error){toast('Erro: '+error.message,'e');if(btn){btn.textContent='🔑 Resetar Senha';btn.disabled=false;}return;}
     if(!data?.success){toast('Erro: '+(data?.error||'Falha'),'e');if(btn){btn.textContent='🔑 Resetar Senha';btn.disabled=false;}return;}
     const res=document.getElementById('reset-resultado');
-    if(res){res.style.display='block';res.innerHTML=`<div style="padding:.9rem;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:8px;font-size:.84rem;line-height:1.6">✅ <strong>Senha resetada!</strong><br>Usuário: <strong>${email}</strong><br>Senha: <code style="color:var(--accent-teal);background:var(--bg-dark);padding:.1rem .4rem;border-radius:4px;font-family:monospace">${novaSenha}</code><br><span style="color:var(--warning)">⚠️ Avise</span>: ao logar um modal pedirá nova senha.</div>`;}
+    if(res){
+      res.style.display='block';
+      res.innerHTML=`<div style="padding:.9rem;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:8px;font-size:.84rem;line-height:1.6">
+        ✅ <strong>Senha resetada!</strong><br><br>
+        Usuário: <strong>${email}</strong><br>
+        Senha temporária: <code style="color:var(--accent-teal);background:var(--bg-dark);padding:.15rem .5rem;border-radius:4px;font-family:monospace">${novaSenha}</code><br><br>
+        <span style="color:var(--warning)">⚠️ Avise o usuário</span>: ao fazer login com essa senha, um modal vai pedir para criar uma definitiva.
+      </div>`;
+    }
     toast('✅ Senha de '+email+' resetada!','s');
     document.getElementById('reset-email-user').value='';
     document.getElementById('reset-nova-senha').value='';
@@ -1653,16 +1784,63 @@ async function adminResetSenha(){
 }
 
 
-
-// ===== CONTA =====
 async function loadConta(){
   const el=document.getElementById('conta-content');
   if(!currentUser){el.innerHTML='<div class="login-box"><h3>Faça login</h3><button class="btn-google" onclick="loginGoogle()">Entrar com Google</button></div>';return;}
   
   await loadUserData();
-  const name=currentUser.user_metadata?.full_name||'Usuário';
+  const name=currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'Usuário';
   const avatar=currentUser.user_metadata?.avatar_url||'';
-  
+
+  // ── Caso: REJEITADO ──────────────────────────────────────
+  if(userInscricao?.status==='rejeitado'){
+    el.innerHTML=`
+    <div class="fc">
+      <div class="user-status" style="margin-bottom:1rem">
+        <div class="us-info">
+          ${avatar?`<img src="${avatar}">`:''}
+          <div><div class="us-name">${name}</div><div class="us-email">${currentUser.email}</div></div>
+        </div>
+        <span class="us-badge" style="background:rgba(239,68,68,.15);color:var(--error)">❌ Rejeitado</span>
+      </div>
+      <div style="text-align:center;padding:1rem;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;margin-bottom:1.2rem">
+        <p style="font-size:1.5rem;margin-bottom:.4rem">❌</p>
+        <p style="font-family:'Oswald',sans-serif;font-size:1rem;color:var(--error);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Inscrição Rejeitada</p>
+        <p style="color:var(--text-muted);font-size:.85rem;line-height:1.5">Sua inscrição anterior foi rejeitada pelo admin (pagamento não confirmado).<br>Você pode fazer uma nova inscrição pagando o PIX e confirmando abaixo.</p>
+      </div>
+      <h3 class="fst" style="margin-bottom:.3rem">Nova Inscrição</h3>
+      <p class="fsd">Escolha suas cotas e pague via PIX para participar.</p>
+      <label style="font-family:'Barlow Condensed';font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:.5rem;display:block">Quantidade de Cotas</label>
+      <div class="cs">
+        <div class="co sel" onclick="selCota(1)" id="c1"><div class="cn">1</div><div class="cl">Cota</div><div class="cp">R$ 33</div><div class="cd">R$30 + R$3 taxa</div></div>
+        <div class="co" onclick="selCota(2)" id="c2"><div class="cn">2</div><div class="cl">Cotas</div><div class="cp">R$ 60</div><div class="cd">R$54 + R$6 taxa</div><div class="csv">Economia R$ 6</div></div>
+        <div class="co" onclick="selCota(3)" id="c3"><div class="cn">3</div><div class="cl">Cotas</div><div class="cp">R$ 81</div><div class="cd">R$72 + R$9 taxa</div><div class="csv">Economia R$ 18</div></div>
+      </div>
+      <div class="csum" id="checkout-sum">
+        <div class="cln"><span>1 cota de participação</span><span>R$ 30,00</span></div>
+        <div class="cln"><span>Taxa de serviço</span><span>R$ 3,00</span></div>
+        <div class="cln tot"><span>Total</span><span>R$ 33,00</span></div>
+      </div>
+      <div class="pixs">
+        <div class="pixt">Pague via PIX</div>
+        <div class="qrc"></div>
+        <div class="pkd"><code>2b03f68f-4aae-49b9-99a5-705b31982b7b</code><button onclick="cpk()">Copiar</button></div>
+        <p class="pixn">Chave PIX: Aleatória · <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">Envie o comprovante no grupo</a></p>
+      </div>
+      <div style="text-align:center"><button id="btn-confirmar-inscricao" class="btn btn-p" style="min-height:52px" onclick="submitNovaInscricao()">✓ Já fiz o PIX — Nova Inscrição!</button></div>
+      <div style="text-align:center;margin-top:1rem"><button class="btn btn-danger btn-sm" onclick="logout()">Sair da Conta</button></div>
+    </div>`;
+    selC=1;
+    setTimeout(gqr,100);
+    return;
+  }
+
+  // ── Caso: NORMAL (sem inscrição, pendente ou aprovado) ───
+  const badgeClass = !userInscricao ? 'badge-none'
+    : userInscricao.status==='aprovado' ? 'badge-approved' : 'badge-pending';
+  const badgeText = !userInscricao ? 'Sem inscrição'
+    : userInscricao.status==='aprovado' ? '✅ Aprovado' : '⏳ Pendente';
+
   el.innerHTML=`
     <div class="fc">
       <div class="user-status">
@@ -1673,12 +1851,14 @@ async function loadConta(){
         <div>
           ${userInscricao?`
             <div style="font-size:.7rem;color:var(--text-muted);text-transform:uppercase">${userInscricao.cotas} cota${userInscricao.cotas>1?'s':''} · R$ ${userInscricao.valor_total}</div>
-            <span class="us-badge ${userInscricao.status==='aprovado'?'badge-approved':'badge-pending'}">${userInscricao.status==='aprovado'?'✅ Aprovado':'⏳ Pendente'}</span>
-          `:'<span class="us-badge badge-none">Sem inscrição</span>'}
+          `:''}
+          <span class="us-badge ${badgeClass}">${badgeText}</span>
         </div>
       </div>
       ${!userInscricao?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'home\');scrollToSection(\'insc\')">Fazer Inscrição</a></div>':''}
-      ${userInscricao?.status==='aprovado'?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'palpites\')">🎯 Palpites 1ª Fase →</a></div>':''}\n      ${userInscricao?.status==='aprovado'?renderCompraCotas(userInscricao.cotas):''}
+      ${userInscricao?.status==='pendente'?`<p style="text-align:center;color:var(--text-muted);font-size:.85rem;margin-top:.8rem">📱 Envie o comprovante PIX no <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">grupo do WhatsApp</a>. O admin irá aprovar seu pagamento.</p>`:''}
+      ${userInscricao?.status==='aprovado'?'<div style="text-align:center;margin-top:1rem"><a class="btn btn-p" onclick="navigate(\'palpites\')">🎯 Palpites 1ª Fase →</a></div>':''}
+      ${userInscricao?.status==='aprovado'?renderCompraCotas(userInscricao.cotas):''}
       <div style="text-align:center;margin-top:1rem"><button class="btn btn-danger btn-sm" onclick="logout()">Sair da Conta</button></div>
     </div>`;
 }
@@ -1694,6 +1874,15 @@ async function loadStats(){
     document.getElementById('pz1').textContent=`R$ ${(tp*.6).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
     document.getElementById('pz2').textContent=`R$ ${(tp*.3).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
     document.getElementById('pz3').textContent=`R$ ${(tp*.1).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+    // Barra de progresso — meta dinâmica baseada em inscrições
+    const meta = Math.max(300, Math.ceil((tp+60)/100)*100); // próxima centena acima
+    const pct = Math.min(100, Math.round(tp/meta*100));
+    const barra = document.getElementById('premio-barra');
+    const barraVal = document.getElementById('premio-barra-val');
+    const barraMeta = document.getElementById('premio-barra-meta');
+    if(barra){setTimeout(()=>{barra.style.width=pct+'%';},200);}
+    if(barraVal)barraVal.textContent=`R$ ${tp.toLocaleString('pt-BR')}`;
+    if(barraMeta)barraMeta.textContent=`Meta: R$ ${meta}`;
   }catch(e){console.warn('Stats error:',e)}
 }
 
@@ -1778,12 +1967,12 @@ function updDeadline(){
 
 // ===== LOGIN BOX HTML (Google + Email/Senha) =====
 function loginBoxHTML(){
-  const g=`<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>`;
+  const googleSVG=`<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>`;
   return `<div class="login-box-inner">
     <h3>🔐 Acesse sua Conta</h3>
     <p class="lb-sub" style="font-size:.85rem;color:var(--text-muted);margin-bottom:1.2rem">Entre com sua conta Google para participar do Bolão</p>
     <button class="btn-google" onclick="loginGoogle()" style="width:100%;justify-content:center;min-height:52px;font-size:1rem;border-radius:8px">
-      \${g} Entrar com Google
+      ${googleSVG} Entrar com Google
     </button>
     <p style="text-align:center;margin-top:1rem;font-size:.75rem;color:var(--text-muted)">
       Sem conta Google? <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">Fale com o Administrador</a>
@@ -1792,91 +1981,13 @@ function loginBoxHTML(){
 }
 
 
-function showLTab(tab){
-  const gp=document.getElementById('lp-google'),ep=document.getElementById('lp-email');
-  const tg=document.getElementById('lt-google'),te=document.getElementById('lt-email');
-  if(!gp||!ep)return;
-  if(tab==='google'){
-    gp.style.display='block';ep.style.display='none';
-    tg.className='ltab on';te.className='ltab off';
-  }else{
-    gp.style.display='none';ep.style.display='block';
-    te.className='ltab on';tg.className='ltab off';
-    setTimeout(()=>document.getElementById('em-email')?.focus(),50);
-  }
-}
+function showLTab(){}
 
-function showEMTab(mode){
-  const fi=document.getElementById('ef-in'),fr=document.getElementById('ef-reg');
-  const ti=document.getElementById('emt-in'),tr=document.getElementById('emt-reg');
-  if(!fi||!fr)return;
-  if(mode==='in'){fi.style.display='block';fr.style.display='none';ti.className='emtab on';tr.className='emtab';}
-  else{fi.style.display='none';fr.style.display='block';ti.className='emtab';tr.className='emtab on';setTimeout(()=>document.getElementById('reg-nome')?.focus(),50);}
-}
+function showEMTab(){}
 
-async function loginEmail(){
-  const btn=document.getElementById('btn-login-email');
-  const email=document.getElementById('em-email')?.value.trim();
-  const senha=document.getElementById('em-senha')?.value;
-  if(!email){document.getElementById('em-email').focus();toast('Informe seu e-mail!','e');return;}
-  if(!senha){document.getElementById('em-senha').focus();toast('Informe sua senha!','e');return;}
-  if(btn){btn.textContent='Entrando...';btn.disabled=true;}
-  try{
-    const{data,error}=await sb.auth.signInWithPassword({email,password:senha});
-    if(error){
-      const msg=error.message.toLowerCase().includes('invalid')?'E-mail ou senha incorretos.':error.message;
-      toast('Erro: '+msg,'e');
-      if(btn){btn.textContent='Entrar';btn.disabled=false;}
-      return;
-    }
-    currentUser=data.user;await loadUserData();updateUI();loadStats();
-    toast('Login realizado! Bem-vindo(a) 🎉','s');
-  }catch(e){toast('Erro ao fazer login.','e');if(btn){btn.textContent='Entrar';btn.disabled=false;}}
-}
+async function loginEmail(){}
 
-async function registrarEmail(){
-  // Usar getElementById (não event.target) — compatível com Android/innerHTML
-  const btn=document.getElementById('btn-registrar');
-  const nome=document.getElementById('reg-nome')?.value.trim();
-  const email=document.getElementById('reg-email')?.value.trim();
-  const senha=document.getElementById('reg-senha')?.value;
-  const wpp=document.getElementById('reg-wpp')?.value.trim();
-
-  // Validação com feedback visual
-  if(!nome){document.getElementById('reg-nome').focus();toast('Informe seu nome completo!','e');return;}
-  if(!email){document.getElementById('reg-email').focus();toast('Informe seu e-mail!','e');return;}
-  if(!senha||senha.length<8){document.getElementById('reg-senha').focus();toast('Senha deve ter no mínimo 8 caracteres!','e');return;}
-  if(!wpp){document.getElementById('reg-wpp').focus();toast('Informe seu WhatsApp!','e');return;}
-
-  if(btn){btn.textContent='Criando conta...';btn.disabled=true;}
-  try{
-    const{data,error}=await sb.auth.signUp({email,password:senha,options:{data:{full_name:nome}}});
-    if(error){
-      const msg=error.message.includes('already')?'E-mail já cadastrado! Tente fazer login.':error.message;
-      toast('Erro: '+msg,'e');
-      if(btn){btn.textContent='Tentar novamente';btn.disabled=false;}
-      return;
-    }
-    if(data?.user){
-      await sb.from('profiles').upsert({id:data.user.id,nome,whatsapp:wpp});
-      // Tenta logar direto
-      const{data:ld,error:le}=await sb.auth.signInWithPassword({email,password:senha});
-      if(!le&&ld?.user){
-        currentUser=ld.user;await loadUserData();updateUI();loadStats();
-        toast('Conta criada! Bem-vindo(a), '+nome.split(' ')[0]+'! 🎉','s');
-      }else{
-        const rf=document.getElementById('ef-reg');
-        if(rf)rf.innerHTML=`<div style="text-align:center;padding:1.5rem;color:var(--text-secondary)">
-          <p style="font-size:2rem;margin-bottom:.5rem">✅</p>
-          <p style="font-size:1rem;color:var(--text-primary);font-weight:600;margin-bottom:.5rem">Conta criada!</p>
-          <p>Clique em <strong>Entrar</strong> acima e faça login com seu e-mail e senha.</p>
-        </div>`;
-        toast('Conta criada! Faça login para continuar.','s');
-        setTimeout(()=>showEMTab('in'),1800);
-      }
-    }
-  }catch(e){toast('Erro ao criar conta. Tente novamente.','e');if(btn){btn.textContent='Tentar novamente';btn.disabled=false;}}
-}
+async function registrarEmail(){}
 
 function solicitarReset(){
   // Reset por email desativado — usuário deve contatar o admin
@@ -2007,6 +2118,22 @@ async function adminRejectCotas(id){
 
 
 // ===== MODAL TROCA DE SENHA =====
+function fecharModalEmergencia(){
+  // Fecha modal e faz logout — usuário terá que logar novamente com nova senha
+  const modal=document.getElementById('modal-troca-senha');
+  if(modal)modal.style.display='none';
+  if(typeof sb!=='undefined'&&sb?.auth){
+    sb.auth.signOut().then(()=>{
+      currentUser=null;userProfile=null;userInscricao=null;
+      navigate('home');updateUI();
+      toast('Você saiu. Peça ao admin para redefinir sua senha.','s');
+    });
+  }else{
+    // sb não existe — recarregar página forçando cache bust
+    window.location.href=window.location.href.split('?')[0]+'?v='+Date.now();
+  }
+}
+
 function mostrarModalTrocaSenha(){
   const modal = document.getElementById('modal-troca-senha');
   if(modal){
@@ -2016,63 +2143,152 @@ function mostrarModalTrocaSenha(){
 }
 
 async function salvarNovaSenha(){
-  const nova = document.getElementById('nova-senha-def')?.value;
-  const conf = document.getElementById('nova-senha-conf')?.value;
-  if(!nova||nova.length<8){
-    document.getElementById('nova-senha-def').focus();
-    toast('A senha deve ter no mínimo 8 caracteres!','e');
-    return;
-  }
-  if(nova!==conf){
-    document.getElementById('nova-senha-conf').focus();
-    toast('As senhas não conferem!','e');
-    return;
-  }
   const btn = document.getElementById('btn-salvar-senha');
+
+  // Verificar sb ANTES de qualquer coisa — se não existir, recarregar
+  if(typeof sb==='undefined'||!sb?.auth){
+    if(btn){btn.textContent='Recarregando...';btn.disabled=true;}
+    setTimeout(()=>{
+      window.location.href=window.location.origin+window.location.pathname+'?nc='+Date.now();
+    },800);
+    return;
+  }
+
+  const nova=document.getElementById('nova-senha-def')?.value;
+  const conf=document.getElementById('nova-senha-conf')?.value;
+
+  if(!nova||nova.length<8){document.getElementById('nova-senha-def')?.focus();toast('Mínimo 8 caracteres!','e');return;}
+  if(nova!==conf){document.getElementById('nova-senha-conf')?.focus();toast('As senhas não conferem!','e');return;}
+
   if(btn){btn.textContent='Salvando...';btn.disabled=true;}
   try{
     const{error}=await sb.auth.updateUser({
-      password: nova,
-      data: {...(currentUser.user_metadata||{}), must_change_password: false}
+      password:nova,
+      data:{...(currentUser?.user_metadata||{}),must_change_password:false}
     });
-    if(error){
-      toast('Erro ao salvar: '+error.message,'e');
-      if(btn){btn.textContent='✓ Salvar Nova Senha';btn.disabled=false;}
-      return;
-    }
-    // Fechar modal
-    const modal = document.getElementById('modal-troca-senha');
+    if(error){toast('Erro: '+error.message,'e');if(btn){btn.textContent='✓ Salvar Nova Senha';btn.disabled=false;}return;}
+    const modal=document.getElementById('modal-troca-senha');
     if(modal)modal.style.display='none';
-    // Atualizar currentUser
-    const{data:{user}}=await sb.auth.getUser();
-    if(user)currentUser=user;
-    toast('✅ Senha atualizada com sucesso! Bem-vindo(a) 🎉','s');
+    try{const{data}=await sb.auth.getUser();if(data?.user)currentUser=data.user;}catch(e2){}
+    toast('✅ Senha criada! Bem-vindo(a) 🎉','s');
   }catch(e){
     toast('Erro: '+e.message,'e');
     if(btn){btn.textContent='✓ Salvar Nova Senha';btn.disabled=false;}
   }
 }
 
-// ===== PWA =====
-let deferredPrompt=null;
-if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('/sw.js').catch(e=>console.warn('[SW]',e));});}
-if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.navigator.standalone){setTimeout(mostrarBannerInstall,2000);}
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;setTimeout(mostrarBannerInstall,2000);});
-window.addEventListener('appinstalled',()=>{deferredPrompt=null;document.getElementById('pwa-banner')?.remove();toast('✅ App instalado!','s');});
-function mostrarBannerInstall(){
-  if(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true)return;
-  if(document.getElementById('pwa-banner'))return;
-  if(sessionStorage.getItem('pwa-banner-dismissed'))return;
-  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
-  const b=document.createElement('div');b.id='pwa-banner';
-  b.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#111827,#0A0E17);border-top:2px solid #D4A843;padding:.9rem 1rem;display:flex;align-items:center;gap:.7rem;box-shadow:0 -4px 24px rgba(0,0,0,.6);animation:slideUp .35s ease';
-  if(!document.getElementById('pwa-style')){const st=document.createElement('style');st.id='pwa-style';st.textContent='@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}';document.head.appendChild(st);}
-  if(isIOS){b.innerHTML=`<img src="/icon-192.png" style="width:42px;height:42px;border-radius:10px;flex-shrink:0"><div style="flex:1"><div style="font-family:'Oswald',sans-serif;font-size:.82rem;color:#D4A843;text-transform:uppercase;letter-spacing:1px">📲 Instalar como App</div><div style="font-size:.75rem;color:#CBD5E1">Toque em Compartilhar → <strong style="color:white">Adicionar à Tela Início</strong></div></div><button onclick="sessionStorage.setItem('pwa-banner-dismissed','1');this.parentElement.remove()" style="background:none;border:none;color:#64748B;font-size:1.4rem;cursor:pointer;flex-shrink:0">✕</button>`;}
-  else{b.innerHTML=`<img src="/icon-192.png" style="width:42px;height:42px;border-radius:10px;flex-shrink:0"><div style="flex:1"><div style="font-family:'Oswald',sans-serif;font-size:.82rem;color:#D4A843;text-transform:uppercase;letter-spacing:1px">📲 Instalar como App</div><div style="font-size:.75rem;color:#94A3B8">Acesso rápido na tela inicial!</div></div><button onclick="instalarPWA()" style="background:linear-gradient(135deg,#D4A843,#F0D78C);color:#0A0E17;border:none;padding:.5rem .9rem;border-radius:6px;font-family:'Oswald',sans-serif;font-weight:700;font-size:.75rem;text-transform:uppercase;cursor:pointer;flex-shrink:0">Instalar</button><button onclick="sessionStorage.setItem('pwa-banner-dismissed','1');this.parentElement.remove()" style="background:none;border:none;color:#64748B;font-size:1.4rem;cursor:pointer;padding:.2rem 0 .2rem .4rem;flex-shrink:0">✕</button>`;}
-  document.body.appendChild(b);
-}
-async function instalarPWA(){if(!deferredPrompt)return;deferredPrompt.prompt();const{outcome}=await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('pwa-banner')?.remove();}
 
+// ===== PWA — Service Worker + Install Prompt =====
+let deferredPrompt = null;
+
+// Registrar SW
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg =>
+  });
+}
+
+// iOS — mostrar banner imediatamente após 2s (não tem beforeinstallprompt)
+if(/iphone|ipad|ipod/i.test(navigator.userAgent) && !window.navigator.standalone){
+  setTimeout(mostrarBannerInstall, 2000);
+}
+
+// Capturar o evento de instalação (Android Chrome)
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Mostrar banner após 2s
+  setTimeout(mostrarBannerInstall, 2000);
+});
+
+// Detectar se já está instalado
+window.addEventListener('appinstalled', () => {
+  deferredPrompt = null;
+  const banner = document.getElementById('pwa-banner');
+  if(banner) banner.remove();
+  toast('✅ App instalado! Procure o ícone na sua tela inicial.','s');
+});
+
+function mostrarBannerInstall(){
+  // Não mostrar se já está rodando como PWA instalado
+  if(window.matchMedia('(display-mode: standalone)').matches) return;
+  if(window.navigator.standalone === true) return;
+  if(document.getElementById('pwa-banner')) return;
+  // Não mostrar se usuário já fechou hoje
+  if(sessionStorage.getItem('pwa-banner-dismissed')) return;
+
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+  const isAndroid = /android/i.test(navigator.userAgent);
+
+  // iOS — sempre mostrar (não tem beforeinstallprompt)
+  // Android — só mostrar se tiver o deferredPrompt (Chrome suporta)
+  if(!isIOS && !deferredPrompt && !isAndroid) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'pwa-banner';
+  banner.style.cssText = [
+    'position:fixed', 'bottom:0', 'left:0', 'right:0', 'z-index:9999',
+    'background:linear-gradient(135deg,#111827,#0A0E17)',
+    'border-top:2px solid #D4A843',
+    'padding:.9rem 1rem',
+    'display:flex', 'align-items:center', 'gap:.7rem',
+    'box-shadow:0 -4px 24px rgba(0,0,0,.6)',
+    'animation:slideUp .35s cubic-bezier(.16,1,.3,1)',
+  ].join(';');
+
+  // Adicionar CSS de animação
+  if(!document.getElementById('pwa-style')){
+    const st=document.createElement('style');
+    st.id='pwa-style';
+    st.textContent='@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}';
+    document.head.appendChild(st);
+  }
+
+  if(isIOS){
+    // iOS — instrução clara com seta apontando para o botão de compartilhar
+    banner.innerHTML = `
+      <img src="/icon-192.png" style="width:42px;height:42px;border-radius:10px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.4)">
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Oswald',sans-serif;font-size:.82rem;color:#D4A843;text-transform:uppercase;letter-spacing:1px;margin-bottom:.2rem">📲 Instalar como App</div>
+        <div style="font-size:.78rem;color:#CBD5E1;line-height:1.4">
+          Toque em 
+          <span style="display:inline-flex;align-items:center;gap:2px;background:rgba(255,255,255,.12);border-radius:4px;padding:1px 5px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="2.5"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            Compartilhar
+          </span>
+          → <strong style="color:white">Adicionar à Tela Início</strong>
+        </div>
+      </div>
+      <button onclick="sessionStorage.setItem('pwa-banner-dismissed','1');document.getElementById('pwa-banner').remove()" 
+        style="background:none;border:none;color:#64748B;font-size:1.4rem;cursor:pointer;padding:.2rem;flex-shrink:0;line-height:1;-webkit-tap-highlight-color:transparent">✕</button>
+    `;
+  } else {
+    // Android/Chrome — botão de instalação direto
+    banner.innerHTML = `
+      <img src="/icon-192.png" style="width:42px;height:42px;border-radius:10px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.4)">
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Oswald',sans-serif;font-size:.82rem;color:#D4A843;text-transform:uppercase;letter-spacing:1px;margin-bottom:.2rem">📲 Instalar como App</div>
+        <div style="font-size:.75rem;color:#94A3B8">Acesso rápido na tela inicial, funciona offline!</div>
+      </div>
+      <button onclick="instalarPWA()" 
+        style="background:linear-gradient(135deg,#D4A843,#F0D78C);color:#0A0E17;border:none;padding:.5rem .9rem;border-radius:6px;font-family:'Oswald',sans-serif;font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer;flex-shrink:0;white-space:nowrap;-webkit-tap-highlight-color:transparent">
+        Instalar
+      </button>
+      <button onclick="sessionStorage.setItem('pwa-banner-dismissed','1');document.getElementById('pwa-banner').remove()" 
+        style="background:none;border:none;color:#64748B;font-size:1.4rem;cursor:pointer;padding:.2rem .2rem .2rem .3rem;flex-shrink:0;line-height:1;-webkit-tap-highlight-color:transparent">✕</button>
+    `;
+  }
+
+  document.body.appendChild(banner);
+}
+async function instalarPWA(){
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('pwa-banner')?.remove();
+}
 
 function toast(m,t){const ts=document.getElementById('toast');ts.textContent=m;ts.style.background=t==='e'?'var(--error)':'var(--success)';ts.classList.add('show');setTimeout(()=>ts.classList.remove('show'),3500)}
 </script>
