@@ -475,8 +475,15 @@ button:active,.co:active{opacity:.8}
 
 <!-- Como Funciona -->
 <section class="sec" id="cf">
-<div class="sh"><div class="stag">Regras do Jogo</div>
-
+<div class="sh"><div class="stag">Regras do Jogo</div><h2 class="stitle">Como Funciona</h2><p class="sdesc">O sistema consagrado do Bolão do Almeida, agora para 48 seleções!</p></div>
+<div class="rg">
+<div class="rc"><div class="rn">01</div><div class="ri">🔐</div><h3>Login com Google</h3><p>Faça login com sua conta Google para se inscrever. Rápido, seguro e sem precisar criar senha!</p></div>
+<div class="rc"><div class="rn">02</div><div class="ri">📋</div><h3>Inscrição + PIX</h3><p>Escolha 1, 2 ou 3 cotas e pague via PIX. O admin confirma seu pagamento e libera o acesso.</p></div>
+<div class="rc"><div class="rn">03</div><div class="ri">🎯</div><h3>Palpites — 2 Fases</h3><p><strong>1ª Rodada (já liberada!):</strong> 36 jogos da fase de grupos — prazo até 10/06 às 19h.<br><strong>2ª Rodada:</strong> jogos do mata-mata, liberada pelo admin após os classificados da fase de grupos serem definidos.</p></div>
+<div class="rc"><div class="rn">04</div><div class="ri">⭐</div><h3>Pontuação</h3><p><strong>Fase de Grupos:</strong> Placar exato = <strong>3 pts</strong>. Acertou gols de 1 equipe = <strong>1 pt</strong>.<br><strong>Eliminatórias:</strong> Placar exato = <strong>4 pts</strong>. Acertou gols de 1 equipe = <strong>1 pt</strong>.</p></div>
+<div class="rc"><div class="rn">05</div><div class="ri">📊</div><h3>Ranking</h3><p>Cada cota concorre de forma independente. Acompanhe sua posição em tempo real durante toda a Copa!</p></div>
+<div class="rc"><div class="rn">06</div><div class="ri">🏆</div><h3>Premiação</h3><p>1º: <strong>60%</strong> · 2º: <strong>30%</strong> · 3º: <strong>10%</strong> do total arrecadado. O prêmio aumenta com cada nova inscrição!</p></div>
+</div>
 </section>
 
 <!-- Valores -->
@@ -499,7 +506,12 @@ button:active,.co:active{opacity:.8}
 
 <!-- Premiação -->
 <section class="sec" id="prem">
-<div class="sh"><div class="stag">Prêmios</div><h2 class="stitle">Premiação</h2><p class="sdesc">O prêmio <strong style="color:var(--accent-gold)">cresce automaticamente</strong> com cada nova inscrição aprovada</p>
+<div class="sh">
+  <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;justify-content:center">
+    <div class="stag">Prêmios</div>
+    <span style="display:inline-flex;align-items:center;gap:.35rem;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--success);font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .6rem;border-radius:50px"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse 1.5s infinite"></span>Ao Vivo</span>
+  </div>
+  <h2 class="stitle">Premiação</h2><p class="sdesc">O prêmio <strong style="color:var(--accent-gold)">cresce automaticamente</strong> com cada nova inscrição aprovada</p>
 <div style="max-width:480px;margin:.8rem auto 0;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:.9rem 1.1rem"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem"><span style="font-size:.75rem;color:var(--text-muted)">Prêmio acumulado</span><span style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--accent-gold)" id="premio-barra-val">R$ 0</span></div><div style="background:var(--bg-dark);border-radius:50px;height:8px;overflow:hidden"><div id="premio-barra" style="height:100%;border-radius:50px;background:var(--gradient-gold);width:0%;transition:width 1s ease"></div></div><div style="display:flex;justify-content:space-between;margin-top:.3rem;font-size:.65rem;color:var(--text-muted)"><span>Agora</span><span id="premio-barra-meta">Meta: R$ 300</span></div></div></div>
 <div class="prg">
 <div class="prc sv"><div class="prm">🥈</div><div class="prpl">2º Lugar</div><div class="prpc">30%</div><div class="prpv" id="pz2">R$ 0,00</div></div>
@@ -743,30 +755,6 @@ button:active,.co:active{opacity:.8}
 </section>
 
 <!-- Mensagem Especial -->
-<section class="sec" id="sec-ded" style="padding:2rem 1.2rem 3rem">
-<div style="max-width:700px;margin:0 auto 2.5rem;background:linear-gradient(135deg,rgba(212,168,67,.07) 0%,rgba(139,21,56,.07) 100%);border:1px solid rgba(212,168,67,.25);border-radius:12px;padding:2rem 2rem 1.8rem;text-align:center;position:relative;overflow:hidden">
-  <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient-gold)"></div>
-  <div style="font-size:2rem;margin-bottom:.6rem">💛❤️</div>
-  <div style="font-family:'Oswald',sans-serif;font-size:.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-gold);margin-bottom:.7rem">Uma mensagem especial</div>
-  <p style="font-family:'Barlow',sans-serif;font-size:1rem;color:var(--text-primary);line-height:1.7;margin-bottom:.8rem">
-    Este projeto foi construído com muito carinho e tem o espírito de toda a minha família. <strong style="color:var(--accent-gold)">Gabriel</strong> e <strong style="color:var(--accent-gold)">Marcos</strong>, meus filhos, e <strong style="color:var(--accent-gold)">Tatiana</strong>, minha esposa — vocês foram minha maior inspiração durante cada linha de código, cada detalhe e cada decisão desse bolão.
-  </p>
-  <p style="font-family:'Barlow',sans-serif;font-size:.95rem;color:var(--text-secondary);line-height:1.6">
-    Obrigado pelo incentivo, pela paciência e por acreditar nesse sonho junto comigo. Esse projeto é nosso — e é pra vocês! Amo vocês demais! 🏆
-  </p>
-  <div style="margin-top:1rem;font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--text-muted);letter-spacing:1px">— Alexandre Almeida</div>
-</div>
-
-<div class="rg">
-<div class="rc"><div class="rn">01</div><div class="ri">🔐</div><h3>Login com Google</h3><p>Faça login com sua conta Google para se inscrever. Rápido, seguro e sem precisar criar senha!</p></div>
-<div class="rc"><div class="rn">02</div><div class="ri">📋</div><h3>Inscrição + PIX</h3><p>Escolha 1, 2 ou 3 cotas e pague via PIX. O admin confirma seu pagamento e libera o acesso.</p></div>
-<div class="rc"><div class="rn">03</div><div class="ri">🎯</div><h3>Palpites — 2 Fases</h3><p><strong>1ª Rodada (já liberada!):</strong> 36 jogos da fase de grupos — prazo até 10/06 às 19h.<br><strong>2ª Rodada:</strong> jogos do mata-mata, liberada pelo admin após os classificados da fase de grupos serem definidos.</p></div>
-<div class="rc"><div class="rn">04</div><div class="ri">⭐</div><h3>Pontuação</h3><p><strong>Fase de Grupos:</strong> Placar exato = <strong>3 pts</strong>. Acertou gols de 1 equipe = <strong>1 pt</strong>.<br><strong>Eliminatórias:</strong> Placar exato = <strong>4 pts</strong>. Acertou gols de 1 equipe = <strong>1 pt</strong>.</p></div>
-<div class="rc"><div class="rn">05</div><div class="ri">📊</div><h3>Ranking</h3><p>Cada cota concorre de forma independente. Acompanhe sua posição em tempo real durante toda a Copa!</p></div>
-<div class="rc"><div class="rn">06</div><div class="ri">🏆</div><h3>Premiação</h3><p>1º: <strong>60%</strong> · 2º: <strong>30%</strong> · 3º: <strong>10%</strong> do total arrecadado. O prêmio aumenta com cada nova inscrição!</p></div>
-</div>
-</section>
-
 </div>
 <!-- end page-home -->
 
