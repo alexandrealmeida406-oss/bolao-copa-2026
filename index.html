@@ -802,13 +802,61 @@ button:active,.co:active{opacity:.8}
 
 <!-- Valores -->
 <section class="sec ps" id="val">
-<div class="sh"><div class="stag">Invista no Seu Palpite</div><h2 class="stitle">Valores</h2><p class="sdesc">Mais cotas, mais chances! Taxa de serviço inclusa.</p></div>
-<div class="pg">
-<div class="pc"><div class="pcc">1 Cota</div><div class="pvl">R$ 33<small>,00</small></div><div class="pbd">R$ 30 cota + R$ 3 taxa</div><ul class="pf"><li>1 palpite completo</li><li>Ranking ao vivo</li><li>Concorre aos 3 prêmios</li></ul><a class="btn btn-s btn-sm" onclick="startInscricao(1)">Escolher</a></div>
-<div class="pc ft"><div class="pcc">2 Cotas</div><div class="pvl">R$ 60<small>,00</small></div><div class="pbd">R$ 54 cotas + R$ 6 taxa</div><div class="ppd">Economia R$ 6</div><ul class="pf"><li>2 palpites independentes</li><li>Desconto de 10%</li><li>Ranking ao vivo</li></ul><a class="btn btn-p btn-sm" onclick="startInscricao(2)">Escolher</a></div>
-<div class="pc"><div class="pcc">3 Cotas</div><div class="pvl">R$ 81<small>,00</small></div><div class="pbd">R$ 72 cotas + R$ 9 taxa</div><div class="ppd">Economia R$ 18</div><ul class="pf"><li>3 palpites independentes</li><li>Máximo de chances!</li><li>Maior desconto/cota</li></ul><a class="btn btn-s btn-sm" onclick="startInscricao(3)">Escolher</a></div>
+<div class="sh">
+  <div class="stag">Invista no Seu Palpite</div>
+  <h2 class="stitle">Valores</h2>
+  <p class="sdesc">Escolha quantas cotas quiser — mais cotas, mais chances de ganhar!</p>
 </div>
+<div class="pg">
+
+  <!-- 1 Cota -->
+  <div class="pc">
+    <div class="pcc">1 Cota</div>
+    <div class="pvl">R$ 23<small>,00</small></div>
+    <div class="pbd">R$ 20 cota + R$ 3 taxa</div>
+    <ul class="pf">
+      <li>1 palpite completo</li>
+      <li>Acesso ao ranking ao vivo</li>
+      <li>Concorre aos 3 prêmios</li>
+    </ul>
+    <a class="btn btn-s btn-sm" onclick="startInscricao(1)">Escolher</a>
+  </div>
+
+  <!-- 2 Cotas — destaque -->
+  <div class="pc ft">
+    <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--accent-gold);color:var(--bg-dark);font-family:'Oswald',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .8rem;border-radius:50px;white-space:nowrap">⭐ Mais Popular</div>
+    <div class="pcc">2 Cotas</div>
+    <div class="pvl">R$ 44<small>,00</small></div>
+    <div class="pbd">R$ 38 cotas + R$ 6 taxa</div>
+    <div class="ppd">2x mais chances de ganhar!</div>
+    <ul class="pf">
+      <li>2 palpites independentes</li>
+      <li>Dobra suas chances no ranking</li>
+      <li>Acesso ao ranking ao vivo</li>
+    </ul>
+    <a class="btn btn-p btn-sm" onclick="startInscricao(2)">Escolher</a>
+  </div>
+
+  <!-- 3 Cotas -->
+  <div class="pc">
+    <div class="pcc">3 Cotas</div>
+    <div class="pvl">R$ 63<small>,00</small></div>
+    <div class="pbd">R$ 55 cotas + R$ 8 taxa</div>
+    <div class="ppd">Máximo de chances!</div>
+    <ul class="pf">
+      <li>3 palpites independentes</li>
+      <li>Máxima chance de ganhar</li>
+      <li>Limite máximo por participante</li>
+    </ul>
+    <a class="btn btn-s btn-sm" onclick="startInscricao(3)">Escolher</a>
+  </div>
+
+</div>
+<p style="text-align:center;font-size:.75rem;color:var(--text-muted);margin-top:.8rem">
+  💡 A taxa de serviço não entra no prêmio. O prêmio é calculado apenas sobre o valor das cotas.
+</p>
 </section>
+
 
 <!-- Inscrição -->
 <section class="sec" id="insc">
@@ -915,8 +963,8 @@ const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const PK='2b03f68f-4aae-49b9-99a5-705b31982b7b';
 const CS=new Date('2026-06-11T16:00:00-03:00');
 const DEADLINE=new Date('2026-06-10T19:00:00-03:00');
-const PR={1:{c:30,t:3,v:33},2:{c:54,t:6,v:60},3:{c:72,t:9,v:81}};
-const CV={1:30,2:54,3:72};
+const PR={1:{c:20,t:3,v:23},2:{c:38,t:6,v:44},3:{c:55,t:8,v:63}};
+const CV={1:20,2:38,3:55};
 
 const flagsLeft=['mx','za','kr','cz','ca','ba','qa','ch','br','ma','ht','gb-sct','us','py','au','tr','de','ec','ci','cw','nl','jp','se','tn'];
 const flagsRight=['be','ir','eg','nz','es','uy','sa','cv','fr','sn','iq','no','ar','dz','at','jo','pt','cd','uz','co','gb-eng','hr','gh','pa'];
@@ -1120,14 +1168,14 @@ function updateUI(){
           <p class="fsd">Escolha suas cotas e pague via PIX para participar.</p>
           <label style="font-family:'Barlow Condensed';font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:.5rem;display:block">Quantidade de Cotas</label>
           <div class="cs">
-            <div class="co sel" onclick="selCota(1)" id="c1"><div class="cn">1</div><div class="cl">Cota</div><div class="cp">R$ 33</div><div class="cd">R$30 + R$3 taxa</div></div>
-            <div class="co" onclick="selCota(2)" id="c2"><div class="cn">2</div><div class="cl">Cotas</div><div class="cp">R$ 60</div><div class="cd">R$54 + R$6 taxa</div><div class="csv">Economia R$ 6</div></div>
-            <div class="co" onclick="selCota(3)" id="c3"><div class="cn">3</div><div class="cl">Cotas</div><div class="cp">R$ 81</div><div class="cd">R$72 + R$9 taxa</div><div class="csv">Economia R$ 18</div></div>
+            <div class="co sel" onclick="selCota(1)" id="c1"><div class="cn">1</div><div class="cl">Cota</div><div class="cp">R$ 23</div><div class="cd">R$20 + R$3 taxa</div></div>
+            <div class="co" onclick="selCota(2)" id="c2"><div class="cn">2</div><div class="cl">Cotas</div><div class="cp">R$ 44</div><div class="cd">R$38 + R$6 taxa</div><div class="csv">Economia R$ 2</div></div>
+            <div class="co" onclick="selCota(3)" id="c3"><div class="cn">3</div><div class="cl">Cotas</div><div class="cp">R$ 63</div><div class="cd">R$55 + R$8 taxa</div><div class="csv">Economia R$ 6</div></div>
           </div>
           <div class="csum" id="checkout-sum">
-            <div class="cln"><span>1 cota de participação</span><span>R$ 30,00</span></div>
+            <div class="cln"><span>1 cota de participação</span><span>R$ 20,00</span></div>
             <div class="cln"><span>Taxa de serviço</span><span>R$ 3,00</span></div>
-            <div class="cln tot"><span>Total</span><span>R$ 33,00</span></div>
+            <div class="cln tot"><span>Total</span><span>R$ 23,00</span></div>
           </div>
           <div class="pixs">
             <div class="pixt">Pague via PIX</div>
@@ -1200,15 +1248,15 @@ function renderInscricaoForm(){
       
       <label style="font-family:'Barlow Condensed';font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:.5rem;display:block">Quantidade de Cotas</label>
       <div class="cs">
-        <div class="co sel" onclick="selCota(1)" id="c1"><div class="cn">1</div><div class="cl">Cota</div><div class="cp">R$ 33</div><div class="cd">R$30 + R$3 taxa</div></div>
-        <div class="co" onclick="selCota(2)" id="c2"><div class="cn">2</div><div class="cl">Cotas</div><div class="cp">R$ 60</div><div class="cd">R$54 + R$6 taxa</div><div class="csv">Economia R$ 6</div></div>
-        <div class="co" onclick="selCota(3)" id="c3"><div class="cn">3</div><div class="cl">Cotas</div><div class="cp">R$ 81</div><div class="cd">R$72 + R$9 taxa</div><div class="csv">Economia R$ 18</div></div>
+        <div class="co sel" onclick="selCota(1)" id="c1"><div class="cn">1</div><div class="cl">Cota</div><div class="cp">R$ 23</div><div class="cd">R$20 + R$3 taxa</div></div>
+        <div class="co" onclick="selCota(2)" id="c2"><div class="cn">2</div><div class="cl">Cotas</div><div class="cp">R$ 44</div><div class="cd">R$38 + R$6 taxa</div><div class="csv">Economia R$ 2</div></div>
+        <div class="co" onclick="selCota(3)" id="c3"><div class="cn">3</div><div class="cl">Cotas</div><div class="cp">R$ 63</div><div class="cd">R$55 + R$8 taxa</div><div class="csv">Economia R$ 6</div></div>
       </div>
       
       <div class="csum" id="checkout-sum">
-        <div class="cln"><span>1 cota de participação</span><span>R$ 30,00</span></div>
+        <div class="cln"><span>1 cota de participação</span><span>R$ 20,00</span></div>
         <div class="cln"><span>Taxa de serviço</span><span>R$ 3,00</span></div>
-        <div class="cln tot"><span>Total</span><span>R$ 33,00</span></div>
+        <div class="cln tot"><span>Total</span><span>R$ 23,00</span></div>
       </div>
       
       <div class="pixs">
@@ -1801,14 +1849,14 @@ async function loadConta(){
       <p class="fsd">Escolha suas cotas e pague via PIX para participar.</p>
       <label style="font-family:'Barlow Condensed';font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:.5rem;display:block">Quantidade de Cotas</label>
       <div class="cs">
-        <div class="co sel" onclick="selCota(1)" id="c1"><div class="cn">1</div><div class="cl">Cota</div><div class="cp">R$ 33</div><div class="cd">R$30 + R$3 taxa</div></div>
-        <div class="co" onclick="selCota(2)" id="c2"><div class="cn">2</div><div class="cl">Cotas</div><div class="cp">R$ 60</div><div class="cd">R$54 + R$6 taxa</div><div class="csv">Economia R$ 6</div></div>
-        <div class="co" onclick="selCota(3)" id="c3"><div class="cn">3</div><div class="cl">Cotas</div><div class="cp">R$ 81</div><div class="cd">R$72 + R$9 taxa</div><div class="csv">Economia R$ 18</div></div>
+        <div class="co sel" onclick="selCota(1)" id="c1"><div class="cn">1</div><div class="cl">Cota</div><div class="cp">R$ 23</div><div class="cd">R$20 + R$3 taxa</div></div>
+        <div class="co" onclick="selCota(2)" id="c2"><div class="cn">2</div><div class="cl">Cotas</div><div class="cp">R$ 44</div><div class="cd">R$38 + R$6 taxa</div><div class="csv">Economia R$ 2</div></div>
+        <div class="co" onclick="selCota(3)" id="c3"><div class="cn">3</div><div class="cl">Cotas</div><div class="cp">R$ 63</div><div class="cd">R$55 + R$8 taxa</div><div class="csv">Economia R$ 6</div></div>
       </div>
       <div class="csum" id="checkout-sum">
-        <div class="cln"><span>1 cota de participação</span><span>R$ 30,00</span></div>
+        <div class="cln"><span>1 cota de participação</span><span>R$ 20,00</span></div>
         <div class="cln"><span>Taxa de serviço</span><span>R$ 3,00</span></div>
-        <div class="cln tot"><span>Total</span><span>R$ 33,00</span></div>
+        <div class="cln tot"><span>Total</span><span>R$ 23,00</span></div>
       </div>
       <div class="pixs">
         <div class="pixt">Pague via PIX</div>
