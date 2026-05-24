@@ -1040,6 +1040,11 @@ button:active,.co:active{opacity:.8}
 const SUPABASE_URL='https://vuomkohlwomdeyobddhw.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1b21rb2hsd29tZGV5b2JkZGh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MTE3ODMsImV4cCI6MjA5MDM4Nzc4M30.vexm5sTH3TChhkVmA5lyNUNVrE-G6g2ZRNKdSyGnoKc';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+// Flag de prontidão da autenticação (evita race condition)
+let _authReady=false;
+let _authReadyResolvers=[];
+const waitAuthReady=()=>_authReady?Promise.resolve():new Promise(r=>_authReadyResolvers.push(r));
+
 
 const PK='2b03f68f-4aae-49b9-99a5-705b31982b7b';
 const CS=new Date('2026-06-11T16:00:00-03:00');
@@ -1093,6 +1098,12 @@ document.addEventListener('DOMContentLoaded',async()=>{
       try{await loadUserData()}catch(e){console.warn('Auth change error:',e)}
     }else{
       currentUser=null;userProfile=null;userInscricao=null;
+    }
+    // Sinalizar que auth está pronta (resolve race condition)
+    if(!_authReady){
+      _authReady=true;
+      _authReadyResolvers.forEach(r=>r());
+      _authReadyResolvers=[];
     }
     updateUI();
   });
@@ -1172,7 +1183,14 @@ function navigate(page){
   
   if(page==='admin')loadAdmin();
   if(page==='conta')loadConta();
-  if(page==='palpites')loadPalpites();
+  if(page==='palpites'){
+    // Small delay se auth ainda não resolveu
+    if(!_authReady){
+      document.getElementById('palpites-content').innerHTML=
+        '<div class="loading"><div class="spinner"></div>Verificando sessão...</div>';
+    }
+    loadPalpites();
+  }
 }
 
 function scrollToSection(id){
@@ -1401,6 +1419,14 @@ async function submitInscricao(){
 // ===== PALPITES =====
 async function loadPalpites(){
   const el=document.getElementById('palpites-content');
+  // Aguardar auth resolver (evita race condition ao clicar rapidamente)
+  if(!_authReady){
+    el.innerHTML='<div class="loading"><div class="spinner"></div>Verificando sessão...</div>';
+    await Promise.race([
+      waitAuthReady(),
+      new Promise(r=>setTimeout(r,4000)) // timeout de segurança
+    ]);
+  }
   if(!currentUser){el.innerHTML='<div class="login-box"><h3>Faça login para ver seus palpites</h3><button class="btn-google" onclick="loginGoogle()">Entrar com Google</button></div>';return;}
   if(!userInscricao||userInscricao.status!=='aprovado'){
     el.innerHTML='<div class="re"><p style="font-size:2rem">🔒</p><p style="font-family:\'Oswald\',sans-serif;font-size:1.1rem">Acesso restrito</p><p style="color:var(--text-muted);font-size:.85rem;margin-top:.3rem">Seu pagamento precisa ser aprovado pelo admin antes de preencher os palpites.</p></div>';
