@@ -1535,11 +1535,11 @@ async function loadPalpites(){
         </div>
         <div style="display:grid;grid-template-columns:auto 1fr;gap:.25rem .5rem;align-items:center;font-size:.8rem">
           <span style="color:var(--text-muted)">🥇 1º</span>
-          <select id="g${grp}-c${c}-1" ${disabled} style="background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.25rem .4rem;color:var(--text-primary);font-size:.78rem;width:100%">
+          <select id="g${grp}-c${c}-1" ${disabled} onchange="validarGrupo('${grp}',${c})" style="background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.25rem .4rem;color:var(--text-primary);font-size:.78rem;width:100%">
             <option value="">Selecione...</option>${opts1}
           </select>
           <span style="color:var(--text-muted)">🥈 2º</span>
-          <select id="g${grp}-c${c}-2" ${disabled} style="background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.25rem .4rem;color:var(--text-primary);font-size:.78rem;width:100%">
+          <select id="g${grp}-c${c}-2" ${disabled} onchange="validarGrupo('${grp}',${c})" style="background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.25rem .4rem;color:var(--text-primary);font-size:.78rem;width:100%">
             <option value="">Selecione...</option>${opts2}
           </select>
         </div>
@@ -1609,6 +1609,26 @@ async function loadPalpites(){
   }
 
   el.innerHTML = html;
+}
+
+function validarGrupo(grp, cotaNum){
+  const el1=document.getElementById(`g${grp}-c${cotaNum}-1`);
+  const el2=document.getElementById(`g${grp}-c${cotaNum}-2`);
+  if(!el1||!el2)return;
+  const v1=el1.value; const v2=el2.value;
+  if(v1&&v2&&v1===v2){
+    // Mesmo time — destacar ambos em vermelho
+    el1.style.borderColor='var(--error)';
+    el1.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';
+    el2.style.borderColor='var(--error)';
+    el2.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';
+    // Toast rápido
+    toast(`Grupo ${grp}: 1º e 2º não podem ser a mesma seleção!`,'e');
+  } else {
+    // Limpar destaque
+    el1.style.borderColor=''; el1.style.boxShadow='';
+    el2.style.borderColor=''; el2.style.boxShadow='';
+  }
 }
 
 async function salvarPalpitesGrupos(cotaNum){
