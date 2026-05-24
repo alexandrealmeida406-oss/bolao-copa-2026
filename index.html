@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
-  <link rel="dns-prefetch" href="https://flagcdn.com">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#D4A843">
   <meta name="mobile-web-app-capable" content="yes">
@@ -446,14 +445,12 @@ button:active,.co:active{opacity:.8}
 .fg input:focus,.fg select:focus{scroll-margin-bottom:120px}
 
 </style>
-  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://bolaocopa.com">
   <meta property="og:title" content="Bolão do Almeida — Copa do Mundo 2026">
-  <meta property="og:description" content="Faça seus palpites da Copa 2026, concorra a prêmios e dispute o ranking com amigos!">
+  <meta property="og:description" content="Palpite no 1º e 2º de cada grupo + artilheiro!">
   <meta property="og:image" content="https://bolaocopa.com/icon-512.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://bolaocopa.com/icon-512.png">
 </head>
 <body>
 
@@ -564,8 +561,6 @@ button:active,.co:active{opacity:.8}
   <!-- <ins class="adsbygoogle" data-ad-client="ca-pub-XXXXXXXX" data-ad-slot="XXXXXXXX" data-ad-format="auto" style="display:block"></ins> -->
 </div>
 
-
-<div style="height:1px;background:var(--border);margin:1.5rem 0;opacity:.4"></div>
 <!-- Manual do Bolão -->
 <div style="margin-top:2.5rem" id="manual">
 <div class="sh" style="margin-bottom:1.2rem"><div class="stag">Leia com atenção</div><h3 class="stitle" style="font-size:1.8rem">Manual do Bolão</h3></div>
@@ -573,7 +568,7 @@ button:active,.co:active{opacity:.8}
 <!-- COMO FUNCIONA OS PALPITES -->
 <div class="manual-box" style="border-color:rgba(0,180,216,.25);background:linear-gradient(135deg,rgba(0,180,216,.05),var(--bg-card))">
 <h4 style="color:var(--accent-teal)">🎯 Como Funciona — As Duas Rodadas de Palpites</h4>
-<p style="margin-bottom:1rem">O Bolão do Almeida tem <strong style="color:var(--text-primary)">duas rodadas de palpites</strong>, uma para cada fase da Copa. Você precisa preencher as duas para maximizar seus pontos!</p>
+<p style="margin-bottom:1rem">O Bolão do Almeida tem <strong style="color:var(--text-primary)">duas rodadas de palpites</strong>. Você precisa preencher as duas para maximizar seus pontos!</p>
 
 <!-- 1ª Rodada -->
 <div style="background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:1rem;margin-bottom:.8rem">
@@ -582,22 +577,21 @@ button:active,.co:active{opacity:.8}
     <strong style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">1ª Rodada — Fase de Grupos</strong>
   </div>
   <ul style="margin-left:1rem">
-    <li style="margin-bottom:.3rem">Você palpita o placar de todos os <strong>36 jogos</strong> da fase de grupos (12 grupos × 3 jogos)</li>
-    <li style="margin-bottom:.3rem">Todos os 36 palpites devem ser preenchidos para salvar — você pode <strong>voltar e editar</strong> quantas vezes quiser até o prazo</li>
-    <li style="margin-bottom:.3rem">📝 <strong>Pode editar à vontade até o prazo!</strong> Entre na página de Palpites, altere os placares e salve novamente</li>
-    <li style="margin-bottom:.3rem"><strong style="color:var(--error)">Prazo final: 10/06/2026 às 19h00</strong> (véspera do início da Copa) — após esse horário os palpites são bloqueados definitivamente</li>
+    <li style="margin-bottom:.3rem">Você palpita o <strong>1º e 2º colocado</strong> de cada um dos 12 grupos da Copa (não precisa mais palpitar o placar de cada jogo!)</li>
+    <li style="margin-bottom:.3rem">Você também palpita o <strong>Artilheiro da Copa</strong> — informe o nome do jogador e a seleção</li>
+    <li style="margin-bottom:.3rem">Pode editar à vontade até o prazo — basta clicar em "Editar" e salvar novamente</li>
+    <li style="margin-bottom:.3rem"><strong style="color:var(--error)">Prazo final: 10/06/2026 às 19h</strong> — após esse horário os palpites são bloqueados definitivamente</li>
   </ul>
-  <!-- Tabela pontuação fase 1 -->
-  <div style="margin-top:.8rem;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:8px;padding:.8rem .9rem">
+  <div style="margin-top:.8rem;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:8px;padding:.7rem .9rem">
     <div style="font-family:'Oswald',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--success);margin-bottom:.5rem">⭐ Pontuação — Fase de Grupos</div>
     <div style="display:grid;grid-template-columns:1fr auto;gap:.25rem .8rem;font-size:.82rem">
-      <span style="color:var(--text-secondary)">🎯 Placar exato</span><strong style="color:var(--success)">3 pts</strong>
-      <span style="color:var(--text-secondary)">⚽ Acertou gols de 1 equipe</span><strong style="color:var(--warning)">1 pt</strong>
-      <span style="color:var(--text-secondary)">❌ Errou as duas equipes</span><strong style="color:var(--text-muted)">0 pts</strong>
+      <span style="color:var(--text-secondary)">🥇 Acertou 1º E 2º do grupo</span><strong style="color:var(--success)">5 pts</strong>
+      <span style="color:var(--text-secondary)">🥇 Acertou só o 1º colocado</span><strong style="color:var(--warning)">3 pts</strong>
+      <span style="color:var(--text-secondary)">🥈 Acertou só o 2º colocado</span><strong style="color:var(--warning)">2 pts</strong>
+      <span style="color:var(--text-secondary)">⚽ Acertou o Artilheiro da Copa</span><strong style="color:var(--success)">5 pts</strong>
+      <span style="color:var(--text-secondary)">❌ Errou tudo</span><strong style="color:var(--text-muted)">0 pts</strong>
     </div>
-  </div>
-  <div style="margin-top:.7rem;padding:.7rem .9rem;background:rgba(212,168,67,.08);border-left:3px solid var(--accent-gold);border-radius:0 6px 6px 0;font-size:.82rem;color:var(--text-secondary)">
-    💡 <strong style="color:var(--accent-gold)">Dica:</strong> Não deixe para a última hora! Preencha seus palpites da Fase de Grupos o quanto antes para não perder o prazo de 10/06 às 19h. Fique ligado no WhatsApp para não perder o aviso da 2ª rodada!
+    <div style="font-size:.72rem;color:var(--text-muted);margin-top:.4rem">💡 Máximo possível na 1ª rodada: 12 grupos × 5pts + artilheiro 5pts = <strong>65 pts por cota</strong></div>
   </div>
 </div>
 
@@ -608,13 +602,11 @@ button:active,.co:active{opacity:.8}
     <strong style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">2ª Rodada — Fase Eliminatória</strong>
   </div>
   <ul style="margin-left:1rem">
-    <li style="margin-bottom:.3rem">Após o encerramento da fase de grupos, o admin liberará uma <strong>nova rodada de palpites</strong> para o mata-mata</li>
-    <li style="margin-bottom:.3rem">Você palpita os jogos do <strong>mata-mata</strong>: 16-avos, oitavas, quartas, semifinais, disputa de 3º lugar e final</li>
-    <li style="margin-bottom:.3rem">Os confrontos só serão conhecidos depois que todos os classificados da fase de grupos forem definidos — por isso a liberação é separada</li>
+    <li style="margin-bottom:.3rem">Após a fase de grupos, o admin libera uma nova rodada para o mata-mata</li>
+    <li style="margin-bottom:.3rem">Você palpita os resultados dos jogos: 16-avos, oitavas, quartas, semifinais e final</li>
     <li style="margin-bottom:.3rem">Você receberá um aviso no grupo do WhatsApp quando a 2ª rodada for liberada</li>
-    <li style="margin-bottom:.3rem">⭐ <strong>Pontuação progressiva</strong> — quanto mais longe na Copa, mais pontos vale:</li>
+    <li style="margin-bottom:.3rem">⭐ <strong>Pontuação progressiva</strong> — quanto mais longe na Copa, mais pontos vale</li>
   </ul>
-  <!-- Tabela pontuação fase 2 -->
   <div style="margin-top:.7rem;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:8px;padding:.8rem .9rem;overflow-x:auto">
     <div style="font-family:'Oswald',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--warning);margin-bottom:.6rem">⭐ Pontuação — Fase Eliminatória</div>
     <table style="width:100%;font-size:.8rem;border-collapse:collapse">
@@ -625,11 +617,11 @@ button:active,.co:active{opacity:.8}
         <th style="text-align:center;padding:.25rem .4rem;border-bottom:1px solid var(--border)">❌ Errou</th>
       </tr></thead>
       <tbody>
-        <tr><td style="padding:.25rem .4rem;color:var(--text-secondary)">16-avos de final</td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--success)">4 pts</strong></td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--warning)">2 pts</strong></td><td style="text-align:center;padding:.25rem .4rem;color:var(--text-muted)">0</td></tr>
-        <tr style="background:rgba(255,255,255,.02)"><td style="padding:.25rem .4rem;color:var(--text-secondary)">Oitavas de final</td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--success)">5 pts</strong></td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--warning)">3 pts</strong></td><td style="text-align:center;padding:.25rem .4rem;color:var(--text-muted)">0</td></tr>
-        <tr><td style="padding:.25rem .4rem;color:var(--text-secondary)">Quartas de final</td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--success)">6 pts</strong></td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--warning)">4 pts</strong></td><td style="text-align:center;padding:.25rem .4rem;color:var(--text-muted)">0</td></tr>
-        <tr style="background:rgba(255,255,255,.02)"><td style="padding:.25rem .4rem;color:var(--text-secondary)">Semifinais</td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--success)">7 pts</strong></td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--warning)">5 pts</strong></td><td style="text-align:center;padding:.25rem .4rem;color:var(--text-muted)">0</td></tr>
-        <tr style="background:rgba(212,168,67,.06)"><td style="padding:.25rem .4rem;font-weight:700;color:var(--accent-gold)">🏆 Final</td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--accent-gold)">10 pts</strong></td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--warning)">6 pts</strong></td><td style="text-align:center;padding:.25rem .4rem;color:var(--text-muted)">0</td></tr>
+        <tr><td style="padding:.25rem .4rem;color:var(--text-secondary)">16-avos de final</td><td style="text-align:center"><strong style="color:var(--success)">4 pts</strong></td><td style="text-align:center"><strong style="color:var(--warning)">2 pts</strong></td><td style="text-align:center;color:var(--text-muted)">0</td></tr>
+        <tr style="background:rgba(255,255,255,.02)"><td style="padding:.25rem .4rem;color:var(--text-secondary)">Oitavas de final</td><td style="text-align:center"><strong style="color:var(--success)">5 pts</strong></td><td style="text-align:center"><strong style="color:var(--warning)">3 pts</strong></td><td style="text-align:center;color:var(--text-muted)">0</td></tr>
+        <tr><td style="padding:.25rem .4rem;color:var(--text-secondary)">Quartas de final</td><td style="text-align:center"><strong style="color:var(--success)">6 pts</strong></td><td style="text-align:center"><strong style="color:var(--warning)">4 pts</strong></td><td style="text-align:center;color:var(--text-muted)">0</td></tr>
+        <tr style="background:rgba(255,255,255,.02)"><td style="padding:.25rem .4rem;color:var(--text-secondary)">Semifinais</td><td style="text-align:center"><strong style="color:var(--success)">7 pts</strong></td><td style="text-align:center"><strong style="color:var(--warning)">5 pts</strong></td><td style="text-align:center;color:var(--text-muted)">0</td></tr>
+        <tr style="background:rgba(212,168,67,.06)"><td style="padding:.25rem .4rem;font-weight:700;color:var(--accent-gold)">🏆 Final</td><td style="text-align:center"><strong style="color:var(--accent-gold)">10 pts</strong></td><td style="text-align:center"><strong style="color:var(--warning)">6 pts</strong></td><td style="text-align:center;color:var(--text-muted)">0</td></tr>
       </tbody>
     </table>
     <p style="font-size:.72rem;color:var(--text-muted);margin-top:.5rem">⚠️ Placar do tempo regulamentar + prorrogação. Pênaltis não contam.</p>
@@ -805,7 +797,7 @@ button:active,.co:active{opacity:.8}
 
 <!-- Inscrição -->
 <section class="sec" id="insc">
-<div class="sh"><div class="stag">Participe Agora</div><h2 class="stitle">Inscrição</h2><p class="sdesc">Entre com sua conta Google — rápido e seguro</p></div>
+<div class="sh"><div class="stag">Participe Agora</div><h2 class="stitle">Inscrição</h2><p class="sdesc">Login rápido com Google ou crie sua conta com e-mail</p></div>
 <div id="inscricao-content">
 <!-- Dynamic content: login or form -->
 </div>
@@ -849,7 +841,7 @@ button:active,.co:active{opacity:.8}
 <!-- ===================== PALPITES PAGE ===================== -->
 <div class="page" id="page-palpites">
 <div class="sec" style="margin-top:4rem">
-<h2 class="stitle" style="margin-bottom:1.5rem">🎯 Palpites — 1ª Fase</h2>
+<h2 class="stitle" style="margin-bottom:1.5rem">🎯 Palpites — Classificação dos Grupos + Artilheiro</h2>
 <div id="palpites-content"><div class="loading"><div class="spinner"></div>Carregando...</div></div>
 </div>
 </div>
@@ -870,18 +862,9 @@ button:active,.co:active{opacity:.8}
 <p style="margin-top:.2rem;font-size:.7rem;color:var(--text-muted)">Feito com ❤️ para Gabriel, Marcos e Tatiana</p>
 <p style="margin-top:.3rem"><a href="https://bolaocopa.com">bolaocopa.com</a></p>
 
-  <!-- Dedicatória -->
   <div style="border-top:1px solid rgba(255,255,255,.1);margin-top:2rem;padding-top:1.8rem;text-align:center">
-    <div style="display:flex;align-items:center;justify-content:center;gap:.6rem;margin-bottom:.9rem">
-      <span style="font-size:1.2rem">💛</span>
-      <span style="font-family:'Oswald',sans-serif;font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-gold)">Uma mensagem especial</span>
-      <span style="font-size:1.2rem">❤️</span>
-    </div>
-    <p style="font-family:'Barlow',sans-serif;font-size:.83rem;color:var(--text-secondary);line-height:1.8;max-width:520px;margin:0 auto .8rem">
-      Este projeto foi construído com muito carinho e tem o espírito de toda a minha família.
-      <strong style="color:var(--text-primary)">Gabriel</strong> e <strong style="color:var(--text-primary)">Marcos</strong>, meus filhos, e <strong style="color:var(--text-primary)">Tatiana</strong>, minha esposa —
-      vocês foram minha maior inspiração. Esse projeto é nosso — e é pra vocês! Amo vocês demais! 🏆
-    </p>
+    <div style="display:flex;align-items:center;justify-content:center;gap:.6rem;margin-bottom:.9rem"><span style="font-size:1.2rem">💛</span><span style="font-family:'Oswald',sans-serif;font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-gold)">Uma mensagem especial</span><span style="font-size:1.2rem">❤️</span></div>
+    <p style="font-family:'Barlow',sans-serif;font-size:.83rem;color:var(--text-secondary);line-height:1.8;max-width:520px;margin:0 auto .8rem">Este projeto foi construído com muito carinho. <strong style="color:var(--text-primary)">Gabriel</strong> e <strong style="color:var(--text-primary)">Marcos</strong>, meus filhos, e <strong style="color:var(--text-primary)">Tatiana</strong>, minha esposa — vocês foram minha maior inspiração. Esse projeto é nosso — e é pra vocês! Amo vocês demais! 🏆</p>
     <div style="font-family:'Oswald',sans-serif;font-size:.68rem;color:var(--text-muted);letter-spacing:1.5px">— Alexandre Almeida</div>
   </div>
 </footer>
@@ -927,9 +910,6 @@ let currentUser=null,userProfile=null,userInscricao=null,selC=1;
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded',async()=>{
-  // Garantir que updateUI roda mesmo se sb demorar
-  setTimeout(()=>{ if(typeof updateUI==='function') updateUI(); }, 100);
-
   // Fallback: se sb não carregar em 3s, recarregar com cache bust
   // Se sb não carregar em 2s = cache antigo → recarregar
   setTimeout(()=>{
@@ -1064,47 +1044,13 @@ function updateUI(){
   const inscEl=document.getElementById('inscricao-content');
   
   if(currentUser){
-    // Stepper visual — atualiza com estado real do usuário
     const _hs=document.querySelectorAll('.hero-step');
     if(_hs.length>=4){
-      // Reset todos para o estado inicial
-      Array.from(_hs).forEach((h,i)=>{
-        h.style.background='rgba(212,168,67,.15)';
-        h.style.borderColor='var(--accent-gold)';
-        h.style.color='var(--accent-gold)';
-        h.style.boxShadow='';
-        h.textContent=String(i+1);
-      });
-      // Passo 1: Login — sempre verde se logado
-      _hs[0].style.background='rgba(34,197,94,.25)';
-      _hs[0].style.borderColor='var(--success)';
-      _hs[0].style.color='var(--success)';
-      _hs[0].textContent='✓';
-      // Passo 2: Inscrição
-      if(userInscricao&&userInscricao.status!=='rejeitado'){
-        _hs[1].style.background='rgba(34,197,94,.25)';
-        _hs[1].style.borderColor='var(--success)';
-        _hs[1].style.color='var(--success)';
-        _hs[1].textContent='✓';
-      } else {
-        _hs[1].style.background='rgba(212,168,67,.3)';
-        _hs[1].style.boxShadow='0 0 10px rgba(212,168,67,.35)';
-      }
-      // Passo 3: Aprovação
-      if(userInscricao?.status==='aprovado'){
-        _hs[2].style.background='rgba(34,197,94,.25)';
-        _hs[2].style.borderColor='var(--success)';
-        _hs[2].style.color='var(--success)';
-        _hs[2].textContent='✓';
-        // Passo 4: Palpites — ativo
-        _hs[3].style.background='rgba(212,168,67,.3)';
-        _hs[3].style.borderColor='var(--accent-gold)';
-        _hs[3].style.color='var(--accent-gold)';
-        _hs[3].style.boxShadow='0 0 12px rgba(212,168,67,.5)';
-      } else if(userInscricao?.status==='pendente'){
-        _hs[2].style.background='rgba(212,168,67,.3)';
-        _hs[2].style.boxShadow='0 0 10px rgba(212,168,67,.35)';
-      }
+      Array.from(_hs).forEach((h,i)=>{h.style.background='rgba(212,168,67,.15)';h.style.borderColor='var(--accent-gold)';h.style.color='var(--accent-gold)';h.style.boxShadow='';h.textContent=String(i+1);});
+      _hs[0].style.background='rgba(34,197,94,.25)';_hs[0].style.borderColor='var(--success)';_hs[0].style.color='var(--success)';_hs[0].textContent='✓';
+      if(userInscricao&&userInscricao.status!=='rejeitado'){_hs[1].style.background='rgba(34,197,94,.25)';_hs[1].style.borderColor='var(--success)';_hs[1].style.color='var(--success)';_hs[1].textContent='✓';}else{_hs[1].style.background='rgba(212,168,67,.3)';_hs[1].style.boxShadow='0 0 10px rgba(212,168,67,.35)';}
+      if(userInscricao?.status==='aprovado'){_hs[2].style.background='rgba(34,197,94,.25)';_hs[2].style.borderColor='var(--success)';_hs[2].style.color='var(--success)';_hs[2].textContent='✓';_hs[3].style.background='rgba(212,168,67,.3)';_hs[3].style.borderColor='var(--accent-gold)';_hs[3].style.color='var(--accent-gold)';_hs[3].style.boxShadow='0 0 12px rgba(212,168,67,.5)';}
+      else if(userInscricao?.status==='pendente'){_hs[2].style.background='rgba(212,168,67,.3)';_hs[2].style.boxShadow='0 0 10px rgba(212,168,67,.35)';}
     }
     const name=currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'Usuário';
     const avatar=currentUser.user_metadata?.avatar_url||'';
@@ -1182,15 +1128,8 @@ function updateUI(){
       renderInscricaoForm();
     }
   }else{
-    // Não logado — resetar stepper para estado inicial (sem cores)
     const _hs2=document.querySelectorAll('.hero-step');
-    Array.from(_hs2).forEach((h2,i)=>{
-      h2.style.background='rgba(212,168,67,.15)';
-      h2.style.borderColor='var(--accent-gold)';
-      h2.style.color='var(--accent-gold)';
-      h2.style.boxShadow='';
-      h2.textContent=String(i+1);
-    });
+    Array.from(_hs2).forEach((h2,i)=>{h2.style.background='rgba(212,168,67,.15)';h2.style.borderColor='var(--accent-gold)';h2.style.color='var(--accent-gold)';h2.style.boxShadow='';h2.textContent=String(i+1);});
     authEl.innerHTML='<a onclick="navigate(\'home\');setTimeout(()=>scrollToSection(\'insc\'),80)" style="color:var(--accent-gold)">Entrar</a>';
     heroEl.innerHTML=`
       <button class="btn btn-p" onclick="scrollToSection('insc')">Participar Agora</button>
@@ -1323,293 +1262,278 @@ async function loadPalpites(){
     el.innerHTML='<div class="re"><p style="font-size:2rem">🔒</p><p style="font-family:\'Oswald\',sans-serif;font-size:1.1rem">Acesso restrito</p><p style="color:var(--text-muted);font-size:.85rem;margin-top:.3rem">Seu pagamento precisa ser aprovado pelo admin antes de preencher os palpites.</p></div>';
     return;
   }
-  
-  // Check if palpites are enabled
+
+  // Verificar se palpites estão liberados
   const{data:cfg}=await sb.from('config').select('value').eq('key','palpites_liberados').maybeSingle();
   if(!cfg||cfg.value!=='true'){
-    el.innerHTML='<div class="re"><p style="font-size:2rem">🔒</p><p style="font-family:\'Oswald\',sans-serif;font-size:1.1rem">Palpites ainda não liberados</p><p style="color:var(--text-muted);font-size:.85rem;margin-top:.3rem">Os palpites serão liberados quando todas as 48 seleções estiverem definidas.</p></div>';
+    el.innerHTML='<div class="re"><p style="font-size:2rem">🔒</p><p style="font-family:\'Oswald\',sans-serif;font-size:1.1rem">Palpites ainda não liberados</p><p style="color:var(--text-muted);font-size:.85rem;margin-top:.3rem">Os palpites serão liberados em breve. Fique de olho no grupo do WhatsApp!</p></div>';
     return;
   }
 
-  // Check which phase is active
-  const{data:faseCfg}=await sb.from('config').select('value').eq('key','fase_palpites').maybeSingle();
-  const faseAtiva=faseCfg?.value||'grupos';
-  const bloqueado=new Date()>=DEADLINE&&faseAtiva==='grupos';
-  
-  // Load matches for active phase
-  const{data:jogos}=await sb.from('jogos').select('*').eq('fase',faseAtiva).order('grupo').order('rodada').order('data_jogo');
-  if(!jogos||jogos.length===0){
-    el.innerHTML=`<div class="re" style="max-width:500px;margin:2rem auto;padding:3rem 1.5rem;text-align:center">
-      <p style="font-size:2rem;margin-bottom:.6rem">⚽</p>
-      <p style="font-family:'Oswald',sans-serif;font-size:1.1rem;margin-bottom:.4rem">Jogos sendo cadastrados</p>
-      <p style="color:var(--text-muted);font-size:.85rem">O admin está finalizando o cadastro. Volte em breve!</p>
-      <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w btn-sm" style="margin-top:1rem">📱 Grupo WhatsApp</a>
-    </div>`;return;
-  }
-  
-  // Load existing palpites
-  const{data:existingPalpites}=await sb.from('palpites').select('*').eq('inscricao_id',userInscricao.id);
-  
-  // Pontuação info
-  const ptsExato=faseAtiva==='grupos'?3:4;
-  
-  // ---- Banner de compra de cotas (topo da página de palpites) ----
-  const cotasAtuais = userInscricao.cotas;
+  const bloqueado = new Date() >= DEADLINE;
+
+  // Carregar palpites salvos de grupos e artilheiro
+  const cotas = userInscricao.cotas || 1;
+  const [resGrupos, resArtilheiro, resResultados, resArtRes] = await Promise.all([
+    sb.from('palpites_grupos').select('*').eq('inscricao_id', userInscricao.id),
+    sb.from('palpites_artilheiro').select('*').eq('inscricao_id', userInscricao.id),
+    sb.from('resultados_grupos').select('*'),
+    sb.from('resultado_artilheiro').select('*').maybeSingle(),
+  ]);
+
+  const palpitesGrupos = resGrupos.data || [];
+  const palpitesArt = resArtilheiro.data || [];
+  const resultadosGrupos = resResultados.data || [];
+  const resultadoArt = resArtRes.data;
+
+  // Banner de compra de cotas
+  const cotasAtuais = cotas;
   let cotasBanner = '';
-  if(cotasAtuais < 3){
+  if(cotasAtuais < 3 && !bloqueado){
     const optsP = [];
     for(let n=cotasAtuais+1;n<=3;n++){
       const add = PR[n].v - PR[cotasAtuais].v;
       optsP.push(`<div class="co" onclick="selCotasPalp(${n})" id="pnc${n}" style="cursor:pointer">
-        <div class="cn">${n}</div>
-        <div class="cl">Cotas total</div>
-        <div class="cp">+R$ ${add}</div>
-        <div class="cd">Total: R$ ${PR[n].v}</div>
+        <div class="cn">${n}</div><div class="cl">Cotas total</div>
+        <div class="cp">+R$ ${add}</div><div class="cd">Total: R$ ${PR[n].v}</div>
       </div>`);
     }
-    cotasBanner = `
-    <div style="background:linear-gradient(135deg,rgba(0,180,216,.07),rgba(212,168,67,.05));border:1px solid rgba(0,180,216,.2);border-radius:10px;padding:1.2rem 1.4rem;margin-bottom:1.2rem">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem;margin-bottom:.8rem">
-        <div>
-          <div style="font-family:'Oswald',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-teal)">➕ Quer mais chances?</div>
-          <div style="font-size:.8rem;color:var(--text-muted);margin-top:.15rem">Você tem <strong style="color:var(--text-primary)">${cotasAtuais} cota${cotasAtuais>1?'s':''}</strong>. Compre mais e aumente suas chances de ganhar!</div>
-        </div>
-        <button onclick="toggleCotasPalp()" id="btn-toggle-cotas-palp" class="btn btn-s btn-sm" style="white-space:nowrap">Ver opções ▾</button>
+    cotasBanner = `<div style="background:linear-gradient(135deg,rgba(212,168,67,.08),rgba(212,168,67,.03));border:1px solid rgba(212,168,67,.25);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.5rem">
+      <div style="font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem">⭐ Quer mais chances? Adicione cotas!</div>
+      <div class="co-grid" id="pnc-grid">${optsP.join('')}</div>
+      <div id="pnc-confirm" style="display:none;margin-top:.8rem;text-align:center">
+        <p style="font-size:.82rem;margin-bottom:.5rem">Confirmar compra de <strong id="pnc-txt"></strong>?</p>
+        <button class="btn btn-p btn-sm" onclick="confirmarCompraCotasPalp()">✓ Confirmar</button>
+        <button class="btn btn-s btn-sm" onclick="cancelarCompraCotasPalp()" style="margin-left:.4rem">Cancelar</button>
       </div>
-      <div id="cotas-palp-detail" style="display:none">
-        <div class="cs" style="grid-template-columns:repeat(${3-cotasAtuais},1fr);margin-bottom:.8rem">${optsP.join('')}</div>
-        <div id="palp-extra-det" style="display:none">
-          <div class="pixs" style="margin-bottom:.8rem">
-            <div class="pixt">Pague a diferença via PIX</div>
-            <div class="qrc" id="palp-qrc-extra" style="margin:.4rem auto"></div>
-            <div class="pkd"><code>2b03f68f-4aae-49b9-99a5-705b31982b7b</code><button onclick="cpk()">Copiar</button></div>
-            <p class="pixn" id="palp-extra-inf"></p>
-          </div>
-          <div style="text-align:center">
-            <button class="btn btn-p" onclick="confirmarCotasPalp()">✓ Já fiz o PIX — Solicitar!</button>
-          </div>
-        </div>
-      </div>
-    </div>`;
-  } else {
-    cotasBanner = `
-    <div style="background:linear-gradient(135deg,rgba(34,197,94,.07),rgba(212,168,67,.05));border:1px solid rgba(34,197,94,.2);border-radius:10px;padding:.9rem 1.2rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:.8rem">
-      <span style="font-size:1.4rem">🏆</span>
-      <div><div style="font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--success)">Máximo de cotas atingido!</div>
-      <div style="font-size:.78rem;color:var(--text-muted)">Você tem <strong>3 cotas</strong> — o máximo permitido. Boa sorte!</div></div>
     </div>`;
   }
 
-  // Deadline countdown banner
-  const agora=new Date(), tempoRestante=DEADLINE-agora;
-  const deadlineBanner=(!bloqueado&&faseAtiva==='grupos'&&tempoRestante>0)?
-    `<div style="background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(239,68,68,.06));border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:.8rem 1.2rem;text-align:center;margin-bottom:1.2rem;display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap">
-      <span style="font-size:1.3rem">⏰</span>
-      <div><div style="font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--warning);text-transform:uppercase;letter-spacing:1px">Prazo para palpitar</div><div style="font-size:.7rem;color:var(--text-muted)">10/06/2026 às 19h00 (Brasília)</div></div>
-      <div style="font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;color:var(--error)">${Math.floor(tempoRestante/864e5)}d ${Math.floor(tempoRestante%864e5/36e5)}h ${Math.floor(tempoRestante%36e5/6e4)}m</div>
-    </div>`:
-    bloqueado?`<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:.9rem;text-align:center;margin-bottom:1rem;color:var(--error);font-family:'Oswald',sans-serif;letter-spacing:1px;font-size:.9rem">🔒 PRAZO ENCERRADO — Palpites bloqueados em 10/06/2026 às 19h</div>`:'';
+  // Grupos para o select — definidos no código
+  const GRUPOS_INFO = {
+    A:['México','África do Sul','Coreia do Sul','República Tcheca'],
+    B:['Canadá','Bósnia e Herzegovina','Catar','Suíça'],
+    C:['Brasil','Marrocos','Haiti','Escócia'],
+    D:['EUA','Paraguai','Austrália','Turquia'],
+    E:['Alemanha','Equador','Costa do Marfim','Curaçao'],
+    F:['Holanda','Japão','Suécia','Tunísia'],
+    G:['Bélgica','Irã','Egito','Nova Zelândia'],
+    H:['Espanha','Uruguai','Arábia Saudita','Cabo Verde'],
+    I:['França','Senegal','Iraque','Noruega'],
+    J:['Argentina','Argélia','Áustria','Jordânia'],
+    K:['Portugal','RD Congo','Uzbequistão','Colômbia'],
+    L:['Inglaterra','Croácia','Gana','Panamá'],
+  };
 
-  let html=`${cotasBanner}${deadlineBanner}
-    <div class="user-status" style="margin-bottom:1rem">
-      <div class="us-info"><div><div class="us-name">${userProfile?.nome||'Participante'}</div><div class="us-email">${userInscricao.cotas} cota${userInscricao.cotas>1?'s':''} · Fase: ${faseAtiva==='grupos'?'Fase de Grupos':'Eliminatórias'}</div></div></div>
-      <span class="us-badge badge-approved">✅ Ativo</span>
+  let html = cotasBanner;
+
+  // Pontuação resumo
+  html += `<div style="background:rgba(212,168,67,.06);border:1px solid rgba(212,168,67,.2);border-radius:8px;padding:.8rem 1rem;margin-bottom:1.2rem;font-size:.82rem">
+    <div style="font-family:'Oswald',sans-serif;font-size:.75rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem">⭐ Pontuação desta fase</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.3rem .8rem;color:var(--text-secondary)">
+      <span>🥇 1º e 2º corretos</span><strong style="color:var(--success)">5 pts</strong>
+      <span>🥇 Só 1º correto</span><strong style="color:var(--warning)">3 pts</strong>
+      <span>🥈 Só 2º correto</span><strong style="color:var(--warning)">2 pts</strong>
+      <span>⚽ Artilheiro correto</span><strong style="color:var(--success)">5 pts</strong>
     </div>
-    <div style="background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.2);border-radius:8px;padding:1rem;margin-bottom:1.5rem;font-size:.85rem">
-      <strong style="color:var(--accent-gold)">Regra de Pontuação${faseAtiva==='grupos'?' — Fase de Grupos':' — Eliminatórias'}:</strong><br>
-      🎯 Placar exato = <strong>${ptsExato} pts</strong> (grupos) a <strong>10 pts</strong> (final) · ⚽ 1 equipe certa = 1–6 pts · ❌ Errou = 0 pts
-    </div>`;
-  
-  // Build UI per cota
-  for(let c=1;c<=userInscricao.cotas;c++){
-    const cotaPalpites=(existingPalpites||[]).filter(p=>p.cota_numero===c);
-    const totalSaved=cotaPalpites.length;
-    const totalJogos=jogos.length;
-    const allSaved=totalSaved>=totalJogos;
-    
-    // Calculate points if results exist
-    let totalPts=0;
-    cotaPalpites.forEach(p=>{
-      const jogo=jogos.find(j=>j.id===p.jogo_id);
-      if(jogo&&jogo.gols_casa!==null&&jogo.gols_fora!==null){
-        if(p.gols_casa===jogo.gols_casa&&p.gols_fora===jogo.gols_fora){
-          totalPts+=jogo.pontos_placar_exato;
-        }else if(p.gols_casa===jogo.gols_casa||p.gols_fora===jogo.gols_fora){
-          totalPts+=1;
-        }
-      }
-    });
-    
-    html+=`<div style="margin-bottom:2.5rem;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.5rem">
+    ${bloqueado?'<div style="color:var(--error);margin-top:.5rem;font-size:.78rem">⏰ Prazo encerrado — palpites bloqueados desde 10/06 às 19h</div>':'<div style="color:var(--text-muted);margin-top:.5rem;font-size:.75rem">⏰ Prazo: 10/06/2026 às 19h</div>'}
+  </div>`;
+
+  for(let c=1; c<=cotas; c++){
+    const palGruposCota = palpitesGrupos.filter(p => p.cota_numero === c);
+    const palArtCota = palpitesArt.find(p => p.cota_numero === c);
+    const allSaved = palGruposCota.length === 12 && palArtCota;
+    const totalPts = palGruposCota.reduce((s,p)=>s+(p.pontos||0),0) + (palArtCota?.pontos||0);
+
+    html += `<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:1.2rem">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-        <h3 class="fst" style="color:var(--accent-teal);margin:0">Cota ${c} de ${userInscricao.cotas}</h3>
-        <div style="text-align:right">
-          <span style="font-size:.7rem;color:var(--text-muted)">${totalSaved}/${totalJogos} jogos</span>
-          ${allSaved?'<span style="color:var(--success);font-size:.75rem;margin-left:.5rem">✅ Completo</span>':''}
-          ${totalPts>0?`<div style="font-family:'Oswald',sans-serif;font-size:1.2rem;color:var(--accent-gold)">${totalPts} pts</div>`:''}
+        <div style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">Cota ${c}</div>
+        ${totalPts>0?`<span style="font-family:'Oswald',sans-serif;color:var(--accent-gold);font-size:.9rem">+${totalPts} pts</span>`:''}
+        ${allSaved&&!bloqueado?`<button class="btn btn-s btn-sm" onclick="editarPalpitesGrupos(${c})">✏️ Editar</button>`:''}
+      </div>`;
+
+    // Grid dos 12 grupos
+    html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.7rem;margin-bottom:1rem">`;
+    for(const [grp, sels] of Object.entries(GRUPOS_INFO)){
+      const saved = palGruposCota.find(p => p.grupo === grp);
+      const resultado = resultadosGrupos.find(r => r.grupo === grp);
+      const disabled = (bloqueado || allSaved) ? 'disabled' : '';
+
+      // Calcular pontos do grupo
+      let grpPts = 0;
+      let grpStatus = '';
+      if(resultado && saved){
+        const ok1 = saved.primeiro === resultado.primeiro;
+        const ok2 = saved.segundo === resultado.segundo;
+        if(ok1 && ok2){ grpPts=5; grpStatus='✅ 5pts'; }
+        else if(ok1){ grpPts=3; grpStatus='🟡 3pts'; }
+        else if(ok2){ grpPts=2; grpStatus='🟡 2pts'; }
+        else{ grpStatus='❌ 0pts'; }
+      }
+
+      // Opções do select
+      const opts1 = sels.map(s=>`<option value="${s}" ${saved?.primeiro===s?'selected':''}>${s}</option>`).join('');
+      const opts2 = sels.map(s=>`<option value="${s}" ${saved?.segundo===s?'selected':''}>${s}</option>`).join('');
+
+      html += `<div style="background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;padding:.7rem .8rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+          <span style="font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase">Grupo ${grp}</span>
+          ${grpStatus?`<span style="font-size:.72rem;color:${grpPts>0?'var(--success)':'var(--error)'}">${grpStatus}</span>`:''}
+          ${resultado?`<span style="font-size:.68rem;color:var(--text-muted)">1º ${resultado.primeiro} · 2º ${resultado.segundo}</span>`:''}
+        </div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:.25rem .5rem;align-items:center;font-size:.8rem">
+          <span style="color:var(--text-muted)">🥇 1º</span>
+          <select id="g${grp}-c${c}-1" ${disabled} style="background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.25rem .4rem;color:var(--text-primary);font-size:.78rem;width:100%">
+            <option value="">Selecione...</option>${opts1}
+          </select>
+          <span style="color:var(--text-muted)">🥈 2º</span>
+          <select id="g${grp}-c${c}-2" ${disabled} style="background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.25rem .4rem;color:var(--text-primary);font-size:.78rem;width:100%">
+            <option value="">Selecione...</option>${opts2}
+          </select>
         </div>
       </div>`;
-    
-    // Group matches by grupo
-    const gruposMap={};
-    jogos.forEach(j=>{
-      if(!gruposMap[j.grupo])gruposMap[j.grupo]=[];
-      gruposMap[j.grupo].push(j);
-    });
-    
-    Object.entries(gruposMap).forEach(([grupo,matches])=>{
-      html+=`<div style="margin-bottom:1.2rem">
-        <div style="font-family:'Oswald',sans-serif;font-size:.85rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent-teal);margin-bottom:.6rem;padding-bottom:.3rem;border-bottom:1px solid var(--border)">Grupo ${grupo}</div>`;
-      
-      matches.forEach(jogo=>{
-        const saved=cotaPalpites.find(p=>p.jogo_id===jogo.id);
-        const hasResult=jogo.gols_casa!==null&&jogo.gols_fora!==null;
-        let matchPts=0;
-        let matchClass='';
-        if(saved&&hasResult){
-          if(saved.gols_casa===jogo.gols_casa&&saved.gols_fora===jogo.gols_fora){
-            matchPts=jogo.pontos_placar_exato;matchClass='match-exact';
-          }else if(saved.gols_casa===jogo.gols_casa||saved.gols_fora===jogo.gols_fora){
-            matchPts=1;matchClass='match-partial';
-          }else{matchClass='match-wrong';}
-        }
-        
-        const flagCasa=jogo.time_casa_flag?`<img src="https://flagcdn.com/w40/${jogo.time_casa_flag}.png" style="width:22px;height:15px;border-radius:2px;flex-shrink:0" alt="${jogo.time_casa}">`:'';
-        const flagFora=jogo.time_fora_flag?`<img src="https://flagcdn.com/w40/${jogo.time_fora_flag}.png" style="width:22px;height:15px;border-radius:2px;flex-shrink:0" alt="${jogo.time_fora}">`:'';
-        const dataJogo=jogo.data_jogo?new Date(jogo.data_jogo).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
-                const inputDis=(allSaved&&!hasResult)||bloqueado?'disabled':'';
-        html+=`<div class="match-row ${matchClass}">
-          <div class="team-home">${flagCasa}<span class="team-name">${jogo.time_casa}</span></div>
-          <input type="number" min="0" max="20" value="${saved?saved.gols_casa:''}" id="j${jogo.id}-c${c}-casa" ${inputDis} class="score-inp score-inp-home">
-          <span class="score-sep">×</span>
-          <input type="number" min="0" max="20" value="${saved?saved.gols_fora:''}" id="j${jogo.id}-c${c}-fora" ${inputDis} class="score-inp score-inp-away">
-          <div class="team-away"><span class="team-name">${jogo.time_fora}</span>${flagFora}</div>
-          <div class="match-meta">
-            <span>${dataJogo}${jogo.cidade?` · ${jogo.cidade}`:''}</span>
-            ${hasResult?`<span style="color:var(--text-secondary)">Resultado: ${jogo.gols_casa}×${jogo.gols_fora}</span>`:''}
-            ${matchPts>0?`<span style="color:${matchPts>=jogo.pontos_placar_exato?'var(--success)':'var(--warning)'};font-family:'Oswald',sans-serif;font-weight:700">+${matchPts}pts</span>`:''}
-            ${hasResult&&matchPts===0&&saved?'<span style="color:var(--error)">0 pts</span>':''}
-          </div>
-        </div>`;
-      });
-      html+=`</div>`;
-    });
-    
+    }
+    html += `</div>`;
+
+    // Artilheiro
+    html += `<div style="background:rgba(212,168,67,.06);border:1px solid rgba(212,168,67,.2);border-radius:8px;padding:.7rem .9rem;margin-bottom:.8rem">
+      <div style="font-family:'Oswald',sans-serif;font-size:.78rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem">⚽ Artilheiro da Copa — 5 pts se acertar</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
+        <div>
+          <label style="font-size:.72rem;color:var(--text-muted);display:block;margin-bottom:.2rem">Nome do jogador</label>
+          <input type="text" id="art-c${c}-nome" ${(bloqueado||allSaved)?'disabled':''} value="${palArtCota?.nome_jogador||''}" placeholder="Ex: Vinicius Jr" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .5rem;color:var(--text-primary);font-size:.8rem">
+        </div>
+        <div>
+          <label style="font-size:.72rem;color:var(--text-muted);display:block;margin-bottom:.2rem">Seleção</label>
+          <input type="text" id="art-c${c}-sel" ${(bloqueado||allSaved)?'disabled':''} value="${palArtCota?.selecao||''}" placeholder="Ex: Brasil" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .5rem;color:var(--text-primary);font-size:.8rem">
+        </div>
+      </div>
+      ${resultadoArt?`<div style="font-size:.72rem;color:var(--text-muted);margin-top:.4rem">Artilheiro real: <strong style="color:var(--text-primary)">${resultadoArt.nome_jogador} (${resultadoArt.selecao})</strong> ${palArtCota?.pontos===5?'✅ 5pts':'❌ 0pts'}</div>`:''}
+    </div>`;
+
+    // Botão salvar / status
     if(!bloqueado){
       if(!allSaved){
-        html+=`<div style="text-align:center;margin-top:1rem"><button class="btn btn-p" onclick="savePalpitesPlacar(${c})">💾 Salvar Palpites da Cota ${c}</button></div>`;
-      }else{
-        html+=`<div style="text-align:center;margin-top:.5rem"><button class="btn btn-s btn-sm" onclick="editPalpitesPlacar(${c})">✏️ Editar Palpites da Cota ${c}</button></div>`;
+        html += `<div style="text-align:center"><button class="btn btn-p" onclick="salvarPalpitesGrupos(${c})">💾 Salvar Palpites da Cota ${c}</button></div>`;
+      } else {
+        html += `<div style="text-align:center;color:var(--success);font-size:.82rem">✅ Palpites da Cota ${c} salvos</div>`;
       }
-    }else if(!allSaved){
-      html+=`<div style="text-align:center;margin-top:.5rem;color:var(--error);font-size:.82rem;font-family:'Oswald',sans-serif">⏰ Prazo encerrado — palpites bloqueados</div>`;
+    } else if(!allSaved){
+      html += `<div style="text-align:center;color:var(--error);font-size:.82rem;font-family:'Oswald',sans-serif">⏰ Prazo encerrado — palpites bloqueados</div>`;
     }
-    html+=`</div>`;
+
+    html += `</div>`;
   }
-  
-  el.innerHTML=html;
+
+  el.innerHTML = html;
 }
 
-async function savePalpitesPlacar(cotaNum){
+async function salvarPalpitesGrupos(cotaNum){
   if(!currentUser||!userInscricao)return;
   if(new Date()>=DEADLINE){toast('⏰ Prazo encerrado! Palpites bloqueados desde 10/06 às 19h.','e');return;}
 
-  const{data:jogos}=await sb.from('jogos').select('id').eq('fase','grupos').order('id');
-  if(!jogos||jogos.length===0)return;
-
-  const palpites=[];
-  const vazios=[];
-  let primeiroVazio=null;
+  const GRUPOS_LIST = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+  const palpites = [];
+  const vazios = [];
+  let primeiroVazio = null;
 
   // Limpar destaques anteriores
-  document.querySelectorAll(`[id$="-c${cotaNum}-casa"],[id$="-c${cotaNum}-fora"]`).forEach(el=>{
-    el.style.borderColor='';
-    el.style.boxShadow='';
+  GRUPOS_LIST.forEach(g=>{
+    const el1=document.getElementById(`g${g}-c${cotaNum}-1`);
+    const el2=document.getElementById(`g${g}-c${cotaNum}-2`);
+    if(el1){el1.style.borderColor='';el1.style.boxShadow='';}
+    if(el2){el2.style.borderColor='';el2.style.boxShadow='';}
   });
 
-  for(const jogo of jogos){
-    const casaEl=document.getElementById(`j${jogo.id}-c${cotaNum}-casa`);
-    const foraEl=document.getElementById(`j${jogo.id}-c${cotaNum}-fora`);
-    const casa=casaEl?.value?.trim();
-    const fora=foraEl?.value?.trim();
+  for(const grp of GRUPOS_LIST){
+    const el1=document.getElementById(`g${grp}-c${cotaNum}-1`);
+    const el2=document.getElementById(`g${grp}-c${cotaNum}-2`);
+    const v1=el1?.value?.trim();
+    const v2=el2?.value?.trim();
 
-    const casaVazia=!casaEl||casa===''||casa===null||casa===undefined;
-    const foraVazia=!foraEl||fora===''||fora===null||fora===undefined;
-
-    if(casaVazia||foraVazia){
-      // Destacar em vermelho os inputs vazios
-      if(casaVazia&&casaEl){
-        casaEl.style.borderColor='var(--error)';
-        casaEl.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';
-        if(!primeiroVazio)primeiroVazio=casaEl;
-      }
-      if(foraVazia&&foraEl){
-        foraEl.style.borderColor='var(--error)';
-        foraEl.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';
-        if(!primeiroVazio)primeiroVazio=foraEl;
-      }
-      vazios.push(jogo.id);
-      continue;
+    if(!v1){
+      if(el1){el1.style.borderColor='var(--error)';el1.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';}
+      if(!primeiroVazio)primeiroVazio=el1;
+      vazios.push(grp);continue;
     }
-
+    if(!v2){
+      if(el2){el2.style.borderColor='var(--error)';el2.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';}
+      if(!primeiroVazio)primeiroVazio=el2;
+      vazios.push(grp);continue;
+    }
+    if(v1===v2){
+      if(el1){el1.style.borderColor='var(--error)';el1.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';}
+      if(el2){el2.style.borderColor='var(--error)';el2.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';}
+      if(!primeiroVazio)primeiroVazio=el1;
+      toast(`Grupo ${grp}: 1º e 2º não podem ser a mesma seleção!`,'e');
+      return;
+    }
     palpites.push({
       user_id:currentUser.id,
       inscricao_id:userInscricao.id,
       cota_numero:cotaNum,
-      jogo_id:jogo.id,
-      gols_casa:parseInt(casa),
-      gols_fora:parseInt(fora)
+      grupo:grp,
+      primeiro:v1,
+      segundo:v2,
     });
   }
 
   if(vazios.length>0){
-    // Rolar até o primeiro campo vazio
-    if(primeiroVazio){
-      primeiroVazio.scrollIntoView({behavior:'smooth',block:'center'});
-      setTimeout(()=>primeiroVazio.focus(),400);
-    }
-    toast(
-      `⚠️ Preencha todos os ${jogos.length} jogos! Faltam ${vazios.length} placar${vazios.length>1?'es':''}.`,
-      'e'
-    );
+    if(primeiroVazio){primeiroVazio.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>primeiroVazio.focus(),400);}
+    toast(`⚠️ Preencha todos os 12 grupos! Faltam: ${vazios.join(', ')}`, 'e');
     return;
   }
 
-  // Tudo preenchido — salvar
-  const btn=document.querySelector(`button[onclick="savePalpitesPlacar(${cotaNum})"]`);
+  // Validar artilheiro
+  const artNome=document.getElementById(`art-c${cotaNum}-nome`)?.value?.trim();
+  const artSel=document.getElementById(`art-c${cotaNum}-sel`)?.value?.trim();
+  if(!artNome||!artSel){
+    toast('⚠️ Preencha o nome e seleção do Artilheiro da Copa!','e');
+    const artEl=document.getElementById(`art-c${cotaNum}-nome`);
+    if(artEl){artEl.style.borderColor='var(--error)';artEl.scrollIntoView({behavior:'smooth',block:'center'});}
+    return;
+  }
+
+  const btn=document.querySelector(`button[onclick="salvarPalpitesGrupos(${cotaNum})"]`);
   if(btn){btn.textContent='Salvando...';btn.disabled=true;}
 
-  await sb.from('palpites').delete().eq('inscricao_id',userInscricao.id).eq('cota_numero',cotaNum);
-  const{error}=await sb.from('palpites').insert(palpites);
+  // Salvar grupos
+  await sb.from('palpites_grupos').delete().eq('inscricao_id',userInscricao.id).eq('cota_numero',cotaNum);
+  const{error:errGrupos}=await sb.from('palpites_grupos').insert(palpites);
+  if(errGrupos){toast('Erro ao salvar grupos: '+errGrupos.message,'e');if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.disabled=false;}return;}
 
-  if(error){
-    toast('Erro ao salvar: '+error.message,'e');
-    if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.disabled=false;}
-    return;
-  }
+  // Salvar artilheiro
+  await sb.from('palpites_artilheiro').delete().eq('inscricao_id',userInscricao.id).eq('cota_numero',cotaNum);
+  const{error:errArt}=await sb.from('palpites_artilheiro').insert({
+    user_id:currentUser.id,
+    inscricao_id:userInscricao.id,
+    cota_numero:cotaNum,
+    nome_jogador:artNome,
+    selecao:artSel,
+  });
+  if(errArt){toast('Erro ao salvar artilheiro: '+errArt.message,'e');if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.disabled=false;}return;}
 
-  toast(`✅ Palpites da Cota ${cotaNum} salvos com sucesso! (${palpites.length} jogos) 🎉`,'s');
+  toast(`✅ Palpites da Cota ${cotaNum} salvos! (12 grupos + artilheiro) 🎉`,'s');
   loadPalpites();
 }
 
-function editPalpitesPlacar(cotaNum){
+function editarPalpitesGrupos(cotaNum){
   if(new Date()>=DEADLINE){toast('⏰ Prazo encerrado! Não é possível editar.','e');return;}
-  // Enable all inputs for this cota and clear error highlights
-  document.querySelectorAll(`[id^="j"][id$="-c${cotaNum}-casa"],[id^="j"][id$="-c${cotaNum}-fora"]`).forEach(el=>{
-    el.disabled=false;
-    el.style.borderColor='';
-    el.style.boxShadow='';
-    // Clear error highlight on input
-    el.addEventListener('input',()=>{
-      el.style.borderColor='';
-      el.style.boxShadow='';
-    },{once:true});
+  const GRUPOS_LIST=['A','B','C','D','E','F','G','H','I','J','K','L'];
+  GRUPOS_LIST.forEach(g=>{
+    const el1=document.getElementById(`g${g}-c${cotaNum}-1`);
+    const el2=document.getElementById(`g${g}-c${cotaNum}-2`);
+    if(el1){el1.disabled=false;el1.style.borderColor='';}
+    if(el2){el2.disabled=false;el2.style.borderColor='';}
   });
-  // Change button to save
-  const btn=event.target;
-  btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;
-  btn.className='btn btn-p';
-  btn.setAttribute('onclick',`savePalpitesPlacar(${cotaNum})`);
+  const artNome=document.getElementById(`art-c${cotaNum}-nome`);
+  const artSel=document.getElementById(`art-c${cotaNum}-sel`);
+  if(artNome)artNome.disabled=false;
+  if(artSel)artSel.disabled=false;
+  // Adicionar botão salvar
+  const container=artSel?.closest('[style*="border-radius:10px"]');
+  const btn=document.querySelector(`button[onclick="editarPalpitesGrupos(${cotaNum})"]`);
+  if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.className='btn btn-p';btn.setAttribute('onclick',`salvarPalpitesGrupos(${cotaNum})`);}
 }
 
 // ===== ADMIN =====
