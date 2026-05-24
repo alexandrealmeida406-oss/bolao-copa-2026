@@ -523,20 +523,19 @@ button:active,.co:active{opacity:.8}
 <div class="rc"><div class="rn">02</div><div class="ri">📋</div><h3>Inscrição + PIX</h3>
 <p>Escolha 1, 2 ou 3 cotas e pague via PIX. O admin confirma seu pagamento e libera o acesso.</p></div>
 
-<div class="rc"><div class="rn">03</div><div class="ri">📝</div><h3>1ª Rodada — Grupos</h3>
-<p>Palpite o <strong>1º e 2º colocado</strong> de cada um dos 12 grupos e o <strong>Artilheiro da Copa</strong>. Prazo: 10/06 às 19h.</p>
+<div class="rc"><div class="rn">03</div><div class="ri">📝</div><h3>1ª Rodada — Grupos + Palpitão</h3>
+<p>Palpite o <strong>1º e 2º</strong> de cada grupo, o <strong>Artilheiro</strong> e o <strong>🎯 Palpitão</strong>: Campeão, Vice e 3º Lugar da Copa — tudo antes de começar!</p>
 <div style="background:rgba(0,0,0,.2);border-radius:6px;padding:.5rem .6rem;font-size:.75rem;margin-top:.5rem">
   <div style="display:grid;grid-template-columns:1fr auto;gap:.2rem .5rem;color:var(--text-secondary)">
-    <span>🥇 1º e 2º do grupo certos</span><strong style="color:var(--success)">5 pts</strong>
-    <span>🥇 Só 1º certo</span><strong style="color:var(--warning)">3 pts</strong>
-    <span>🥈 Só 2º certo</span><strong style="color:var(--warning)">2 pts</strong>
-    <span>⚽ Artilheiro certo</span><strong style="color:var(--success)">5 pts</strong>
+    <span>🥇 1º e 2º do grupo</span><strong style="color:var(--success)">5 pts</strong>
+    <span>⚽ Artilheiro</span><strong style="color:var(--success)">5 pts</strong>
+    <span>🎯 Palpitão Campeão</span><strong style="color:var(--accent-gold)">+15 pts</strong>
+    <span>🥈 Palpitão Vice</span><strong style="color:var(--warning)">+8 pts</strong>
+    <span>🥉 Palpitão 3º Lugar</span><strong style="color:var(--warning)">+5 pts</strong>
   </div>
 </div>
-</div>
-
 <div class="rc"><div class="rn">04</div><div class="ri">⚽</div><h3>2ª Rodada — Mata-mata</h3>
-<p>Indique o <strong>vencedor de cada confronto</strong> e seu palpite de <strong>Campeão, Vice e 3º lugar</strong>. Pontuação cresce a cada fase — acertar o campeão vale um bônus de +15 pts!</p>
+<p>Indique o <strong>vencedor de cada confronto</strong> e seu palpite de <strong>Campeão 🥇, Vice 🥈 e 3º lugar 🥉</strong>. Pontuação cresce a cada fase — acertar o campeão vale um bônus de +15 pts!</p>
 <div style="background:rgba(0,0,0,.2);border-radius:6px;padding:.5rem .6rem;font-size:.75rem;margin-top:.5rem">
   <div style="display:grid;grid-template-columns:1fr auto;gap:.2rem .5rem;color:var(--text-secondary)">
     <span>✅ Vencedor por fase</span><strong style="color:var(--success)">5→12 pts</strong>
@@ -601,10 +600,12 @@ button:active,.co:active{opacity:.8}
   </div>
 
   <ul style="margin-left:1rem;margin-bottom:.9rem">
-    <li style="margin-bottom:.3rem">Liberada após o encerramento da fase de grupos — você receberá aviso no grupo do WhatsApp</li>
-    <li style="margin-bottom:.3rem">Em cada rodada você indica o <strong>vencedor de cada confronto</strong> — quem passa de fase, independente de como: tempo normal, prorrogação ou pênaltis</li>
-    <li style="margin-bottom:.3rem">Além dos confrontos, você também indica seu <strong>Campeão, Vice-Campeão e 3º Lugar</strong> — preenchidos uma única vez no início da fase</li>
-    <li style="margin-bottom:.3rem">⭐ <strong>Pontuação progressiva</strong> — cada fase vale mais pontos. Quanto mais longe você acertar, mais você ganha!</li>
+    <li style="margin-bottom:.4rem">🔔 Assim que a fase de grupos encerrar, o admin libera a 2ª rodada — você receberá aviso no grupo do WhatsApp</li>
+    <li style="margin-bottom:.4rem">Você preenche <strong>tudo de uma vez só</strong>: indica o vencedor de <strong>todos os confrontos</strong> do mata-mata — 16-avos, oitavas, quartas, semifinais e final</li>
+    <li style="margin-bottom:.4rem">Os confrontos de 16-avos já são conhecidos. Os demais você chuta com base no seu feeling — faz parte da estratégia! 🎯</li>
+    <li style="margin-bottom:.4rem">Além dos confrontos, indique seu <strong>pódio da Copa</strong>: Campeão 🥇, Vice-Campeão 🥈 e 3º Lugar 🥉 — vale bônus especial!</li>
+    <li style="margin-bottom:.4rem">Vale quem avançar de qualquer forma: tempo normal, prorrogação ou pênaltis</li>
+    <li style="margin-bottom:.4rem">⭐ <strong>Pontuação progressiva</strong> — cada fase vale mais. Acertar o campeão dá +15 pts de bônus!</li>
   </ul>
 
   <!-- Tabela de pontuação -->
@@ -1405,6 +1406,21 @@ async function loadPalpites(){
   }
 
   // Grupos para o select — definidos no código
+  const SELECOES_COPA = [
+    'México','África do Sul','Coreia do Sul','República Tcheca',
+    'Canadá','Bósnia e Herzegovina','Catar','Suíça',
+    'Brasil','Marrocos','Haiti','Escócia',
+    'EUA','Paraguai','Austrália','Turquia',
+    'Alemanha','Equador','Costa do Marfim','Curaçao',
+    'Holanda','Japão','Suécia','Tunísia',
+    'Bélgica','Irã','Egito','Nova Zelândia',
+    'Espanha','Uruguai','Arábia Saudita','Cabo Verde',
+    'França','Senegal','Iraque','Noruega',
+    'Argentina','Argélia','Áustria','Jordânia',
+    'Portugal','RD Congo','Uzbequistão','Colômbia',
+    'Inglaterra','Croácia','Gana','Panamá',
+  ];
+
   const GRUPOS_INFO = {
     A:['México','África do Sul','Coreia do Sul','República Tcheca'],
     B:['Canadá','Bósnia e Herzegovina','Catar','Suíça'],
@@ -1504,6 +1520,37 @@ async function loadPalpites(){
         </div>
       </div>
       ${resultadoArt?`<div style="font-size:.72rem;color:var(--text-muted);margin-top:.4rem">Artilheiro real: <strong style="color:var(--text-primary)">${resultadoArt.nome_jogador} (${resultadoArt.selecao})</strong> ${palArtCota?.pontos===5?'✅ 5pts':'❌ 0pts'}</div>`:''}
+    </div>
+
+    <div style="background:rgba(212,168,67,.07);border:1px solid rgba(212,168,67,.3);border-radius:8px;padding:.8rem .9rem;margin-bottom:.8rem">
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">
+        <span style="font-family:'Oswald',sans-serif;font-size:.78rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px">🎯 Palpitão — Palpite às Cegas</span>
+        <span style="background:rgba(212,168,67,.2);border-radius:50px;font-size:.6rem;font-weight:700;color:var(--accent-gold);padding:.1rem .5rem;letter-spacing:1px">NOVO</span>
+      </div>
+      <p style="font-size:.75rem;color:var(--text-secondary);margin-bottom:.6rem;line-height:1.5">Indique o <strong>Campeão, Vice e 3º Lugar</strong> da Copa — palpite às cegas antes dos jogos! Bônus aplicados no fim do torneio.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem">
+        <div>
+          <label style="font-size:.7rem;color:var(--accent-gold);display:block;margin-bottom:.2rem">🥇 Campeão (+15pts)</label>
+          <select id="palp-c${c}-camp" ${(bloqueado||allSaved)?'disabled':''} style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .4rem;color:var(--text-primary);font-size:.75rem">
+            <option value="">Selecione...</option>
+            ${SELECOES_COPA.map(s=>`<option value="${s}" ${palArtCota?.campeao===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label style="font-size:.7rem;color:var(--text-secondary);display:block;margin-bottom:.2rem">🥈 Vice (+8pts)</label>
+          <select id="palp-c${c}-vice" ${(bloqueado||allSaved)?'disabled':''} style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .4rem;color:var(--text-primary);font-size:.75rem">
+            <option value="">Selecione...</option>
+            ${SELECOES_COPA.map(s=>`<option value="${s}" ${palArtCota?.vice===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label style="font-size:.7rem;color:var(--text-secondary);display:block;margin-bottom:.2rem">🥉 3º Lugar (+5pts)</label>
+          <select id="palp-c${c}-terceiro" ${(bloqueado||allSaved)?'disabled':''} style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .4rem;color:var(--text-primary);font-size:.75rem">
+            <option value="">Selecione...</option>
+            ${SELECOES_COPA.map(s=>`<option value="${s}" ${palArtCota?.terceiro===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+        </div>
+      </div>
     </div>`;
 
     // Botão salvar / status
@@ -1597,7 +1644,22 @@ async function salvarPalpitesGrupos(cotaNum){
   const{error:errGrupos}=await sb.from('palpites_grupos').insert(palpites);
   if(errGrupos){toast('Erro ao salvar grupos: '+errGrupos.message,'e');if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.disabled=false;}return;}
 
-  // Salvar artilheiro
+  // Palpitão
+  const palpCamp=document.getElementById(`palp-c${cotaNum}-camp`)?.value?.trim();
+  const palpVice=document.getElementById(`palp-c${cotaNum}-vice`)?.value?.trim();
+  const palpTerc=document.getElementById(`palp-c${cotaNum}-terceiro`)?.value?.trim();
+  if(!palpCamp||!palpVice||!palpTerc){
+    toast('⚠️ Preencha o Palpitão: Campeão, Vice e 3º Lugar!','e');
+    if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.disabled=false;}
+    return;
+  }
+  if(palpCamp===palpVice||palpCamp===palpTerc||palpVice===palpTerc){
+    toast('⚠️ Palpitão: escolha seleções diferentes para cada posição!','e');
+    if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.disabled=false;}
+    return;
+  }
+
+  // Salvar artilheiro + palpitão
   await sb.from('palpites_artilheiro').delete().eq('inscricao_id',userInscricao.id).eq('cota_numero',cotaNum);
   const{error:errArt}=await sb.from('palpites_artilheiro').insert({
     user_id:currentUser.id,
@@ -1605,10 +1667,13 @@ async function salvarPalpitesGrupos(cotaNum){
     cota_numero:cotaNum,
     nome_jogador:artNome,
     selecao:artSel,
+    campeao:palpCamp,
+    vice:palpVice,
+    terceiro:palpTerc,
   });
   if(errArt){toast('Erro ao salvar artilheiro: '+errArt.message,'e');if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.disabled=false;}return;}
 
-  toast(`✅ Palpites da Cota ${cotaNum} salvos! (12 grupos + artilheiro) 🎉`,'s');
+  toast(`✅ Palpites da Cota ${cotaNum} salvos! 12 grupos + artilheiro + palpitão 🎉`,'s');
   loadPalpites();
 }
 
