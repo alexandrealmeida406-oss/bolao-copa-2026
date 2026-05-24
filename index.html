@@ -512,7 +512,7 @@ button:active,.co:active{opacity:.8}
 
 <!-- Como Funciona -->
 <section class="sec" id="cf">
-<div class="sh"><div class="stag">Regras do Jogo</div><h2 class="stitle">Como Funciona</h2><p class="sdesc">O sistema consagrado do Bolão do Almeida, agora para 48 seleções!</p></div>
+<div class="sh"><div class="stag">Regras do Jogo</div><h2 class="stitle">Como Funciona</h2><p class="sdesc">Tudo que você precisa saber para participar — em 6 passos simples.</p></div>
 
 
 
@@ -934,7 +934,7 @@ button:active,.co:active{opacity:.8}
 
 <!-- Inscrição -->
 <section class="sec" id="insc">
-<div class="sh"><div class="stag">Participe Agora</div><h2 class="stitle">Inscrição</h2><p class="sdesc">Login rápido com Google ou crie sua conta com e-mail</p></div>
+<div class="sh"><div class="stag">Participe Agora</div><h2 class="stitle">Inscrição</h2><p class="sdesc">Entre com Google, escolha suas cotas e pague via PIX. Simples assim!</p></div>
 <div id="inscricao-content">
 <!-- Dynamic content: login or form -->
 </div>
@@ -943,7 +943,7 @@ button:active,.co:active{opacity:.8}
 <!-- Ranking -->
 <section class="sec" id="rank">
 <div class="sh"><div class="stag">Classificação</div><h2 class="stitle">Ranking</h2>
-<p class="sdesc">Acompanhe a classificação em tempo real</p></div>
+<p class="sdesc">Cada cota tem sua própria posição. Acompanhe ao vivo quem está na frente!</p></div>
 <div style="text-align:center;padding:3rem 1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;max-width:600px;margin:0 auto">
   <p style="font-size:3rem;margin-bottom:.8rem">🏆</p>
   <p style="font-family:'Oswald',sans-serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-gold);margin-bottom:.6rem">Em breve!</p>
@@ -1216,7 +1216,7 @@ function updateUI(){
           <h3 class="fst">Sua Inscrição</h3>
           <div class="user-status">
             <div class="us-info">
-              ${avatar?`<img src="${avatar}">`:''}
+              ${avatar?`<img src="${avatar}" alt="Avatar">`:''}
               <div><div class="us-name">${name}</div><div class="us-email">${currentUser.email}</div></div>
             </div>
             <div>
@@ -1572,21 +1572,21 @@ async function loadPalpites(){
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem">
         <div>
           <label style="font-size:.7rem;color:var(--accent-gold);display:block;margin-bottom:.2rem">🥇 Campeão (+15pts)</label>
-          <select id="palp-c${c}-camp" ${(bloqueado||allSaved)?'disabled':''} style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .4rem;color:var(--text-primary);font-size:.75rem">
+          <select id="palp-c${c}-camp" ${(bloqueado||allSaved)?'disabled':''} onchange="validarPodio(${c})" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .4rem;color:var(--text-primary);font-size:.75rem">
             <option value="">Selecione...</option>
             ${SELECOES_COPA.map(s=>`<option value="${s}" ${palArtCota?.campeao===s?'selected':''}>${s}</option>`).join('')}
           </select>
         </div>
         <div>
           <label style="font-size:.7rem;color:var(--text-secondary);display:block;margin-bottom:.2rem">🥈 Vice (+8pts)</label>
-          <select id="palp-c${c}-vice" ${(bloqueado||allSaved)?'disabled':''} style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .4rem;color:var(--text-primary);font-size:.75rem">
+          <select id="palp-c${c}-vice" ${(bloqueado||allSaved)?'disabled':''} onchange="validarPodio(${c})" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .4rem;color:var(--text-primary);font-size:.75rem">
             <option value="">Selecione...</option>
             ${SELECOES_COPA.map(s=>`<option value="${s}" ${palArtCota?.vice===s?'selected':''}>${s}</option>`).join('')}
           </select>
         </div>
         <div>
           <label style="font-size:.7rem;color:var(--text-secondary);display:block;margin-bottom:.2rem">🥉 3º Lugar (+5pts)</label>
-          <select id="palp-c${c}-terceiro" ${(bloqueado||allSaved)?'disabled':''} style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .4rem;color:var(--text-primary);font-size:.75rem">
+          <select id="palp-c${c}-terceiro" ${(bloqueado||allSaved)?'disabled':''} onchange="validarPodio(${c})" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .4rem;color:var(--text-primary);font-size:.75rem">
             <option value="">Selecione...</option>
             ${SELECOES_COPA.map(s=>`<option value="${s}" ${palArtCota?.terceiro===s?'selected':''}>${s}</option>`).join('')}
           </select>
@@ -1993,7 +1993,7 @@ async function loadConta(){
     <div class="fc">
       <div class="user-status" style="margin-bottom:1rem">
         <div class="us-info">
-          ${avatar?`<img src="${avatar}">`:''}
+          ${avatar?`<img src="${avatar}" alt="Avatar">`:''}
           <div><div class="us-name">${name}</div><div class="us-email">${currentUser.email}</div></div>
         </div>
         <span class="us-badge" style="background:rgba(239,68,68,.15);color:var(--error)">❌ Rejeitado</span>
@@ -2040,7 +2040,7 @@ async function loadConta(){
     <div class="fc">
       <div class="user-status">
         <div class="us-info">
-          ${avatar?`<img src="${avatar}">`:''}
+          ${avatar?`<img src="${avatar}" alt="Avatar">`:''}
           <div><div class="us-name">${name}</div><div class="us-email">${currentUser.email}</div></div>
         </div>
         <div>
@@ -2443,7 +2443,7 @@ function mostrarBannerInstall(){
   if(isIOS){
     // iOS — instrução clara com seta apontando para o botão de compartilhar
     banner.innerHTML = `
-      <img src="/icon-192.png" style="width:42px;height:42px;border-radius:10px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.4)">
+      <img src="/icon-192.png" alt="Bolão do Almeida" style="width:42px;height:42px;border-radius:10px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.4)">
       <div style="flex:1;min-width:0">
         <div style="font-family:'Oswald',sans-serif;font-size:.82rem;color:#D4A843;text-transform:uppercase;letter-spacing:1px;margin-bottom:.2rem">📲 Instalar como App</div>
         <div style="font-size:.78rem;color:#CBD5E1;line-height:1.4">
@@ -2461,7 +2461,7 @@ function mostrarBannerInstall(){
   } else {
     // Android/Chrome — botão de instalação direto
     banner.innerHTML = `
-      <img src="/icon-192.png" style="width:42px;height:42px;border-radius:10px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.4)">
+      <img src="/icon-192.png" alt="Bolão do Almeida" style="width:42px;height:42px;border-radius:10px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.4)">
       <div style="flex:1;min-width:0">
         <div style="font-family:'Oswald',sans-serif;font-size:.82rem;color:#D4A843;text-transform:uppercase;letter-spacing:1px;margin-bottom:.2rem">📲 Instalar como App</div>
         <div style="font-size:.75rem;color:#94A3B8">Acesso rápido na tela inicial, funciona offline!</div>
