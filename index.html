@@ -1519,10 +1519,11 @@ async function confirmarCotasPalp(){
   const det=document.getElementById('palp-extra-det');
   if(det)det.style.display='none';
   _novasCotasPalp=null;
-  toast(ok
-    ?`✅ Solicitação enviada! Aguarde aprovação do admin para ${_novasCotasPalp||'novas'} cotas. 🎉`
-    :`Envie comprovante no WhatsApp com "Quero +cotas (+R$ ${add})"`,
-    ok?'s':'e');
+  if(ok){
+    toast(`✅ Solicitação de ${_novasCotasPalp} cotas enviada! O admin aprovará em breve. 🎉`,'s');
+  } else {
+    toast('Erro ao enviar. Verifique sua conexão e tente novamente.','e');
+  }
 }
 
 function validarGrupo(grp,cotaNum){
@@ -1578,7 +1579,7 @@ async function salvarPalpitesGrupos(cotaNum){
   }
   if(vazios.length>0){
     if(primeiroVazio){primeiroVazio.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>primeiroVazio.focus(),400);}
-    toast(`⚠️ Preencha todos os 12 grupos! Faltam: ${vazios.join(', ')}`,'e');return;
+    toast(`⚠️ Preencha 1º e 2º de todos os 12 grupos! Grupos incompletos: ${vazios.join(', ')}`,'e');return;
   }
   const artNome=document.getElementById(`art-c${cotaNum}-nome`)?.value?.trim();
   const artSel=document.getElementById(`art-c${cotaNum}-sel`)?.value?.trim();
@@ -1642,9 +1643,18 @@ async function loadAdmin(){
   if(!userProfile?.is_admin){el.innerHTML='<div class="re"><p style="font-size:2rem">🚫</p><p>Acesso restrito a administradores.</p></div>';return;}
   
   try{
-    // Load inscriptions and profiles separately
-    const{data:inscs,error:insErr}=await sb.from('inscricoes').select('*').order('created_at',{ascending:false});
-    const{data:profs,error:profErr}=await sb.from('profiles').select('*');
+    // Load inscriptions, profiles and palpites status
+    const[{data:inscs,error:insErr},{data:profs,error:profErr},{data:palpGrupos}]=await Promise.all([
+      sb.from('inscricoes').select('*').order('created_at',{ascending:false}),
+      sb.from('profiles').select('*'),
+      sb.from('palpites_grupos').select('inscricao_id,cota_numero').order('inscricao_id'),
+    ]);
+    // Map: inscricao_id → set of cotas preenchidas
+    const palpMap={};
+    (palpGrupos||[]).forEach(p=>{
+      if(!palpMap[p.inscricao_id])palpMap[p.inscricao_id]=new Set();
+      palpMap[p.inscricao_id].add(p.cota_numero);
+    });
     
     if(insErr||!inscs){el.innerHTML='<p>Erro ao carregar inscrições: '+(insErr?.message||'')+'</p>';return;}
     
@@ -1670,7 +1680,7 @@ async function loadAdmin(){
       <h3 style="font-family:'Oswald',sans-serif;margin-bottom:.8rem;font-size:1rem;text-transform:uppercase;letter-spacing:1px">Inscrições</h3>
       <div id="admin-cotas-pend-section"></div>
       <div style="overflow-x:auto">
-      <table class="atbl"><thead><tr><th>Nome</th><th>E-mail</th><th>WhatsApp</th><th>Cotas</th><th>Valor</th><th>Conheceu</th><th>Indicação</th><th>Status</th><th>Ações</th></tr></thead>
+      <table class="atbl"><thead><tr><th>Nome</th><th>E-mail</th><th>WhatsApp</th><th>Cotas</th><th>Palpites</th><th>Valor</th><th>Conheceu</th><th>Indicação</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody>${inscs.map(i=>{
           const p=profMap[i.user_id]||{};
           const isPending=i.status==='pendente';
@@ -1680,6 +1690,15 @@ async function loadAdmin(){
             <td style="font-size:.7rem">${emailUser||i.user_id?.substring(0,10)+'...'}</td>
             <td>${p.whatsapp||'-'}</td>
             <td>${i.cotas}</td>
+            <td>${(()=>{
+              const cp=palpMap[i.id];
+              const n=cp?cp.size:0;
+              return n>=i.cotas
+                ?"<span style='color:var(--success);font-weight:700'>✅ Completo</span>"
+                :n>0
+                ?`<span style='color:var(--warning)'>⚠️ ${n}/${i.cotas} cota(s)</span>`
+                :"<span style='color:var(--error)'>❌ Pendente</span>";
+            })()}</td>
             <td>R$ ${i.valor_total}</td>
             <td>${p.como_conheceu||'-'}</td>
             <td>${p.indicado_por||'-'}</td>
