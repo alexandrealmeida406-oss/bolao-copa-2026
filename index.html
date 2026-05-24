@@ -536,17 +536,16 @@ button:active,.co:active{opacity:.8}
 </div>
 
 <div class="rc"><div class="rn">04</div><div class="ri">⚽</div><h3>2ª Rodada — Mata-mata</h3>
-<p>Após a fase de grupos, você indica o <strong>vencedor de cada confronto</strong> — 16-avos até a final. Vale quem passar, seja no tempo normal, prorrogação ou pênaltis.</p>
+<p>Indique o <strong>vencedor de cada confronto</strong> e seu palpite de <strong>Campeão, Vice e 3º lugar</strong>. Pontuação cresce a cada fase — acertar o campeão vale um bônus de +15 pts!</p>
 <div style="background:rgba(0,0,0,.2);border-radius:6px;padding:.5rem .6rem;font-size:.75rem;margin-top:.5rem">
   <div style="display:grid;grid-template-columns:1fr auto;gap:.2rem .5rem;color:var(--text-secondary)">
-    <span>✅ Acertou o vencedor</span><strong style="color:var(--success)">5→12 pts</strong>
-    <span>🏆 Campeão da Copa</span><strong style="color:var(--accent-gold)">12 pts</strong>
-    <span>❌ Errou</span><strong style="color:var(--text-muted)">0 pts</strong>
+    <span>✅ Vencedor por fase</span><strong style="color:var(--success)">5→12 pts</strong>
+    <span>🥇 Bônus Campeão</span><strong style="color:var(--accent-gold)">+15 pts</strong>
+    <span>🥈 Bônus Vice</span><strong style="color:var(--warning)">+8 pts</strong>
+    <span>🥉 Bônus 3º lugar</span><strong style="color:var(--warning)">+5 pts</strong>
   </div>
-  <div style="color:var(--text-muted);font-size:.68rem;margin-top:.3rem">Pontuação cresce a cada fase!</div>
 </div>
 </div>
-
 <div class="rc"><div class="rn">05</div><div class="ri">📊</div><h3>Ranking</h3>
 <p>Cada cota concorre de forma independente. Acompanhe sua posição em tempo real durante toda a Copa!</p></div>
 
@@ -600,46 +599,79 @@ button:active,.co:active{opacity:.8}
     <span style="background:var(--warning);color:var(--bg-dark);font-family:'Oswald',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:1px;padding:.2rem .6rem;border-radius:50px;text-transform:uppercase">🔒 Em breve</span>
     <strong style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">2ª Rodada — Fase Eliminatória</strong>
   </div>
-  <ul style="margin-left:1rem">
-    <li style="margin-bottom:.3rem">Após a fase de grupos, o admin libera uma nova rodada para o mata-mata</li>
-    <li style="margin-bottom:.3rem">Você indica o <strong>vencedor de cada confronto</strong>: 16-avos, oitavas, quartas, semifinais e final — sem precisar acertar placar, apenas quem passa</li>
-    <li style="margin-bottom:.3rem">Vale quem avançar <strong>independente do método</strong>: tempo normal, prorrogação ou pênaltis</li>
-    <li style="margin-bottom:.3rem">Você receberá um aviso no grupo do WhatsApp quando a 2ª rodada for liberada</li>
-    <li style="margin-bottom:.3rem">⭐ <strong>Pontuação progressiva</strong> — quanto mais longe na Copa, mais pontos vale</li>
+
+  <ul style="margin-left:1rem;margin-bottom:.9rem">
+    <li style="margin-bottom:.3rem">Liberada após o encerramento da fase de grupos — você receberá aviso no grupo do WhatsApp</li>
+    <li style="margin-bottom:.3rem">Em cada rodada você indica o <strong>vencedor de cada confronto</strong> — quem passa de fase, independente de como: tempo normal, prorrogação ou pênaltis</li>
+    <li style="margin-bottom:.3rem">Além dos confrontos, você também indica seu <strong>Campeão, Vice-Campeão e 3º Lugar</strong> — preenchidos uma única vez no início da fase</li>
+    <li style="margin-bottom:.3rem">⭐ <strong>Pontuação progressiva</strong> — cada fase vale mais pontos. Quanto mais longe você acertar, mais você ganha!</li>
   </ul>
-  <div style="margin-top:.7rem;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:8px;padding:.8rem .9rem;overflow-x:auto">
-    <div style="font-family:'Oswald',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--warning);margin-bottom:.6rem">⭐ Pontuação — Fase Eliminatória</div>
-    <p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:.7rem;line-height:1.5">
-      Nesta fase você indica o <strong style="color:var(--text-primary)">vencedor de cada confronto</strong> — não mais o placar.
-      Vale quem passar para a próxima fase, <strong style="color:var(--text-primary)">independente de como</strong>: tempo normal, prorrogação ou pênaltis.
-    </p>
-    <table style="width:100%;font-size:.8rem;border-collapse:collapse">
-      <thead><tr style="color:var(--text-muted);font-size:.7rem">
-        <th style="text-align:left;padding:.3rem .4rem;border-bottom:1px solid var(--border)">Fase</th>
-        <th style="text-align:center;padding:.3rem .4rem;border-bottom:1px solid var(--border)">✅ Acertou o vencedor</th>
-        <th style="text-align:center;padding:.3rem .4rem;border-bottom:1px solid var(--border)">❌ Errou</th>
-      </tr></thead>
-      <tbody>
-        <tr><td style="padding:.3rem .4rem;color:var(--text-secondary)">16-avos de final</td>
-          <td style="text-align:center;padding:.3rem .4rem"><strong style="color:var(--success)">5 pts</strong></td>
-          <td style="text-align:center;padding:.3rem .4rem;color:var(--text-muted)">0</td></tr>
-        <tr style="background:rgba(255,255,255,.02)"><td style="padding:.3rem .4rem;color:var(--text-secondary)">Oitavas de final</td>
-          <td style="text-align:center;padding:.3rem .4rem"><strong style="color:var(--success)">6 pts</strong></td>
-          <td style="text-align:center;padding:.3rem .4rem;color:var(--text-muted)">0</td></tr>
-        <tr><td style="padding:.3rem .4rem;color:var(--text-secondary)">Quartas de final</td>
-          <td style="text-align:center;padding:.3rem .4rem"><strong style="color:var(--success)">7 pts</strong></td>
-          <td style="text-align:center;padding:.3rem .4rem;color:var(--text-muted)">0</td></tr>
-        <tr style="background:rgba(255,255,255,.02)"><td style="padding:.3rem .4rem;color:var(--text-secondary)">Semifinais</td>
-          <td style="text-align:center;padding:.3rem .4rem"><strong style="color:var(--success)">8 pts</strong></td>
-          <td style="text-align:center;padding:.3rem .4rem;color:var(--text-muted)">0</td></tr>
-        <tr style="background:rgba(212,168,67,.06)"><td style="padding:.3rem .4rem;font-weight:700;color:var(--accent-gold)">🏆 Campeão da Copa</td>
-          <td style="text-align:center;padding:.3rem .4rem"><strong style="color:var(--accent-gold)">12 pts</strong></td>
-          <td style="text-align:center;padding:.3rem .4rem;color:var(--text-muted)">0</td></tr>
-      </tbody>
-    </table>
-    <p style="font-size:.72rem;color:var(--text-muted);margin-top:.6rem">
-      💡 Acertou o vice-campeão (finalista perdedor)? <strong style="color:var(--warning)">+7 pts</strong> também.
-    </p>
+
+  <!-- Tabela de pontuação -->
+  <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:8px;padding:.9rem;overflow-x:auto">
+    <div style="font-family:'Oswald',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--warning);margin-bottom:.8rem">⭐ Como funciona a pontuação</div>
+
+    <!-- Pontuação por fase -->
+    <div style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem;font-family:'Barlow Condensed',sans-serif">Acertou o vencedor do confronto:</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.3rem;margin-bottom:1rem;text-align:center">
+      <div style="background:var(--bg-dark);border-radius:6px;padding:.5rem .3rem">
+        <div style="font-size:.65rem;color:var(--text-muted);margin-bottom:.3rem">16-avos</div>
+        <div style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--success);font-weight:700">5</div>
+        <div style="font-size:.6rem;color:var(--text-muted)">pts</div>
+      </div>
+      <div style="background:var(--bg-dark);border-radius:6px;padding:.5rem .3rem">
+        <div style="font-size:.65rem;color:var(--text-muted);margin-bottom:.3rem">Oitavas</div>
+        <div style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--success);font-weight:700">6</div>
+        <div style="font-size:.6rem;color:var(--text-muted)">pts</div>
+      </div>
+      <div style="background:var(--bg-dark);border-radius:6px;padding:.5rem .3rem">
+        <div style="font-size:.65rem;color:var(--text-muted);margin-bottom:.3rem">Quartas</div>
+        <div style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--success);font-weight:700">7</div>
+        <div style="font-size:.6rem;color:var(--text-muted)">pts</div>
+      </div>
+      <div style="background:var(--bg-dark);border-radius:6px;padding:.5rem .3rem">
+        <div style="font-size:.65rem;color:var(--text-muted);margin-bottom:.3rem">Semis</div>
+        <div style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--success);font-weight:700">8</div>
+        <div style="font-size:.6rem;color:var(--text-muted)">pts</div>
+      </div>
+      <div style="background:rgba(212,168,67,.15);border:1px solid rgba(212,168,67,.3);border-radius:6px;padding:.5rem .3rem">
+        <div style="font-size:.65rem;color:var(--accent-gold);margin-bottom:.3rem">🏆 Final</div>
+        <div style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--accent-gold);font-weight:700">12</div>
+        <div style="font-size:.6rem;color:var(--text-muted)">pts</div>
+      </div>
+    </div>
+
+    <!-- Palpite especial: pódio -->
+    <div style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem;font-family:'Barlow Condensed',sans-serif">Palpite especial — pódio da Copa:</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.3rem;margin-bottom:.8rem;text-align:center">
+      <div style="background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.25);border-radius:6px;padding:.6rem .3rem">
+        <div style="font-size:1rem;margin-bottom:.2rem">🥇</div>
+        <div style="font-size:.7rem;color:var(--accent-gold);font-family:'Oswald',sans-serif;text-transform:uppercase;margin-bottom:.3rem">Campeão</div>
+        <div style="font-family:'Oswald',sans-serif;font-size:1.3rem;color:var(--accent-gold);font-weight:700">+15</div>
+        <div style="font-size:.6rem;color:var(--text-muted)">pts bônus</div>
+      </div>
+      <div style="background:rgba(148,163,184,.08);border:1px solid rgba(148,163,184,.2);border-radius:6px;padding:.6rem .3rem">
+        <div style="font-size:1rem;margin-bottom:.2rem">🥈</div>
+        <div style="font-size:.7rem;color:var(--text-secondary);font-family:'Oswald',sans-serif;text-transform:uppercase;margin-bottom:.3rem">Vice</div>
+        <div style="font-family:'Oswald',sans-serif;font-size:1.3rem;color:var(--text-primary);font-weight:700">+8</div>
+        <div style="font-size:.6rem;color:var(--text-muted)">pts bônus</div>
+      </div>
+      <div style="background:rgba(180,120,60,.08);border:1px solid rgba(180,120,60,.2);border-radius:6px;padding:.6rem .3rem">
+        <div style="font-size:1rem;margin-bottom:.2rem">🥉</div>
+        <div style="font-size:.7rem;color:var(--text-secondary);font-family:'Oswald',sans-serif;text-transform:uppercase;margin-bottom:.3rem">3º Lugar</div>
+        <div style="font-family:'Oswald',sans-serif;font-size:1.3rem;color:var(--text-primary);font-weight:700">+5</div>
+        <div style="font-size:.6rem;color:var(--text-muted)">pts bônus</div>
+      </div>
+    </div>
+
+    <!-- Exemplo prático -->
+    <div style="background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.2);border-radius:6px;padding:.7rem .8rem">
+      <div style="font-family:'Oswald',sans-serif;font-size:.68rem;color:var(--accent-teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">💡 Exemplo prático</div>
+      <p style="font-size:.78rem;color:var(--text-secondary);line-height:1.6">
+        Você apostou no <strong style="color:var(--text-primary)">Brasil</strong> como campeão. Se o Brasil vencer nas oitavas, você ganha <strong style="color:var(--success)">6 pts</strong> — nas quartas mais <strong style="color:var(--success)">7 pts</strong> — nas semis mais <strong style="color:var(--success)">8 pts</strong> — na final mais <strong style="color:var(--success)">12 pts</strong> + o bônus de <strong style="color:var(--accent-gold)">+15 pts</strong> por ter acertado o campeão. Total: <strong style="color:var(--accent-gold)">48 pts</strong> só com o Brasil! 🚀
+      </p>
+    </div>
+
   </div>
 </div>
 </div>
