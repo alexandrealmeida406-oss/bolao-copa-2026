@@ -955,7 +955,7 @@ button:active,.co:active{opacity:.8}
   <p style="font-size:3rem;margin-bottom:.8rem">🏆</p>
   <p style="font-family:'Oswald',sans-serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-gold);margin-bottom:.6rem">Em breve!</p>
   <p style="color:var(--text-secondary);font-size:.9rem;line-height:1.6;max-width:420px;margin:0 auto">
-    O ranking será exibido após a <strong style="color:var(--text-primary)">conclusão da 1ª rodada</strong> da fase de grupos.<br><br>
+    O ranking parcial será exibido ao término da 1ª fase. O ranking oficial será divulgado ao final de toda a fase de grupos.<br><br>
     A classificação será atualizada automaticamente ao final de cada rodada. Fique ligado no <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">grupo do WhatsApp</a> para acompanhar!
   </p>
 </div>
@@ -1306,16 +1306,19 @@ async function submitNovaInscricao(){
   if(!currentUser){toast('Faça login primeiro!','e');return;}
   const btn=document.getElementById('btn-confirmar-inscricao');
   if(btn){btn.textContent='Enviando...';btn.disabled=true;}
+  const _st2=setTimeout(()=>{
+    if(btn&&btn.disabled){btn.textContent='✓ Já fiz o PIX — Nova Inscrição!';btn.disabled=false;}
+    toast('A conexão demorou demais. Tente novamente.','e');
+  },15000);
   try{
-    // Deleta a inscrição rejeitada anterior
     if(userInscricao?.id){
       await sb.from('inscricoes').delete().eq('id',userInscricao.id).eq('status','rejeitado');
     }
-    // Cria nova inscrição
     const p=PR[selC];
     const{error}=await sb.from('inscricoes').insert({
       user_id:currentUser.id,cotas:selC,valor_cotas:p.c,taxa_servico:p.t,valor_total:p.v
     });
+    clearTimeout(_st2);
     if(error){
       toast('Erro: '+error.message,'e');
       if(btn){btn.textContent='✓ Já fiz o PIX — Nova Inscrição!';btn.disabled=false;}
@@ -1324,6 +1327,7 @@ async function submitNovaInscricao(){
     await loadUserData();updateUI();loadStats();
     toast('✅ Nova inscrição enviada! Aguarde aprovação do admin.','s');
   }catch(e){
+    clearTimeout(_st2);
     toast('Erro ao enviar. Verifique sua conexão e tente novamente.','e');
     if(btn){btn.textContent='✓ Já fiz o PIX — Nova Inscrição!';btn.disabled=false;}
   }
@@ -1395,6 +1399,11 @@ async function submitInscricao(){
 
   if(btn){btn.textContent='Enviando...';btn.disabled=true;}
 
+  // Timeout de segurança — reabilitar botão se travar por > 15s
+  const _safetyTimer=setTimeout(()=>{
+    if(btn&&btn.disabled){btn.textContent='✓ Já fiz o PIX — Confirmar!';btn.disabled=false;}
+    toast('A conexão demorou demais. Tente novamente.','e');
+  },15000);
   try{
     await sb.from('profiles').upsert({
       id:currentUser.id,nome,apelido,whatsapp,como_conheceu:ck,indicado_por:ind
@@ -1403,16 +1412,18 @@ async function submitInscricao(){
     const{error}=await sb.from('inscricoes').insert({
       user_id:currentUser.id,cotas:selC,valor_cotas:p.c,taxa_servico:p.t,valor_total:p.v
     });
+    clearTimeout(_safetyTimer);
     if(error){
       toast('Erro: '+error.message,'e');
-      if(btn){btn.textContent='✓ Já fiz o PIX, Confirmar!';btn.disabled=false;}
+      if(btn){btn.textContent='✓ Já fiz o PIX — Confirmar!';btn.disabled=false;}
       return;
     }
     await loadUserData();updateUI();loadStats();
     toast('✅ Inscrição enviada! Aguarde aprovação do admin.','s');
   }catch(e){
+    clearTimeout(_safetyTimer);
     toast('Erro ao enviar. Verifique sua conexão e tente novamente.','e');
-    if(btn){btn.textContent='✓ Já fiz o PIX, Confirmar!';btn.disabled=false;}
+    if(btn){btn.textContent='✓ Já fiz o PIX — Confirmar!';btn.disabled=false;}
   }
 }
 
@@ -1469,11 +1480,12 @@ async function loadPalpites(){
       </div>`);
     }
     cotasBanner = `<div style="background:linear-gradient(135deg,rgba(212,168,67,.08),rgba(212,168,67,.03));border:1px solid rgba(212,168,67,.25);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.5rem">
-      <div style="font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem">⭐ Quer mais chances? Adicione cotas!</div>
+      <div style="font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem">⭐ Adicionar cotas — mais chances de ganhar!</div>
       <div class="co-grid" id="pnc-grid">${optsP.join('')}</div>
       <div id="pnc-confirm" style="display:none;margin-top:.8rem;text-align:center">
-        <p style="font-size:.82rem;margin-bottom:.5rem">Confirmar compra de <strong id="pnc-txt"></strong>?</p>
-        <button class="btn btn-p btn-sm" onclick="confirmarCompraCotasPalp()">✓ Confirmar</button>
+        <p style="font-size:.82rem;margin-bottom:.4rem">📋 <strong id="pnc-txt"></strong></p>
+        <p style="font-size:.75rem;color:var(--text-muted);margin-bottom:.6rem">Pague o PIX abaixo e clique em <strong>Confirmar Pagamento</strong>. O admin aprovará após validar.</p>
+        <button class="btn btn-p btn-sm" onclick="confirmarCotasPalp()">✓ Já paguei — Confirmar</button>
         <button class="btn btn-s btn-sm" onclick="cancelarCompraCotasPalp()" style="margin-left:.4rem">Cancelar</button>
       </div>
     </div>`;
@@ -2309,6 +2321,12 @@ function selCotasPalp(n){
 
 async function confirmarCotasPalp(){
   if(!_novasCotasPalp||!currentUser||!userInscricao){toast('Selecione a quantidade de cotas!','e');return;}
+  const btn=document.querySelector('[onclick="confirmarCotasPalp()"]');
+  if(btn){btn.textContent='Enviando...';btn.disabled=true;}
+  const _st3=setTimeout(()=>{
+    if(btn&&btn.disabled){btn.textContent='✓ Já paguei — Confirmar';btn.disabled=false;}
+    toast('Conexão lenta. Tente novamente.','e');
+  },10000);
   const add=PR[_novasCotasPalp].v-PR[userInscricao.cotas].v;
   let ok=false;
   try{
@@ -2322,6 +2340,8 @@ async function confirmarCotasPalp(){
     });
     ok=!error;
   }catch(e){}
+  clearTimeout(_st3);
+  if(btn){btn.textContent='✓ Já paguei — Confirmar';btn.disabled=false;}
   toast(
     ok
       ?`✅ Solicitação enviada! Admin irá aprovar para ${_novasCotasPalp} cotas. 🎉`
