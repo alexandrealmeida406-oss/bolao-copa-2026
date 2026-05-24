@@ -1480,13 +1480,18 @@ async function loadPalpites(){
       </div>`);
     }
     cotasBanner = `<div style="background:linear-gradient(135deg,rgba(212,168,67,.08),rgba(212,168,67,.03));border:1px solid rgba(212,168,67,.25);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.5rem">
-      <div style="font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem">⭐ Adicionar cotas — mais chances de ganhar!</div>
+      <div style="font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">⭐ Quer mais chances? Adicione cotas!</div>
+      <p style="font-size:.75rem;color:var(--text-muted);margin-bottom:.7rem">Selecione abaixo, pague o PIX e confirme. O admin aprova após validar o comprovante.</p>
       <div class="co-grid" id="pnc-grid">${optsP.join('')}</div>
-      <div id="pnc-confirm" style="display:none;margin-top:.8rem;text-align:center">
-        <p style="font-size:.82rem;margin-bottom:.4rem">📋 <strong id="pnc-txt"></strong></p>
-        <p style="font-size:.75rem;color:var(--text-muted);margin-bottom:.6rem">Pague o PIX abaixo e clique em <strong>Confirmar Pagamento</strong>. O admin aprovará após validar.</p>
-        <button class="btn btn-p btn-sm" onclick="confirmarCotasPalp()">✓ Já paguei — Confirmar</button>
-        <button class="btn btn-s btn-sm" onclick="cancelarCompraCotasPalp()" style="margin-left:.4rem">Cancelar</button>
+      <div id="palp-extra-det" style="display:none;margin-top:.8rem;background:rgba(0,0,0,.2);border-radius:8px;padding:.8rem;text-align:center">
+        <p id="palp-extra-inf" style="font-size:.8rem;color:var(--text-secondary);margin-bottom:.6rem"></p>
+        <div style="font-size:.72rem;color:var(--text-muted);margin-bottom:.5rem">Chave PIX (aleatória):</div>
+        <code style="font-size:.65rem;background:rgba(255,255,255,.05);padding:.3rem .5rem;border-radius:4px;word-break:break-all;display:block;margin-bottom:.5rem">${PK}</code>
+        <div id="palp-qrc-extra" style="margin:.5rem auto;text-align:center"></div>
+        <div style="margin-top:.7rem;display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-p btn-sm" onclick="confirmarCotasPalp()" style="min-height:44px">✓ Já paguei — Confirmar</button>
+          <button class="btn btn-s btn-sm" onclick="cancelarCompraCotasPalp()" style="min-height:44px">Cancelar</button>
+        </div>
       </div>
     </div>`;
   }
@@ -2305,18 +2310,25 @@ function toggleCotasPalp(){
 
 function selCotasPalp(n){
   _novasCotasPalp=n;
-  document.querySelectorAll('[id^="pnc"]').forEach(e=>e.classList.remove('sel'));
+  document.querySelectorAll('.co-grid .co').forEach(e=>e.classList.remove('sel'));
   document.getElementById('pnc'+n)?.classList.add('sel');
   const add=PR[n].v-PR[userInscricao?.cotas||1].v;
   const det=document.getElementById('palp-extra-det');
   const inf=document.getElementById('palp-extra-inf');
   if(det)det.style.display='block';
-  if(inf)inf.textContent=`Pague R$ ${add},00 (de ${userInscricao?.cotas||1}→${n} cotas) · Envie comprovante no grupo do WhatsApp`;
+  if(inf)inf.textContent=`Ir de ${userInscricao?.cotas||1} → ${n} cotas: pague R$ ${add},00 via PIX e confirme abaixo`;
   setTimeout(()=>{
     const c=document.getElementById('palp-qrc-extra');
     if(!c)return;
     try{const q=qrcode(0,'M');q.addData(PK);q.make();c.innerHTML=q.createImgTag(3,6);c.querySelector('img').style.borderRadius='4px';}catch(e){}
   },80);
+}
+
+function cancelarCompraCotasPalp(){
+  _novasCotasPalp=null;
+  document.querySelectorAll('[id^="pnc"]').forEach(e=>e.classList.remove('sel'));
+  const det=document.getElementById('palp-extra-det');
+  if(det)det.style.display='none';
 }
 
 async function confirmarCotasPalp(){
