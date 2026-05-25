@@ -471,7 +471,7 @@ button:active,.co:active{opacity:.8}
 <li><a onclick="navigate('home');scrollToSection('cf')">Como Funciona</a></li>
 <li><a onclick="navigate('home');scrollToSection('val')">Valores</a></li>
 <li><a onclick="navigate('home');scrollToSection('insc')">Inscrição</a></li>
-<li><a onclick="navigate('home');scrollToSection('rank');setTimeout(loadRanking,100);setTimeout(loadRanking,100)">Ranking</a></li>
+<li><a onclick="navigate('home');scrollToSection('rank');setTimeout(loadRanking,100)">Ranking</a></li>
 <li><a onclick="navigate('home');scrollToSection('prem')">Premiação</a></li>
 <li id="nav-auth"></li>
 </ul>
@@ -1182,7 +1182,11 @@ function navigate(page){
   
   if(page==='admin')loadAdmin();
   if(page==='conta')loadConta();
-  if(page==='rank'){navigate('home');scrollToSection('rank');setTimeout(loadRanking,100);setTimeout(loadRanking,100);return;}
+  // Ranking: carregar quando a section estiver visível
+  if(page==='home'){clearTimeout(_rankTimer);_rankTimer=setTimeout(()=>{
+    if(document.getElementById('rank-content')?.innerHTML?.trim()==='')loadRanking();
+  },300);}
+  if(page==='rank'){navigate('home');scrollToSection('rank');setTimeout(loadRanking,100);return;}
   if(page!=='admin'&&_adminChannel){
     sb.removeChannel(_adminChannel);_adminChannel=null;
   }
