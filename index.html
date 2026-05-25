@@ -5,6 +5,9 @@
 <!-- build: 2026-04-05 13:53:50 -->
 
   <!-- PWA -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#D4A843">
   <meta name="mobile-web-app-capable" content="yes">
@@ -41,7 +44,7 @@
 html{scroll-behavior:smooth}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 input[type=number]{-moz-appearance:textfield}
-body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
+body{font-family:'Barlow',sans-serif;background:var(--bg-dark);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
 
 /* SIDE FLAGS */
 .side-flags{position:fixed;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:4px;opacity:.2;pointer-events:none}
@@ -70,7 +73,7 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 .nav-user span{display:none}}
 
 /* BUTTONS */
-.btn{min-height:44px;font-family:'Oswald',sans-serif;font-weight:600;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;padding:.8rem 1.8rem;border:none;border-radius:4px;cursor:pointer;transition:all .3s ease;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem}
+.btn{font-family:'Oswald',sans-serif;font-weight:600;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;padding:.8rem 1.8rem;border:none;border-radius:4px;cursor:pointer;transition:all .3s ease;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem}
 .btn-p{background:var(--gradient-gold);color:var(--primary-dark);box-shadow:0 4px 20px rgba(212,168,67,.3)}
 .btn-p:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(212,168,67,.5)}
 .btn-s{background:transparent;color:var(--text-primary);border:1px solid var(--border)}
@@ -441,10 +444,6 @@ button:active,.co:active{opacity:.8}
 /* Inputs não pulam o layout quando teclado abre */
 .fg input:focus,.fg select:focus{scroll-margin-bottom:120px}
 
-
-/* iOS — prevenir zoom automático */
-input[type="text"],input[type="number"],input[type="email"],
-input[type="password"],input[type="tel"],select,textarea{font-size:16px!important;}
 </style>
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://bolaocopa.com">
@@ -452,10 +451,6 @@ input[type="password"],input[type="tel"],select,textarea{font-size:16px!importan
   <meta property="og:description" content="Palpite no 1º e 2º de cada grupo + artilheiro!">
   <meta property="og:image" content="https://bolaocopa.com/icon-512.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://bolaocopa.com/icon-512.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
 </head>
 <body>
 
@@ -519,19 +514,7 @@ input[type="password"],input[type="tel"],select,textarea{font-size:16px!importan
 <section class="sec" id="cf">
 <div class="sh"><div class="stag">Regras do Jogo</div><h2 class="stitle">Como Funciona</h2><p class="sdesc">O sistema consagrado do Bolão do Almeida, agora para 48 seleções!</p></div>
 
-<!-- DEDICATÓRIA -->
-<div style="max-width:700px;margin:0 auto 2.5rem;background:linear-gradient(135deg,rgba(212,168,67,.07) 0%,rgba(139,21,56,.07) 100%);border:1px solid rgba(212,168,67,.25);border-radius:12px;padding:2rem 2rem 1.8rem;text-align:center;position:relative;overflow:hidden">
-  <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient-gold)"></div>
-  <div style="font-size:2rem;margin-bottom:.6rem">💛❤️</div>
-  <div style="font-family:'Oswald',sans-serif;font-size:.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-gold);margin-bottom:.7rem">Uma mensagem especial</div>
-  <p style="font-family:'Barlow',sans-serif;font-size:1rem;color:var(--text-primary);line-height:1.7;margin-bottom:.8rem">
-    Este projeto foi construído com muito carinho e tem o espírito de toda a minha família. <strong style="color:var(--accent-gold)">Gabriel</strong> e <strong style="color:var(--accent-gold)">Marcos</strong>, meus filhos, e <strong style="color:var(--accent-gold)">Tatiana</strong>, minha esposa — vocês foram minha maior inspiração durante cada linha de código, cada detalhe e cada decisão desse bolão.
-  </p>
-  <p style="font-family:'Barlow',sans-serif;font-size:.95rem;color:var(--text-secondary);line-height:1.6">
-    Obrigado pelo incentivo, pela paciência e por acreditar nesse sonho junto comigo. Esse projeto é nosso — e é pra vocês! Amo vocês demais! 🏆
-  </p>
-  <div style="margin-top:1rem;font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--text-muted);letter-spacing:1px">— Alexandre Almeida</div>
-</div>
+
 
 <div class="rg">
 <div class="rc"><div class="rn">01</div><div class="ri">🔐</div><h3>Login com Google</h3><p>Faça login com sua conta Google para se inscrever. Rápido, seguro e sem precisar criar senha!</p></div>
@@ -578,10 +561,6 @@ input[type="password"],input[type="tel"],select,textarea{font-size:16px!importan
   <!-- <ins class="adsbygoogle" data-ad-client="ca-pub-XXXXXXXX" data-ad-slot="XXXXXXXX" data-ad-format="auto" style="display:block"></ins> -->
 </div>
 
-</div><!-- /.rg -->
-
-</div>
-
 <!-- Manual do Bolão -->
 <div style="margin-top:2.5rem" id="manual">
 <div class="sh" style="margin-bottom:1.2rem"><div class="stag">Leia com atenção</div><h3 class="stitle" style="font-size:1.8rem">Manual do Bolão</h3></div>
@@ -589,7 +568,7 @@ input[type="password"],input[type="tel"],select,textarea{font-size:16px!importan
 <!-- COMO FUNCIONA OS PALPITES -->
 <div class="manual-box" style="border-color:rgba(0,180,216,.25);background:linear-gradient(135deg,rgba(0,180,216,.05),var(--bg-card))">
 <h4 style="color:var(--accent-teal)">🎯 Como Funciona — As Duas Rodadas de Palpites</h4>
-<p style="margin-bottom:1rem">O Bolão do Almeida tem <strong style="color:var(--text-primary)">duas rodadas de palpites</strong>, uma para cada fase da Copa. Você precisa preencher as duas para maximizar seus pontos!</p>
+<p style="margin-bottom:1rem">O Bolão do Almeida tem <strong style="color:var(--text-primary)">duas rodadas de palpites</strong>. Você precisa preencher as duas para maximizar seus pontos!</p>
 
 <!-- 1ª Rodada -->
 <div style="background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:1rem;margin-bottom:.8rem">
@@ -598,22 +577,21 @@ input[type="password"],input[type="tel"],select,textarea{font-size:16px!importan
     <strong style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">1ª Rodada — Fase de Grupos</strong>
   </div>
   <ul style="margin-left:1rem">
-    <li style="margin-bottom:.3rem">Você palpita o placar de todos os <strong>36 jogos</strong> da fase de grupos (12 grupos × 3 jogos)</li>
-    <li style="margin-bottom:.3rem">Todos os 36 palpites devem ser preenchidos para salvar — você pode <strong>voltar e editar</strong> quantas vezes quiser até o prazo</li>
-    <li style="margin-bottom:.3rem">📝 <strong>Pode editar à vontade até o prazo!</strong> Entre na página de Palpites, altere os placares e salve novamente</li>
-    <li style="margin-bottom:.3rem"><strong style="color:var(--error)">Prazo final: 10/06/2026 às 19h00</strong> (véspera do início da Copa) — após esse horário os palpites são bloqueados definitivamente</li>
+    <li style="margin-bottom:.3rem">Você palpita o <strong>1º e 2º colocado</strong> de cada um dos 12 grupos da Copa (não precisa mais palpitar o placar de cada jogo!)</li>
+    <li style="margin-bottom:.3rem">Você também palpita o <strong>Artilheiro da Copa</strong> — informe o nome do jogador e a seleção</li>
+    <li style="margin-bottom:.3rem">Pode editar à vontade até o prazo — basta clicar em "Editar" e salvar novamente</li>
+    <li style="margin-bottom:.3rem"><strong style="color:var(--error)">Prazo final: 10/06/2026 às 19h</strong> — após esse horário os palpites são bloqueados definitivamente</li>
   </ul>
-  <!-- Tabela pontuação fase 1 -->
-  <div style="margin-top:.8rem;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:8px;padding:.8rem .9rem">
+  <div style="margin-top:.8rem;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:8px;padding:.7rem .9rem">
     <div style="font-family:'Oswald',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--success);margin-bottom:.5rem">⭐ Pontuação — Fase de Grupos</div>
     <div style="display:grid;grid-template-columns:1fr auto;gap:.25rem .8rem;font-size:.82rem">
-      <span style="color:var(--text-secondary)">🎯 Placar exato</span><strong style="color:var(--success)">3 pts</strong>
-      <span style="color:var(--text-secondary)">⚽ Acertou gols de 1 equipe</span><strong style="color:var(--warning)">1 pt</strong>
-      <span style="color:var(--text-secondary)">❌ Errou as duas equipes</span><strong style="color:var(--text-muted)">0 pts</strong>
+      <span style="color:var(--text-secondary)">🥇 Acertou 1º E 2º do grupo</span><strong style="color:var(--success)">5 pts</strong>
+      <span style="color:var(--text-secondary)">🥇 Acertou só o 1º colocado</span><strong style="color:var(--warning)">3 pts</strong>
+      <span style="color:var(--text-secondary)">🥈 Acertou só o 2º colocado</span><strong style="color:var(--warning)">2 pts</strong>
+      <span style="color:var(--text-secondary)">⚽ Acertou o Artilheiro da Copa</span><strong style="color:var(--success)">5 pts</strong>
+      <span style="color:var(--text-secondary)">❌ Errou tudo</span><strong style="color:var(--text-muted)">0 pts</strong>
     </div>
-  </div>
-  <div style="margin-top:.7rem;padding:.7rem .9rem;background:rgba(212,168,67,.08);border-left:3px solid var(--accent-gold);border-radius:0 6px 6px 0;font-size:.82rem;color:var(--text-secondary)">
-    💡 <strong style="color:var(--accent-gold)">Dica:</strong> Não deixe para a última hora! Preencha seus palpites da Fase de Grupos o quanto antes para não perder o prazo de 10/06 às 19h. Fique ligado no WhatsApp para não perder o aviso da 2ª rodada!
+    <div style="font-size:.72rem;color:var(--text-muted);margin-top:.4rem">💡 Máximo possível na 1ª rodada: 12 grupos × 5pts + artilheiro 5pts = <strong>65 pts por cota</strong></div>
   </div>
 </div>
 
@@ -624,13 +602,11 @@ input[type="password"],input[type="tel"],select,textarea{font-size:16px!importan
     <strong style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">2ª Rodada — Fase Eliminatória</strong>
   </div>
   <ul style="margin-left:1rem">
-    <li style="margin-bottom:.3rem">Após o encerramento da fase de grupos, o admin liberará uma <strong>nova rodada de palpites</strong> para o mata-mata</li>
-    <li style="margin-bottom:.3rem">Você palpita os jogos do <strong>mata-mata</strong>: 16-avos, oitavas, quartas, semifinais, disputa de 3º lugar e final</li>
-    <li style="margin-bottom:.3rem">Os confrontos só serão conhecidos depois que todos os classificados da fase de grupos forem definidos — por isso a liberação é separada</li>
+    <li style="margin-bottom:.3rem">Após a fase de grupos, o admin libera uma nova rodada para o mata-mata</li>
+    <li style="margin-bottom:.3rem">Você palpita os resultados dos jogos: 16-avos, oitavas, quartas, semifinais e final</li>
     <li style="margin-bottom:.3rem">Você receberá um aviso no grupo do WhatsApp quando a 2ª rodada for liberada</li>
-    <li style="margin-bottom:.3rem">⭐ <strong>Pontuação progressiva</strong> — quanto mais longe na Copa, mais pontos vale:</li>
+    <li style="margin-bottom:.3rem">⭐ <strong>Pontuação progressiva</strong> — quanto mais longe na Copa, mais pontos vale</li>
   </ul>
-  <!-- Tabela pontuação fase 2 -->
   <div style="margin-top:.7rem;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:8px;padding:.8rem .9rem;overflow-x:auto">
     <div style="font-family:'Oswald',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--warning);margin-bottom:.6rem">⭐ Pontuação — Fase Eliminatória</div>
     <table style="width:100%;font-size:.8rem;border-collapse:collapse">
@@ -641,11 +617,11 @@ input[type="password"],input[type="tel"],select,textarea{font-size:16px!importan
         <th style="text-align:center;padding:.25rem .4rem;border-bottom:1px solid var(--border)">❌ Errou</th>
       </tr></thead>
       <tbody>
-        <tr><td style="padding:.25rem .4rem;color:var(--text-secondary)">16-avos de final</td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--success)">4 pts</strong></td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--warning)">2 pts</strong></td><td style="text-align:center;padding:.25rem .4rem;color:var(--text-muted)">0</td></tr>
-        <tr style="background:rgba(255,255,255,.02)"><td style="padding:.25rem .4rem;color:var(--text-secondary)">Oitavas de final</td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--success)">5 pts</strong></td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--warning)">3 pts</strong></td><td style="text-align:center;padding:.25rem .4rem;color:var(--text-muted)">0</td></tr>
-        <tr><td style="padding:.25rem .4rem;color:var(--text-secondary)">Quartas de final</td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--success)">6 pts</strong></td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--warning)">4 pts</strong></td><td style="text-align:center;padding:.25rem .4rem;color:var(--text-muted)">0</td></tr>
-        <tr style="background:rgba(255,255,255,.02)"><td style="padding:.25rem .4rem;color:var(--text-secondary)">Semifinais</td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--success)">7 pts</strong></td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--warning)">5 pts</strong></td><td style="text-align:center;padding:.25rem .4rem;color:var(--text-muted)">0</td></tr>
-        <tr style="background:rgba(212,168,67,.06)"><td style="padding:.25rem .4rem;font-weight:700;color:var(--accent-gold)">🏆 Final</td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--accent-gold)">10 pts</strong></td><td style="text-align:center;padding:.25rem .4rem"><strong style="color:var(--warning)">6 pts</strong></td><td style="text-align:center;padding:.25rem .4rem;color:var(--text-muted)">0</td></tr>
+        <tr><td style="padding:.25rem .4rem;color:var(--text-secondary)">16-avos de final</td><td style="text-align:center"><strong style="color:var(--success)">4 pts</strong></td><td style="text-align:center"><strong style="color:var(--warning)">2 pts</strong></td><td style="text-align:center;color:var(--text-muted)">0</td></tr>
+        <tr style="background:rgba(255,255,255,.02)"><td style="padding:.25rem .4rem;color:var(--text-secondary)">Oitavas de final</td><td style="text-align:center"><strong style="color:var(--success)">5 pts</strong></td><td style="text-align:center"><strong style="color:var(--warning)">3 pts</strong></td><td style="text-align:center;color:var(--text-muted)">0</td></tr>
+        <tr><td style="padding:.25rem .4rem;color:var(--text-secondary)">Quartas de final</td><td style="text-align:center"><strong style="color:var(--success)">6 pts</strong></td><td style="text-align:center"><strong style="color:var(--warning)">4 pts</strong></td><td style="text-align:center;color:var(--text-muted)">0</td></tr>
+        <tr style="background:rgba(255,255,255,.02)"><td style="padding:.25rem .4rem;color:var(--text-secondary)">Semifinais</td><td style="text-align:center"><strong style="color:var(--success)">7 pts</strong></td><td style="text-align:center"><strong style="color:var(--warning)">5 pts</strong></td><td style="text-align:center;color:var(--text-muted)">0</td></tr>
+        <tr style="background:rgba(212,168,67,.06)"><td style="padding:.25rem .4rem;font-weight:700;color:var(--accent-gold)">🏆 Final</td><td style="text-align:center"><strong style="color:var(--accent-gold)">10 pts</strong></td><td style="text-align:center"><strong style="color:var(--warning)">6 pts</strong></td><td style="text-align:center;color:var(--text-muted)">0</td></tr>
       </tbody>
     </table>
     <p style="font-size:.72rem;color:var(--text-muted);margin-top:.5rem">⚠️ Placar do tempo regulamentar + prorrogação. Pênaltis não contam.</p>
@@ -835,7 +811,7 @@ input[type="password"],input[type="tel"],select,textarea{font-size:16px!importan
   <p style="font-size:3rem;margin-bottom:.8rem">🏆</p>
   <p style="font-family:'Oswald',sans-serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-gold);margin-bottom:.6rem">Em breve!</p>
   <p style="color:var(--text-secondary);font-size:.9rem;line-height:1.6;max-width:420px;margin:0 auto">
-    O ranking parcial será exibido ao término da 1ª fase. O ranking oficial será divulgado ao final de toda a fase de grupos.<br><br>
+    O ranking será exibido após a <strong style="color:var(--text-primary)">conclusão da 1ª rodada</strong> da fase de grupos.<br><br>
     A classificação será atualizada automaticamente ao final de cada rodada. Fique ligado no <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">grupo do WhatsApp</a> para acompanhar!
   </p>
 </div>
@@ -865,7 +841,7 @@ input[type="password"],input[type="tel"],select,textarea{font-size:16px!importan
 <!-- ===================== PALPITES PAGE ===================== -->
 <div class="page" id="page-palpites">
 <div class="sec" style="margin-top:4rem">
-<h2 class="stitle" style="margin-bottom:1.5rem">🎯 Palpites — 1ª Fase</h2>
+<h2 class="stitle" style="margin-bottom:1.5rem">🎯 Palpites — Classificação dos Grupos + Artilheiro</h2>
 <div id="palpites-content"><div class="loading"><div class="spinner"></div>Carregando...</div></div>
 </div>
 </div>
@@ -887,14 +863,8 @@ input[type="password"],input[type="tel"],select,textarea{font-size:16px!importan
 <p style="margin-top:.3rem"><a href="https://bolaocopa.com">bolaocopa.com</a></p>
 
   <div style="border-top:1px solid rgba(255,255,255,.1);margin-top:2rem;padding-top:1.8rem;text-align:center">
-    <div style="display:flex;align-items:center;justify-content:center;gap:.6rem;margin-bottom:.9rem">
-      <span style="font-size:1.2rem">💛</span>
-      <span style="font-family:'Oswald',sans-serif;font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-gold)">Uma mensagem especial</span>
-      <span style="font-size:1.2rem">❤️</span>
-    </div>
-    <p style="font-family:'Barlow',sans-serif;font-size:.83rem;color:var(--text-secondary);line-height:1.8;max-width:520px;margin:0 auto .8rem">
-      Este projeto foi construído com muito carinho. <strong style="color:var(--text-primary)">Gabriel</strong>, <strong style="color:var(--text-primary)">Marcos</strong> e <strong style="color:var(--text-primary)">Tatiana</strong> — vocês são minha maior inspiração. Amo vocês! 🏆
-    </p>
+    <div style="display:flex;align-items:center;justify-content:center;gap:.6rem;margin-bottom:.9rem"><span style="font-size:1.2rem">💛</span><span style="font-family:'Oswald',sans-serif;font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-gold)">Uma mensagem especial</span><span style="font-size:1.2rem">❤️</span></div>
+    <p style="font-family:'Barlow',sans-serif;font-size:.83rem;color:var(--text-secondary);line-height:1.8;max-width:520px;margin:0 auto .8rem">Este projeto foi construído com muito carinho. <strong style="color:var(--text-primary)">Gabriel</strong> e <strong style="color:var(--text-primary)">Marcos</strong>, meus filhos, e <strong style="color:var(--text-primary)">Tatiana</strong>, minha esposa — vocês foram minha maior inspiração. Esse projeto é nosso — e é pra vocês! Amo vocês demais! 🏆</p>
     <div style="font-family:'Oswald',sans-serif;font-size:.68rem;color:var(--text-muted);letter-spacing:1.5px">— Alexandre Almeida</div>
   </div>
 </footer>
@@ -926,11 +896,6 @@ input[type="password"],input[type="tel"],select,textarea{font-size:16px!importan
 const SUPABASE_URL='https://vuomkohlwomdeyobddhw.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1b21rb2hsd29tZGV5b2JkZGh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MTE3ODMsImV4cCI6MjA5MDM4Nzc4M30.vexm5sTH3TChhkVmA5lyNUNVrE-G6g2ZRNKdSyGnoKc';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let _authReady=false;
-let _authReadyResolvers=[];
-const waitAuthReady=()=>_authReady?Promise.resolve():new Promise(r=>_authReadyResolvers.push(r));
-let _novasCotasPalp=null;
-
 
 const PK='2b03f68f-4aae-49b9-99a5-705b31982b7b';
 const CS=new Date('2026-06-11T16:00:00-03:00');
@@ -979,9 +944,12 @@ document.addEventListener('DOMContentLoaded',async()=>{
   
   // Listen for auth changes
   sb.auth.onAuthStateChange(async(event,session)=>{
-    if(session?.user){currentUser=session.user;try{await loadUserData()}catch(e){}}
-    else{currentUser=null;userProfile=null;userInscricao=null;}
-    if(!_authReady){_authReady=true;_authReadyResolvers.forEach(r=>r());_authReadyResolvers=[];}
+    if(session?.user){
+      currentUser=session.user;
+      try{await loadUserData()}catch(e){console.warn('Auth change error:',e)}
+    }else{
+      currentUser=null;userProfile=null;userInscricao=null;
+    }
     updateUI();
   });
   
@@ -1060,10 +1028,7 @@ function navigate(page){
   
   if(page==='admin')loadAdmin();
   if(page==='conta')loadConta();
-  if(page==='palpites'){
-    if(!_authReady){document.getElementById('palpites-content').innerHTML='<div class="loading"><div class="spinner"></div>Verificando sessão...</div>';}
-    loadPalpites();
-  }
+  if(page==='palpites')loadPalpites();
 }
 
 function scrollToSection(id){
@@ -1084,7 +1049,7 @@ function updateUI(){
       Array.from(_hs).forEach((h,i)=>{h.style.background='rgba(212,168,67,.15)';h.style.borderColor='var(--accent-gold)';h.style.color='var(--accent-gold)';h.style.boxShadow='';h.textContent=String(i+1);});
       _hs[0].style.background='rgba(34,197,94,.25)';_hs[0].style.borderColor='var(--success)';_hs[0].style.color='var(--success)';_hs[0].textContent='✓';
       if(userInscricao&&userInscricao.status!=='rejeitado'){_hs[1].style.background='rgba(34,197,94,.25)';_hs[1].style.borderColor='var(--success)';_hs[1].style.color='var(--success)';_hs[1].textContent='✓';}else{_hs[1].style.background='rgba(212,168,67,.3)';_hs[1].style.boxShadow='0 0 10px rgba(212,168,67,.35)';}
-      if(userInscricao?.status==='aprovado'){_hs[2].style.background='rgba(34,197,94,.25)';_hs[2].style.borderColor='var(--success)';_hs[2].style.color='var(--success)';_hs[2].textContent='✓';_hs[3].style.background='rgba(212,168,67,.3)';_hs[3].style.color='var(--accent-gold)';_hs[3].style.boxShadow='0 0 12px rgba(212,168,67,.5)';}
+      if(userInscricao?.status==='aprovado'){_hs[2].style.background='rgba(34,197,94,.25)';_hs[2].style.borderColor='var(--success)';_hs[2].style.color='var(--success)';_hs[2].textContent='✓';_hs[3].style.background='rgba(212,168,67,.3)';_hs[3].style.borderColor='var(--accent-gold)';_hs[3].style.color='var(--accent-gold)';_hs[3].style.boxShadow='0 0 12px rgba(212,168,67,.5)';}
       else if(userInscricao?.status==='pendente'){_hs[2].style.background='rgba(212,168,67,.3)';_hs[2].style.boxShadow='0 0 10px rgba(212,168,67,.35)';}
     }
     const name=currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'Usuário';
@@ -1268,7 +1233,6 @@ async function submitInscricao(){
 
   if(btn){btn.textContent='Enviando...';btn.disabled=true;}
 
-  const _safetyTimer=setTimeout(()=>{if(btn&&btn.disabled){btn.textContent='✓ Já fiz o PIX — Confirmar!';btn.disabled=false;}toast('Conexão lenta. Tente novamente.','e');},15000);
   try{
     await sb.from('profiles').upsert({
       id:currentUser.id,nome,apelido,whatsapp,como_conheceu:ck,indicado_por:ind
@@ -1282,73 +1246,71 @@ async function submitInscricao(){
       if(btn){btn.textContent='✓ Já fiz o PIX, Confirmar!';btn.disabled=false;}
       return;
     }
-    clearTimeout(_safetyTimer);await loadUserData();updateUI();loadStats();
+    await loadUserData();updateUI();loadStats();
     toast('✅ Inscrição enviada! Aguarde aprovação do admin.','s');
   }catch(e){
-    clearTimeout(_safetyTimer);toast('Erro ao enviar. Verifique sua conexão e tente novamente.','e');
-    if(btn){btn.textContent='✓ Já fiz o PIX — Confirmar!';btn.disabled=false;}
+    toast('Erro ao enviar. Verifique sua conexão e tente novamente.','e');
+    if(btn){btn.textContent='✓ Já fiz o PIX, Confirmar!';btn.disabled=false;}
   }
 }
 
 // ===== PALPITES =====
 async function loadPalpites(){
   const el=document.getElementById('palpites-content');
-  if(!_authReady){
-    el.innerHTML='<div class="loading"><div class="spinner"></div>Verificando sessão...</div>';
-    await Promise.race([waitAuthReady(),new Promise(r=>setTimeout(r,4000))]);
-  }
   if(!currentUser){el.innerHTML='<div class="login-box"><h3>Faça login para ver seus palpites</h3><button class="btn-google" onclick="loginGoogle()">Entrar com Google</button></div>';return;}
   if(!userInscricao||userInscricao.status!=='aprovado'){
     el.innerHTML='<div class="re"><p style="font-size:2rem">🔒</p><p style="font-family:\'Oswald\',sans-serif;font-size:1.1rem">Acesso restrito</p><p style="color:var(--text-muted);font-size:.85rem;margin-top:.3rem">Seu pagamento precisa ser aprovado pelo admin antes de preencher os palpites.</p></div>';
     return;
   }
+
+  // Verificar se palpites estão liberados
   const{data:cfg}=await sb.from('config').select('value').eq('key','palpites_liberados').maybeSingle();
   if(!cfg||cfg.value!=='true'){
     el.innerHTML='<div class="re"><p style="font-size:2rem">🔒</p><p style="font-family:\'Oswald\',sans-serif;font-size:1.1rem">Palpites ainda não liberados</p><p style="color:var(--text-muted);font-size:.85rem;margin-top:.3rem">Os palpites serão liberados em breve. Fique de olho no grupo do WhatsApp!</p></div>';
     return;
   }
-  const bloqueado=new Date()>=DEADLINE;
-  const cotas=userInscricao.cotas||1;
-  const[resGrupos,resArtilheiro,resResultados,resArtRes]=await Promise.all([
-    sb.from('palpites_grupos').select('*').eq('inscricao_id',userInscricao.id),
-    sb.from('palpites_artilheiro').select('*').eq('inscricao_id',userInscricao.id),
+
+  const bloqueado = new Date() >= DEADLINE;
+
+  // Carregar palpites salvos de grupos e artilheiro
+  const cotas = userInscricao.cotas || 1;
+  const [resGrupos, resArtilheiro, resResultados, resArtRes] = await Promise.all([
+    sb.from('palpites_grupos').select('*').eq('inscricao_id', userInscricao.id),
+    sb.from('palpites_artilheiro').select('*').eq('inscricao_id', userInscricao.id),
     sb.from('resultados_grupos').select('*'),
     sb.from('resultado_artilheiro').select('*').maybeSingle(),
   ]);
-  const palpitesGrupos=resGrupos.data||[];
-  const palpitesArt=resArtilheiro.data||[];
-  const resultadosGrupos=resResultados.data||[];
-  const resultadoArt=resArtRes.data;
 
-  // Banner cotas adicionais
-  let cotasBanner='';
-  if(cotas<3&&!bloqueado){
-    const optsP=[];
-    for(let n=cotas+1;n<=3;n++){
-      const add=PR[n].v-PR[cotas].v;
+  const palpitesGrupos = resGrupos.data || [];
+  const palpitesArt = resArtilheiro.data || [];
+  const resultadosGrupos = resResultados.data || [];
+  const resultadoArt = resArtRes.data;
+
+  // Banner de compra de cotas
+  const cotasAtuais = cotas;
+  let cotasBanner = '';
+  if(cotasAtuais < 3 && !bloqueado){
+    const optsP = [];
+    for(let n=cotasAtuais+1;n<=3;n++){
+      const add = PR[n].v - PR[cotasAtuais].v;
       optsP.push(`<div class="co" onclick="selCotasPalp(${n})" id="pnc${n}" style="cursor:pointer">
         <div class="cn">${n}</div><div class="cl">Cotas total</div>
         <div class="cp">+R$ ${add}</div><div class="cd">Total: R$ ${PR[n].v}</div>
       </div>`);
     }
-    cotasBanner=`<div style="background:linear-gradient(135deg,rgba(212,168,67,.08),rgba(212,168,67,.03));border:1px solid rgba(212,168,67,.25);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.5rem">
-      <div style="font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">⭐ Quer mais chances? Adicione cotas!</div>
-      <p style="font-size:.75rem;color:var(--text-muted);margin-bottom:.7rem">Selecione abaixo, pague o PIX e confirme. O admin aprova após validar o comprovante.</p>
+    cotasBanner = `<div style="background:linear-gradient(135deg,rgba(212,168,67,.08),rgba(212,168,67,.03));border:1px solid rgba(212,168,67,.25);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.5rem">
+      <div style="font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem">⭐ Quer mais chances? Adicione cotas!</div>
       <div class="co-grid" id="pnc-grid">${optsP.join('')}</div>
-      <div id="palp-extra-det" style="display:none;margin-top:.8rem;background:rgba(0,0,0,.2);border-radius:8px;padding:.8rem;text-align:center">
-        <p id="palp-extra-inf" style="font-size:.82rem;color:var(--text-secondary);margin-bottom:.6rem"></p>
-        <div style="font-size:.72rem;color:var(--text-muted);margin-bottom:.4rem">Chave PIX (aleatória):</div>
-        <code style="font-size:.68rem;background:rgba(255,255,255,.06);padding:.3rem .6rem;border-radius:4px;word-break:break-all;display:block;margin-bottom:.5rem">${PK}</code>
-        <div id="palp-qrc-extra" style="margin:.4rem auto;text-align:center"></div>
-        <div style="margin-top:.7rem;display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap">
-          <button class="btn btn-p btn-sm" onclick="confirmarCotasPalp()" style="min-height:44px">✓ Já paguei — Confirmar</button>
-          <button class="btn btn-s btn-sm" onclick="cancelarCompraCotasPalp()" style="min-height:44px">Cancelar</button>
-        </div>
+      <div id="pnc-confirm" style="display:none;margin-top:.8rem;text-align:center">
+        <p style="font-size:.82rem;margin-bottom:.5rem">Confirmar compra de <strong id="pnc-txt"></strong>?</p>
+        <button class="btn btn-p btn-sm" onclick="confirmarCompraCotasPalp()">✓ Confirmar</button>
+        <button class="btn btn-s btn-sm" onclick="cancelarCompraCotasPalp()" style="margin-left:.4rem">Cancelar</button>
       </div>
     </div>`;
   }
 
-  const GRUPOS_INFO={
+  // Grupos para o select — definidos no código
+  const GRUPOS_INFO = {
     A:['México','África do Sul','Coreia do Sul','República Tcheca'],
     B:['Canadá','Bósnia e Herzegovina','Catar','Suíça'],
     C:['Brasil','Marrocos','Haiti','Escócia'],
@@ -1362,10 +1324,11 @@ async function loadPalpites(){
     K:['Portugal','RD Congo','Uzbequistão','Colômbia'],
     L:['Inglaterra','Croácia','Gana','Panamá'],
   };
-  const SELECOES_COPA=['México','África do Sul','Coreia do Sul','República Tcheca','Canadá','Bósnia e Herzegovina','Catar','Suíça','Brasil','Marrocos','Haiti','Escócia','EUA','Paraguai','Austrália','Turquia','Alemanha','Equador','Costa do Marfim','Curaçao','Holanda','Japão','Suécia','Tunísia','Bélgica','Irã','Egito','Nova Zelândia','Espanha','Uruguai','Arábia Saudita','Cabo Verde','França','Senegal','Iraque','Noruega','Argentina','Argélia','Áustria','Jordânia','Portugal','RD Congo','Uzbequistão','Colômbia','Inglaterra','Croácia','Gana','Panamá'];
 
-  let html=cotasBanner;
-  html+=`<div style="background:rgba(212,168,67,.06);border:1px solid rgba(212,168,67,.2);border-radius:8px;padding:.8rem 1rem;margin-bottom:1.2rem;font-size:.82rem">
+  let html = cotasBanner;
+
+  // Pontuação resumo
+  html += `<div style="background:rgba(212,168,67,.06);border:1px solid rgba(212,168,67,.2);border-radius:8px;padding:.8rem 1rem;margin-bottom:1.2rem;font-size:.82rem">
     <div style="font-family:'Oswald',sans-serif;font-size:.75rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem">⭐ Pontuação desta fase</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.3rem .8rem;color:var(--text-secondary)">
       <span>🥇 1º e 2º corretos</span><strong style="color:var(--success)">5 pts</strong>
@@ -1373,38 +1336,46 @@ async function loadPalpites(){
       <span>🥈 Só 2º correto</span><strong style="color:var(--warning)">2 pts</strong>
       <span>⚽ Artilheiro correto</span><strong style="color:var(--success)">5 pts</strong>
     </div>
-    ${bloqueado?'<div style="color:var(--error);margin-top:.5rem;font-size:.78rem">⏰ Prazo encerrado — palpites bloqueados</div>':'<div style="color:var(--text-muted);margin-top:.5rem;font-size:.75rem">⏰ Prazo: 10/06/2026 às 19h</div>'}
+    ${bloqueado?'<div style="color:var(--error);margin-top:.5rem;font-size:.78rem">⏰ Prazo encerrado — palpites bloqueados desde 10/06 às 19h</div>':'<div style="color:var(--text-muted);margin-top:.5rem;font-size:.75rem">⏰ Prazo: 10/06/2026 às 19h</div>'}
   </div>`;
 
-  for(let c=1;c<=cotas;c++){
-    const palGruposCota=palpitesGrupos.filter(p=>p.cota_numero===c);
-    const palArtCota=palpitesArt.find(p=>p.cota_numero===c);
-    const allSaved=palGruposCota.length===12&&palArtCota;
-    const totalPts=palGruposCota.reduce((s,p)=>s+(p.pontos||0),0)+(palArtCota?.pontos||0);
+  for(let c=1; c<=cotas; c++){
+    const palGruposCota = palpitesGrupos.filter(p => p.cota_numero === c);
+    const palArtCota = palpitesArt.find(p => p.cota_numero === c);
+    const allSaved = palGruposCota.length === 12 && palArtCota;
+    const totalPts = palGruposCota.reduce((s,p)=>s+(p.pontos||0),0) + (palArtCota?.pontos||0);
 
-    html+=`<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:1.2rem">
+    html += `<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:1.2rem">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
         <div style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">Cota ${c}</div>
         ${totalPts>0?`<span style="font-family:'Oswald',sans-serif;color:var(--accent-gold);font-size:.9rem">+${totalPts} pts</span>`:''}
         ${allSaved&&!bloqueado?`<button class="btn btn-s btn-sm" onclick="editarPalpitesGrupos(${c})">✏️ Editar</button>`:''}
       </div>`;
 
-    html+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.7rem;margin-bottom:1rem">`;
-    for(const[grp,sels]of Object.entries(GRUPOS_INFO)){
-      const saved=palGruposCota.find(p=>p.grupo===grp);
-      const resultado=resultadosGrupos.find(r=>r.grupo===grp);
-      const disabled=(bloqueado||allSaved)?'disabled':'';
-      let grpPts=0,grpStatus='';
-      if(resultado&&saved){
-        const ok1=saved.primeiro===resultado.primeiro,ok2=saved.segundo===resultado.segundo;
-        if(ok1&&ok2){grpPts=5;grpStatus='✅ 5pts';}
-        else if(ok1){grpPts=3;grpStatus='🟡 3pts';}
-        else if(ok2){grpPts=2;grpStatus='🟡 2pts';}
-        else{grpStatus='❌ 0pts';}
+    // Grid dos 12 grupos
+    html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.7rem;margin-bottom:1rem">`;
+    for(const [grp, sels] of Object.entries(GRUPOS_INFO)){
+      const saved = palGruposCota.find(p => p.grupo === grp);
+      const resultado = resultadosGrupos.find(r => r.grupo === grp);
+      const disabled = (bloqueado || allSaved) ? 'disabled' : '';
+
+      // Calcular pontos do grupo
+      let grpPts = 0;
+      let grpStatus = '';
+      if(resultado && saved){
+        const ok1 = saved.primeiro === resultado.primeiro;
+        const ok2 = saved.segundo === resultado.segundo;
+        if(ok1 && ok2){ grpPts=5; grpStatus='✅ 5pts'; }
+        else if(ok1){ grpPts=3; grpStatus='🟡 3pts'; }
+        else if(ok2){ grpPts=2; grpStatus='🟡 2pts'; }
+        else{ grpStatus='❌ 0pts'; }
       }
-      const opts1=sels.map(s=>`<option value="${s}" ${saved?.primeiro===s?'selected':''}>${s}</option>`).join('');
-      const opts2=sels.map(s=>`<option value="${s}" ${saved?.segundo===s?'selected':''}>${s}</option>`).join('');
-      html+=`<div style="background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;padding:.7rem .8rem">
+
+      // Opções do select
+      const opts1 = sels.map(s=>`<option value="${s}" ${saved?.primeiro===s?'selected':''}>${s}</option>`).join('');
+      const opts2 = sels.map(s=>`<option value="${s}" ${saved?.segundo===s?'selected':''}>${s}</option>`).join('');
+
+      html += `<div style="background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;padding:.7rem .8rem">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
           <span style="font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase">Grupo ${grp}</span>
           ${grpStatus?`<span style="font-size:.72rem;color:${grpPts>0?'var(--success)':'var(--error)'}">${grpStatus}</span>`:''}
@@ -1412,207 +1383,142 @@ async function loadPalpites(){
         </div>
         <div style="display:grid;grid-template-columns:auto 1fr;gap:.25rem .5rem;align-items:center;font-size:.8rem">
           <span style="color:var(--text-muted)">🥇 1º</span>
-          <select id="g${grp}-c${c}-1" ${disabled} onchange="validarGrupo('${grp}',${c})" style="background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.25rem .4rem;color:var(--text-primary);font-size:16px;width:100%">
+          <select id="g${grp}-c${c}-1" ${disabled} style="background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.25rem .4rem;color:var(--text-primary);font-size:.78rem;width:100%">
             <option value="">Selecione...</option>${opts1}
           </select>
           <span style="color:var(--text-muted)">🥈 2º</span>
-          <select id="g${grp}-c${c}-2" ${disabled} onchange="validarGrupo('${grp}',${c})" style="background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.25rem .4rem;color:var(--text-primary);font-size:16px;width:100%">
+          <select id="g${grp}-c${c}-2" ${disabled} style="background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.25rem .4rem;color:var(--text-primary);font-size:.78rem;width:100%">
             <option value="">Selecione...</option>${opts2}
           </select>
         </div>
       </div>`;
     }
-    html+=`</div>`;
+    html += `</div>`;
 
     // Artilheiro
-    html+=`<div style="background:rgba(212,168,67,.06);border:1px solid rgba(212,168,67,.2);border-radius:8px;padding:.7rem .9rem;margin-bottom:.8rem">
+    html += `<div style="background:rgba(212,168,67,.06);border:1px solid rgba(212,168,67,.2);border-radius:8px;padding:.7rem .9rem;margin-bottom:.8rem">
       <div style="font-family:'Oswald',sans-serif;font-size:.78rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem">⚽ Artilheiro da Copa — 5 pts se acertar</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
-        <div><label style="font-size:.72rem;color:var(--text-muted);display:block;margin-bottom:.2rem">Nome do jogador</label>
-          <input type="text" id="art-c${c}-nome" ${(bloqueado||allSaved)?'disabled':''} value="${palArtCota?.nome_jogador||''}" placeholder="Ex: Vinicius Jr" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .5rem;color:var(--text-primary);font-size:16px"></div>
-        <div><label style="font-size:.72rem;color:var(--text-muted);display:block;margin-bottom:.2rem">Seleção</label>
-          <input type="text" id="art-c${c}-sel" ${(bloqueado||allSaved)?'disabled':''} value="${palArtCota?.selecao||''}" placeholder="Ex: Brasil" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .5rem;color:var(--text-primary);font-size:16px"></div>
+        <div>
+          <label style="font-size:.72rem;color:var(--text-muted);display:block;margin-bottom:.2rem">Nome do jogador</label>
+          <input type="text" id="art-c${c}-nome" ${(bloqueado||allSaved)?'disabled':''} value="${palArtCota?.nome_jogador||''}" placeholder="Ex: Vinicius Jr" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .5rem;color:var(--text-primary);font-size:.8rem">
+        </div>
+        <div>
+          <label style="font-size:.72rem;color:var(--text-muted);display:block;margin-bottom:.2rem">Seleção</label>
+          <input type="text" id="art-c${c}-sel" ${(bloqueado||allSaved)?'disabled':''} value="${palArtCota?.selecao||''}" placeholder="Ex: Brasil" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .5rem;color:var(--text-primary);font-size:.8rem">
+        </div>
       </div>
       ${resultadoArt?`<div style="font-size:.72rem;color:var(--text-muted);margin-top:.4rem">Artilheiro real: <strong style="color:var(--text-primary)">${resultadoArt.nome_jogador} (${resultadoArt.selecao})</strong> ${palArtCota?.pontos===5?'✅ 5pts':'❌ 0pts'}</div>`:''}
     </div>`;
 
-    // Palpitão
-    html+=`<div style="background:rgba(212,168,67,.07);border:1px solid rgba(212,168,67,.3);border-radius:8px;padding:.8rem .9rem;margin-bottom:.8rem">
-      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">
-        <span style="font-family:'Oswald',sans-serif;font-size:.78rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px">🎯 Palpitão — Palpite às Cegas</span>
-        <span style="background:rgba(212,168,67,.2);border-radius:50px;font-size:.6rem;font-weight:700;color:var(--accent-gold);padding:.1rem .5rem;letter-spacing:1px">NOVO</span>
-      </div>
-      <p style="font-size:.75rem;color:var(--text-secondary);margin-bottom:.6rem;line-height:1.5">Indique o <strong>Campeão, Vice e 3º Lugar</strong> da Copa — palpite às cegas antes dos jogos!</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem">
-        <div><label style="font-size:.7rem;color:var(--accent-gold);display:block;margin-bottom:.2rem">🥇 Campeão (+15pts)</label>
-          <select id="palp-c${c}-camp" ${(bloqueado||allSaved)?'disabled':''} onchange="validarPodio(${c})" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .4rem;color:var(--text-primary);font-size:16px">
-            <option value="">Selecione...</option>${SELECOES_COPA.map(s=>`<option value="${s}" ${palArtCota?.campeao===s?'selected':''}>${s}</option>`).join('')}
-          </select></div>
-        <div><label style="font-size:.7rem;color:var(--text-secondary);display:block;margin-bottom:.2rem">🥈 Vice (+8pts)</label>
-          <select id="palp-c${c}-vice" ${(bloqueado||allSaved)?'disabled':''} onchange="validarPodio(${c})" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .4rem;color:var(--text-primary);font-size:16px">
-            <option value="">Selecione...</option>${SELECOES_COPA.map(s=>`<option value="${s}" ${palArtCota?.vice===s?'selected':''}>${s}</option>`).join('')}
-          </select></div>
-        <div><label style="font-size:.7rem;color:var(--text-secondary);display:block;margin-bottom:.2rem">🥉 3º Lugar (+5pts)</label>
-          <select id="palp-c${c}-terceiro" ${(bloqueado||allSaved)?'disabled':''} onchange="validarPodio(${c})" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:.3rem .4rem;color:var(--text-primary);font-size:16px">
-            <option value="">Selecione...</option>${SELECOES_COPA.map(s=>`<option value="${s}" ${palArtCota?.terceiro===s?'selected':''}>${s}</option>`).join('')}
-          </select></div>
-      </div>
-    </div>`;
-
+    // Botão salvar / status
     if(!bloqueado){
       if(!allSaved){
-        html+=`<div style="text-align:center"><button class="btn btn-p" onclick="salvarPalpitesGrupos(${c})" style="min-height:48px">💾 Salvar Palpites da Cota ${c}</button></div>`;
-      }else{
-        html+=`<div style="text-align:center;color:var(--success);font-size:.82rem">✅ Palpites da Cota ${c} salvos</div>`;
+        html += `<div style="text-align:center"><button class="btn btn-p" onclick="salvarPalpitesGrupos(${c})">💾 Salvar Palpites da Cota ${c}</button></div>`;
+      } else {
+        html += `<div style="text-align:center;color:var(--success);font-size:.82rem">✅ Palpites da Cota ${c} salvos</div>`;
       }
-    }else if(!allSaved){
-      html+=`<div style="text-align:center;color:var(--error);font-size:.82rem;font-family:'Oswald',sans-serif">⏰ Prazo encerrado</div>`;
+    } else if(!allSaved){
+      html += `<div style="text-align:center;color:var(--error);font-size:.82rem;font-family:'Oswald',sans-serif">⏰ Prazo encerrado — palpites bloqueados</div>`;
     }
-    html+=`</div>`;
+
+    html += `</div>`;
   }
-  el.innerHTML=html;
-}
 
-function cancelarCompraCotasPalp(){
-  _novasCotasPalp=null;
-  document.querySelectorAll('.co-grid .co').forEach(e=>e.classList.remove('sel'));
-  const det=document.getElementById('palp-extra-det');
-  if(det)det.style.display='none';
-}
-
-function selCotasPalp(n){
-  _novasCotasPalp=n;
-  document.querySelectorAll('.co-grid .co').forEach(e=>e.classList.remove('sel'));
-  document.getElementById('pnc'+n)?.classList.add('sel');
-  const add=PR[n].v-PR[userInscricao?.cotas||1].v;
-  const det=document.getElementById('palp-extra-det');
-  const inf=document.getElementById('palp-extra-inf');
-  if(det)det.style.display='block';
-  if(inf)inf.textContent=`Ir de ${userInscricao?.cotas||1} → ${n} cotas: pague R$ ${add},00 via PIX e confirme abaixo`;
-  setTimeout(()=>{
-    const c=document.getElementById('palp-qrc-extra');
-    if(!c)return;
-    try{const q=qrcode(0,'M');q.addData(PK);q.make();c.innerHTML=q.createImgTag(3,6);c.querySelector('img').style.borderRadius='4px';}catch(e){}
-  },80);
-}
-
-async function confirmarCotasPalp(){
-  if(!_novasCotasPalp||!currentUser||!userInscricao){toast('Selecione a quantidade de cotas!','e');return;}
-  const btn=document.querySelector('[onclick="confirmarCotasPalp()"]');
-  if(btn){btn.textContent='Enviando...';btn.disabled=true;}
-  const _st3=setTimeout(()=>{
-    if(btn&&btn.disabled){btn.textContent='✓ Já paguei — Confirmar';btn.disabled=false;}
-    toast('Conexão lenta. Tente novamente.','e');
-  },10000);
-  const add=PR[_novasCotasPalp].v-PR[userInscricao.cotas].v;
-  let ok=false;
-  try{
-    const{error}=await sb.from('compra_cotas').insert({
-      user_id:currentUser.id,inscricao_id:userInscricao.id,
-      cotas_atual:userInscricao.cotas,cotas_nova:_novasCotasPalp,
-      valor_adicional:add,status:'pendente'
-    });
-    ok=!error;
-  }catch(e){}
-  clearTimeout(_st3);
-  if(btn){btn.textContent='✓ Já paguei — Confirmar';btn.disabled=false;}
-  const det=document.getElementById('palp-extra-det');
-  if(det)det.style.display='none';
-  _novasCotasPalp=null;
-  if(ok){
-    toast(`✅ Solicitação de ${_novasCotasPalp} cotas enviada! O admin aprovará em breve. 🎉`,'s');
-  } else {
-    toast('Erro ao enviar. Verifique sua conexão e tente novamente.','e');
-  }
-}
-
-function validarGrupo(grp,cotaNum){
-  const el1=document.getElementById(`g${grp}-c${cotaNum}-1`);
-  const el2=document.getElementById(`g${grp}-c${cotaNum}-2`);
-  if(!el1||!el2)return;
-  const v1=el1.value,v2=el2.value;
-  if(v1&&v2&&v1===v2){
-    el1.style.borderColor='var(--error)';el1.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';
-    el2.style.borderColor='var(--error)';el2.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';
-    toast(`Grupo ${grp}: 1º e 2º não podem ser a mesma seleção!`,'e');
-  }else{
-    el1.style.borderColor='';el1.style.boxShadow='';
-    el2.style.borderColor='';el2.style.boxShadow='';
-  }
-}
-
-function validarPodio(cotaNum){
-  const elC=document.getElementById(`palp-c${cotaNum}-camp`);
-  const elV=document.getElementById(`palp-c${cotaNum}-vice`);
-  const elT=document.getElementById(`palp-c${cotaNum}-terceiro`);
-  if(!elC||!elV||!elT)return;
-  const vC=elC.value,vV=elV.value,vT=elT.value;
-  const dup=(vC&&vV&&vC===vV)||(vC&&vT&&vC===vT)||(vV&&vT&&vV===vT);
-  [elC,elV,elT].forEach(el=>{el.style.borderColor=dup?'var(--error)':'';el.style.boxShadow=dup?'0 0 0 3px rgba(239,68,68,.25)':'';});
-  if(dup)toast('Palpitão: escolha seleções diferentes para cada posição!','e');
+  el.innerHTML = html;
 }
 
 async function salvarPalpitesGrupos(cotaNum){
   if(!currentUser||!userInscricao)return;
-  if(new Date()>=DEADLINE){toast('⏰ Prazo encerrado!','e');return;}
-  const GRUPOS_LIST=['A','B','C','D','E','F','G','H','I','J','K','L'];
-  const palpites=[],vazios=[];let primeiroVazio=null;
+  if(new Date()>=DEADLINE){toast('⏰ Prazo encerrado! Palpites bloqueados desde 10/06 às 19h.','e');return;}
+
+  const GRUPOS_LIST = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+  const palpites = [];
+  const vazios = [];
+  let primeiroVazio = null;
+
+  // Limpar destaques anteriores
   GRUPOS_LIST.forEach(g=>{
     const el1=document.getElementById(`g${g}-c${cotaNum}-1`);
     const el2=document.getElementById(`g${g}-c${cotaNum}-2`);
     if(el1){el1.style.borderColor='';el1.style.boxShadow='';}
     if(el2){el2.style.borderColor='';el2.style.boxShadow='';}
   });
+
   for(const grp of GRUPOS_LIST){
     const el1=document.getElementById(`g${grp}-c${cotaNum}-1`);
     const el2=document.getElementById(`g${grp}-c${cotaNum}-2`);
-    const v1=el1?.value?.trim(),v2=el2?.value?.trim();
-    if(!v1){if(el1){el1.style.borderColor='var(--error)';el1.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';}if(!primeiroVazio)primeiroVazio=el1;vazios.push(grp);continue;}
-    if(!v2){if(el2){el2.style.borderColor='var(--error)';el2.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';}if(!primeiroVazio)primeiroVazio=el2;vazios.push(grp);continue;}
+    const v1=el1?.value?.trim();
+    const v2=el2?.value?.trim();
+
+    if(!v1){
+      if(el1){el1.style.borderColor='var(--error)';el1.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';}
+      if(!primeiroVazio)primeiroVazio=el1;
+      vazios.push(grp);continue;
+    }
+    if(!v2){
+      if(el2){el2.style.borderColor='var(--error)';el2.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';}
+      if(!primeiroVazio)primeiroVazio=el2;
+      vazios.push(grp);continue;
+    }
     if(v1===v2){
       if(el1){el1.style.borderColor='var(--error)';el1.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';}
       if(el2){el2.style.borderColor='var(--error)';el2.style.boxShadow='0 0 0 3px rgba(239,68,68,.25)';}
       if(!primeiroVazio)primeiroVazio=el1;
-      toast(`Grupo ${grp}: 1º e 2º não podem ser a mesma seleção!`,'e');return;
+      toast(`Grupo ${grp}: 1º e 2º não podem ser a mesma seleção!`,'e');
+      return;
     }
-    palpites.push({user_id:currentUser.id,inscricao_id:userInscricao.id,cota_numero:cotaNum,grupo:grp,primeiro:v1,segundo:v2});
+    palpites.push({
+      user_id:currentUser.id,
+      inscricao_id:userInscricao.id,
+      cota_numero:cotaNum,
+      grupo:grp,
+      primeiro:v1,
+      segundo:v2,
+    });
   }
+
   if(vazios.length>0){
     if(primeiroVazio){primeiroVazio.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>primeiroVazio.focus(),400);}
-    toast(`⚠️ Preencha 1º e 2º de todos os 12 grupos! Grupos incompletos: ${vazios.join(', ')}`,'e');return;
+    toast(`⚠️ Preencha todos os 12 grupos! Faltam: ${vazios.join(', ')}`, 'e');
+    return;
   }
+
+  // Validar artilheiro
   const artNome=document.getElementById(`art-c${cotaNum}-nome`)?.value?.trim();
   const artSel=document.getElementById(`art-c${cotaNum}-sel`)?.value?.trim();
   if(!artNome||!artSel){
-    toast('⚠️ Preencha o nome e seleção do Artilheiro!','e');
-    document.getElementById(`art-c${cotaNum}-nome`)?.scrollIntoView({behavior:'smooth',block:'center'});return;
+    toast('⚠️ Preencha o nome e seleção do Artilheiro da Copa!','e');
+    const artEl=document.getElementById(`art-c${cotaNum}-nome`);
+    if(artEl){artEl.style.borderColor='var(--error)';artEl.scrollIntoView({behavior:'smooth',block:'center'});}
+    return;
   }
-  const palpCamp=document.getElementById(`palp-c${cotaNum}-camp`)?.value?.trim();
-  const palpVice=document.getElementById(`palp-c${cotaNum}-vice`)?.value?.trim();
-  const palpTerc=document.getElementById(`palp-c${cotaNum}-terceiro`)?.value?.trim();
-  if(!palpCamp||!palpVice||!palpTerc){
-    toast('⚠️ Preencha o Palpitão: Campeão, Vice e 3º Lugar!','e');return;
-  }
-  if(palpCamp===palpVice||palpCamp===palpTerc||palpVice===palpTerc){
-    toast('⚠️ Palpitão: escolha seleções diferentes para cada posição!','e');return;
-  }
+
   const btn=document.querySelector(`button[onclick="salvarPalpitesGrupos(${cotaNum})"]`);
   if(btn){btn.textContent='Salvando...';btn.disabled=true;}
+
+  // Salvar grupos
   await sb.from('palpites_grupos').delete().eq('inscricao_id',userInscricao.id).eq('cota_numero',cotaNum);
   const{error:errGrupos}=await sb.from('palpites_grupos').insert(palpites);
   if(errGrupos){toast('Erro ao salvar grupos: '+errGrupos.message,'e');if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.disabled=false;}return;}
+
+  // Salvar artilheiro
   await sb.from('palpites_artilheiro').delete().eq('inscricao_id',userInscricao.id).eq('cota_numero',cotaNum);
   const{error:errArt}=await sb.from('palpites_artilheiro').insert({
-    user_id:currentUser.id,inscricao_id:userInscricao.id,cota_numero:cotaNum,
-    nome_jogador:artNome,selecao:artSel,campeao:palpCamp,vice:palpVice,terceiro:palpTerc,
+    user_id:currentUser.id,
+    inscricao_id:userInscricao.id,
+    cota_numero:cotaNum,
+    nome_jogador:artNome,
+    selecao:artSel,
   });
   if(errArt){toast('Erro ao salvar artilheiro: '+errArt.message,'e');if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.disabled=false;}return;}
-  toast(`✅ Cota ${cotaNum} salva! 12 grupos + artilheiro + palpitão 🎉`,'s');
+
+  toast(`✅ Palpites da Cota ${cotaNum} salvos! (12 grupos + artilheiro) 🎉`,'s');
   loadPalpites();
 }
 
 function editarPalpitesGrupos(cotaNum){
-  if(new Date()>=DEADLINE){toast('⏰ Prazo encerrado!','e');return;}
+  if(new Date()>=DEADLINE){toast('⏰ Prazo encerrado! Não é possível editar.','e');return;}
   const GRUPOS_LIST=['A','B','C','D','E','F','G','H','I','J','K','L'];
   GRUPOS_LIST.forEach(g=>{
     const el1=document.getElementById(`g${g}-c${cotaNum}-1`);
@@ -1620,20 +1526,14 @@ function editarPalpitesGrupos(cotaNum){
     if(el1){el1.disabled=false;el1.style.borderColor='';}
     if(el2){el2.disabled=false;el2.style.borderColor='';}
   });
-  ['nome','sel'].forEach(f=>{const el=document.getElementById(`art-c${cotaNum}-${f}`);if(el)el.disabled=false;});
-  ['camp','vice','terceiro'].forEach(f=>{const el=document.getElementById(`palp-c${cotaNum}-${f}`);if(el)el.disabled=false;});
+  const artNome=document.getElementById(`art-c${cotaNum}-nome`);
+  const artSel=document.getElementById(`art-c${cotaNum}-sel`);
+  if(artNome)artNome.disabled=false;
+  if(artSel)artSel.disabled=false;
+  // Adicionar botão salvar
+  const container=artSel?.closest('[style*="border-radius:10px"]');
   const btn=document.querySelector(`button[onclick="editarPalpitesGrupos(${cotaNum})"]`);
   if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.className='btn btn-p';btn.setAttribute('onclick',`salvarPalpitesGrupos(${cotaNum})`);}
-}
-
-async function adminApproveCotas(id,inscId,cotasNova){
-  await sb.from('compra_cotas').update({status:'aprovado',approved_at:new Date().toISOString()}).eq('id',id);
-  await sb.from('inscricoes').update({cotas:cotasNova}).eq('id',inscId);
-  toast(`Aprovado! Atualizado para ${cotasNova} cotas.`,'s');loadAdmin();
-}
-async function adminRejectCotas(id){
-  await sb.from('compra_cotas').update({status:'rejeitado'}).eq('id',id);
-  toast('Solicitação rejeitada.','e');loadAdmin();
 }
 
 // ===== ADMIN =====
@@ -1643,18 +1543,9 @@ async function loadAdmin(){
   if(!userProfile?.is_admin){el.innerHTML='<div class="re"><p style="font-size:2rem">🚫</p><p>Acesso restrito a administradores.</p></div>';return;}
   
   try{
-    // Load inscriptions, profiles and palpites status
-    const[{data:inscs,error:insErr},{data:profs,error:profErr},{data:palpGrupos}]=await Promise.all([
-      sb.from('inscricoes').select('*').order('created_at',{ascending:false}),
-      sb.from('profiles').select('*'),
-      sb.from('palpites_grupos').select('inscricao_id,cota_numero').order('inscricao_id'),
-    ]);
-    // Map: inscricao_id → set of cotas preenchidas
-    const palpMap={};
-    (palpGrupos||[]).forEach(p=>{
-      if(!palpMap[p.inscricao_id])palpMap[p.inscricao_id]=new Set();
-      palpMap[p.inscricao_id].add(p.cota_numero);
-    });
+    // Load inscriptions and profiles separately
+    const{data:inscs,error:insErr}=await sb.from('inscricoes').select('*').order('created_at',{ascending:false});
+    const{data:profs,error:profErr}=await sb.from('profiles').select('*');
     
     if(insErr||!inscs){el.innerHTML='<p>Erro ao carregar inscrições: '+(insErr?.message||'')+'</p>';return;}
     
@@ -1680,7 +1571,7 @@ async function loadAdmin(){
       <h3 style="font-family:'Oswald',sans-serif;margin-bottom:.8rem;font-size:1rem;text-transform:uppercase;letter-spacing:1px">Inscrições</h3>
       <div id="admin-cotas-pend-section"></div>
       <div style="overflow-x:auto">
-      <table class="atbl"><thead><tr><th>Nome</th><th>E-mail</th><th>WhatsApp</th><th>Cotas</th><th>Palpites</th><th>Valor</th><th>Conheceu</th><th>Indicação</th><th>Status</th><th>Ações</th></tr></thead>
+      <table class="atbl"><thead><tr><th>Nome</th><th>E-mail</th><th>WhatsApp</th><th>Cotas</th><th>Valor</th><th>Conheceu</th><th>Indicação</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody>${inscs.map(i=>{
           const p=profMap[i.user_id]||{};
           const isPending=i.status==='pendente';
@@ -1690,15 +1581,6 @@ async function loadAdmin(){
             <td style="font-size:.7rem">${emailUser||i.user_id?.substring(0,10)+'...'}</td>
             <td>${p.whatsapp||'-'}</td>
             <td>${i.cotas}</td>
-            <td>${(()=>{
-              const cp=palpMap[i.id];
-              const n=cp?cp.size:0;
-              return n>=i.cotas
-                ?"<span style='color:var(--success);font-weight:700'>✅ Completo</span>"
-                :n>0
-                ?`<span style='color:var(--warning)'>⚠️ ${n}/${i.cotas} cota(s)</span>`
-                :"<span style='color:var(--error)'>❌ Pendente</span>";
-            })()}</td>
             <td>R$ ${i.valor_total}</td>
             <td>${p.como_conheceu||'-'}</td>
             <td>${p.indicado_por||'-'}</td>
@@ -2143,7 +2025,8 @@ async function confirmarCotas(){
   _novasCotas=null;
 }
 
-// ===== COMPRA DE COTAS — PÁGINA DE PALPITES =====
+// ===== COMPRA DE COTAS — PÁGINA DE PALPITES (IDs únicos) =====
+let _novasCotasPalp=null;
 
 function toggleCotasPalp(){
   const det=document.getElementById('cotas-palp-detail');
