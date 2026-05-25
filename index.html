@@ -1939,16 +1939,24 @@ async function loadRanking(){
         </p>
       </div>`;
 
-    // Realtime — atualizar ranking quando pontos mudarem
-    if(_rankChannel) sb.removeChannel(_rankChannel);
-    _rankChannel = sb.channel('ranking-live')
-      .on('postgres_changes', {event:'*', schema:'public', table:'palpites_grupos'}, ()=>loadRanking())
-      .on('postgres_changes', {event:'*', schema:'public', table:'palpites_artilheiro'}, ()=>loadRanking())
-      .subscribe();
+    // Realtime — subscrever apenas uma vez (não recriar a cada loadRanking)
+    if(!_rankChannel){
+      _rankChannel = sb.channel('ranking-live')
+        .on('postgres_changes', {event:'*', schema:'public', table:'palpites_grupos'}, ()=>_refreshRankingDebounced())
+        .on('postgres_changes', {event:'*', schema:'public', table:'palpites_artilheiro'}, ()=>_refreshRankingDebounced())
+        .subscribe();
+    }
 
   }catch(e){
     el.innerHTML = `<p style="text-align:center;color:var(--text-muted)">Erro ao carregar ranking: ${e.message}</p>`;
   }
+}
+
+
+let _rankRefreshTimer = null;
+function _refreshRankingDebounced(){
+  clearTimeout(_rankRefreshTimer);
+  _rankRefreshTimer = setTimeout(() => loadRanking(), 1500);
 }
 
 
