@@ -2355,9 +2355,17 @@ async function confirmarCotasPalp(){
 
 // Admin: aprovar/rejeitar cotas extras
 async function adminApproveCotas(id,inscId,cotasNova){
-  await sb.from('compra_cotas').update({status:'aprovado',approved_at:new Date().toISOString()}).eq('id',id);
-  await sb.from('inscricoes').update({cotas:cotasNova}).eq('id',inscId);
-  toast(`Aprovado! Atualizado para ${cotasNova} cotas.`,'s');loadAdmin();
+  const p=PR[cotasNova];
+  if(!p){toast('Erro: número de cotas inválido.','e');return;}
+  const{error:e1}=await sb.from('compra_cotas').update({status:'aprovado',approved_at:new Date().toISOString()}).eq('id',id);
+  const{error:e2}=await sb.from('inscricoes').update({
+    cotas:cotasNova,
+    valor_cotas:p.c,
+    taxa_servico:p.t,
+    valor_total:p.v,
+  }).eq('id',inscId);
+  if(e1||e2){toast('Erro ao aprovar: '+(e1||e2).message,'e');return;}
+  toast(`✅ Aprovado! ${cotasNova} cotas — R$ ${p.v},00`,'s');loadAdmin();
 }
 async function adminRejectCotas(id){
   await sb.from('compra_cotas').update({status:'rejeitado'}).eq('id',id);
