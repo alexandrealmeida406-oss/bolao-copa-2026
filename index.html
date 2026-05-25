@@ -1737,45 +1737,58 @@ async function salvarPalpitesGrupos(cotaNum){
     return;
   }
 
-  const btn=document.querySelector(`button[onclick="salvarPalpitesGrupos(${cotaNum})"]`);
-  if(btn){btn.textContent='Salvando...';btn.disabled=true;}
-
-  // Salvar grupos
-  await sb.from('palpites_grupos').delete().eq('inscricao_id',userInscricao.id).eq('cota_numero',cotaNum);
-  const{error:errGrupos}=await sb.from('palpites_grupos').insert(palpites);
-  if(errGrupos){toast('Erro ao salvar grupos: '+errGrupos.message,'e');if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.disabled=false;}return;}
-
-  // Palpitão
+  // Validar Palpitão ANTES de desabilitar o botão
   const palpCamp=document.getElementById(`palp-c${cotaNum}-camp`)?.value?.trim();
   const palpVice=document.getElementById(`palp-c${cotaNum}-vice`)?.value?.trim();
   const palpTerc=document.getElementById(`palp-c${cotaNum}-terceiro`)?.value?.trim();
   if(!palpCamp||!palpVice||!palpTerc){
     toast('⚠️ Preencha o Palpitão: Campeão, Vice e 3º Lugar!','e');
-    if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.disabled=false;}
     return;
   }
   if(palpCamp===palpVice||palpCamp===palpTerc||palpVice===palpTerc){
     toast('⚠️ Palpitão: escolha seleções diferentes para cada posição!','e');
-    if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.disabled=false;}
     return;
   }
 
-  // Salvar artilheiro + palpitão
-  await sb.from('palpites_artilheiro').delete().eq('inscricao_id',userInscricao.id).eq('cota_numero',cotaNum);
-  const{error:errArt}=await sb.from('palpites_artilheiro').insert({
-    user_id:currentUser.id,
-    inscricao_id:userInscricao.id,
-    cota_numero:cotaNum,
-    nome_jogador:artNome,
-    selecao:artSel,
-    campeao:palpCamp,
-    vice:palpVice,
-    terceiro:palpTerc,
-  });
-  if(errArt){toast('Erro ao salvar artilheiro: '+errArt.message,'e');if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.disabled=false;}return;}
+  // Só agora desabilitar o botão — todas as validações passaram
+  const btn=document.querySelector(`button[onclick="salvarPalpitesGrupos(${cotaNum})"]`);
+  const btnReset=()=>{if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.disabled=false;}};
+  if(btn){btn.textContent='Salvando...';btn.disabled=true;}
 
-  toast(`✅ Palpites da Cota ${cotaNum} salvos! 12 grupos + artilheiro + palpitão 🎉`,'s');
-  loadPalpites();
+  // Timeout de segurança — 20s para não travar para sempre
+  const safetyTimer=setTimeout(()=>{
+    btnReset();
+    toast('⚠️ Conexão lenta. Verifique sua internet e tente novamente.','e');
+  },20000);
+
+  try{
+    // Salvar grupos
+    await sb.from('palpites_grupos').delete().eq('inscricao_id',userInscricao.id).eq('cota_numero',cotaNum);
+    const{error:errGrupos}=await sb.from('palpites_grupos').insert(palpites);
+    if(errGrupos){clearTimeout(safetyTimer);toast('Erro ao salvar grupos: '+errGrupos.message,'e');btnReset();return;}
+
+    // Salvar artilheiro + palpitão
+    await sb.from('palpites_artilheiro').delete().eq('inscricao_id',userInscricao.id).eq('cota_numero',cotaNum);
+    const{error:errArt}=await sb.from('palpites_artilheiro').insert({
+      user_id:currentUser.id,
+      inscricao_id:userInscricao.id,
+      cota_numero:cotaNum,
+      nome_jogador:artNome,
+      selecao:artSel,
+      campeao:palpCamp,
+      vice:palpVice,
+      terceiro:palpTerc,
+    });
+    if(errArt){clearTimeout(safetyTimer);toast('Erro ao salvar artilheiro: '+errArt.message,'e');btnReset();return;}
+
+    clearTimeout(safetyTimer);
+    toast(`✅ Palpites da Cota ${cotaNum} salvos! 12 grupos + artilheiro + palpitão 🎉`,'s');
+    loadPalpites();
+  }catch(e){
+    clearTimeout(safetyTimer);
+    toast('Erro de conexão. Verifique a internet e tente novamente.','e');
+    btnReset();
+  }
 }
 
 function editarPalpitesGrupos(cotaNum){
