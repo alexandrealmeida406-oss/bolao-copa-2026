@@ -2609,23 +2609,32 @@ let deferredPrompt = null;
 // Registrar SW
 if('serviceWorker' in navigator){
   window.addEventListener('load', ()=>{
+    // Limpar caches velhos ANTES de registrar — garante versão nova
+    const CURRENT = 'bolao-2026-v4';
+    caches.keys().then(keys => {
+      keys.filter(k => k !== CURRENT).forEach(k => {
+        console.log('[SW] limpando cache antigo:', k);
+        caches.delete(k);
+      });
+    });
+
     navigator.serviceWorker.register('/sw.js').then(reg=>{
-      // Verificar update a cada visita — força baixar sw.js novo
-      reg.update();
-      // Quando novo SW estiver pronto, ativar imediatamente
+      reg.update(); // checar se há sw.js novo no servidor
       reg.addEventListener('updatefound', ()=>{
         const newSW = reg.installing;
         newSW?.addEventListener('statechange', ()=>{
-          if(newSW.state==='installed' && navigator.serviceWorker.controller){
-            // Novo SW instalado — recarregar para pegar versão nova
+          if(newSW.state==='installed'){
             newSW.postMessage({type:'SKIP_WAITING'});
-            window.location.reload();
           }
         });
       });
     }).catch(err => console.warn('[SW] erro:', err));
-    // Quando SW toma controle, recarregar
+
+    // Quando SW toma controle, recarregar para pegar index.html novo
+    let reloading = false;
     navigator.serviceWorker.addEventListener('controllerchange', ()=>{
+      if(reloading) return;
+      reloading = true;
       window.location.reload();
     });
   });
