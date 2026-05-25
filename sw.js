@@ -1,7 +1,5 @@
-// Bolão do Almeida — Service Worker v3
-// Mude para v4, v5... a cada deploy novo
-
-const CACHE_NAME = 'bolao-2026-v3';
+// Bolão do Almeida — Service Worker v4
+const CACHE_NAME = 'bolao-2026-v4';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -11,39 +9,32 @@ const STATIC_ASSETS = [
   '/apple-touch-icon.png',
 ];
 
-// Instalar
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS))
   );
-  self.skipWaiting(); // Ativar imediatamente
+  self.skipWaiting();
 });
 
-// Ativar — apagar caches antigos
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
       Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => {
-        console.log('[SW] Removendo cache antigo:', k);
+        console.log('[SW v4] Removendo cache antigo:', k);
         return caches.delete(k);
       }))
     )
   );
-  self.clients.claim(); // Assumir controle de todas as tabs abertas
+  self.clients.claim();
 });
 
-// Mensagem SKIP_WAITING do index.html
 self.addEventListener('message', event => {
-  if (event.data?.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
-// Fetch — Network First para HTML, Cache First para o resto
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  // APIs externas — nunca cachear, passa direto
   if (
     url.hostname.includes('supabase.co') ||
     url.hostname.includes('googleapis.com') ||
@@ -52,7 +43,7 @@ self.addEventListener('fetch', event => {
     url.hostname.includes('fonts.gstatic.com')
   ) return;
 
-  // HTML — Network First (sempre busca versão nova, fallback para cache)
+  // HTML — Network First
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
@@ -66,7 +57,7 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Assets estáticos — Cache First
+  // Assets — Cache First
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;

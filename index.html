@@ -458,6 +458,34 @@ button:active,.co:active{opacity:.8}
   <meta property="og:description" content="Palpite no 1º e 2º de cada grupo + artilheiro!">
   <meta property="og:image" content="https://bolaocopa.com/icon-512.png">
   <meta name="twitter:card" content="summary_large_image">
+<script>
+// Patch de ranking — funciona em qualquer versão do arquivo
+window.addEventListener('DOMContentLoaded', () => {
+  // Corrigir onclick do menu Ranking (remover duplicatas)
+  document.querySelectorAll('[onclick]').forEach(e => {
+    const oc = e.getAttribute('onclick') || '';
+    if (oc.includes('rank') && oc.includes('loadRanking,100);setTimeout')) {
+      e.setAttribute('onclick', "navigate('home');scrollToSection('rank');setTimeout(loadRanking,100)");
+    }
+  });
+
+  // Auto-carregar ranking quando a section #rank entra na viewport
+  const rankSection = document.getElementById('rank');
+  if (rankSection && typeof IntersectionObserver !== 'undefined') {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const rc = document.getElementById('rank-content');
+          if (rc && rc.innerHTML.trim() === '') {
+            if (typeof loadRanking === 'function') loadRanking();
+          }
+        }
+      });
+    }, { threshold: 0.1 });
+    obs.observe(rankSection);
+  }
+});
+</script>
 </head>
 <body>
 
