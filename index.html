@@ -1183,6 +1183,9 @@ function navigate(page){
   
   if(page==='admin')loadAdmin();
   if(page==='conta')loadConta();
+  if(page!=='admin'&&_adminChannel){
+    sb.removeChannel(_adminChannel);_adminChannel=null;
+  }
   if(page==='palpites'){
     // Small delay se auth ainda não resolveu
     if(!_authReady){
@@ -1835,7 +1838,7 @@ async function loadAdmin(){
             <td style="font-size:.7rem">${emailUser||i.user_id?.substring(0,10)+'...'}</td>
             <td>${p.whatsapp||'-'}</td>
             <td>${i.cotas}</td>
-            <td>${(()=>{
+            <td data-palp-cell="${i.id}" data-palp-cotas="${i.cotas}">${(()=>{
               const cp=palpMap[i.id];
               const n=cp?cp.size:0;
               if(n>=i.cotas)return"<span style='color:var(--success);font-weight:600'>✅ Concluído</span>";
@@ -1893,6 +1896,42 @@ async function loadAdmin(){
     el.appendChild(resetSection);
 
   }catch(e){el.innerHTML='<p>Erro: '+e.message+'</p>';}
+  // Realtime — atualiza status de palpites ao vivo
+  _subscribeAdminPalpites();
+}
+
+function _subscribeAdminPalpites(){
+  if(_adminChannel){sb.removeChannel(_adminChannel);_adminChannel=null;}
+  const pg=document.getElementById('page-admin');
+  if(!pg||window.getComputedStyle(pg).display==='none')return;
+  _adminChannel=sb.channel('admin-palp-watch')
+    .on('postgres_changes',{event:'*',schema:'public',table:'palpites_grupos'},
+      ()=>_refreshPalpStatus())
+    .on('postgres_changes',{event:'*',schema:'public',table:'palpites_artilheiro'},
+      ()=>_refreshPalpStatus())
+    .subscribe();
+}
+
+let _rpt=null;
+async function _refreshPalpStatus(){
+  clearTimeout(_rpt);
+  _rpt=setTimeout(async()=>{
+    const{data:pg}=await sb.from('palpites_grupos').select('inscricao_id,cota_numero');
+    const pm={};
+    (pg||[]).forEach(p=>{
+      if(!pm[p.inscricao_id])pm[p.inscricao_id]=new Set();
+      pm[p.inscricao_id].add(p.cota_numero);
+    });
+    document.querySelectorAll('[data-palp-cell]').forEach(cell=>{
+      const id=Number(cell.dataset.palpCell);
+      const cotas=Number(cell.dataset.palpCotas);
+      const n=pm[id]?pm[id].size:0;
+      cell.innerHTML=n>=cotas
+        ?"<span style='color:var(--success);font-weight:600'>✅ Concluído</span>"
+        :n>0?`<span style='color:var(--warning)'>⚠️ ${n}/${cotas}</span>`
+        :"<span style='color:var(--error)'>❌ Pendente</span>";
+    });
+  },800);
 }
 
 
