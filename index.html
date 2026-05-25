@@ -1469,28 +1469,7 @@ async function loadPalpites(){
 
   // Banner de compra de cotas
   const cotasAtuais = cotas;
-  let cotasBanner = '';
-  if(cotasAtuais < 3 && !bloqueado){
-    const optsP = [];
-    for(let n=cotasAtuais+1;n<=3;n++){
-      const add = PR[n].v - PR[cotasAtuais].v;
-      optsP.push(`<div class="co" onclick="selCotasPalp(${n})" id="pnc${n}" style="cursor:pointer">
-        <div class="cn">${n}</div><div class="cl">Cotas total</div>
-        <div class="cp">+R$ ${add}</div><div class="cd">Total: R$ ${PR[n].v}</div>
-      </div>`);
-    }
-    cotasBanner = `<div style="background:linear-gradient(135deg,rgba(212,168,67,.08),rgba(212,168,67,.03));border:1px solid rgba(212,168,67,.25);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.5rem">
-      <div style="font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem">⭐ Adicionar cotas — mais chances de ganhar!</div>
-      <div class="co-grid" id="pnc-grid">${optsP.join('')}</div>
-      <div id="pnc-confirm" style="display:none;margin-top:.8rem;text-align:center">
-        <p style="font-size:.82rem;margin-bottom:.4rem">📋 <strong id="pnc-txt"></strong></p>
-        <p style="font-size:.75rem;color:var(--text-muted);margin-bottom:.6rem">Pague o PIX abaixo e clique em <strong>Confirmar Pagamento</strong>. O admin aprovará após validar.</p>
-        <button class="btn btn-p btn-sm" onclick="confirmarCotasPalp()">✓ Já paguei — Confirmar</button>
-        <button class="btn btn-s btn-sm" onclick="cancelarCompraCotasPalp()" style="margin-left:.4rem">Cancelar</button>
-      </div>
-    </div>`;
-  }
-
+  let cotasBanner = (cotasAtuais < 3 && !bloqueado) ? renderCompraCotas(cotasAtuais) : '';
   // Grupos para o select — definidos no código
   const SELECOES_COPA = [
     'México','África do Sul','Coreia do Sul','República Tcheca',
@@ -1810,8 +1789,17 @@ async function loadAdmin(){
   
   try{
     // Load inscriptions and profiles separately
-    const{data:inscs,error:insErr}=await sb.from('inscricoes').select('*').order('created_at',{ascending:false});
-    const{data:profs,error:profErr}=await sb.from('profiles').select('*');
+    const[{data:inscs,error:insErr},{data:profs,error:profErr},{data:palpGrupos}]=await Promise.all([
+      sb.from('inscricoes').select('*').order('created_at',{ascending:false}),
+      sb.from('profiles').select('*'),
+      sb.from('palpites_grupos').select('inscricao_id,cota_numero').order('inscricao_id'),
+    ]);
+    // Mapa inscricao_id → quantas cotas já preenchidas
+    const palpMap={};
+    (palpGrupos||[]).forEach(p=>{
+      if(!palpMap[p.inscricao_id])palpMap[p.inscricao_id]=new Set();
+      palpMap[p.inscricao_id].add(p.cota_numero);
+    });
     
     if(insErr||!inscs){el.innerHTML='<p>Erro ao carregar inscrições: '+(insErr?.message||'')+'</p>';return;}
     
@@ -1837,7 +1825,7 @@ async function loadAdmin(){
       <h3 style="font-family:'Oswald',sans-serif;margin-bottom:.8rem;font-size:1rem;text-transform:uppercase;letter-spacing:1px">Inscrições</h3>
       <div id="admin-cotas-pend-section"></div>
       <div style="overflow-x:auto">
-      <table class="atbl"><thead><tr><th>Nome</th><th>E-mail</th><th>WhatsApp</th><th>Cotas</th><th>Valor</th><th>Conheceu</th><th>Indicação</th><th>Status</th><th>Ações</th></tr></thead>
+      <table class="atbl"><thead><tr><th>Nome</th><th>E-mail</th><th>WhatsApp</th><th>Cotas</th><th>Palpites</th><th>Valor</th><th>Conheceu</th><th>Indicação</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody>${inscs.map(i=>{
           const p=profMap[i.user_id]||{};
           const isPending=i.status==='pendente';
@@ -1847,6 +1835,13 @@ async function loadAdmin(){
             <td style="font-size:.7rem">${emailUser||i.user_id?.substring(0,10)+'...'}</td>
             <td>${p.whatsapp||'-'}</td>
             <td>${i.cotas}</td>
+            <td>${(()=>{
+              const cp=palpMap[i.id];
+              const n=cp?cp.size:0;
+              if(n>=i.cotas)return"<span style='color:var(--success);font-weight:600'>✅ Concluído</span>";
+              if(n>0)return`<span style='color:var(--warning)'>⚠️ ${n}/${i.cotas}</span>`;
+              return"<span style='color:var(--error)'>❌ Pendente</span>";
+            })()}</td>
             <td>R$ ${i.valor_total}</td>
             <td>${p.como_conheceu||'-'}</td>
             <td>${p.indicado_por||'-'}</td>
