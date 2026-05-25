@@ -950,15 +950,8 @@ button:active,.co:active{opacity:.8}
 <!-- Ranking -->
 <section class="sec" id="rank">
 <div class="sh"><div class="stag">Classificação</div><h2 class="stitle">Ranking</h2>
-<p class="sdesc">Cada cota tem sua própria posição. Acompanhe ao vivo quem está na frente!</p></div>
-<div style="text-align:center;padding:3rem 1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;max-width:600px;margin:0 auto">
-  <p style="font-size:3rem;margin-bottom:.8rem">🏆</p>
-  <p style="font-family:'Oswald',sans-serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-gold);margin-bottom:.6rem">Em breve!</p>
-  <p style="color:var(--text-secondary);font-size:.9rem;line-height:1.6;max-width:420px;margin:0 auto">
-    O ranking parcial será exibido ao término da 1ª fase. O ranking oficial será divulgado ao final de toda a fase de grupos.<br><br>
-    A classificação será atualizada automaticamente ao final de cada rodada. Fique ligado no <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">grupo do WhatsApp</a> para acompanhar!
-  </p>
-</div>
+<p class="sdesc">Cada cota concorre de forma independente. Acompanhe ao vivo quem está na frente!</p></div>
+<div id="rank-content"><div class="loading"><div class="spinner"></div>Carregando ranking...</div></div>
 </section>
 
 <!-- Premiação -->
@@ -1040,6 +1033,7 @@ button:active,.co:active{opacity:.8}
 const SUPABASE_URL='https://vuomkohlwomdeyobddhw.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1b21rb2hsd29tZGV5b2JkZGh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MTE3ODMsImV4cCI6MjA5MDM4Nzc4M30.vexm5sTH3TChhkVmA5lyNUNVrE-G6g2ZRNKdSyGnoKc';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let _rankChannel=null;
 let _adminChannel=null;
 // Flag de prontidão da autenticação (evita race condition)
 let _authReady=false;
@@ -1188,8 +1182,12 @@ function navigate(page){
   
   if(page==='admin')loadAdmin();
   if(page==='conta')loadConta();
+  if(page==='rank')loadRanking();
   if(page!=='admin'&&_adminChannel){
     sb.removeChannel(_adminChannel);_adminChannel=null;
+  }
+  if(page!=='rank'&&_rankChannel){
+    sb.removeChannel(_rankChannel);_rankChannel=null;
   }
   if(page==='palpites'){
     // Small delay se auth ainda não resolveu
@@ -1825,6 +1823,135 @@ function editarPalpitesGrupos(cotaNum){
 }
 
 // ===== ADMIN =====
+async function loadRanking(){
+  const el = document.getElementById('rank-content');
+  if(!el) return;
+  el.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
+
+  try{
+    // Buscar dados da view ranking (pontos) + inscrições + perfis
+    const [{data: rankData}, {data: inscs}, {data: profs}] = await Promise.all([
+      sb.from('ranking').select('*').order('total_pontos', {ascending: false}),
+      sb.from('inscricoes').select('id, user_id, cotas, status').eq('status','aprovado'),
+      sb.from('profiles').select('id, nome, apelido'),
+    ]);
+
+    // Montar lista completa: uma linha por cota
+    // Para cada inscrição aprovada, gerar cotas
+    // Cruzar com ranking para pegar pontos (pode ser 0 ainda)
+    const linhas = [];
+    (inscs||[]).forEach(i => {
+      const prof = profs?.find(p => p.id === i.user_id);
+      const apelido = prof?.apelido || prof?.nome?.split(' ').slice(0,2).join(' ') || '?';
+      for(let c = 1; c <= i.cotas; c++){
+        const rankRow = (rankData||[]).find(r => r.inscricao_id === i.id && r.cota_numero === c);
+        linhas.push({
+          apelido,
+          cota: c,
+          totalCotas: i.cotas,
+          pts: rankRow?.total_pontos || 0,
+          acertosExatos: rankRow?.acertos_exatos || 0,
+          acertosParciais: rankRow?.acertos_parciais || 0,
+          totalPalpites: rankRow?.total_palpites || 0,
+          inscricao_id: i.id,
+        });
+      }
+    });
+
+    // Ordenar por pontos desc, empate por acertos exatos
+    linhas.sort((a,b) => b.pts - a.pts || b.acertosExatos - a.acertosExatos);
+
+    // Calcular posições (empates ficam na mesma posição)
+    let pos = 1;
+    linhas.forEach((l, idx) => {
+      if(idx > 0 && l.pts === linhas[idx-1].pts && l.acertosExatos === linhas[idx-1].acertosExatos){
+        l.pos = linhas[idx-1].pos;
+      } else {
+        l.pos = pos;
+      }
+      pos++;
+    });
+
+    const totalPalpites = linhas.filter(l => l.totalPalpites > 0).length;
+    const jogosApurados = (rankData||[])[0]?.jogos_apurados || 0;
+    const temPontos = linhas.some(l => l.pts > 0);
+
+    // Badge de posição
+    const badge = (pos) => {
+      if(pos === 1) return '<span style="font-size:1.2rem">🥇</span>';
+      if(pos === 2) return '<span style="font-size:1.2rem">🥈</span>';
+      if(pos === 3) return '<span style="font-size:1.2rem">🥉</span>';
+      return `<span style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--text-muted);font-weight:700">${pos}º</span>`;
+    };
+
+    // Cor da linha baseado na posição
+    const rowBg = (pos, isMe) => {
+      if(isMe) return 'background:rgba(212,168,67,.08);border-left:3px solid var(--accent-gold);';
+      if(pos === 1) return 'background:rgba(212,168,67,.06);';
+      if(pos === 2) return 'background:rgba(148,163,184,.05);';
+      if(pos === 3) return 'background:rgba(180,120,60,.05);';
+      return '';
+    };
+
+    const rows = linhas.map(l => {
+      const isMe = currentUser && l.apelido === (userProfile?.apelido || '');
+      const cotaLabel = l.totalCotas > 1 ? ` <span style="font-size:.7rem;color:var(--text-muted);background:rgba(255,255,255,.06);padding:.1rem .4rem;border-radius:50px">cota ${l.cota}</span>` : '';
+      const ptsColor = l.pts > 0 ? 'color:var(--accent-gold);' : 'color:var(--text-muted);';
+      const semPalpite = l.totalPalpites === 0
+        ? '<span style="font-size:.68rem;color:var(--text-muted);font-style:italic">Aguardando palpites</span>'
+        : '';
+
+      return `<tr style="${rowBg(l.pos, isMe)}">
+        <td style="padding:.7rem .8rem;text-align:center;width:48px">${badge(l.pos)}</td>
+        <td style="padding:.7rem .5rem">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:600;color:${isMe?'var(--accent-gold)':'var(--text-primary)'}">${l.apelido}</span>${cotaLabel}
+          ${semPalpite}
+        </td>
+        <td style="padding:.7rem .8rem;text-align:right;font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;${ptsColor}">${l.pts}</td>
+      </tr>`;
+    }).join('');
+
+    const statusBadge = jogosApurados > 0
+      ? `<span style="background:rgba(34,197,94,.15);color:var(--success);font-size:.72rem;font-weight:700;padding:.2rem .7rem;border-radius:50px;letter-spacing:1px">${jogosApurados} jogo${jogosApurados>1?'s':''} apurado${jogosApurados>1?'s':''}</span>`
+      : `<span style="background:rgba(212,168,67,.12);color:var(--accent-gold);font-size:.72rem;font-weight:700;padding:.2rem .7rem;border-radius:50px;letter-spacing:1px">⏳ Aguardando início da Copa</span>`;
+
+    el.innerHTML = `
+      <div style="max-width:600px;margin:0 auto">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem">
+          ${statusBadge}
+          <span style="font-size:.78rem;color:var(--text-muted)">${linhas.length} cota${linhas.length>1?'s':''} · ${totalPalpites} preenchida${totalPalpites>1?'s':''}</span>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+          <table style="width:100%;border-collapse:collapse">
+            <thead>
+              <tr style="background:rgba(212,168,67,.08);border-bottom:1px solid var(--border)">
+                <th style="padding:.5rem .8rem;text-align:center;font-size:.7rem;color:var(--text-muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;width:48px">#</th>
+                <th style="padding:.5rem .5rem;text-align:left;font-size:.7rem;color:var(--text-muted);font-weight:600;letter-spacing:1px;text-transform:uppercase">Participante</th>
+                <th style="padding:.5rem .8rem;text-align:right;font-size:.7rem;color:var(--text-muted);font-weight:600;letter-spacing:1px;text-transform:uppercase">Pts</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        ${!temPontos ? `<p style="text-align:center;font-size:.8rem;color:var(--text-muted);margin-top:.8rem">Os pontos serão calculados automaticamente ao longo da Copa. Boa sorte a todos! ⚽</p>` : ''}
+        <p style="text-align:center;font-size:.75rem;color:var(--text-muted);margin-top:.5rem">
+          Atualizado em tempo real · <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">Grupo do WhatsApp</a>
+        </p>
+      </div>`;
+
+    // Realtime — atualizar ranking quando pontos mudarem
+    if(_rankChannel) sb.removeChannel(_rankChannel);
+    _rankChannel = sb.channel('ranking-live')
+      .on('postgres_changes', {event:'*', schema:'public', table:'palpites_grupos'}, ()=>loadRanking())
+      .on('postgres_changes', {event:'*', schema:'public', table:'palpites_artilheiro'}, ()=>loadRanking())
+      .subscribe();
+
+  }catch(e){
+    el.innerHTML = `<p style="text-align:center;color:var(--text-muted)">Erro ao carregar ranking: ${e.message}</p>`;
+  }
+}
+
+
 async function loadAdmin(){
   const el=document.getElementById('admin-content');
   if(!currentUser){el.innerHTML='<div class="login-box"><h3>Faça login como admin</h3><button class="btn-google" onclick="loginGoogle()">Entrar com Google</button></div>';return;}
