@@ -471,7 +471,7 @@ button:active,.co:active{opacity:.8}
 <li><a onclick="navigate('home');scrollToSection('cf')">Como Funciona</a></li>
 <li><a onclick="navigate('home');scrollToSection('val')">Valores</a></li>
 <li><a onclick="navigate('home');scrollToSection('insc')">Inscrição</a></li>
-<li><a onclick="navigate('rank')">Ranking</a></li>
+<li><a onclick="navigate('home');scrollToSection('rank');setTimeout(loadRanking,100);setTimeout(loadRanking,100)">Ranking</a></li>
 <li><a onclick="navigate('home');scrollToSection('prem')">Premiação</a></li>
 <li id="nav-auth"></li>
 </ul>
@@ -951,7 +951,7 @@ button:active,.co:active{opacity:.8}
 <section class="sec" id="rank">
 <div class="sh"><div class="stag">Classificação</div><h2 class="stitle">Ranking</h2>
 <p class="sdesc">Cada cota concorre de forma independente. Acompanhe ao vivo quem está na frente!</p></div>
-<div id="rank-content"><div class="loading"><div class="spinner"></div>Carregando ranking...</div></div>
+<div id="rank-content"></div>
 </section>
 
 <!-- Premiação -->
@@ -1182,7 +1182,7 @@ function navigate(page){
   
   if(page==='admin')loadAdmin();
   if(page==='conta')loadConta();
-  if(page==='rank')loadRanking();
+  if(page==='rank'){navigate('home');scrollToSection('rank');setTimeout(loadRanking,100);setTimeout(loadRanking,100);return;}
   if(page!=='admin'&&_adminChannel){
     sb.removeChannel(_adminChannel);_adminChannel=null;
   }
@@ -1828,17 +1828,20 @@ async function loadRanking(){
   if(!el)return;
   el.innerHTML='<div class="loading"><div class="spinner"></div>Carregando ranking...</div>';
   try{
-    const[{data:inscs,error:e1},{data:profs,error:e2},{data:pg,error:e3}]=await Promise.all([
-      sb.from('inscricoes').select('id,user_id,cotas').eq('status','aprovado'),
-      sb.from('profiles').select('id,nome,apelido'),
-      sb.from('palpites_grupos').select('inscricao_id,cota_numero'),
+    const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
+    const [r1,r2,r3]=await Promise.all([
+      fetch(SUPABASE_URL+'/rest/v1/inscricoes?select=id,user_id,cotas&status=eq.aprovado',{headers:H}).then(r=>r.json()),
+      fetch(SUPABASE_URL+'/rest/v1/profiles?select=id,nome,apelido',{headers:H}).then(r=>r.json()),
+      fetch(SUPABASE_URL+'/rest/v1/palpites_grupos?select=inscricao_id,cota_numero',{headers:H}).then(r=>r.json()),
     ]);
-    if(e1||e2||e3)throw new Error((e1||e2||e3).message);
+    const inscs=Array.isArray(r1)?r1:[];
+    const profs=Array.isArray(r2)?r2:[];
+    const pg=Array.isArray(r3)?r3:[];
     const pm={};
-    (pg||[]).forEach(p=>{if(!pm[p.inscricao_id])pm[p.inscricao_id]=new Set();pm[p.inscricao_id].add(p.cota_numero);});
+    pg.forEach(p=>{if(!pm[p.inscricao_id])pm[p.inscricao_id]=new Set();pm[p.inscricao_id].add(p.cota_numero);});
     const linhas=[];
-    (inscs||[]).forEach(i=>{
-      const p=(profs||[]).find(x=>x.id===i.user_id);
+    inscs.forEach(i=>{
+      const p=profs.find(x=>x.id===i.user_id);
       const nome=p?.apelido||p?.nome?.split(' ').slice(0,2).join(' ')||'?';
       for(let c=1;c<=i.cotas;c++){
         linhas.push({nome,cota:c,total:i.cotas,ok:!!pm[i.id]?.has(c)});
@@ -1873,7 +1876,7 @@ async function loadRanking(){
       <p style="text-align:center;font-size:.76rem;color:var(--text-muted);margin-top:.7rem">Os pontos serão calculados automaticamente ao longo da Copa ⚽</p>
     </div>`;
   }catch(e){
-    el.innerHTML=`<div style="text-align:center;padding:2rem"><p style="font-size:1.5rem">⚠️</p><p style="color:var(--text-muted);font-size:.85rem">Erro ao carregar: ${e.message}</p><button class="btn btn-s btn-sm" onclick="loadRanking()" style="margin-top:.8rem">Tentar novamente</button></div>`;
+    el.innerHTML=`<div style="text-align:center;padding:2rem"><p style="font-size:1.5rem">⚠️</p><p style="color:var(--text-muted);font-size:.85rem">Erro: ${e.message}</p><button class="btn btn-s btn-sm" onclick="loadRanking()" style="margin-top:.8rem">Tentar novamente</button></div>`;
   }
 }
 
