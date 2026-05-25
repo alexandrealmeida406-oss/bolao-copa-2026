@@ -1,5 +1,5 @@
 // Bolão do Almeida — Service Worker v3
-// Atualize a versão (v3, v4...) a cada deploy para forçar cache novo
+// Mude para v4, v5... a cada deploy novo
 
 const CACHE_NAME = 'bolao-2026-v3';
 const STATIC_ASSETS = [
@@ -11,46 +11,54 @@ const STATIC_ASSETS = [
   '/apple-touch-icon.png',
 ];
 
-// Instalar — pre-cachear assets estáticos
+// Instalar
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS))
   );
-  self.skipWaiting(); // Ativa imediatamente sem esperar tabs fecharem
+  self.skipWaiting(); // Ativar imediatamente
 });
 
-// Ativar — limpar caches antigos (v1, v2...)
+// Ativar — apagar caches antigos
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => {
+        console.log('[SW] Removendo cache antigo:', k);
+        return caches.delete(k);
+      }))
     )
   );
-  self.clients.claim(); // Toma controle de todas as tabs abertas
+  self.clients.claim(); // Assumir controle de todas as tabs abertas
 });
 
-// Fetch — Network First para HTML, Cache First para assets estáticos
+// Mensagem SKIP_WAITING do index.html
+self.addEventListener('message', event => {
+  if (event.data?.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
+// Fetch — Network First para HTML, Cache First para o resto
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  // APIs externas — nunca cachear
+  // APIs externas — nunca cachear, passa direto
   if (
     url.hostname.includes('supabase.co') ||
     url.hostname.includes('googleapis.com') ||
     url.hostname.includes('flagcdn.com') ||
-    url.hostname.includes('cdnjs.cloudflare.com')
-  ) {
-    return; // passa direto para a rede
-  }
+    url.hostname.includes('cdnjs.cloudflare.com') ||
+    url.hostname.includes('fonts.gstatic.com')
+  ) return;
 
-  // HTML (index.html) — Network First: sempre busca versão nova
-  // Se offline, cai no cache
-  if (event.request.mode === 'navigate' || url.pathname === '/index.html') {
+  // HTML — Network First (sempre busca versão nova, fallback para cache)
+  if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
         .then(response => {
-          const toCache = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, toCache));
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(c => c.put(event.request, clone));
           return response;
         })
         .catch(() => caches.match('/index.html'))
@@ -58,14 +66,14 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Outros assets (ícones, manifest) — Cache First
+  // Assets estáticos — Cache First
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;
       return fetch(event.request).then(response => {
         if (!response || response.status !== 200) return response;
-        const toCache = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, toCache));
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(c => c.put(event.request, clone));
         return response;
       });
     })

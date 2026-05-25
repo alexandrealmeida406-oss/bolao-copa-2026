@@ -1154,6 +1154,10 @@ async function logout(){
       new Promise((_,rej)=>setTimeout(()=>rej('timeout'),3000))
     ]);
   }catch(e){ console.warn('signOut bg:', e); }
+  // Limpar cache do SW para garantir que próximo login pega versão fresca
+  if('caches' in window){
+    caches.keys().then(keys=>keys.forEach(k=>caches.delete(k)));
+  }
 }
 
 async function loadUserData(){
@@ -1439,8 +1443,16 @@ async function loadPalpites(){
     el.innerHTML='<div class="loading"><div class="spinner"></div>Verificando sessão...</div>';
     await Promise.race([
       waitAuthReady(),
-      new Promise(r=>setTimeout(r,4000)) // timeout de segurança
+      new Promise(r=>setTimeout(r,5000)) // timeout 5s
     ]);
+    // Se ainda não resolveu em 5s, forçar reload (Android/iOS com cache antigo)
+    if(!_authReady){
+      el.innerHTML='<div class="re"><p style="font-size:1.5rem">⚠️</p>'
+        +'<p style="font-family:\'Oswald\',sans-serif">Sessão expirada</p>'
+        +'<p style="color:var(--text-muted);font-size:.85rem;margin:.5rem 0 1rem">Toque para recarregar e entrar novamente.</p>'
+        +'<button class="btn btn-p" onclick="window.location.reload()">🔄 Recarregar</button>';
+      return;
+    }
   }
   if(!currentUser){el.innerHTML='<div class="login-box"><h3>Faça login para ver seus palpites</h3><button class="btn-google" onclick="loginGoogle()">Entrar com Google</button></div>';return;}
   if(!userInscricao||userInscricao.status!=='aprovado'){
@@ -2475,8 +2487,25 @@ let deferredPrompt = null;
 // Registrar SW
 if('serviceWorker' in navigator){
   window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('/sw.js')
-      .catch(err => console.warn('[SW] erro:', err));
+    navigator.serviceWorker.register('/sw.js').then(reg=>{
+      // Verificar update a cada visita — força baixar sw.js novo
+      reg.update();
+      // Quando novo SW estiver pronto, ativar imediatamente
+      reg.addEventListener('updatefound', ()=>{
+        const newSW = reg.installing;
+        newSW?.addEventListener('statechange', ()=>{
+          if(newSW.state==='installed' && navigator.serviceWorker.controller){
+            // Novo SW instalado — recarregar para pegar versão nova
+            newSW.postMessage({type:'SKIP_WAITING'});
+            window.location.reload();
+          }
+        });
+      });
+    }).catch(err => console.warn('[SW] erro:', err));
+    // Quando SW toma controle, recarregar
+    navigator.serviceWorker.addEventListener('controllerchange', ()=>{
+      window.location.reload();
+    });
   });
 }
 
