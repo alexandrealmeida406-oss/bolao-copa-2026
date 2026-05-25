@@ -2272,13 +2272,6 @@ async function salvarNovaSenha(){
 // ===== PWA — Service Worker + Install Prompt =====
 let deferredPrompt = null;
 
-// Registrar SW
-if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('/sw.js')
-      .catch(err => console.warn('[SW] erro:', err));
-  });
-}
 
 // iOS — mostrar banner imediatamente após 2s (não tem beforeinstallprompt)
 if(/iphone|ipad|ipod/i.test(navigator.userAgent) && !window.navigator.standalone){
