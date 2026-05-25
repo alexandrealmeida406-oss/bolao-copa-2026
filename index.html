@@ -1824,93 +1824,56 @@ function editarPalpitesGrupos(cotaNum){
 
 // ===== ADMIN =====
 async function loadRanking(){
-  const el = document.getElementById('rank-content');
-  if(!el) return;
-  el.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando ranking...</div>';
+  const el=document.getElementById('rank-content');
+  if(!el)return;
+  el.innerHTML='<div class="loading"><div class="spinner"></div>Carregando ranking...</div>';
   try{
-    // Buscar inscrições aprovadas + perfis + palpites (simples, sem view)
-    const [{data:inscs},{data:profs},{data:pg}] = await Promise.all([
+    const[{data:inscs,error:e1},{data:profs,error:e2},{data:pg,error:e3}]=await Promise.all([
       sb.from('inscricoes').select('id,user_id,cotas').eq('status','aprovado'),
       sb.from('profiles').select('id,nome,apelido'),
       sb.from('palpites_grupos').select('inscricao_id,cota_numero'),
     ]);
-
-    // Mapa: inscricao_id → cotas preenchidas
-    const palpMap = {};
-    (pg||[]).forEach(p=>{
-      if(!palpMap[p.inscricao_id]) palpMap[p.inscricao_id]=new Set();
-      palpMap[p.inscricao_id].add(p.cota_numero);
-    });
-
-    // Montar linhas — 1 por cota
-    const linhas = [];
+    if(e1||e2||e3)throw new Error((e1||e2||e3).message);
+    const pm={};
+    (pg||[]).forEach(p=>{if(!pm[p.inscricao_id])pm[p.inscricao_id]=new Set();pm[p.inscricao_id].add(p.cota_numero);});
+    const linhas=[];
     (inscs||[]).forEach(i=>{
-      const prof = (profs||[]).find(p=>p.id===i.user_id);
-      const apelido = prof?.apelido || prof?.nome?.split(' ').slice(0,2).join(' ') || '?';
+      const p=(profs||[]).find(x=>x.id===i.user_id);
+      const nome=p?.apelido||p?.nome?.split(' ').slice(0,2).join(' ')||'?';
       for(let c=1;c<=i.cotas;c++){
-        const preencheu = palpMap[i.id]?.has(c);
-        linhas.push({apelido, cota:c, totalCotas:i.cotas, pts:0, preencheu, inscricao_id:i.id});
+        linhas.push({nome,cota:c,total:i.cotas,ok:!!pm[i.id]?.has(c)});
       }
     });
-
-    // Ordenar: quem preencheu primeiro, depois por nome
-    linhas.sort((a,b)=>(b.preencheu?1:0)-(a.preencheu?1:0)||a.apelido.localeCompare(b.apelido));
-    linhas.forEach((l,idx)=>{ l.pos = idx+1; });
-
-    const badge = pos=>{
-      if(pos===1)return'<span style="font-size:1.2rem">🥇</span>';
-      if(pos===2)return'<span style="font-size:1.2rem">🥈</span>';
-      if(pos===3)return'<span style="font-size:1.2rem">🥉</span>';
-      return `<span style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--text-muted);font-weight:700">${pos}º</span>`;
-    };
-
-    const rows = linhas.map(l=>{
-      const isMe = currentUser && (userProfile?.apelido===l.apelido||userProfile?.nome?.includes(l.apelido));
-      const cotaLabel = l.totalCotas>1?` <span style="font-size:.68rem;color:var(--text-muted);background:rgba(255,255,255,.06);padding:.1rem .4rem;border-radius:50px">cota ${l.cota}</span>`:'';
-      const rowStyle = isMe?'background:rgba(212,168,67,.08);border-left:3px solid var(--accent-gold);':'';
-      const nomeStyle = isMe?'color:var(--accent-gold)':'color:var(--text-primary)';
-      const statusTag = !l.preencheu
-        ?'<span style="font-size:.65rem;color:var(--text-muted);font-style:italic;display:block">aguardando palpites...</span>'
-        :'<span style="font-size:.65rem;color:var(--success);display:block">✓ palpites enviados</span>';
-      return `<tr style="${rowStyle}">
-        <td style="padding:.65rem .8rem;text-align:center;width:44px">${badge(l.pos)}</td>
-        <td style="padding:.65rem .5rem">
-          <span style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:600;${nomeStyle}">${l.apelido}</span>${cotaLabel}
-          ${statusTag}
-        </td>
-        <td style="padding:.65rem .8rem;text-align:right;font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text-muted)">—</td>
-      </tr>`;
+    linhas.sort((a,b)=>(b.ok?1:0)-(a.ok?1:0)||a.nome.localeCompare(b.nome));
+    const rows=linhas.map((l,idx)=>{
+      const pos=idx+1;
+      const medal=pos===1?'🥇':pos===2?'🥈':pos===3?'🥉':`<b style="color:var(--text-muted)">${pos}º</b>`;
+      const isMe=userProfile&&(userProfile.apelido===l.nome||userProfile.nome?.startsWith(l.nome));
+      const bg=isMe?'background:rgba(212,168,67,.1);border-left:3px solid var(--accent-gold);':'';
+      const nc=l.total>1?` <span style="font-size:.65rem;color:var(--text-muted);background:rgba(255,255,255,.07);padding:.1rem .35rem;border-radius:50px">cota ${l.cota}</span>`:'';
+      const st=l.ok?'<span style="font-size:.65rem;color:var(--success)">✓ palpites enviados</span>':'<span style="font-size:.65rem;color:var(--text-muted);font-style:italic">aguardando palpites...</span>';
+      const nm=isMe?'color:var(--accent-gold)':'color:var(--text-primary)';
+      return`<tr style="${bg}"><td style="padding:.6rem .7rem;text-align:center;width:42px">${medal}</td><td style="padding:.6rem .4rem"><span style="font-family:'Barlow Condensed',sans-serif;font-size:.98rem;font-weight:600;${nm}">${l.nome}</span>${nc}<br>${st}</td><td style="padding:.6rem .7rem;text-align:right;font-family:'Oswald',sans-serif;font-size:1rem;color:var(--text-muted)">—</td></tr>`;
     }).join('');
-
-    el.innerHTML=`<div style="max-width:600px;margin:0 auto">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem">
-        <span style="background:rgba(212,168,67,.12);color:var(--accent-gold);font-size:.72rem;font-weight:700;padding:.2rem .7rem;border-radius:50px;letter-spacing:1px">⏳ Aguardando início da Copa — 11/Jun</span>
-        <span style="font-size:.78rem;color:var(--text-muted)">${linhas.length} cota${linhas.length>1?'s':''}</span>
+    el.innerHTML=`<div style="max-width:580px;margin:0 auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:.4rem">
+        <span style="background:rgba(212,168,67,.12);color:var(--accent-gold);font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:50px;letter-spacing:1px">⏳ Aguardando Copa — 11 Jun</span>
+        <span style="font-size:.75rem;color:var(--text-muted)">${linhas.length} cotas · ${linhas.filter(l=>l.ok).length} com palpites</span>
       </div>
       <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden">
         <table style="width:100%;border-collapse:collapse">
-          <thead><tr style="background:rgba(212,168,67,.08);border-bottom:1px solid var(--border)">
-            <th style="padding:.5rem .8rem;text-align:center;font-size:.68rem;color:var(--text-muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;width:44px">#</th>
-            <th style="padding:.5rem .5rem;text-align:left;font-size:.68rem;color:var(--text-muted);font-weight:600;letter-spacing:1px;text-transform:uppercase">Participante</th>
-            <th style="padding:.5rem .8rem;text-align:right;font-size:.68rem;color:var(--text-muted);font-weight:600;letter-spacing:1px;text-transform:uppercase">Pts</th>
+          <thead><tr style="border-bottom:1px solid var(--border)">
+            <th style="padding:.45rem .7rem;font-size:.65rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;text-align:center;width:42px">#</th>
+            <th style="padding:.45rem .4rem;font-size:.65rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;text-align:left">Participante</th>
+            <th style="padding:.45rem .7rem;font-size:.65rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;text-align:right">Pts</th>
           </tr></thead>
           <tbody>${rows}</tbody>
         </table>
       </div>
-      <p style="text-align:center;font-size:.78rem;color:var(--text-muted);margin-top:.8rem">Os pontos serão calculados automaticamente ao longo da Copa ⚽</p>
-      <p style="text-align:center;font-size:.72rem;color:var(--text-muted);margin-top:.3rem">
-        Atualizado em tempo real · <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">Grupo do WhatsApp</a>
-      </p>
+      <p style="text-align:center;font-size:.76rem;color:var(--text-muted);margin-top:.7rem">Os pontos serão calculados automaticamente ao longo da Copa ⚽</p>
     </div>`;
-
-    // Realtime — só subscreve uma vez
-    if(!_rankChannel){
-      _rankChannel = sb.channel('ranking-live')
-        .on('postgres_changes',{event:'*',schema:'public',table:'palpites_grupos'},()=>_refreshRankingDebounced())
-        .subscribe();
-    }
   }catch(e){
-    el.innerHTML=`<p style="text-align:center;padding:2rem;color:var(--error)">Erro: ${e.message}</p>`;
+    el.innerHTML=`<div style="text-align:center;padding:2rem"><p style="font-size:1.5rem">⚠️</p><p style="color:var(--text-muted);font-size:.85rem">Erro ao carregar: ${e.message}</p><button class="btn btn-s btn-sm" onclick="loadRanking()" style="margin-top:.8rem">Tentar novamente</button></div>`;
   }
 }
 
