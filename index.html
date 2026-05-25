@@ -1651,6 +1651,20 @@ async function loadPalpites(){
   el.innerHTML = html;
 }
 
+function validarPodio(cotaNum){
+  const elC=document.getElementById(`palp-c${cotaNum}-camp`);
+  const elV=document.getElementById(`palp-c${cotaNum}-vice`);
+  const elT=document.getElementById(`palp-c${cotaNum}-terceiro`);
+  if(!elC||!elV||!elT)return;
+  const vC=elC.value,vV=elV.value,vT=elT.value;
+  const dup=(vC&&vV&&vC===vV)||(vC&&vT&&vC===vT)||(vV&&vT&&vV===vT);
+  [elC,elV,elT].forEach(el=>{
+    el.style.borderColor=dup?'var(--error)':'';
+    el.style.boxShadow=dup?'0 0 0 3px rgba(239,68,68,.25)':'';
+  });
+  if(dup)toast('Palpitão: escolha seleções diferentes para cada posição!','e');
+}
+
 function validarGrupo(grp, cotaNum){
   const el1=document.getElementById(`g${grp}-c${cotaNum}-1`);
   const el2=document.getElementById(`g${grp}-c${cotaNum}-2`);
