@@ -1320,7 +1320,7 @@ function updateUI(){
             <div class="pkd"><code>2b03f68f-4aae-49b9-99a5-705b31982b7b</code><button onclick="cpk()">Copiar</button></div>
             <p class="pixn">Chave PIX: Aleatória · <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">Envie o comprovante no grupo</a></p>
           </div>
-          <div style="text-align:center"><button id="btn-confirmar-inscricao" class="btn btn-p" style="min-height:52px;font-size:.9rem" onclick="submitNovaInscricao()">✓ Já fiz o PIX — Nova Inscrição!</button></div>
+          <div style="text-align:center"><button id="btn-nova-inscricao" class="btn btn-p" style="min-height:52px;font-size:.9rem" onclick="submitNovaInscricao()">✓ Já fiz o PIX — Nova Inscrição!</button></div>
         </div>`;
       selC=1;
       setTimeout(gqr,100);
@@ -1342,7 +1342,7 @@ function updateUI(){
 // ===== NOVA INSCRIÇÃO (após rejeição) =====
 async function submitNovaInscricao(){
   if(!currentUser){toast('Faça login primeiro!','e');return;}
-  const btn=document.getElementById('btn-confirmar-inscricao');
+  const btn=document.getElementById('btn-nova-inscricao')||document.getElementById('btn-nova-inscricao2');
   if(btn){btn.textContent='Enviando...';btn.disabled=true;}
   const _st2=setTimeout(()=>{
     if(btn&&btn.disabled){btn.textContent='✓ Já fiz o PIX — Nova Inscrição!';btn.disabled=false;}
@@ -1439,7 +1439,7 @@ async function submitInscricao(){
 
   // Timeout de segurança — reabilitar botão se travar por > 15s
   const _safetyTimer=setTimeout(()=>{
-    if(btn&&btn.disabled){btn.textContent='✓ Já fiz o PIX — Confirmar!';btn.disabled=false;}
+    if(btn&&btn.disabled){btn.textContent='✓ Já fiz o PIX — Confirmar Inscrição!';btn.disabled=false;}
     toast('A conexão demorou demais. Tente novamente.','e');
   },15000);
   try{
@@ -1453,7 +1453,7 @@ async function submitInscricao(){
     clearTimeout(_safetyTimer);
     if(error){
       toast('Erro: '+error.message,'e');
-      if(btn){btn.textContent='✓ Já fiz o PIX — Confirmar!';btn.disabled=false;}
+      if(btn){btn.textContent='✓ Já fiz o PIX — Confirmar Inscrição!';btn.disabled=false;}
       return;
     }
     await loadUserData();updateUI();loadStats();
@@ -1461,7 +1461,7 @@ async function submitInscricao(){
   }catch(e){
     clearTimeout(_safetyTimer);
     toast('Erro ao enviar. Verifique sua conexão e tente novamente.','e');
-    if(btn){btn.textContent='✓ Já fiz o PIX — Confirmar!';btn.disabled=false;}
+    if(btn){btn.textContent='✓ Já fiz o PIX — Confirmar Inscrição!';btn.disabled=false;}
   }
 }
 
@@ -2496,7 +2496,7 @@ async function loadConta(){
         <div class="pkd"><code>2b03f68f-4aae-49b9-99a5-705b31982b7b</code><button onclick="cpk()">Copiar</button></div>
         <p class="pixn">Chave PIX: Aleatória · <a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" style="color:var(--success)">Envie o comprovante no grupo</a></p>
       </div>
-      <div style="text-align:center"><button id="btn-confirmar-inscricao" class="btn btn-p" style="min-height:52px" onclick="submitNovaInscricao()">✓ Já fiz o PIX — Nova Inscrição!</button></div>
+      <div style="text-align:center"><button id="btn-nova-inscricao2" class="btn btn-p" style="min-height:52px" onclick="submitNovaInscricao()">✓ Já fiz o PIX — Nova Inscrição!</button></div>
       <div style="text-align:center;margin-top:1rem"><button class="btn btn-danger btn-sm" onclick="logout()">Sair da Conta</button></div>
     </div>`;
     selC=1;
