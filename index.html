@@ -1857,54 +1857,130 @@ async function loadRanking(){
   el.innerHTML='<div class="loading"><div class="spinner"></div>Carregando ranking...</div>';
   try{
     const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
-    const [r1,r2,r3]=await Promise.all([
+    const[r1,r2,r3,r4,r5]=await Promise.all([
       fetch(SUPABASE_URL+'/rest/v1/inscricoes?select=id,user_id,cotas&status=eq.aprovado',{headers:H}).then(r=>r.json()),
       fetch(SUPABASE_URL+'/rest/v1/profiles?select=id,nome,apelido',{headers:H}).then(r=>r.json()),
       fetch(SUPABASE_URL+'/rest/v1/palpites_grupos?select=inscricao_id,cota_numero',{headers:H}).then(r=>r.json()),
+      fetch(SUPABASE_URL+'/rest/v1/pontuacao_cotas?select=inscricao_id,cota_numero,total_pontos,pts_grupos,pts_artilheiro,pts_palpitao,grupos_apurados',{headers:H}).then(r=>r.json()).catch(()=>[]),
+      fetch(SUPABASE_URL+'/rest/v1/classificacao_grupos?select=grupo',{headers:H}).then(r=>r.json()).catch(()=>[]),
     ]);
+
     const inscs=Array.isArray(r1)?r1:[];
     const profs=Array.isArray(r2)?r2:[];
     const pg=Array.isArray(r3)?r3:[];
+    const pts=Array.isArray(r4)?r4:[];
+    const gruposApurados=Array.isArray(r5)?r5.length:0;
+    const copaComecou=gruposApurados>0;
+
+    // Mapa palpites preenchidos
     const pm={};
     pg.forEach(p=>{if(!pm[p.inscricao_id])pm[p.inscricao_id]=new Set();pm[p.inscricao_id].add(p.cota_numero);});
+
+    // Mapa pontuação
+    const ptMap={};
+    pts.forEach(p=>{ptMap[p.inscricao_id+'_'+p.cota_numero]=p;});
+
+    // Montar linhas
     const linhas=[];
     inscs.forEach(i=>{
-      const p=profs.find(x=>x.id===i.user_id);
-      const nome=p?.apelido||p?.nome?.split(' ').slice(0,2).join(' ')||'?';
+      const prof=(profs||[]).find(x=>x.id===i.user_id);
+      const apelido=prof?.apelido||prof?.nome?.split(' ').slice(0,2).join(' ')||'?';
       for(let c=1;c<=i.cotas;c++){
-        linhas.push({nome,cota:c,total:i.cotas,ok:!!pm[i.id]?.has(c)});
+        const preencheu=!!pm[i.id]?.has(c);
+        const ptRow=ptMap[i.id+'_'+c];
+        const pontos=ptRow?.total_pontos||0;
+        linhas.push({apelido,cota:c,totalCotas:i.cotas,preencheu,pontos,ptRow,inscricao_id:i.id});
       }
     });
-    linhas.sort((a,b)=>(b.ok?1:0)-(a.ok?1:0)||a.nome.localeCompare(b.nome));
-    const rows=linhas.map((l,idx)=>{
-      const pos=idx+1;
-      const medal=pos===1?'🥇':pos===2?'🥈':pos===3?'🥉':`<b style="color:var(--text-muted)">${pos}º</b>`;
-      const isMe=userProfile&&(userProfile.apelido===l.nome||userProfile.nome?.startsWith(l.nome));
+
+    // Ordenar: pontos desc, empate → por nome
+    linhas.sort((a,b)=>b.pontos-a.pontos||a.apelido.localeCompare(b.apelido));
+
+    // Posições com empate
+    let pos=1;
+    linhas.forEach((l,idx)=>{
+      if(idx>0&&l.pontos===linhas[idx-1].pontos) l.pos=linhas[idx-1].pos;
+      else l.pos=pos;
+      pos++;
+    });
+
+    const badge=pos=>{
+      if(pos===1)return'<span style="font-size:1.2rem">🥇</span>';
+      if(pos===2)return'<span style="font-size:1.2rem">🥈</span>';
+      if(pos===3)return'<span style="font-size:1.2rem">🥉</span>';
+      return`<b style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--text-muted)">${pos}º</b>`;
+    };
+
+    const rows=linhas.map(l=>{
+      const isMe=currentUser&&(userProfile?.apelido===l.apelido||userProfile?.nome?.includes(l.apelido));
       const bg=isMe?'background:rgba(212,168,67,.1);border-left:3px solid var(--accent-gold);':'';
-      const nc=l.total>1?` <span style="font-size:.65rem;color:var(--text-muted);background:rgba(255,255,255,.07);padding:.1rem .35rem;border-radius:50px">cota ${l.cota}</span>`:'';
-      const st=l.ok?'<span style="font-size:.65rem;color:var(--success)">✓ palpites enviados</span>':'<span style="font-size:.65rem;color:var(--text-muted);font-style:italic">aguardando palpites...</span>';
+      const nc=l.totalCotas>1?` <span style="font-size:.65rem;color:var(--text-muted);background:rgba(255,255,255,.07);padding:.1rem .35rem;border-radius:50px">cota ${l.cota}</span>`:'';
       const nm=isMe?'color:var(--accent-gold)':'color:var(--text-primary)';
-      return`<tr style="${bg}"><td style="padding:.6rem .7rem;text-align:center;width:42px">${medal}</td><td style="padding:.6rem .4rem"><span style="font-family:'Barlow Condensed',sans-serif;font-size:.98rem;font-weight:600;${nm}">${l.nome}</span>${nc}<br>${st}</td><td style="padding:.6rem .7rem;text-align:right;font-family:'Oswald',sans-serif;font-size:1rem;color:var(--text-muted)">—</td></tr>`;
+
+      let statusTag='';
+      if(!l.preencheu){
+        statusTag='<span style="font-size:.65rem;color:var(--text-muted);font-style:italic">aguardando palpites...</span>';
+      } else if(!copaComecou){
+        statusTag='<span style="font-size:.65rem;color:var(--success)">✓ palpites enviados</span>';
+      } else {
+        // Copa em andamento — mostrar breakdown de pontos
+        const gr=l.ptRow?.pts_grupos||0;
+        const ar=l.ptRow?.pts_artilheiro||0;
+        const pp=l.ptRow?.pts_palpitao||0;
+        statusTag=`<span style="font-size:.65rem;color:var(--text-secondary)">grupos:${gr}pts${ar?` · art:${ar}pts`:''}${pp?` · palpitão:${pp}pts`:''}</span>`;
+      }
+
+      const ptsDisplay=copaComecou&&l.preencheu
+        ?`<span style="font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:700;color:${l.pontos>0?'var(--accent-gold)':'var(--text-muted)'}">${l.pontos}</span>`
+        :'<span style="color:var(--text-muted);font-size:.9rem">—</span>';
+
+      return`<tr style="${bg}">
+        <td style="padding:.65rem .7rem;text-align:center;width:44px">${badge(l.pos)}</td>
+        <td style="padding:.65rem .4rem">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:600;${nm}">${l.apelido}</span>${nc}<br>
+          ${statusTag}
+        </td>
+        <td style="padding:.65rem .7rem;text-align:right">${ptsDisplay}</td>
+      </tr>`;
     }).join('');
+
+    // Badge de status no topo
+    let statusBadge='';
+    if(!copaComecou){
+      statusBadge=`<span style="background:rgba(212,168,67,.12);color:var(--accent-gold);font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:50px;letter-spacing:1px">⏳ Aguardando Copa — 11 Jun</span>`;
+    } else if(gruposApurados<12){
+      statusBadge=`<span style="background:rgba(34,197,94,.12);color:var(--success);font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:50px;letter-spacing:1px">⚽ Em andamento — ${gruposApurados}/12 grupos apurados</span>`;
+    } else {
+      statusBadge=`<span style="background:rgba(212,168,67,.15);color:var(--accent-gold);font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:50px;letter-spacing:1px">🏁 1ª Fase concluída — Placar parcial</span>`;
+    }
+
     el.innerHTML=`<div style="max-width:580px;margin:0 auto">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:.4rem">
-        <span style="background:rgba(212,168,67,.12);color:var(--accent-gold);font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:50px;letter-spacing:1px">⏳ Aguardando Copa — 11 Jun</span>
-        <span style="font-size:.75rem;color:var(--text-muted)">${linhas.length} cotas · ${linhas.filter(l=>l.ok).length} com palpites</span>
+        ${statusBadge}
+        <span style="font-size:.75rem;color:var(--text-muted)">${linhas.length} cotas · ${linhas.filter(l=>l.preencheu).length} preenchidas</span>
       </div>
       <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden">
         <table style="width:100%;border-collapse:collapse">
           <thead><tr style="border-bottom:1px solid var(--border)">
-            <th style="padding:.45rem .7rem;font-size:.65rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;text-align:center;width:42px">#</th>
+            <th style="padding:.45rem .7rem;font-size:.65rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;text-align:center;width:44px">#</th>
             <th style="padding:.45rem .4rem;font-size:.65rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;text-align:left">Participante</th>
             <th style="padding:.45rem .7rem;font-size:.65rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;text-align:right">Pts</th>
           </tr></thead>
           <tbody>${rows}</tbody>
         </table>
       </div>
-      <p style="text-align:center;font-size:.76rem;color:var(--text-muted);margin-top:.7rem">Os pontos serão calculados automaticamente ao longo da Copa ⚽</p>
+      ${!copaComecou?`<p style="text-align:center;font-size:.76rem;color:var(--text-muted);margin-top:.7rem">Os pontos serão calculados automaticamente após cada grupo ser apurado ⚽</p>`:''}
     </div>`;
+
+    // Realtime — só subscreve uma vez
+    if(!_rankChannel){
+      _rankChannel=sb.channel('ranking-live')
+        .on('postgres_changes',{event:'*',schema:'public',table:'pontuacao_cotas'},()=>_refreshRankingDebounced())
+        .on('postgres_changes',{event:'*',schema:'public',table:'classificacao_grupos'},()=>_refreshRankingDebounced())
+        .subscribe();
+    }
   }catch(e){
-    el.innerHTML=`<div style="text-align:center;padding:2rem"><p style="font-size:1.5rem">⚠️</p><p style="color:var(--text-muted);font-size:.85rem">Erro: ${e.message}</p><button class="btn btn-s btn-sm" onclick="loadRanking()" style="margin-top:.8rem">Tentar novamente</button></div>`;
+    el.innerHTML=`<div style="text-align:center;padding:2rem"><p style="color:var(--error)">Erro: ${e.message}</p><button class="btn btn-s" onclick="loadRanking()" style="margin-top:.8rem">Tentar novamente</button></div>`;
   }
 }
 
@@ -1913,6 +1989,82 @@ let _rankRefreshTimer = null;
 function _refreshRankingDebounced(){
   clearTimeout(_rankRefreshTimer);
   _rankRefreshTimer = setTimeout(() => loadRanking(), 1500);
+}
+
+
+// ── Calcular pontos de uma cota baseado nos grupos apurados ──────────────
+async function calcularPontosCota(inscricaoId, cotaNum){
+  const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
+  const[pg,cg,pa]=await Promise.all([
+    fetch(SUPABASE_URL+'/rest/v1/palpites_grupos?select=grupo,primeiro,segundo&inscricao_id=eq.'+inscricaoId+'&cota_numero=eq.'+cotaNum,{headers:H}).then(r=>r.json()),
+    fetch(SUPABASE_URL+'/rest/v1/classificacao_grupos?select=grupo,primeiro,segundo',{headers:H}).then(r=>r.json()),
+    fetch(SUPABASE_URL+'/rest/v1/palpites_artilheiro?select=campeao,vice,terceiro&inscricao_id=eq.'+inscricaoId+'&cota_numero=eq.'+cotaNum,{headers:H}).then(r=>r.json()),
+  ]);
+
+  let ptsGrupos=0, gruposApurados=cg.length;
+  pg.forEach(p=>{
+    const real=cg.find(c=>c.grupo===p.grupo);
+    if(!real)return;
+    const acertou1=p.primeiro===real.primeiro;
+    const acertou2=p.segundo===real.segundo;
+    if(acertou1&&acertou2) ptsGrupos+=5;
+    else if(acertou1) ptsGrupos+=3;
+    else if(acertou2) ptsGrupos+=2;
+  });
+
+  // Palpitão — só calcula quando todos os 12 grupos forem apurados
+  let ptsPalpitao=0;
+  if(gruposApurados===12&&pa[0]){
+    // Buscar resultado final (campeão/vice/3o do torneio ficará em config)
+    // Por ora usar classificacao_grupos para Palpitão quando disponível
+  }
+
+  const total=ptsGrupos+ptsPalpitao;
+  return {ptsGrupos, ptsPalpitao, ptsArtilheiro:0, total, gruposApurados};
+}
+
+// ── Apurar grupo (admin lança 1º e 2º e recalcula tudo) ──────────────────
+async function apurarGrupo(grupo, primeiro, segundo){
+  if(!primeiro||!segundo){toast('Preencha 1º e 2º colocados','e');return;}
+  if(primeiro===segundo){toast('1º e 2º não podem ser iguais','e');return;}
+
+  const btn=document.getElementById('btn-apurar-'+grupo);
+  if(btn){btn.disabled=true;btn.textContent='Calculando...';}
+
+  try{
+    // 1. Salvar/atualizar classificacao_grupos
+    const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+(await sb.auth.getSession()).data?.session?.access_token};
+    const r=await fetch(SUPABASE_URL+'/rest/v1/classificacao_grupos',{
+      method:'POST',
+      headers:{...H,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
+      body:JSON.stringify({grupo,primeiro,segundo,apurado_por:currentUser.id}),
+    });
+    if(!r.ok){const e=await r.json();throw new Error(e.message||'Erro ao salvar');}
+
+    // 2. Recalcular pontos de TODAS as cotas
+    const{data:inscs}=await sb.from('inscricoes').select('id,cotas').eq('status','aprovado');
+    let atualizados=0;
+    for(const insc of (inscs||[])){
+      for(let c=1;c<=insc.cotas;c++){
+        const pts=await calcularPontosCota(insc.id,c);
+        await sb.from('pontuacao_cotas').upsert({
+          inscricao_id:insc.id, cota_numero:c,
+          pts_grupos:pts.ptsGrupos, pts_artilheiro:pts.ptsArtilheiro,
+          pts_palpitao:pts.ptsPalpitao, total_pontos:pts.total,
+          grupos_apurados:pts.gruposApurados, updated_at:new Date().toISOString(),
+        },{onConflict:'inscricao_id,cota_numero'});
+        atualizados++;
+      }
+    }
+
+    toast(`✅ Grupo ${grupo} apurado! ${atualizados} cotas recalculadas.`,'s');
+    loadAdmin();
+    _refreshRankingDebounced();
+  }catch(e){
+    toast('Erro: '+e.message,'e');
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='Apurar';}
+  }
 }
 
 
@@ -1997,7 +2149,14 @@ async function loadAdmin(){
         return`<tr><td>${p.nome||'-'}</td><td>${cc.cotas_atual}x</td><td>${cc.cotas_nova}x</td><td>R$ ${cc.valor_adicional}</td><td><button class="ba" onclick="adminApproveCotas(${cc.id},${cc.inscricao_id},${cc.cotas_nova})">Aprovar</button><button class="br2" onclick="adminRejectCotas(${cc.id})">Rejeitar</button></td></tr>`;
       }).join('');
       const section=document.getElementById('admin-cotas-pend-section');
-      if(section)section.innerHTML=`<div style="margin-bottom:1.5rem"><h4 style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--warning);text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem">⏳ Solicitações de Mais Cotas (${cotasPend.length})</h4><div style="overflow-x:auto"><table class="atbl"><thead><tr><th>Nome</th><th>De</th><th>Para</th><th>+Valor</th><th>Ações</th></tr></thead><tbody>${cpHtml}</tbody></table></div></div>`;
+      if(section)section.innerHTML=`<div style="margin-bottom:1.5rem"><h4 style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--warning);text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem">⏳ Solicitações de Mais Cotas (${cotasPend.length})</h4>
+<div class="re" id="apuracao-grupos" style="margin-top:2rem">
+  <h3 style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--accent-gold);margin-bottom:.3rem">⚽ APURAÇÃO DOS GRUPOS</h3>
+  <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem">Após encerrar cada grupo, selecione o 1º e 2º e clique em Apurar. Todos os pontos serão recalculados automaticamente.</p>
+  <div id="apuracao-lista" style="max-width:700px"><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo A</span><select id="ap-A-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="México">México</option><option value="África do Sul">África do Sul</option><option value="Coreia do Sul">Coreia do Sul</option><option value="República Tcheca">República Tcheca</option></select><select id="ap-A-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="México">México</option><option value="África do Sul">África do Sul</option><option value="Coreia do Sul">Coreia do Sul</option><option value="República Tcheca">República Tcheca</option></select><button id="btn-apurar-A" class="btn btn-s" onclick="apurarGrupo('A',document.getElementById('ap-A-1').value,document.getElementById('ap-A-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo B</span><select id="ap-B-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Canadá">Canadá</option><option value="Bósnia e Herzegovina">Bósnia e Herzegovina</option><option value="Catar">Catar</option><option value="Suíça">Suíça</option></select><select id="ap-B-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Canadá">Canadá</option><option value="Bósnia e Herzegovina">Bósnia e Herzegovina</option><option value="Catar">Catar</option><option value="Suíça">Suíça</option></select><button id="btn-apurar-B" class="btn btn-s" onclick="apurarGrupo('B',document.getElementById('ap-B-1').value,document.getElementById('ap-B-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo C</span><select id="ap-C-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Brasil">Brasil</option><option value="Marrocos">Marrocos</option><option value="Haiti">Haiti</option><option value="Escócia">Escócia</option></select><select id="ap-C-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Brasil">Brasil</option><option value="Marrocos">Marrocos</option><option value="Haiti">Haiti</option><option value="Escócia">Escócia</option></select><button id="btn-apurar-C" class="btn btn-s" onclick="apurarGrupo('C',document.getElementById('ap-C-1').value,document.getElementById('ap-C-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo D</span><select id="ap-D-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="EUA">EUA</option><option value="Paraguai">Paraguai</option><option value="Austrália">Austrália</option><option value="Turquia">Turquia</option></select><select id="ap-D-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="EUA">EUA</option><option value="Paraguai">Paraguai</option><option value="Austrália">Austrália</option><option value="Turquia">Turquia</option></select><button id="btn-apurar-D" class="btn btn-s" onclick="apurarGrupo('D',document.getElementById('ap-D-1').value,document.getElementById('ap-D-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo E</span><select id="ap-E-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Alemanha">Alemanha</option><option value="Equador">Equador</option><option value="Costa do Marfim">Costa do Marfim</option><option value="Curaçao">Curaçao</option></select><select id="ap-E-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Alemanha">Alemanha</option><option value="Equador">Equador</option><option value="Costa do Marfim">Costa do Marfim</option><option value="Curaçao">Curaçao</option></select><button id="btn-apurar-E" class="btn btn-s" onclick="apurarGrupo('E',document.getElementById('ap-E-1').value,document.getElementById('ap-E-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo F</span><select id="ap-F-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Holanda">Holanda</option><option value="Japão">Japão</option><option value="Suécia">Suécia</option><option value="Tunísia">Tunísia</option></select><select id="ap-F-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Holanda">Holanda</option><option value="Japão">Japão</option><option value="Suécia">Suécia</option><option value="Tunísia">Tunísia</option></select><button id="btn-apurar-F" class="btn btn-s" onclick="apurarGrupo('F',document.getElementById('ap-F-1').value,document.getElementById('ap-F-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo G</span><select id="ap-G-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Bélgica">Bélgica</option><option value="Irã">Irã</option><option value="Egito">Egito</option><option value="Nova Zelândia">Nova Zelândia</option></select><select id="ap-G-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Bélgica">Bélgica</option><option value="Irã">Irã</option><option value="Egito">Egito</option><option value="Nova Zelândia">Nova Zelândia</option></select><button id="btn-apurar-G" class="btn btn-s" onclick="apurarGrupo('G',document.getElementById('ap-G-1').value,document.getElementById('ap-G-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo H</span><select id="ap-H-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Espanha">Espanha</option><option value="Uruguai">Uruguai</option><option value="Arábia Saudita">Arábia Saudita</option><option value="Cabo Verde">Cabo Verde</option></select><select id="ap-H-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Espanha">Espanha</option><option value="Uruguai">Uruguai</option><option value="Arábia Saudita">Arábia Saudita</option><option value="Cabo Verde">Cabo Verde</option></select><button id="btn-apurar-H" class="btn btn-s" onclick="apurarGrupo('H',document.getElementById('ap-H-1').value,document.getElementById('ap-H-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo I</span><select id="ap-I-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="França">França</option><option value="Senegal">Senegal</option><option value="Iraque">Iraque</option><option value="Noruega">Noruega</option></select><select id="ap-I-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="França">França</option><option value="Senegal">Senegal</option><option value="Iraque">Iraque</option><option value="Noruega">Noruega</option></select><button id="btn-apurar-I" class="btn btn-s" onclick="apurarGrupo('I',document.getElementById('ap-I-1').value,document.getElementById('ap-I-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo J</span><select id="ap-J-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Argentina">Argentina</option><option value="Argélia">Argélia</option><option value="Áustria">Áustria</option><option value="Jordânia">Jordânia</option></select><select id="ap-J-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Argentina">Argentina</option><option value="Argélia">Argélia</option><option value="Áustria">Áustria</option><option value="Jordânia">Jordânia</option></select><button id="btn-apurar-J" class="btn btn-s" onclick="apurarGrupo('J',document.getElementById('ap-J-1').value,document.getElementById('ap-J-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo K</span><select id="ap-K-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Portugal">Portugal</option><option value="RD Congo">RD Congo</option><option value="Uzbequistão">Uzbequistão</option><option value="Colômbia">Colômbia</option></select><select id="ap-K-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Portugal">Portugal</option><option value="RD Congo">RD Congo</option><option value="Uzbequistão">Uzbequistão</option><option value="Colômbia">Colômbia</option></select><button id="btn-apurar-K" class="btn btn-s" onclick="apurarGrupo('K',document.getElementById('ap-K-1').value,document.getElementById('ap-K-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo L</span><select id="ap-L-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Inglaterra">Inglaterra</option><option value="Croácia">Croácia</option><option value="Gana">Gana</option><option value="Panamá">Panamá</option></select><select id="ap-L-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Inglaterra">Inglaterra</option><option value="Croácia">Croácia</option><option value="Gana">Gana</option><option value="Panamá">Panamá</option></select><button id="btn-apurar-L" class="btn btn-s" onclick="apurarGrupo('L',document.getElementById('ap-L-1').value,document.getElementById('ap-L-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div></div>
+</div>
+
+<div style="overflow-x:auto"><table class="atbl"><thead><tr><th>Nome</th><th>De</th><th>Para</th><th>+Valor</th><th>Ações</th></tr></thead><tbody>${cpHtml}</tbody></table></div></div>`;
     }
 
     // Seção de reset de senha — Admin
@@ -2029,6 +2188,19 @@ async function loadAdmin(){
   }catch(e){el.innerHTML='<p>Erro: '+e.message+'</p>';}
   // Realtime — atualiza status de palpites ao vivo
   _subscribeAdminPalpites();
+
+  // Pré-preencher grupos já apurados na seção de apuração
+  try{
+    const{data:cg}=await sb.from('classificacao_grupos').select('grupo,primeiro,segundo');
+    (cg||[]).forEach(g=>{
+      const s1=document.getElementById(`ap-${g.grupo}-1`);
+      const s2=document.getElementById(`ap-${g.grupo}-2`);
+      const btn=document.getElementById(`btn-apurar-${g.grupo}`);
+      if(s1)s1.value=g.primeiro;
+      if(s2)s2.value=g.segundo;
+      if(btn){btn.textContent='✅ Apurado';btn.style.background='var(--text-muted)';}
+    });
+  }catch(e){}
 }
 
 function _subscribeAdminPalpites(){
