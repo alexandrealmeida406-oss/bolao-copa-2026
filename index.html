@@ -1206,7 +1206,8 @@ function navigate(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+page)?.classList.add('active');
   document.getElementById('nl').classList.remove('open');
-  window.scrollTo(0,0);
+  // scrollTo só para pages dinâmicas — sections da home controlam o próprio scroll
+  if(!['home','cf','val','insc','rank','prem','grupos'].includes(page))window.scrollTo(0,0);
   
   if(page==='admin')loadAdmin();
   if(page==='conta')loadConta();
@@ -1232,9 +1233,11 @@ function navigate(page){
 }
 
 function scrollToSection(id){
+  // Delay maior para garantir que o window.scrollTo(0,0) do navigate já rodou
   setTimeout(()=>{
-    document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});
-  },100);
+    const el = document.getElementById(id);
+    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  }, 350);
 }
 
 // ===== UI UPDATE =====
