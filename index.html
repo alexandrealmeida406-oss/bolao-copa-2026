@@ -496,11 +496,11 @@ window.addEventListener('DOMContentLoaded', () => {
 <nav class="nav" id="nb">
 <a class="nav-logo" href="#" onclick="navigate('home')"><div class="li">⚽</div><span class="logo-text">Bolão Almeida Copa 2026</span></a>
 <ul class="nav-links" id="nl">
-<li><a onclick="navigate('home');scrollToSection('cf')">Como Funciona</a></li>
-<li><a onclick="navigate('home');scrollToSection('val')">Valores</a></li>
 <li><a onclick="navigate('home');scrollToSection('insc')">Inscrição</a></li>
-<li><a onclick="navigate('home');scrollToSection('rank');setTimeout(loadRanking,100)">Ranking</a></li>
+<li><a onclick="navigate('home');scrollToSection('val')">Valores</a></li>
 <li><a onclick="navigate('home');scrollToSection('prem')">Premiação</a></li>
+<li><a onclick="navigate('home');scrollToSection('cf')">Como Funciona</a></li>
+<li><a onclick="navigate('home');scrollToSection('rank');setTimeout(loadRanking,100)">Ranking</a></li>
 <li id="nav-auth"></li>
 </ul>
 <button class="mmb" onclick="document.getElementById('nl').classList.toggle('open')">☰</button>
@@ -546,6 +546,79 @@ window.addEventListener('DOMContentLoaded', () => {
 </section>
 
 <!-- Como Funciona -->
+<section class="sec" id="insc">
+<div class="sh"><div class="stag">Participe Agora</div><h2 class="stitle">Inscrição</h2><p class="sdesc">Entre com Google, escolha suas cotas e pague via PIX. Simples assim!</p></div>
+<div id="inscricao-content">
+<!-- Dynamic content: login or form -->
+</div>
+</section>
+
+<section class="sec ps" id="val">
+<div class="sh">
+  <div class="stag">Invista no Seu Palpite</div>
+  <h2 class="stitle">Valores</h2>
+  <p class="sdesc">Escolha quantas cotas quiser — mais cotas, mais chances de ganhar!</p>
+</div>
+<div class="pg">
+
+  <!-- 1 Cota -->
+  <div class="pc">
+    <div class="pcc">1 Cota</div>
+    <div class="pvl">R$ 23<small>,00</small></div>
+    <div class="pbd">R$ 20 cota + R$ 3 taxa</div>
+    <ul class="pf">
+      <li>1 palpite completo</li>
+      <li>Acesso ao ranking ao vivo</li>
+      <li>Concorre aos 3 prêmios</li>
+    </ul>
+    <a class="btn btn-s btn-sm" onclick="startInscricao(1)">Escolher</a>
+  </div>
+
+  <!-- 2 Cotas — destaque -->
+  <div class="pc ft">
+    <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--accent-gold);color:var(--bg-dark);font-family:'Oswald',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .8rem;border-radius:50px;white-space:nowrap">⭐ Mais Popular</div>
+    <div class="pcc">2 Cotas</div>
+    <div class="pvl">R$ 44<small>,00</small></div>
+    <div class="pbd">R$ 38 cotas + R$ 6 taxa</div>
+    <div class="ppd">2x mais chances de ganhar!</div>
+    <ul class="pf">
+      <li>2 palpites independentes</li>
+      <li>Dobra suas chances no ranking</li>
+      <li>Acesso ao ranking ao vivo</li>
+    </ul>
+    <a class="btn btn-p btn-sm" onclick="startInscricao(2)">Escolher</a>
+  </div>
+
+  <!-- 3 Cotas -->
+  <div class="pc">
+    <div class="pcc">3 Cotas</div>
+    <div class="pvl">R$ 63<small>,00</small></div>
+    <div class="pbd">R$ 55 cotas + R$ 8 taxa</div>
+    <div class="ppd">Máximo de chances!</div>
+    <ul class="pf">
+      <li>3 palpites independentes</li>
+      <li>Máxima chance de ganhar</li>
+      <li>Limite máximo por participante</li>
+    </ul>
+    <a class="btn btn-s btn-sm" onclick="startInscricao(3)">Escolher</a>
+  </div>
+
+</div>
+<p style="text-align:center;font-size:.75rem;color:var(--text-muted);margin-top:.8rem">
+  💡 A taxa de serviço não entra no prêmio. O prêmio é calculado apenas sobre o valor das cotas.
+</p>
+</section>
+
+<section class="sec" id="prem">
+<div class="sh"><div style="display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap"><div class="stag">Prêmios</div><span style="display:inline-flex;align-items:center;gap:.35rem;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--success);font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .6rem;border-radius:50px"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse 1.5s infinite"></span>Ao Vivo</span></div><h2 class="stitle">Premiação</h2><p class="sdesc">Os valores atualizam automaticamente com cada nova inscrição</p></div>
+<div class="prg">
+<div class="prc sv"><div class="prm">🥈</div><div class="prpl">2º Lugar</div><div class="prpc">30%</div><div class="prpv" id="pz2">R$ 0,00</div></div>
+<div class="prc gd"><div class="prm">🥇</div><div class="prpl">1º Lugar</div><div class="prpc">60%</div><div class="prpv" id="pz1">R$ 0,00</div></div>
+<div class="prc bz"><div class="prm">🥉</div><div class="prpl">3º Lugar</div><div class="prpc">10%</div><div class="prpv" id="pz3">R$ 0,00</div></div>
+</div>
+<div class="wab"><h3>📱 Grupo do WhatsApp</h3><p>Fique por dentro de tudo!</p><a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w btn-sm">Entrar no Grupo</a></div>
+</section>
+
 <section class="sec" id="cf">
 <div class="sh"><div class="stag">Regras do Jogo</div><h2 class="stitle">Como Funciona</h2><p class="sdesc">Tudo que você precisa saber para participar — em 6 passos simples.</p></div>
 
@@ -792,7 +865,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
 </section>
 
-<!-- Grupos da Copa 2026 -->
+<section class="sec" id="rank">
+<div class="sh"><div class="stag">Classificação</div><h2 class="stitle">Ranking</h2>
+<p class="sdesc">Cada cota concorre de forma independente. Acompanhe ao vivo quem está na frente!</p></div>
+<div id="rank-content"></div>
+</section>
+
 <section class="sec" id="grupos" style="padding-top:0">
 <div class="sh"><div class="stag">Copa do Mundo 2026</div><h2 class="stitle">Os 12 Grupos</h2><p class="sdesc">48 seleções classificadas após todas as repescagens. Grupos definitivos.</p></div>
 <div class="groups-grid" style="grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:.9rem">
@@ -910,88 +988,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 <!-- Valores -->
-<section class="sec ps" id="val">
-<div class="sh">
-  <div class="stag">Invista no Seu Palpite</div>
-  <h2 class="stitle">Valores</h2>
-  <p class="sdesc">Escolha quantas cotas quiser — mais cotas, mais chances de ganhar!</p>
-</div>
-<div class="pg">
 
-  <!-- 1 Cota -->
-  <div class="pc">
-    <div class="pcc">1 Cota</div>
-    <div class="pvl">R$ 23<small>,00</small></div>
-    <div class="pbd">R$ 20 cota + R$ 3 taxa</div>
-    <ul class="pf">
-      <li>1 palpite completo</li>
-      <li>Acesso ao ranking ao vivo</li>
-      <li>Concorre aos 3 prêmios</li>
-    </ul>
-    <a class="btn btn-s btn-sm" onclick="startInscricao(1)">Escolher</a>
-  </div>
-
-  <!-- 2 Cotas — destaque -->
-  <div class="pc ft">
-    <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--accent-gold);color:var(--bg-dark);font-family:'Oswald',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .8rem;border-radius:50px;white-space:nowrap">⭐ Mais Popular</div>
-    <div class="pcc">2 Cotas</div>
-    <div class="pvl">R$ 44<small>,00</small></div>
-    <div class="pbd">R$ 38 cotas + R$ 6 taxa</div>
-    <div class="ppd">2x mais chances de ganhar!</div>
-    <ul class="pf">
-      <li>2 palpites independentes</li>
-      <li>Dobra suas chances no ranking</li>
-      <li>Acesso ao ranking ao vivo</li>
-    </ul>
-    <a class="btn btn-p btn-sm" onclick="startInscricao(2)">Escolher</a>
-  </div>
-
-  <!-- 3 Cotas -->
-  <div class="pc">
-    <div class="pcc">3 Cotas</div>
-    <div class="pvl">R$ 63<small>,00</small></div>
-    <div class="pbd">R$ 55 cotas + R$ 8 taxa</div>
-    <div class="ppd">Máximo de chances!</div>
-    <ul class="pf">
-      <li>3 palpites independentes</li>
-      <li>Máxima chance de ganhar</li>
-      <li>Limite máximo por participante</li>
-    </ul>
-    <a class="btn btn-s btn-sm" onclick="startInscricao(3)">Escolher</a>
-  </div>
-
-</div>
-<p style="text-align:center;font-size:.75rem;color:var(--text-muted);margin-top:.8rem">
-  💡 A taxa de serviço não entra no prêmio. O prêmio é calculado apenas sobre o valor das cotas.
-</p>
-</section>
-
-
-<!-- Inscrição -->
-<section class="sec" id="insc">
-<div class="sh"><div class="stag">Participe Agora</div><h2 class="stitle">Inscrição</h2><p class="sdesc">Entre com Google, escolha suas cotas e pague via PIX. Simples assim!</p></div>
-<div id="inscricao-content">
-<!-- Dynamic content: login or form -->
-</div>
-</section>
-
-<!-- Ranking -->
-<section class="sec" id="rank">
-<div class="sh"><div class="stag">Classificação</div><h2 class="stitle">Ranking</h2>
-<p class="sdesc">Cada cota concorre de forma independente. Acompanhe ao vivo quem está na frente!</p></div>
-<div id="rank-content"></div>
-</section>
-
-<!-- Premiação -->
-<section class="sec" id="prem">
-<div class="sh"><div style="display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap"><div class="stag">Prêmios</div><span style="display:inline-flex;align-items:center;gap:.35rem;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--success);font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .6rem;border-radius:50px"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse 1.5s infinite"></span>Ao Vivo</span></div><h2 class="stitle">Premiação</h2><p class="sdesc">Os valores atualizam automaticamente com cada nova inscrição</p></div>
-<div class="prg">
-<div class="prc sv"><div class="prm">🥈</div><div class="prpl">2º Lugar</div><div class="prpc">30%</div><div class="prpv" id="pz2">R$ 0,00</div></div>
-<div class="prc gd"><div class="prm">🥇</div><div class="prpl">1º Lugar</div><div class="prpc">60%</div><div class="prpv" id="pz1">R$ 0,00</div></div>
-<div class="prc bz"><div class="prm">🥉</div><div class="prpl">3º Lugar</div><div class="prpc">10%</div><div class="prpv" id="pz3">R$ 0,00</div></div>
-</div>
-<div class="wab"><h3>📱 Grupo do WhatsApp</h3><p>Fique por dentro de tudo!</p><a href="https://chat.whatsapp.com/BkSekrYPUUs3BnfImNRGq2?mode=gi_t" target="_blank" class="btn btn-w btn-sm">Entrar no Grupo</a></div>
-</section>
 
 </div><!-- end page-home -->
 
