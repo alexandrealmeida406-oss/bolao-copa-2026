@@ -1,14 +1,14 @@
 <section class="sec" id="grupos" style="padding-top:0">
 <div class="sh">
   <div class="stag">Copa do Mundo 2026</div>
-  <h2 class="stitle">Grupos &amp; Jogos</h2>
-  <p class="sdesc">48 seleções · 12 grupos · 104 jogos. Horários no fuso de Brasília.</p>
+  <h2 class="stitle">12 Grupos</h2>
+  <p class="sdesc">48 seleções classificadas após todas as repescagens. Grupos definitivos.</p>
 </div>
 
 <!-- Abas -->
 <div style="display:flex;gap:.5rem;margin-bottom:1.2rem;border-bottom:2px solid var(--border)">
-  <button id="tab-grupos" onclick="showTab('grupos')" style="padding:.6rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid var(--accent-gold);color:var(--accent-gold);cursor:pointer;margin-bottom:-2px">⚽ 12 Grupos</button>
-  <button id="tab-jogos" onclick="showTab('jogos')" style="padding:.6rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text-muted);cursor:pointer;margin-bottom:-2px">📅 Todos os Jogos</button>
+  <button id="tab-grupos" onclick="showTab('grupos')" style="padding:.6rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid var(--accent-gold);color:var(--accent-gold);cursor:pointer;margin-bottom:-2px">12 Grupos</button>
+  <button id="tab-jogos" onclick="showTab('jogos')" style="padding:.6rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text-muted);cursor:pointer;margin-bottom:-2px">Data e Horário dos Jogos</button>
 </div>
 
 <!-- Painel Grupos -->
@@ -523,6 +523,7 @@ window.addEventListener('DOMContentLoaded', () => {
 <li><a onclick="navigate('home');scrollToSection('val')">Valores</a></li>
 <li><a onclick="navigate('home');scrollToSection('prem')">Premiação</a></li>
 <li><a onclick="navigate('home');scrollToSection('cf')">Como Funciona</a></li>
+<li><a onclick="navigate('home');scrollToSection('grupos')">12 Grupos</a></li>
 <li><a onclick="navigate('home');scrollToSection('rank');setTimeout(loadRanking,100)">Ranking</a></li>
 <li id="nav-auth"></li>
 </ul>
