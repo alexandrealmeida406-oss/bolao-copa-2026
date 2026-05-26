@@ -502,7 +502,7 @@ window.addEventListener('DOMContentLoaded', () => {
 <li><a onclick="navigate('home');scrollToSection('cf')">Como Funciona</a></li>
 <li><a onclick="navigate('home');scrollToSection('rank');setTimeout(loadRanking,100)">Ranking</a></li>
 <li><a onclick="navigate('home');scrollToSection('grupos')">Grupos da Copa</a></li>
-<li><a onclick="navigate('home');scrollToSection('grupos');setTimeout(()=>{if(typeof showTab==='function')showTab('jogos')},400)">Data dos Jogos</a></li>
+<li><a onclick="navigate('home');scrollToSection('grupos');setTimeout(()=>{if(typeof showTab==='function'){showTab('jogos');setTimeout(()=>document.getElementById('grupos')?.scrollIntoView({behavior:'smooth',block:'start'}),100)}},400)">Data dos Jogos</a></li>
 <li id="nav-auth"></li>
 </ul>
 <button class="mmb" onclick="document.getElementById('nl').classList.toggle('open')">☰</button>
