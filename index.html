@@ -501,8 +501,8 @@ window.addEventListener('DOMContentLoaded', () => {
 <li><a onclick="navigate('home');scrollToSection('prem')">Premiação</a></li>
 <li><a onclick="navigate('home');scrollToSection('cf')">Como Funciona</a></li>
 <li><a onclick="navigate('home');scrollToSection('rank');setTimeout(loadRanking,100)">Ranking</a></li>
-<li><a onclick="navigate('home');scrollToSection('grupos')">Grupos da Copa</a></li>
-<li><a onclick="navigate('home');scrollToSection('grupos');setTimeout(()=>{if(typeof showTab==='function'){showTab('jogos');setTimeout(()=>document.getElementById('grupos')?.scrollIntoView({behavior:'smooth',block:'start'}),100)}},400)">Data dos Jogos</a></li>
+<li><a onclick="goTo('grupos','grupos')">Grupos da Copa</a></li>
+<li><a onclick="goTo('grupos','jogos')">Data dos Jogos</a></li>
 <li id="nav-auth"></li>
 </ul>
 <button class="mmb" onclick="document.getElementById('nl').classList.toggle('open')">☰</button>
@@ -2162,6 +2162,29 @@ async function apurarGrupo(grupo, primeiro, segundo){
   }
 }
 
+
+function goTo(sectionId, tab){
+  // Navegar para home primeiro (se necessário)
+  if(document.getElementById('page-home') && !document.getElementById('page-home').classList.contains('active')){
+    navigate('home');
+  }
+  // Aguardar navigate resetar o scroll e depois ir para a section
+  setTimeout(()=>{
+    const el = document.getElementById(sectionId);
+    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    // Trocar aba se necessário
+    if(tab && typeof showTab === 'function'){
+      setTimeout(()=>{
+        showTab(tab);
+        // Re-scroll após showTab mudar o layout
+        setTimeout(()=>{
+          const el2 = document.getElementById(sectionId);
+          if(el2) el2.scrollIntoView({behavior:'smooth', block:'start'});
+        }, 150);
+      }, 50);
+    }
+  }, 400);
+}
 
 function showTab(tab){
   // Atualizar botões
