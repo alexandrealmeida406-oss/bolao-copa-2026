@@ -501,7 +501,6 @@ window.addEventListener('DOMContentLoaded', () => {
 <li><a onclick="navigate('home');scrollToSection('prem')">Premiação</a></li>
 <li><a onclick="navigate('home');scrollToSection('cf')">Como Funciona</a></li>
 <li><a onclick="navigate('home');scrollToSection('rank');setTimeout(loadRanking,100)">Ranking</a></li>
-<li><a onclick="goToGrupos()">Grupos da Copa</a></li>
 <li><a onclick="goToJogos()">Data dos Jogos</a></li>
 <li><a onclick="goToClass()">Classificação</a></li>
 <li id="nav-auth"></li>
@@ -878,11 +877,10 @@ window.addEventListener('DOMContentLoaded', () => {
 <div class="sh"><div class="stag">Copa do Mundo 2026</div><h2 class="stitle">Grupos da Copa</h2>
 <p class="sdesc">48 seleções classificadas após todas as repescagens. Grupos definitivos.</p></div>
 <div style="display:flex;gap:.5rem;margin-bottom:1.2rem;border-bottom:2px solid var(--border)">
-  <button id="tab-grupos" onclick="showTab('grupos')" style="padding:.6rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid var(--accent-gold);color:var(--accent-gold);cursor:pointer;margin-bottom:-2px">Grupos da Copa</button>
-  <button id="tab-jogos" onclick="showTab('jogos')" style="padding:.6rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text-muted);cursor:pointer;margin-bottom:-2px">Data dos Jogos</button>
+  <button id="tab-jogos" onclick="showTab('jogos')" style="padding:.6rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid var(--accent-gold);color:var(--accent-gold);cursor:pointer;margin-bottom:-2px">Data dos Jogos</button>
   <button id="tab-class" onclick="showTab('class')" style="padding:.6rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text-muted);cursor:pointer;margin-bottom:-2px">Classificação</button>
 </div>
-<div id="panel-grupos">
+<div id="panel-grupos" style="display:none">
 <div class="groups-grid" style="grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:.9rem">
 <div class="group-card">
 <div class="group-header">Grupo A 🇲🇽</div>
@@ -2193,7 +2191,6 @@ function goTo(sectionId, tab){
 
 function showTab(tab){
   const tabs={
-    'grupos':document.getElementById('tab-grupos'),
     'jogos':document.getElementById('tab-jogos'),
     'class':document.getElementById('tab-class'),
   };
@@ -2202,16 +2199,20 @@ function showTab(tab){
     'jogos':document.getElementById('panel-jogos'),
     'class':document.getElementById('panel-class'),
   };
+  // Resetar abas
   Object.values(tabs).forEach(t=>{if(t){t.style.borderBottomColor='transparent';t.style.color='var(--text-muted)';}});
+  // Esconder todos os panels
   Object.values(panels).forEach(p=>{if(p)p.style.display='none';});
+  // Ativar aba e panel selecionados
   if(tabs[tab]){tabs[tab].style.borderBottomColor='var(--accent-gold)';tabs[tab].style.color='var(--accent-gold)';}
   if(panels[tab])panels[tab].style.display='';
+  // Carregar conteúdo
   if(tab==='jogos'){const jc=document.getElementById('jogos-content');if(jc&&jc.dataset.loaded!=='true')loadJogos();}
   if(tab==='class'){const cc=document.getElementById('class-content');if(cc&&cc.dataset.loaded!=='true')loadClassificacao();}
 }
 
 // Aliases de navegação para o menu
-function goToGrupos(){ goTo('grupos','grupos'); }
+function goToGrupos(){ goTo('grupos','jogos'); }
 function goToJogos(){ goTo('grupos','jogos'); }
 function goToClass(){ goTo('grupos','class'); }
 
