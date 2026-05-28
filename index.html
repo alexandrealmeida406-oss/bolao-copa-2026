@@ -501,8 +501,9 @@ window.addEventListener('DOMContentLoaded', () => {
 <li><a onclick="navigate('home');scrollToSection('prem')">Premiação</a></li>
 <li><a onclick="navigate('home');scrollToSection('cf')">Como Funciona</a></li>
 <li><a onclick="navigate('home');scrollToSection('rank');setTimeout(loadRanking,100)">Ranking</a></li>
-<li><a onclick="goTo('grupos','grupos')">Grupos da Copa</a></li>
-<li><a onclick="goTo('grupos','jogos')">Data dos Jogos</a></li>
+<li><a onclick="goToGrupos()">Grupos da Copa</a></li>
+<li><a onclick="goToJogos()">Data dos Jogos</a></li>
+<li><a onclick="goToClass()">Classificação</a></li>
 <li id="nav-auth"></li>
 </ul>
 <button class="mmb" onclick="document.getElementById('nl').classList.toggle('open')">☰</button>
@@ -879,6 +880,7 @@ window.addEventListener('DOMContentLoaded', () => {
 <div style="display:flex;gap:.5rem;margin-bottom:1.2rem;border-bottom:2px solid var(--border)">
   <button id="tab-grupos" onclick="showTab('grupos')" style="padding:.6rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid var(--accent-gold);color:var(--accent-gold);cursor:pointer;margin-bottom:-2px">Grupos da Copa</button>
   <button id="tab-jogos" onclick="showTab('jogos')" style="padding:.6rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text-muted);cursor:pointer;margin-bottom:-2px">Data dos Jogos</button>
+  <button id="tab-class" onclick="showTab('class')" style="padding:.6rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text-muted);cursor:pointer;margin-bottom:-2px">Classificação</button>
 </div>
 <div id="panel-grupos">
 <div class="groups-grid" style="grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:.9rem">
@@ -994,6 +996,9 @@ window.addEventListener('DOMContentLoaded', () => {
 </div>
 <div id="panel-jogos" style="display:none">
   <div id="jogos-content" data-loaded="false"><div class="loading"><div class="spinner"></div>Carregando jogos...</div></div>
+</div>
+<div id="panel-class" style="display:none">
+  <div id="class-content" data-loaded="false"><div class="loading"><div class="spinner"></div>Carregando classificação...</div></div>
 </div>
 </section>
 </div><!-- /page-home -->
@@ -2187,26 +2192,137 @@ function goTo(sectionId, tab){
 }
 
 function showTab(tab){
-  // Atualizar botões
-  const tabG = document.getElementById('tab-grupos');
-  const tabJ = document.getElementById('tab-jogos');
-  const panG = document.getElementById('panel-grupos');
-  const panJ = document.getElementById('panel-jogos');
-  if(!tabG||!tabJ||!panG||!panJ) return;
+  const tabs={
+    'grupos':document.getElementById('tab-grupos'),
+    'jogos':document.getElementById('tab-jogos'),
+    'class':document.getElementById('tab-class'),
+  };
+  const panels={
+    'grupos':document.getElementById('panel-grupos'),
+    'jogos':document.getElementById('panel-jogos'),
+    'class':document.getElementById('panel-class'),
+  };
+  Object.values(tabs).forEach(t=>{if(t){t.style.borderBottomColor='transparent';t.style.color='var(--text-muted)';}});
+  Object.values(panels).forEach(p=>{if(p)p.style.display='none';});
+  if(tabs[tab]){tabs[tab].style.borderBottomColor='var(--accent-gold)';tabs[tab].style.color='var(--accent-gold)';}
+  if(panels[tab])panels[tab].style.display='';
+  if(tab==='jogos'){const jc=document.getElementById('jogos-content');if(jc&&jc.dataset.loaded!=='true')loadJogos();}
+  if(tab==='class'){const cc=document.getElementById('class-content');if(cc&&cc.dataset.loaded!=='true')loadClassificacao();}
+}
 
-  if(tab==='grupos'){
-    tabG.style.borderBottomColor='var(--accent-gold)'; tabG.style.color='var(--accent-gold)';
-    tabJ.style.borderBottomColor='transparent'; tabJ.style.color='var(--text-muted)';
-    panG.style.display=''; panJ.style.display='none';
-  } else {
-    tabJ.style.borderBottomColor='var(--accent-gold)'; tabJ.style.color='var(--accent-gold)';
-    tabG.style.borderBottomColor='transparent'; tabG.style.color='var(--text-muted)';
-    panJ.style.display=''; panG.style.display='none';
-    // Carregar jogos se ainda não carregou
-    const jc = document.getElementById('jogos-content');
-    if(jc && jc.innerHTML.includes('spinner')) loadJogos();
+// Aliases de navegação para o menu
+function goToGrupos(){ goTo('grupos','grupos'); }
+function goToJogos(){ goTo('grupos','jogos'); }
+function goToClass(){ goTo('grupos','class'); }
+
+async function loadClassificacao(){
+  const el=document.getElementById('class-content');
+  if(!el)return;
+  el.innerHTML='<div class="loading"><div class="spinner"></div>Carregando classificação...</div>';
+  try{
+    const resp=await fetch('https://v3.football.api-sports.io/standings?league=1&season=2026',{
+      headers:{'x-apisports-key':API_FOOTBALL_KEY}
+    });
+    const d=await resp.json();
+    const standings=d.response?.[0]?.league?.standings;
+    const NM=typeof NOME_MAP!=='undefined'?NOME_MAP:{};
+
+    let html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:.9rem">';
+
+    if(standings&&standings.length>0){
+      standings.forEach(grp=>{
+        const letraGrupo=(grp[0]?.group||'').replace('Group ','');
+        html+=`<div class="group-card">
+          <div class="group-header">Grupo ${letraGrupo}</div>
+          <table style="width:100%;border-collapse:collapse;font-size:.78rem">
+          <thead><tr style="color:var(--text-muted);font-size:.63rem;text-transform:uppercase;letter-spacing:.5px">
+            <th style="text-align:left;padding:.25rem .3rem;width:50%">Seleção</th>
+            <th style="padding:.25rem .2rem;text-align:center">J</th><th style="padding:.25rem .2rem;text-align:center">V</th>
+            <th style="padding:.25rem .2rem;text-align:center">E</th><th style="padding:.25rem .2rem;text-align:center">D</th>
+            <th style="padding:.25rem .2rem;text-align:center">SG</th>
+            <th style="padding:.25rem .2rem;text-align:center;color:var(--accent-gold)">Pts</th>
+          </tr></thead><tbody>`;
+        grp.forEach((t,idx)=>{
+          const nome=NM[t.team?.name]||t.team?.name||'';
+          const sg=(t.goalsDiff>=0?'+':'')+t.goalsDiff;
+          const isTop2=idx<2;
+          const bg=isTop2?'background:rgba(34,197,94,.07)':'';
+          const badge=idx===0?'🥇':idx===1?'🥈':'';
+          html+=`<tr style="border-top:1px solid var(--border);${bg}">
+            <td style="padding:.3rem .3rem">
+              <div style="display:flex;align-items:center;gap:.35rem">
+                <span style="font-size:.65rem;width:.9rem">${badge}</span>
+                <img src="https://media.api-sports.io/football/teams/${t.team?.id}.png" style="width:18px;height:18px;object-fit:contain" onerror="this.style.display='none'">
+                <span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.82rem">${nome}</span>
+              </div>
+            </td>
+            <td style="text-align:center;padding:.3rem .2rem">${t.all?.played||0}</td>
+            <td style="text-align:center;padding:.3rem .2rem">${t.all?.win||0}</td>
+            <td style="text-align:center;padding:.3rem .2rem">${t.all?.draw||0}</td>
+            <td style="text-align:center;padding:.3rem .2rem">${t.all?.lose||0}</td>
+            <td style="text-align:center;padding:.3rem .2rem">${sg}</td>
+            <td style="text-align:center;padding:.3rem .2rem;font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold)">${t.points||0}</td>
+          </tr>`;
+        });
+        html+=`</tbody></table></div>`;
+      });
+    } else {
+      // Copa ainda não começou — mostrar tabela zerada com bandeiras
+      const GF=[
+        {g:'A',ts:[['mx','México'],['za','África do Sul'],['kr','Coreia do Sul'],['cz','República Tcheca']]},
+        {g:'B',ts:[['ca','Canadá'],['ba','Bósnia e Herzegovina'],['qa','Catar'],['ch','Suíça']]},
+        {g:'C',ts:[['br','Brasil'],['ma','Marrocos'],['ht','Haiti'],['gb-sct','Escócia']]},
+        {g:'D',ts:[['us','EUA'],['py','Paraguai'],['au','Austrália'],['tr','Turquia']]},
+        {g:'E',ts:[['de','Alemanha'],['ec','Equador'],['ci','Costa do Marfim'],['cw','Curaçao']]},
+        {g:'F',ts:[['nl','Holanda'],['jp','Japão'],['se','Suécia'],['tn','Tunísia']]},
+        {g:'G',ts:[['be','Bélgica'],['ir','Irã'],['eg','Egito'],['nz','Nova Zelândia']]},
+        {g:'H',ts:[['es','Espanha'],['uy','Uruguai'],['sa','Arábia Saudita'],['cv','Cabo Verde']]},
+        {g:'I',ts:[['fr','França'],['sn','Senegal'],['iq','Iraque'],['no','Noruega']]},
+        {g:'J',ts:[['ar','Argentina'],['dz','Argélia'],['at','Áustria'],['jo','Jordânia']]},
+        {g:'K',ts:[['pt','Portugal'],['cd','RD Congo'],['uz','Uzbequistão'],['co','Colômbia']]},
+        {g:'L',ts:[['gb-eng','Inglaterra'],['hr','Croácia'],['gh','Gana'],['pa','Panamá']]},
+      ];
+      GF.forEach(({g,ts})=>{
+        html+=`<div class="group-card">
+          <div class="group-header">Grupo ${g}</div>
+          <table style="width:100%;border-collapse:collapse;font-size:.78rem">
+          <thead><tr style="color:var(--text-muted);font-size:.63rem;text-transform:uppercase;letter-spacing:.5px">
+            <th style="text-align:left;padding:.25rem .3rem">Seleção</th>
+            <th style="padding:.25rem .2rem;text-align:center">J</th><th style="padding:.25rem .2rem;text-align:center">V</th>
+            <th style="padding:.25rem .2rem;text-align:center">E</th><th style="padding:.25rem .2rem;text-align:center">D</th>
+            <th style="padding:.25rem .2rem;text-align:center">SG</th>
+            <th style="padding:.25rem .2rem;text-align:center;color:var(--accent-gold)">Pts</th>
+          </tr></thead><tbody>`;
+        ts.forEach(([f,n])=>{
+          html+=`<tr style="border-top:1px solid var(--border)">
+            <td style="padding:.3rem .3rem">
+              <div style="display:flex;align-items:center;gap:.4rem">
+                <img src="https://flagcdn.com/w40/${f}.png" style="width:20px;height:13px;border-radius:2px;object-fit:cover" onerror="this.style.display='none'">
+                <span style="font-family:'Barlow Condensed',sans-serif;font-weight:600">${n}</span>
+              </div>
+            </td>
+            <td style="text-align:center;padding:.3rem .2rem;color:var(--text-muted)">0</td>
+            <td style="text-align:center;padding:.3rem .2rem;color:var(--text-muted)">0</td>
+            <td style="text-align:center;padding:.3rem .2rem;color:var(--text-muted)">0</td>
+            <td style="text-align:center;padding:.3rem .2rem;color:var(--text-muted)">0</td>
+            <td style="text-align:center;padding:.3rem .2rem;color:var(--text-muted)">0</td>
+            <td style="text-align:center;padding:.3rem .2rem;font-family:'Oswald',sans-serif;font-weight:700;color:var(--text-muted)">0</td>
+          </tr>`;
+        });
+        html+=`</tbody></table></div>`;
+      });
+      html+='</div><p style="text-align:center;font-size:.75rem;color:var(--text-muted);margin-top:1rem">⏳ Copa começa em 11 Jun — classificação atualiza automaticamente após cada rodada</p>';
+    }
+
+    if(standings&&standings.length>0) html+='</div>';
+    el.dataset.loaded='true';
+    el.innerHTML=html;
+
+  }catch(e){
+    el.innerHTML=`<p style="text-align:center;padding:2rem;color:var(--error)">Erro: ${e.message}</p>`;
   }
 }
+
 
 async function loadJogos(){
   const el = document.getElementById('jogos-content');
