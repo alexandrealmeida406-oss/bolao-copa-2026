@@ -1588,7 +1588,7 @@ async function loadPalpites(){
       </div>`;
 
     // Grid dos 12 grupos
-    html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.7rem;margin-bottom:1rem">`;
+    html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.7rem;margin-bottom:1rem">`;
     for(const [grp, sels] of Object.entries(GRUPOS_INFO)){
       const saved = palGruposCota.find(p => p.grupo === grp);
       const resultado = resultadosGrupos.find(r => r.grupo === grp);
@@ -2225,107 +2225,75 @@ async function loadClassificacao(){
   if(!el)return;
   el.innerHTML='<div class="loading"><div class="spinner"></div>Carregando classificação...</div>';
   try{
-    const resp=await fetch('https://v3.football.api-sports.io/standings?league=1&season=2026',{
-      headers:{'x-apisports-key':API_FOOTBALL_KEY}
-    });
+    const resp=await fetch('https://v3.football.api-sports.io/standings?league=1&season=2026',{headers:{'x-apisports-key':API_FOOTBALL_KEY}});
     const d=await resp.json();
-    const standings=d.response?.[0]?.league?.standings;
+    const standings=d.response&&d.response[0]&&d.response[0].league?d.response[0].league.standings:null;
     const NM=typeof NOME_MAP!=='undefined'?NOME_MAP:{};
-
-    let html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:.9rem">';
-
+    const GF=[
+      {g:'A',ts:[['mx','México'],['za','África do Sul'],['kr','Coreia do Sul'],['cz','República Tcheca']]},
+      {g:'B',ts:[['ca','Canadá'],['ba','Bósnia e Herzegovina'],['qa','Catar'],['ch','Suíça']]},
+      {g:'C',ts:[['br','Brasil'],['ma','Marrocos'],['ht','Haiti'],['gb-sct','Escócia']]},
+      {g:'D',ts:[['us','EUA'],['py','Paraguai'],['au','Austrália'],['tr','Turquia']]},
+      {g:'E',ts:[['de','Alemanha'],['ec','Equador'],['ci','Costa do Marfim'],['cw','Curaçao']]},
+      {g:'F',ts:[['nl','Holanda'],['jp','Japão'],['se','Suécia'],['tn','Tunísia']]},
+      {g:'G',ts:[['be','Bélgica'],['ir','Irã'],['eg','Egito'],['nz','Nova Zelândia']]},
+      {g:'H',ts:[['es','Espanha'],['uy','Uruguai'],['sa','Arábia Saudita'],['cv','Cabo Verde']]},
+      {g:'I',ts:[['fr','França'],['sn','Senegal'],['iq','Iraque'],['no','Noruega']]},
+      {g:'J',ts:[['ar','Argentina'],['dz','Argélia'],['at','Áustria'],['jo','Jordânia']]},
+      {g:'K',ts:[['pt','Portugal'],['cd','RD Congo'],['uz','Uzbequistão'],['co','Colômbia']]},
+      {g:'L',ts:[['gb-eng','Inglaterra'],['hr','Croácia'],['gh','Gana'],['pa','Panamá']]},
+    ];
+    function mkImg(src,w,h){const img=document.createElement('img');img.src=src;img.style.cssText='width:'+w+'px;height:'+h+'px;object-fit:cover;border-radius:2px;flex-shrink:0';img.onerror=function(){this.style.display='none';};return img;}
+    function mkThead(){const thead=document.createElement('thead');const tr=document.createElement('tr');tr.style.cssText='color:var(--text-muted);font-size:.63rem;text-transform:uppercase;letter-spacing:.5px';['Seleção','J','V','E','D','SG','Pts'].forEach(function(t,i){const th=document.createElement('th');th.textContent=t;th.style.cssText=i===0?'text-align:left;padding:.25rem .3rem;width:55%':'padding:.25rem .2rem;text-align:center';if(t==='Pts')th.style.color='var(--accent-gold)';tr.appendChild(th);});thead.appendChild(tr);return thead;}
+    function mkTable(){const t=document.createElement('table');t.style.cssText='width:100%;border-collapse:collapse;font-size:.78rem;table-layout:fixed';t.appendChild(mkThead());return t;}
+    function mkCard(titulo){const c=document.createElement('div');c.className='group-card';c.style.overflow='hidden';const h=document.createElement('div');h.className='group-header';h.textContent=titulo;c.appendChild(h);return c;}
+    const wrapper=document.createElement('div');
+    wrapper.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.8rem';
     if(standings&&standings.length>0){
-      standings.forEach(grp=>{
-        const letraGrupo=(grp[0]?.group||'').replace('Group ','');
-        html+=`<div class="group-card">
-          <div class="group-header">Grupo ${letraGrupo}</div>
-          <div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table style="width:100%;border-collapse:collapse;font-size:.78rem;table-layout:fixed">
-          <thead><tr style="color:var(--text-muted);font-size:.63rem;text-transform:uppercase;letter-spacing:.5px">
-            <th style="text-align:left;padding:.25rem .3rem;width:50%">Seleção</th>
-            <th style="padding:.25rem .2rem;text-align:center">J</th><th style="padding:.25rem .2rem;text-align:center">V</th>
-            <th style="padding:.25rem .2rem;text-align:center">E</th><th style="padding:.25rem .2rem;text-align:center">D</th>
-            <th style="padding:.25rem .2rem;text-align:center">SG</th>
-            <th style="padding:.25rem .2rem;text-align:center;color:var(--accent-gold)">Pts</th>
-          </tr></thead><tbody>`;
-        grp.forEach((t,idx)=>{
-          const nome=NM[t.team?.name]||t.team?.name||'';
+      standings.forEach(function(grp){
+        const letra=(grp[0]&&grp[0].group||'').replace('Group ','');
+        const card=mkCard('Grupo '+letra);
+        const table=mkTable();
+        const tbody=document.createElement('tbody');
+        grp.forEach(function(t,idx){
+          const nome=NM[t.team&&t.team.name]||t.team&&t.team.name||'';
           const sg=(t.goalsDiff>=0?'+':'')+t.goalsDiff;
-          const isTop2=idx<2;
-          const bg=isTop2?'background:rgba(34,197,94,.07)':'';
-          const badge=idx===0?'🥇':idx===1?'🥈':'';
-          html+=`<tr style="border-top:1px solid var(--border);${bg}">
-            <td style="padding:.3rem .3rem">
-              <div style="display:flex;align-items:center;gap:.35rem">
-                <span style="font-size:.65rem;width:.9rem">${badge}</span>
-                <img src="https://media.api-sports.io/football/teams/${t.team?.id}.png" style="width:18px;height:18px;object-fit:contain" onerror="this.style.display='none'">
-                <span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.82rem">${nome}</span>
-              </div>
-            </td>
-            <td style="text-align:center;padding:.3rem .2rem">${t.all?.played||0}</td>
-            <td style="text-align:center;padding:.3rem .2rem">${t.all?.win||0}</td>
-            <td style="text-align:center;padding:.3rem .2rem">${t.all?.draw||0}</td>
-            <td style="text-align:center;padding:.3rem .2rem">${t.all?.lose||0}</td>
-            <td style="text-align:center;padding:.3rem .2rem">${sg}</td>
-            <td style="text-align:center;padding:.3rem .2rem;font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold)">${t.points||0}</td>
-          </tr>`;
+          const tr=document.createElement('tr');
+          tr.style.cssText='border-top:1px solid var(--border)'+(idx<2?';background:rgba(34,197,94,.07)':'');
+          const tdNome=document.createElement('td');tdNome.style.cssText='padding:.3rem .3rem;width:55%';
+          const nomeDiv=document.createElement('div');nomeDiv.style.cssText='display:flex;align-items:center;gap:.35rem';
+          const badge=document.createElement('span');badge.style.cssText='font-size:.65rem;width:.9rem';badge.textContent=idx===0?'🥇':idx===1?'🥈':'';
+          const img=mkImg('https://media.api-sports.io/football/teams/'+(t.team&&t.team.id)+'.png',18,18);
+          const span=document.createElement('span');span.style.cssText="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.76rem;line-height:1.2;overflow:hidden;text-overflow:ellipsis";span.textContent=nome;
+          nomeDiv.appendChild(badge);nomeDiv.appendChild(img);nomeDiv.appendChild(span);tdNome.appendChild(nomeDiv);tr.appendChild(tdNome);
+          [t.all&&t.all.played||0,t.all&&t.all.win||0,t.all&&t.all.draw||0,t.all&&t.all.lose||0,sg,t.points||0].forEach(function(v,ci){
+            const td=document.createElement('td');td.style.cssText='text-align:center;padding:.3rem .2rem'+(ci===5?";font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold)":'');td.textContent=v;tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
         });
-        html+=`</tbody></table></div>`;
+        table.appendChild(tbody);card.appendChild(table);wrapper.appendChild(card);
       });
     } else {
-      // Copa ainda não começou — mostrar tabela zerada com bandeiras
-      const GF=[
-        {g:'A',ts:[['mx','México'],['za','África do Sul'],['kr','Coreia do Sul'],['cz','República Tcheca']]},
-        {g:'B',ts:[['ca','Canadá'],['ba','Bósnia e Herzegovina'],['qa','Catar'],['ch','Suíça']]},
-        {g:'C',ts:[['br','Brasil'],['ma','Marrocos'],['ht','Haiti'],['gb-sct','Escócia']]},
-        {g:'D',ts:[['us','EUA'],['py','Paraguai'],['au','Austrália'],['tr','Turquia']]},
-        {g:'E',ts:[['de','Alemanha'],['ec','Equador'],['ci','Costa do Marfim'],['cw','Curaçao']]},
-        {g:'F',ts:[['nl','Holanda'],['jp','Japão'],['se','Suécia'],['tn','Tunísia']]},
-        {g:'G',ts:[['be','Bélgica'],['ir','Irã'],['eg','Egito'],['nz','Nova Zelândia']]},
-        {g:'H',ts:[['es','Espanha'],['uy','Uruguai'],['sa','Arábia Saudita'],['cv','Cabo Verde']]},
-        {g:'I',ts:[['fr','França'],['sn','Senegal'],['iq','Iraque'],['no','Noruega']]},
-        {g:'J',ts:[['ar','Argentina'],['dz','Argélia'],['at','Áustria'],['jo','Jordânia']]},
-        {g:'K',ts:[['pt','Portugal'],['cd','RD Congo'],['uz','Uzbequistão'],['co','Colômbia']]},
-        {g:'L',ts:[['gb-eng','Inglaterra'],['hr','Croácia'],['gh','Gana'],['pa','Panamá']]},
-      ];
-      GF.forEach(({g,ts})=>{
-        html+=`<div class="group-card">
-          <div class="group-header">Grupo ${g}</div>
-          <div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table style="width:100%;border-collapse:collapse;font-size:.78rem;table-layout:fixed">
-          <thead><tr style="color:var(--text-muted);font-size:.63rem;text-transform:uppercase;letter-spacing:.5px">
-            <th style="text-align:left;padding:.25rem .3rem">Seleção</th>
-            <th style="padding:.25rem .2rem;text-align:center">J</th><th style="padding:.25rem .2rem;text-align:center">V</th>
-            <th style="padding:.25rem .2rem;text-align:center">E</th><th style="padding:.25rem .2rem;text-align:center">D</th>
-            <th style="padding:.25rem .2rem;text-align:center">SG</th>
-            <th style="padding:.25rem .2rem;text-align:center;color:var(--accent-gold)">Pts</th>
-          </tr></thead><tbody>`;
-        ts.forEach(([f,n])=>{
-          html+=`<tr style="border-top:1px solid var(--border)">
-            <td style="padding:.3rem .3rem">
-              <div style="display:flex;align-items:center;gap:.4rem">
-                <img src="https://flagcdn.com/w40/${f}.png" style="width:20px;height:13px;border-radius:2px;object-fit:cover" onerror="this.style.display='none'">
-                <span style="font-family:'Barlow Condensed',sans-serif;font-weight:600">${n}</span>
-              </div>
-            </td>
-            <td style="text-align:center;padding:.3rem .2rem;color:var(--text-muted)">0</td>
-            <td style="text-align:center;padding:.3rem .2rem;color:var(--text-muted)">0</td>
-            <td style="text-align:center;padding:.3rem .2rem;color:var(--text-muted)">0</td>
-            <td style="text-align:center;padding:.3rem .2rem;color:var(--text-muted)">0</td>
-            <td style="text-align:center;padding:.3rem .2rem;color:var(--text-muted)">0</td>
-            <td style="text-align:center;padding:.3rem .2rem;font-family:'Oswald',sans-serif;font-weight:700;color:var(--text-muted)">0</td>
-          </tr>`;
+      GF.forEach(function(gf){
+        const card=mkCard('Grupo '+gf.g);
+        const table=mkTable();
+        const tbody=document.createElement('tbody');
+        gf.ts.forEach(function(t){
+          const tr=document.createElement('tr');tr.style.borderTop='1px solid var(--border)';
+          const tdNome=document.createElement('td');tdNome.style.cssText='padding:.3rem .3rem;width:55%';
+          const nomeDiv=document.createElement('div');nomeDiv.style.cssText='display:flex;align-items:center;gap:.4rem';
+          const img=mkImg('https://flagcdn.com/w40/'+t[0]+'.png',18,12);
+          const span=document.createElement('span');span.style.cssText="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.76rem;line-height:1.2;overflow:hidden;text-overflow:ellipsis";span.textContent=t[1];
+          nomeDiv.appendChild(img);nomeDiv.appendChild(span);tdNome.appendChild(nomeDiv);tr.appendChild(tdNome);
+          for(var ci=0;ci<6;ci++){const td=document.createElement('td');td.style.cssText='text-align:center;padding:.3rem .2rem;color:'+(ci===5?'var(--accent-gold)':'var(--text-muted)');if(ci===5){td.style.fontFamily="'Oswald',sans-serif";td.style.fontWeight='700';}td.textContent='0';tr.appendChild(td);}
+          tbody.appendChild(tr);
         });
-        html+=`</tbody></table></div>`;
+        table.appendChild(tbody);card.appendChild(table);wrapper.appendChild(card);
       });
-      html+='</div><p style="text-align:center;font-size:.75rem;color:var(--text-muted);margin-top:1rem">⏳ Copa começa em 11 Jun — classificação atualiza automaticamente após cada rodada</p>';
+      const notice=document.createElement('p');notice.style.cssText='text-align:center;font-size:.75rem;color:var(--text-muted);margin-top:1rem;grid-column:1/-1';notice.textContent='⏳ Copa começa em 11 Jun — classificação atualiza automaticamente após cada rodada';wrapper.appendChild(notice);
     }
-
-    if(standings&&standings.length>0) html+='</div>';
-    el.dataset.loaded='true';
-    el.innerHTML=html;
-
-  }catch(e){
-    el.innerHTML=`<p style="text-align:center;padding:2rem;color:var(--error)">Erro: ${e.message}</p>`;
-  }
+    el.dataset.loaded='true';el.innerHTML='';el.appendChild(wrapper);
+  }catch(e){el.innerHTML='<p style="text-align:center;padding:2rem;color:var(--error)">Erro: '+e.message+'</p>';}
 }
 
 
