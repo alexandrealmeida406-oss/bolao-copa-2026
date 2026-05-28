@@ -52,7 +52,7 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 @media(max-width:1280px){.side-flags{display:none}}
 
 /* NAV */
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.7rem 1.5rem;display:flex;justify-content:space-between;align-items:center;transition:all .3s}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.7rem 1rem;display:flex;justify-content:space-between;align-items:center;transition:all .3s;gap:.3rem}
 .nav.scrolled{background:rgba(10,14,23,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .nav-logo{font-family:'Oswald',sans-serif;font-weight:700;font-size:1rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:.4rem;text-decoration:none}
 .nav-logo .li{width:32px;height:32px;background:var(--gradient-gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
@@ -63,12 +63,16 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 .nav-user{display:flex;align-items:center;gap:.5rem}
 .nav-user img{width:28px;height:28px;border-radius:50%;border:2px solid var(--accent-gold)}
 .nav-user span{font-family:'Barlow Condensed',sans-serif;font-size:.8rem;color:var(--text-secondary)}
+
+/* Nav links desktop — compacto */
+.nav-links{display:flex;align-items:center;gap:.15rem;list-style:none;white-space:nowrap}
+.nav-links > li > a{font-size:.7rem;letter-spacing:.5px;padding:.35rem .45rem;white-space:nowrap}
 .mmb{display:none;background:none;border:none;color:var(--text-primary);font-size:1.5rem;cursor:pointer;padding:.3rem;line-height:1}
 @media(max-width:768px){
 .nav{padding:.6rem 1rem}
 .nav-logo .logo-text{display:none}
 .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(10,14,23,.98);flex-direction:column;padding:1rem;gap:0;border-bottom:1px solid var(--border)}
-.nav-links.open{display:flex}.nav-links a{padding:.7rem 1rem;display:block}.mmb{display:block}
+.nav-links.open{display:flex}.nav-links a{padding:.85rem 1rem;display:block;min-height:44px;display:flex;align-items:center}.mmb{display:block}
 .nav-user span{display:none}}
 
 /* BUTTONS */
@@ -876,9 +880,9 @@ window.addEventListener('DOMContentLoaded', () => {
 <section class="sec" id="grupos" style="padding-top:0">
 <div class="sh"><div class="stag">Copa do Mundo 2026</div><h2 class="stitle">Grupos da Copa</h2>
 <p class="sdesc">48 seleções classificadas após todas as repescagens. Grupos definitivos.</p></div>
-<div style="display:flex;gap:.5rem;margin-bottom:1.2rem;border-bottom:2px solid var(--border)">
-  <button id="tab-jogos" onclick="showTab('jogos')" style="padding:.6rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid var(--accent-gold);color:var(--accent-gold);cursor:pointer;margin-bottom:-2px">Data dos Jogos</button>
-  <button id="tab-class" onclick="showTab('class')" style="padding:.6rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text-muted);cursor:pointer;margin-bottom:-2px">Classificação</button>
+<div style="display:flex;gap:.5rem;margin-bottom:1.2rem;border-bottom:2px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none">
+  <button id="tab-jogos" onclick="showTab('jogos')" style="padding:.75rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid var(--accent-gold);color:var(--accent-gold);cursor:pointer;margin-bottom:-2px;min-height:44px;white-space:nowrap">Data dos Jogos</button>
+  <button id="tab-class" onclick="showTab('class')" style="padding:.75rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text-muted);cursor:pointer;margin-bottom:-2px;min-height:44px;white-space:nowrap">Classificação</button>
 </div>
 <div id="panel-grupos" style="display:none">
 <div class="groups-grid" style="grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:.9rem">
@@ -2235,7 +2239,7 @@ async function loadClassificacao(){
         const letraGrupo=(grp[0]?.group||'').replace('Group ','');
         html+=`<div class="group-card">
           <div class="group-header">Grupo ${letraGrupo}</div>
-          <table style="width:100%;border-collapse:collapse;font-size:.78rem">
+          <div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table style="width:100%;border-collapse:collapse;font-size:.78rem;table-layout:fixed">
           <thead><tr style="color:var(--text-muted);font-size:.63rem;text-transform:uppercase;letter-spacing:.5px">
             <th style="text-align:left;padding:.25rem .3rem;width:50%">Seleção</th>
             <th style="padding:.25rem .2rem;text-align:center">J</th><th style="padding:.25rem .2rem;text-align:center">V</th>
@@ -2286,7 +2290,7 @@ async function loadClassificacao(){
       GF.forEach(({g,ts})=>{
         html+=`<div class="group-card">
           <div class="group-header">Grupo ${g}</div>
-          <table style="width:100%;border-collapse:collapse;font-size:.78rem">
+          <div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table style="width:100%;border-collapse:collapse;font-size:.78rem;table-layout:fixed">
           <thead><tr style="color:var(--text-muted);font-size:.63rem;text-transform:uppercase;letter-spacing:.5px">
             <th style="text-align:left;padding:.25rem .3rem">Seleção</th>
             <th style="padding:.25rem .2rem;text-align:center">J</th><th style="padding:.25rem .2rem;text-align:center">V</th>
