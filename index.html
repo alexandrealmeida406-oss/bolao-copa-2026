@@ -2945,7 +2945,7 @@ function selCotas(n){
   const det=document.getElementById('extra-det'),inf=document.getElementById('extra-inf');
   if(det)det.style.display='block';
   if(inf)inf.textContent=`Pague R$ ${add},00 (de ${userInscricao?.cotas||1}→${n} cotas) · Envie o comprovante no WhatsApp`;
-  setTimeout(()=>{const c=document.getElementById('qrc-extra');if(!c)return;try{const q=qrcode(0,'M');q.addData(PK);q.make();c.innerHTML=q.createImgTag(3,6);c.querySelector('img').style.borderRadius='4px';}catch(e){}},80);
+  setTimeout(()=>{const c=document.getElementById('qrc-extra');if(!c)return;try{const q=qrcode(0,'M');q.addData(pixPayload(PK));q.make();c.innerHTML=q.createImgTag(3,6);c.querySelector('img').style.borderRadius='4px';}catch(e){}},80);
 }
 
 async function confirmarCotas(){
@@ -2985,7 +2985,7 @@ function selCotasPalp(n){
   setTimeout(()=>{
     const c=document.getElementById('palp-qrc-extra');
     if(!c)return;
-    try{const q=qrcode(0,'M');q.addData(PK);q.make();c.innerHTML=q.createImgTag(3,6);c.querySelector('img').style.borderRadius='4px';}catch(e){}
+    try{const q=qrcode(0,'M');q.addData(pixPayload(PK));q.make();c.innerHTML=q.createImgTag(3,6);c.querySelector('img').style.borderRadius='4px';}catch(e){}
   },80);
 }
 
