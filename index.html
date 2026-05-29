@@ -1360,7 +1360,7 @@ async function submitNovaInscricao(){
   const _st2=setTimeout(()=>{
     if(btn&&btn.disabled){btn.textContent='✓ Já fiz o PIX — Nova Inscrição!';btn.disabled=false;}
     toast('A conexão demorou demais. Tente novamente.','e');
-  },15000);
+  },45000);
   try{
     if(userInscricao?.id){
       await sb.from('inscricoes').delete().eq('id',userInscricao.id).eq('status','rejeitado');
@@ -1454,7 +1454,7 @@ async function submitInscricao(){
   const _safetyTimer=setTimeout(()=>{
     if(btn&&btn.disabled){btn.textContent='✓ Já fiz o PIX — Confirmar Inscrição!';btn.disabled=false;}
     toast('A conexão demorou demais. Tente novamente.','e');
-  },15000);
+  },45000);
   try{
     await sb.from('profiles').upsert({
       id:currentUser.id,nome,apelido,whatsapp,como_conheceu:ck,indicado_por:ind
@@ -2995,7 +2995,7 @@ async function confirmarCotasPalp(){
   const _st3=setTimeout(()=>{
     if(btn&&btn.disabled){btn.textContent='✓ Já paguei — Confirmar';btn.disabled=false;}
     toast('Conexão lenta. Tente novamente.','e');
-  },10000);
+  },45000);
   const add=PR[_novasCotasPalp].v-PR[userInscricao.cotas].v;
   let ok=false;
   try{
