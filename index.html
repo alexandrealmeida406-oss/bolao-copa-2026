@@ -2404,10 +2404,11 @@ async function loadAdmin(){
   
   try{
     // Load inscriptions and profiles separately
-    const[{data:inscs,error:insErr},{data:profs,error:profErr},{data:palpGrupos}]=await Promise.all([
+    const[{data:inscs,error:insErr},{data:profs,error:profErr},{data:palpGrupos},{data:cotasReqs}]=await Promise.all([
       sb.from('inscricoes').select('*').order('created_at',{ascending:false}),
       sb.from('profiles').select('*'),
       sb.from('palpites_grupos').select('inscricao_id,cota_numero').order('inscricao_id'),
+      sb.from('compra_cotas').select('*').order('created_at',{ascending:false}),
     ]);
     // Mapa inscricao_id → quantas cotas já preenchidas
     const palpMap={};
@@ -3245,3 +3246,18 @@ function toast(m,t){const ts=document.getElementById('toast');ts.textContent=m;t
 </script>
 </body>
 </html>
+    // --- Seção pedidos de cotas adicionais ---
+    const cotasPend=(cotasReqs||[]).filter(c=>c.status==='pendente');
+    if(cotasPend.length>0){
+      html+=`<h2 style="font-family:'Oswald',sans-serif;font-size:1.2rem;margin:2rem 0 .8rem;color:var(--warning)">💳 PEDIDOS DE COTAS ADICIONAIS (${cotasPend.length})</h2>`;
+      html+=`<table style="width:100%;border-collapse:collapse;font-size:.82rem;margin-bottom:2rem"><thead><tr style="color:var(--text-muted);font-size:.7rem;text-transform:uppercase;border-bottom:1px solid var(--border)"><th style="padding:.5rem;text-align:left">Participante</th><th style="padding:.5rem;text-align:center">Atual</th><th style="padding:.5rem;text-align:center">Nova</th><th style="padding:.5rem;text-align:center">Valor</th><th style="padding:.5rem;text-align:center">Data</th></tr></thead><tbody>`;
+      cotasPend.forEach(c=>{
+        const p=(profs||[]).find(x=>x.id===c.user_id);
+        const nome=p?.apelido||p?.nome||c.user_id.substring(0,8);
+        const dt=new Date(c.created_at).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+        html+=`<tr style="border-bottom:1px solid var(--border);background:rgba(245,158,11,.05)"><td style="padding:.5rem;font-weight:600">${nome}</td><td style="padding:.5rem;text-align:center">${c.cotas_atual}</td><td style="padding:.5rem;text-align:center;color:var(--accent-gold);font-weight:700">${c.cotas_nova}</td><td style="padding:.5rem;text-align:center">R$ ${c.valor_adicional}</td><td style="padding:.5rem;text-align:center;color:var(--text-muted);font-size:.75rem">${dt}</td></tr>`;
+      });
+      html+=`</tbody></table>`;
+    }
+
+    
