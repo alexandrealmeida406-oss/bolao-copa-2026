@@ -1691,6 +1691,34 @@ async function loadPalpites(){
     html += `</div>`;
   }
 
+
+  // Bloco de adicionar nova cota (igual à tela Conta)
+  const maxCotas = 3;
+  if(userInscricao && userInscricao.cotas < maxCotas && !bloqueado){
+    html += `
+    <div style="margin-top:2rem;padding:1.2rem;background:var(--bg-card);border:1px solid var(--border);border-radius:12px">
+      <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;margin:0 0 .8rem;color:var(--accent-gold)">➕ Adicionar Cotas</h3>
+      <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem">Você tem ${userInscricao.cotas} cota(s). Quer adicionar mais?</p>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:.8rem">
+        ${[2,3].filter(n=>n>userInscricao.cotas).map(n=>`
+          <button id="pnc${n}" onclick="selCotasPalp(${n})" class="btn btn-sm" style="flex:1;min-width:100px">
+            ${n} cotas — +R$ ${PR[n].v - PR[userInscricao.cotas].v}
+          </button>`).join('')}
+      </div>
+      <div id="palp-extra-det" style="display:none;margin-top:1rem">
+        <div class="pixs" style="margin-bottom:.8rem">
+          <div class="pixt">Pague a diferença via PIX</div>
+          <div class="qrc" id="palp-qrc-extra" style="margin:.4rem auto"></div>
+          <div class="pkd"><code>2b03f68f-4aae-49b9-99a5-705b31982b7b</code><button onclick="cpk()">Copiar</button></div>
+          <p class="pixn" id="palp-extra-inf"></p>
+        </div>
+        <div style="text-align:center">
+          <button class="btn btn-p" onclick="confirmarCotasPalp()">✓ Já fiz o PIX — Solicitar!</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
   el.innerHTML = html;
 }
 
@@ -2950,16 +2978,40 @@ function selCotas(n){
 }
 
 async function confirmarCotas(){
-  if(!_novasCotas||!currentUser||!userInscricao){toast('Selecione a quantidade!','e');return;}
-  const add=PR[_novasCotas].v-PR[userInscricao.cotas].v;
-  let ok=false;
+  if(!_novasCotas){toast('Selecione a quantidade!','e');return;}
+  if(!currentUser){toast('Faça login primeiro!','e');return;}
+  if(!userInscricao){toast('Inscrição não encontrada. Recarregue a página.','e');return;}
+  const btn=document.querySelector('[onclick="confirmarCotas()"]');
+  const btnReset=()=>{if(btn){btn.textContent='✓ Já fiz o PIX — Solicitar!';btn.disabled=false;}};
+  if(btn){btn.textContent='⏳ Enviando...';btn.disabled=true;}
+  const st=setTimeout(()=>{btnReset();toast('⚠️ Conexão lenta. Tente novamente.','e');},45000);
   try{
-    const{error}=await sb.from('compra_cotas').insert({user_id:currentUser.id,inscricao_id:userInscricao.id,cotas_atual:userInscricao.cotas,cotas_nova:_novasCotas,valor_adicional:add,status:'pendente'});
-    ok=!error;
-  }catch(e){}
-  toast(ok?`Solicitação enviada! Admin irá aprovar para ${_novasCotas} cotas. 🎉`:`Envie no WhatsApp: "Quero ir para ${_novasCotas} cotas (+R$ ${add})" com o comprovante.`,'s');
-  const det=document.getElementById('extra-det');if(det)det.style.display='none';
-  _novasCotas=null;
+    const add=PR[_novasCotas].v-PR[userInscricao.cotas].v;
+    const{error}=await sb.from('compra_cotas').insert({
+      user_id:currentUser.id,
+      inscricao_id:userInscricao.id,
+      cotas_atual:userInscricao.cotas,
+      cotas_nova:_novasCotas,
+      valor_adicional:add,
+      status:'pendente'
+    });
+    clearTimeout(st);
+    btnReset();
+    if(error){
+      console.error('compra_cotas error:',error);
+      toast('Erro ao salvar: '+error.message,'e');
+      return;
+    }
+    toast(`✅ Solicitação enviada! Admin irá aprovar para ${_novasCotas} cotas. 🎉`,'s');
+    const det=document.getElementById('extra-det');
+    if(det)det.style.display='none';
+    _novasCotas=null;
+  }catch(e){
+    clearTimeout(st);
+    btnReset();
+    console.error('confirmarCotas catch:',e);
+    toast('Erro de conexão: '+e.message+'. Tente novamente.','e');
+  }
 }
 
 // ===== COMPRA DE COTAS — PÁGINA DE PALPITES (IDs únicos) =====
@@ -2991,16 +3043,15 @@ function selCotasPalp(n){
 }
 
 async function confirmarCotasPalp(){
-  if(!_novasCotasPalp||!currentUser||!userInscricao){toast('Selecione a quantidade de cotas!','e');return;}
+  if(!_novasCotasPalp){toast('Selecione a quantidade de cotas!','e');return;}
+  if(!currentUser){toast('Faça login primeiro!','e');return;}
+  if(!userInscricao){toast('Inscrição não encontrada. Recarregue a página.','e');return;}
   const btn=document.querySelector('[onclick="confirmarCotasPalp()"]');
-  if(btn){btn.textContent='Enviando...';btn.disabled=true;}
-  const _st3=setTimeout(()=>{
-    if(btn&&btn.disabled){btn.textContent='✓ Já paguei — Confirmar';btn.disabled=false;}
-    toast('Conexão lenta. Tente novamente.','e');
-  },45000);
-  const add=PR[_novasCotasPalp].v-PR[userInscricao.cotas].v;
-  let ok=false;
+  const btnReset=()=>{if(btn){btn.textContent='✓ Já fiz o PIX — Solicitar!';btn.disabled=false;}};
+  if(btn){btn.textContent='⏳ Enviando...';btn.disabled=true;}
+  const st=setTimeout(()=>{btnReset();toast('⚠️ Conexão lenta. Tente novamente.','e');},45000);
   try{
+    const add=PR[_novasCotasPalp].v-PR[userInscricao.cotas].v;
     const{error}=await sb.from('compra_cotas').insert({
       user_id:currentUser.id,
       inscricao_id:userInscricao.id,
@@ -3009,19 +3060,23 @@ async function confirmarCotasPalp(){
       valor_adicional:add,
       status:'pendente'
     });
-    ok=!error;
-  }catch(e){}
-  clearTimeout(_st3);
-  if(btn){btn.textContent='✓ Já paguei — Confirmar';btn.disabled=false;}
-  toast(
-    ok
-      ?`✅ Solicitação enviada! Admin irá aprovar para ${_novasCotasPalp} cotas. 🎉`
-      :`Envie no WhatsApp: "Quero ir para ${_novasCotasPalp} cotas (+R$ ${add})" + comprovante PIX.`,
-    's'
-  );
-  const det=document.getElementById('palp-extra-det');
-  if(det)det.style.display='none';
-  _novasCotasPalp=null;
+    clearTimeout(st);
+    btnReset();
+    if(error){
+      console.error('compra_cotas error:',error);
+      toast('Erro ao salvar: '+error.message,'e');
+      return;
+    }
+    toast(`✅ Solicitação enviada! Admin irá aprovar para ${_novasCotasPalp} cotas. 🎉`,'s');
+    const det=document.getElementById('palp-extra-det');
+    if(det)det.style.display='none';
+    _novasCotasPalp=null;
+  }catch(e){
+    clearTimeout(st);
+    btnReset();
+    console.error('confirmarCotasPalp catch:',e);
+    toast('Erro de conexão: '+e.message+'. Tente novamente.','e');
+  }
 }
 
 // Admin: aprovar/rejeitar cotas extras
