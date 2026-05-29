@@ -2774,6 +2774,31 @@ async function loadConta(){
 }
 
 // ===== STATS =====
+function pixPayload(key){
+    const gui='br.gov.bcb.pix';
+    const merchant='BOLAO DO ALMEIDA';
+    const city='SAO PAULO';
+    function tlv(id,val){return id+String(val.length).padStart(2,'0')+val}
+    let payload='';
+    payload+=tlv('00','01'); // format
+    payload+=tlv('26',tlv('00',gui)+tlv('01',key)); // merchant account
+    payload+=tlv('52','0000'); // merchant category
+    payload+=tlv('53','986'); // currency BRL
+    payload+=tlv('58','BR'); // country
+    payload+=tlv('59',merchant);
+    payload+=tlv('60',city);
+    payload+=tlv('62',tlv('05','***')); // additional data
+    payload+='6304'; // CRC placeholder
+    // Calculate CRC16
+    let crc=0xFFFF;
+    for(let i=0;i<payload.length;i++){
+      crc^=payload.charCodeAt(i)<<8;
+      for(let j=0;j<8;j++)crc=crc&0x8000?(crc<<1)^0x1021:crc<<1;
+      crc&=0xFFFF;
+    }
+    return payload+crc.toString(16).toUpperCase().padStart(4,'0');
+  }
+
 async function loadStats(){
   try{
     const{data:inscs,error}=await sb.from('inscricoes').select('cotas,valor_cotas').eq('status','aprovado');
@@ -2811,30 +2836,6 @@ function gqr(){
   const container=document.querySelector('.qrc');
   if(!container)return;
   // Generate real PIX payload
-  function pixPayload(key){
-    const gui='br.gov.bcb.pix';
-    const merchant='BOLAO DO ALMEIDA';
-    const city='SAO PAULO';
-    function tlv(id,val){return id+String(val.length).padStart(2,'0')+val}
-    let payload='';
-    payload+=tlv('00','01'); // format
-    payload+=tlv('26',tlv('00',gui)+tlv('01',key)); // merchant account
-    payload+=tlv('52','0000'); // merchant category
-    payload+=tlv('53','986'); // currency BRL
-    payload+=tlv('58','BR'); // country
-    payload+=tlv('59',merchant);
-    payload+=tlv('60',city);
-    payload+=tlv('62',tlv('05','***')); // additional data
-    payload+='6304'; // CRC placeholder
-    // Calculate CRC16
-    let crc=0xFFFF;
-    for(let i=0;i<payload.length;i++){
-      crc^=payload.charCodeAt(i)<<8;
-      for(let j=0;j<8;j++)crc=crc&0x8000?(crc<<1)^0x1021:crc<<1;
-      crc&=0xFFFF;
-    }
-    return payload+crc.toString(16).toUpperCase().padStart(4,'0');
-  }
   const pix=pixPayload(PK);
   try{
     const qr=qrcode(0,'M');
