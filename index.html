@@ -1810,22 +1810,26 @@ async function salvarPalpitesGrupos(cotaNum){
   // Só agora desabilitar o botão — todas as validações passaram
   const btn=document.querySelector(`button[onclick="salvarPalpitesGrupos(${cotaNum})"]`);
   const btnReset=()=>{if(btn){btn.textContent=`💾 Salvar Palpites da Cota ${cotaNum}`;btn.disabled=false;}};
-  if(btn){btn.textContent='Salvando...';btn.disabled=true;}
+  if(btn){btn.textContent='⏳ Salvando...';btn.disabled=true;}
 
   // Timeout de segurança — 20s para não travar para sempre
   const safetyTimer=setTimeout(()=>{
     btnReset();
-    toast('⚠️ Conexão lenta. Verifique sua internet e tente novamente.','e');
-  },20000);
+    toast('⚠️ Salvamento demorou mais que o esperado. Verifique sua internet e tente novamente.','e');
+  },60000);
 
   try{
-    // Salvar grupos
-    await sb.from('palpites_grupos').delete().eq('inscricao_id',userInscricao.id).eq('cota_numero',cotaNum);
+    // Deletar registros antigos em paralelo (mais rápido)
+    await Promise.all([
+      sb.from('palpites_grupos').delete().eq('inscricao_id',userInscricao.id).eq('cota_numero',cotaNum),
+      sb.from('palpites_artilheiro').delete().eq('inscricao_id',userInscricao.id).eq('cota_numero',cotaNum),
+    ]);
+
+    // Inserir grupos
     const{error:errGrupos}=await sb.from('palpites_grupos').insert(palpites);
     if(errGrupos){clearTimeout(safetyTimer);toast('Erro ao salvar grupos: '+errGrupos.message,'e');btnReset();return;}
 
-    // Salvar artilheiro + palpitão
-    await sb.from('palpites_artilheiro').delete().eq('inscricao_id',userInscricao.id).eq('cota_numero',cotaNum);
+    // Artilheiro + palpitão (já deletado acima)
     const{error:errArt}=await sb.from('palpites_artilheiro').insert({
       user_id:currentUser.id,
       inscricao_id:userInscricao.id,
