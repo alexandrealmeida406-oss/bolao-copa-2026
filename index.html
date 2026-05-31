@@ -2179,6 +2179,20 @@ async function syncResultados(){
 }
 
 
+async function adminAdicionarCota(inscricaoId, nomeParticipante, cotasAtual){
+  const novasCotas = cotasAtual + 1;
+  if(!confirm(`Adicionar 1 cota para ${nomeParticipante}?\nDe ${cotasAtual} → ${novasCotas} cotas.\n\nO valor adicional deve ser cobrado manualmente.`)) return;
+  try{
+    const{error}=await sb.from('inscricoes').update({cotas:novasCotas}).eq('id',inscricaoId);
+    if(error) throw new Error(error.message);
+    toast(`✅ ${nomeParticipante} atualizado para ${novasCotas} cotas!`,'s');
+    setTimeout(loadAdmin,1000);
+  }catch(e){
+    toast('Erro: '+e.message,'e');
+  }
+}
+
+
 async function aprovarCotas(cotaReqId, inscricaoId, novasCotas){
   if(!confirm(`Confirmar aprovação para ${novasCotas} cotas?`)) return;
   const btn = event?.target;
@@ -2549,6 +2563,7 @@ async function loadAdmin(){
               ${isPending?`<button class="ba" onclick="adminApprove(${i.id})">✅ Aprovar</button><button class="br2" onclick="adminReject(${i.id})">❌ Rejeitar</button>`:''}
               ${i.status==='rejeitado'?`<button style="background:var(--warning);color:var(--bg-dark);padding:.25rem .5rem;border:none;border-radius:4px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.62rem;text-transform:uppercase;letter-spacing:.5px" onclick="adminReativar(${i.id})">🔄 Reativar</button>`:''}
               ${i.status==='aprovado'&&emailUser?`<button style="background:var(--accent-teal);color:white;padding:.25rem .45rem;border:none;border-radius:4px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.6rem;text-transform:uppercase" onclick="preencherReset('${emailUser}')">🔑 Reset</button>`:''}
+              ${i.cotas<3&&i.status==='aprovado'?`<button style="background:rgba(212,168,67,.15);color:var(--accent-gold);border:1px solid rgba(212,168,67,.3);padding:.25rem .5rem;border-radius:4px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.6rem;text-transform:uppercase;margin-left:.15rem" onclick="adminAdicionarCota(${i.id},'${prof?.apelido||prof?.nome||'?'}',${i.cotas})">➕ Cota</button>`:''}
               <button style="background:rgba(239,68,68,.15);color:var(--error);border:1px solid rgba(239,68,68,.3);padding:.25rem .5rem;border-radius:4px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.6rem;text-transform:uppercase;margin-left:.15rem" onclick="adminExcluirCadastro('${i.user_id}',${i.id},'${i.user_id?.substring(0,8)}')">🗑 Excluir</button>
             </td>
           </tr>`;}).join('')}</tbody></table>
