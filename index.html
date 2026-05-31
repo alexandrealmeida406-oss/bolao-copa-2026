@@ -1692,31 +1692,6 @@ async function loadPalpites(){
   }
 
 
-  // Bloco de adicionar nova cota (igual à tela Conta)
-  const maxCotas = 3;
-  if(userInscricao && userInscricao.cotas < maxCotas && !bloqueado){
-    html += `
-    <div style="margin-top:2rem;padding:1.2rem;background:var(--bg-card);border:1px solid var(--border);border-radius:12px">
-      <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;margin:0 0 .8rem;color:var(--accent-gold)">➕ Adicionar Cotas</h3>
-      <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem">Você tem ${userInscricao.cotas} cota(s). Quer adicionar mais?</p>
-      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:.8rem">
-        ${[2,3].filter(n=>n>userInscricao.cotas).map(n=>`<button id="pnc${n}" onclick="selCotasPalp(${n})" class="btn btn-sm" style="flex:1;min-width:100px">${n} cotas — +R$ ${PR[n].v - PR[userInscricao.cotas].v}</button>`).join('')}
-      </div>
-      <div id="palp-extra-det" style="display:none;margin-top:1rem">
-        <div class="pixs" style="margin-bottom:.8rem">
-          <div class="pixt">Pague a diferença via PIX</div>
-          <div class="qrc" id="palp-qrc-extra" style="margin:.4rem auto"></div>
-          <div class="pkd"><code>2b03f68f-4aae-49b9-99a5-705b31982b7b</code><button onclick="cpk()">Copiar</button></div>
-          <p class="pixn" id="palp-extra-inf"></p>
-        </div>
-        <div style="text-align:center">
-          <button id="btn-confirmar-cotas-palp" class="btn btn-p" onclick="confirmarCotasPalp()">✓ Já fiz o PIX — Solicitar!</button>
-        </div>
-      </div>
-    </div>`;
-  }
-
-
   // Bloco adicionar nova cota
   if(userInscricao && userInscricao.cotas < 3 && !bloqueado){
     html += `<div style="margin-top:2rem;padding:1.2rem;background:var(--bg-card);border:1px solid var(--border);border-radius:12px">
