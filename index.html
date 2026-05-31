@@ -1700,10 +1700,7 @@ async function loadPalpites(){
       <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;margin:0 0 .8rem;color:var(--accent-gold)">➕ Adicionar Cotas</h3>
       <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem">Você tem ${userInscricao.cotas} cota(s). Quer adicionar mais?</p>
       <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:.8rem">
-        ${[2,3].filter(n=>n>userInscricao.cotas).map(n=>`
-          <button id="pnc${n}" onclick="selCotasPalp(${n})" class="btn btn-sm" style="flex:1;min-width:100px">
-            ${n} cotas — +R$ ${PR[n].v - PR[userInscricao.cotas].v}
-          </button>`).join('')}
+        ${[2,3].filter(n=>n>userInscricao.cotas).map(n=>`<button id="pnc${n}" onclick="selCotasPalp(${n})" class="btn btn-sm" style="flex:1;min-width:100px">${n} cotas — +R$ ${PR[n].v - PR[userInscricao.cotas].v}</button>`).join('')}
       </div>
       <div id="palp-extra-det" style="display:none;margin-top:1rem">
         <div class="pixs" style="margin-bottom:.8rem">
