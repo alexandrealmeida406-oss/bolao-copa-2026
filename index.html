@@ -1713,7 +1713,7 @@ async function loadPalpites(){
           <p class="pixn" id="palp-extra-inf"></p>
         </div>
         <div style="text-align:center">
-          <button class="btn btn-p" onclick="confirmarCotasPalp()">✓ Já fiz o PIX — Solicitar!</button>
+          <button id="btn-confirmar-cotas-palp" class="btn btn-p" onclick="confirmarCotasPalp()">✓ Já fiz o PIX — Solicitar!</button>
         </div>
       </div>
     </div>`;
@@ -2179,6 +2179,27 @@ async function syncResultados(){
 }
 
 
+async function aprovarCotas(cotaReqId, inscricaoId, novasCotas){
+  if(!confirm(`Confirmar aprovação para ${novasCotas} cotas?`)) return;
+  const btn = event?.target;
+  if(btn){ btn.textContent='⏳...'; btn.disabled=true; }
+  try{
+    // 1. Atualizar status do pedido
+    const{error:e1}=await sb.from('compra_cotas').update({status:'aprovado'}).eq('id',cotaReqId);
+    if(e1) throw new Error(e1.message);
+    // 2. Atualizar cotas da inscrição
+    const{error:e2}=await sb.from('inscricoes').update({cotas:novasCotas}).eq('id',inscricaoId);
+    if(e2) throw new Error(e2.message);
+    toast(`✅ Aprovado! Inscrição atualizada para ${novasCotas} cotas.`,'s');
+    // Recarregar admin
+    setTimeout(loadAdmin, 1000);
+  }catch(e){
+    if(btn){ btn.textContent='✅ Aprovar'; btn.disabled=false; }
+    toast('Erro ao aprovar: '+e.message,'e');
+  }
+}
+
+
 async function apurarGrupo(grupo, primeiro, segundo){
   if(!primeiro||!segundo){toast('Preencha 1º e 2º colocados','e');return;}
   if(primeiro===segundo){toast('1º e 2º não podem ser iguais','e');return;}
@@ -2449,12 +2470,12 @@ async function loadJogos(){
     // Pedidos de cotas adicionais
     const cotasPend=(cotasReqs||[]).filter(c=>c.status==='pendente');
     if(cotasPend.length>0){
-      html+=`<h2 style="font-family:'Oswald',sans-serif;font-size:1.1rem;margin:2rem 0 .8rem;color:var(--warning)">💳 PEDIDOS DE COTAS (${cotasPend.length})</h2><table style="width:100%;border-collapse:collapse;font-size:.82rem;margin-bottom:2rem"><thead><tr style="color:var(--text-muted);font-size:.7rem;text-transform:uppercase;border-bottom:1px solid var(--border)"><th style="padding:.5rem;text-align:left">Participante</th><th style="padding:.5rem;text-align:center">Atual</th><th style="padding:.5rem;text-align:center">Nova</th><th style="padding:.5rem;text-align:center">Valor</th><th style="padding:.5rem;text-align:center">Data</th></tr></thead><tbody>`;
+      html+=`<h2 style="font-family:'Oswald',sans-serif;font-size:1.1rem;margin:2rem 0 .8rem;color:var(--warning)">💳 PEDIDOS DE COTAS (${cotasPend.length})</h2><table style="width:100%;border-collapse:collapse;font-size:.82rem;margin-bottom:2rem"><thead><tr style="color:var(--text-muted);font-size:.7rem;text-transform:uppercase;border-bottom:1px solid var(--border)"><th style="padding:.5rem;text-align:left">Participante</th><th style="padding:.5rem;text-align:center">Atual</th><th style="padding:.5rem;text-align:center">Nova</th><th style="padding:.5rem;text-align:center">Valor</th><th style="padding:.5rem;text-align:center">Data</th><th style="padding:.5rem;text-align:center">Ações</th></tr></thead><tbody>`;
       cotasPend.forEach(c=>{
         const p=(profs||[]).find(x=>x.id===c.user_id);
         const nome=p?.apelido||p?.nome||'?';
         const dt=new Date(c.created_at).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-        html+=`<tr style="border-bottom:1px solid var(--border)"><td style="padding:.5rem;font-weight:600">${nome}</td><td style="padding:.5rem;text-align:center">${c.cotas_atual}</td><td style="padding:.5rem;text-align:center;color:var(--accent-gold);font-weight:700">${c.cotas_nova}</td><td style="padding:.5rem;text-align:center">R$ ${c.valor_adicional}</td><td style="padding:.5rem;text-align:center;color:var(--text-muted);font-size:.75rem">${dt}</td></tr>`;
+        html+=`<tr style="border-bottom:1px solid var(--border)"><td style="padding:.5rem;font-weight:600">${nome}</td><td style="padding:.5rem;text-align:center">${c.cotas_atual}</td><td style="padding:.5rem;text-align:center;color:var(--accent-gold);font-weight:700">${c.cotas_nova}</td><td style="padding:.5rem;text-align:center">R$ ${c.valor_adicional}</td><td style="padding:.5rem;text-align:center;color:var(--text-muted);font-size:.75rem">${dt}</td><td style="padding:.5rem;text-align:center"><button class="btn btn-sm" style="background:var(--success);color:#fff;padding:.2rem .7rem;font-size:.75rem" onclick="aprovarCotas('${c.id}','${c.inscricao_id}',${c.cotas_nova})">✅ Aprovar</button></td></tr>`;
       });
       html+=`</tbody></table>`;
     }
@@ -3015,7 +3036,7 @@ async function confirmarCotas(){
   if(!_novasCotas){toast('Selecione a quantidade!','e');return;}
   if(!currentUser){toast('Faça login primeiro!','e');return;}
   if(!userInscricao){toast('Inscrição não encontrada. Recarregue a página.','e');return;}
-  const btn=document.querySelector('[onclick="confirmarCotas()"]');
+  const btn=document.getElementById('btn-confirmar-cotas')||document.querySelector('[onclick="confirmarCotas()"]');
   const btnReset=()=>{if(btn){btn.textContent='✓ Já fiz o PIX — Solicitar!';btn.disabled=false;}};
   if(btn){btn.textContent='⏳ Enviando...';btn.disabled=true;}
   const st=setTimeout(()=>{btnReset();toast('⚠️ Conexão lenta. Tente novamente.','e');},45000);
@@ -3080,7 +3101,7 @@ async function confirmarCotasPalp(){
   if(!_novasCotasPalp){toast('Selecione a quantidade!','e');return;}
   if(!currentUser){toast('Faça login primeiro!','e');return;}
   if(!userInscricao){toast('Inscrição não encontrada.','e');return;}
-  const btn=document.querySelector('[onclick="confirmarCotasPalp()"]');
+  const btn=document.getElementById('btn-confirmar-cotas-palp')||document.querySelector('[onclick="confirmarCotasPalp()"]');
   const btnReset=()=>{if(btn){btn.textContent='✓ Já fiz o PIX — Solicitar!';btn.disabled=false;}};
   if(btn){btn.textContent='⏳ Enviando...';btn.disabled=true;}
   const st=setTimeout(()=>{btnReset();toast('⚠️ Conexão lenta. Tente novamente.','e');},45000);
@@ -3092,6 +3113,8 @@ async function confirmarCotasPalp(){
     toast(`✅ Solicitação enviada! Admin irá aprovar para ${_novasCotasPalp} cotas. 🎉`,'s');
     const det=document.getElementById('palp-extra-det');
     if(det)det.style.display='none';
+    // Resetar botões de seleção
+    document.querySelectorAll('[id^="pnc"]').forEach(b=>{b.classList.remove('sel');b.disabled=false;});
     _novasCotasPalp=null;
   }catch(e){clearTimeout(st);btnReset();toast('Erro de conexão. Tente novamente.','e');}
 }
