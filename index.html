@@ -1223,7 +1223,11 @@ function navigate(page){
   // scrollTo só para pages dinâmicas — sections da home controlam o próprio scroll
   if(!['home','cf','val','insc','rank','prem','grupos'].includes(page))window.scrollTo(0,0);
   
-  if(page==='admin')loadAdmin();
+  if(page==='admin'){
+    const _ac=document.getElementById('admin-content');
+    if(_ac)_ac.innerHTML='<div class="loading"><div class="spinner"></div>Carregando admin...</div>';
+    loadAdmin();
+  }
   if(page==='conta')loadConta();
   if(page==='rank'){navigate('home');scrollToSection('rank');setTimeout(loadRanking,100);return;}
   if(page!=='admin'&&_adminChannel){
@@ -2473,6 +2477,7 @@ async function loadJogos(){
     
 async function loadAdmin(){
   const el=document.getElementById('admin-content');
+  if(el&&!el.innerHTML.includes('Carregando'))el.innerHTML='<div class="loading"><div class="spinner"></div>Carregando admin...</div>';
   if(!currentUser){el.innerHTML='<div class="login-box"><h3>Faça login como admin</h3><button class="btn-google" onclick="loginGoogle()">Entrar com Google</button></div>';return;}
   if(!userProfile?.is_admin){el.innerHTML='<div class="re"><p style="font-size:2rem">🚫</p><p>Acesso restrito a administradores.</p></div>';return;}
   
