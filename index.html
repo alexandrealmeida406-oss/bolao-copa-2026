@@ -1694,20 +1694,25 @@ async function loadPalpites(){
 
   // Bloco adicionar nova cota
   if(userInscricao && userInscricao.cotas < 3 && !bloqueado){
+    const _cotas = userInscricao.cotas;
+    const _opts = [2,3].filter(n=>n>_cotas).map(n=>{
+      const add = PR[n].v - PR[_cotas].v;
+      return `<button onclick="selCotasPalp(${n})" class="btn btn-sm" style="flex:1;min-width:100px">${n} cotas — +R$ ${add}</button>`;
+    }).join('');
     html += `<div style="margin-top:2rem;padding:1.2rem;background:var(--bg-card);border:1px solid var(--border);border-radius:12px">
       <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;margin:0 0 .8rem;color:var(--accent-gold)">➕ Adicionar Cotas</h3>
-      <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem">Você tem ${userInscricao.cotas} cota(s). Adicionar mais aumenta suas chances!</p>
-      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:.8rem">
-        ${[2,3].filter(n=>n>userInscricao.cotas).map(n=>`<button id="pnc${n}" onclick="selCotasPalp(${n})" class="btn btn-sm" style="flex:1;min-width:100px">${n} cotas — +R$ ${PR[n].v - PR[userInscricao.cotas].v}</button>`).join('')}
-      </div>
+      <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem">Você tem ${_cotas} cota(s). Adicionar mais aumenta suas chances!</p>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:.8rem">${_opts}</div>
       <div id="palp-extra-det" style="display:none;margin-top:1rem">
         <div class="pixs" style="margin-bottom:.8rem">
           <div class="pixt">Pague a diferença via PIX</div>
           <div class="qrc" id="palp-qrc-extra" style="margin:.4rem auto"></div>
-          <div class="pkd"><code>2b03f68f-4aae-49b9-99a5-705b31982b7b</code><button onclick="cpk()">Copiar</button></div>
+          <div class="pkd"><code>${PK}</code><button onclick="cpk()">Copiar</button></div>
           <p class="pixn" id="palp-extra-inf"></p>
         </div>
-        <div style="text-align:center"><button class="btn btn-p" onclick="confirmarCotasPalp()">✓ Já fiz o PIX — Solicitar!</button></div>
+        <div style="text-align:center">
+          <button id="btn-confirmar-cotas-palp" class="btn btn-p" onclick="confirmarCotasPalp()">✓ Já fiz o PIX — Solicitar!</button>
+        </div>
       </div>
     </div>`;
   }
@@ -3009,13 +3014,20 @@ function renderCompraCotas(cotasAtuais){
 }
 
 function selCotas(n){
+  if(!currentUser){toast('Faça login primeiro!','e');return;}
+  if(!userInscricao){toast('Recarregue a página.','e');return;}
   _novasCotas=n;
   document.querySelectorAll('[id^="nc"]').forEach(e=>e.classList.remove('sel'));
-  document.getElementById('nc'+n)?.classList.add('sel');
-  const add=PR[n].v-PR[userInscricao?.cotas||1].v;
-  const det=document.getElementById('extra-det'),inf=document.getElementById('extra-inf');
-  if(det)det.style.display='block';
-  if(inf)inf.textContent=`Pague R$ ${add},00 (de ${userInscricao?.cotas||1}→${n} cotas) · Envie o comprovante no WhatsApp`;
+  const btnSel=document.getElementById('nc'+n);
+  if(btnSel)btnSel.classList.add('sel');
+  const cotasAtuais=userInscricao.cotas||1;
+  const add=PR[n].v-PR[cotasAtuais].v;
+  const det=document.getElementById('extra-det');
+  const inf=document.getElementById('extra-inf');
+  if(!det){toast('Erro: elemento não encontrado. Recarregue.','e');return;}
+  det.style.display='block';
+  det.scrollIntoView({behavior:'smooth',block:'nearest'});
+  if(inf)inf.textContent=`Pague R$ ${add},00 via PIX (de ${cotasAtuais}→${n} cotas). Envie comprovante no WhatsApp.`;
   setTimeout(()=>{const c=document.getElementById('qrc-extra');if(!c)return;try{const q=qrcode(0,'M');q.addData(pixPayload(PK));q.make();c.innerHTML=q.createImgTag(3,6);c.querySelector('img').style.borderRadius='4px';}catch(e){}},80);
 }
 
@@ -3069,14 +3081,22 @@ function toggleCotasPalp(){
 }
 
 function selCotasPalp(n){
+  if(!currentUser){toast('Faça login primeiro!','e');return;}
+  if(!userInscricao){toast('Recarregue a página e tente novamente.','e');return;}
   _novasCotasPalp=n;
-  document.querySelectorAll('[id^="pnc"]').forEach(e=>e.classList.remove('sel'));
-  document.getElementById('pnc'+n)?.classList.add('sel');
-  const add=PR[n].v-PR[userInscricao?.cotas||1].v;
+  const cotasAtuais=userInscricao.cotas||1;
+  const add=PR[n].v-PR[cotasAtuais].v;
+  // Encontrar o painel — pode ter qualquer ID ou nenhum
   const det=document.getElementById('palp-extra-det');
   const inf=document.getElementById('palp-extra-inf');
-  if(det)det.style.display='block';
-  if(inf)inf.textContent=`Pague R$ ${add},00 (de ${userInscricao?.cotas||1}→${n} cotas) · Envie comprovante no grupo do WhatsApp`;
+  if(!det){
+    // Tentar encontrar pelo botão clicado
+    toast(`Selecione ${n} cotas — Pague R$ ${add} via PIX e clique em Confirmar.`,'s');
+    return;
+  }
+  det.style.display='block';
+  det.scrollIntoView({behavior:'smooth',block:'nearest'});
+  if(inf)inf.textContent=`Pague R$ ${add},00 via PIX (${cotasAtuais}→${n} cotas). Envie comprovante no WhatsApp.`;
   setTimeout(()=>{
     const c=document.getElementById('palp-qrc-extra');
     if(!c)return;
@@ -3085,7 +3105,13 @@ function selCotasPalp(n){
 }
 
 async function confirmarCotasPalp(){
-  if(!_novasCotasPalp){toast('Selecione a quantidade!','e');return;}
+  // Tentar detectar automaticamente se _novasCotasPalp não foi setado
+  if(!_novasCotasPalp){
+    // Ver se há apenas uma opção disponível
+    const opts = [2,3].filter(n=>n>(userInscricao?.cotas||1));
+    if(opts.length===1){ _novasCotasPalp=opts[0]; }
+    else { toast('Selecione a quantidade de cotas primeiro!','e'); return; }
+  }
   if(!currentUser){toast('Faça login primeiro!','e');return;}
   if(!userInscricao){toast('Inscrição não encontrada.','e');return;}
   const btn=document.getElementById('btn-confirmar-cotas-palp')||document.querySelector('[onclick="confirmarCotasPalp()"]');
