@@ -2430,7 +2430,8 @@ async function loadJogos(){
         // Cidade
         const cidade = j.cidade ? `<span style="font-size:.65rem;color:var(--text-muted)">📍 ${j.cidade}</span>` : '';
 
-        html+=`<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:.7rem 1rem;position:relative${aoVivo?';border-color:var(--success)':''}">
+        
+    html+=`<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:.7rem 1rem;position:relative${aoVivo?';border-color:var(--success)':''}">
           <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.45rem">
             ${grpBadge}${cidade?`<span style="color:var(--border)">·</span>${cidade}`:''}
           </div>
@@ -2459,22 +2460,7 @@ async function loadJogos(){
   }catch(e){
     el.innerHTML=`<p style="text-align:center;padding:2rem;color:var(--error)">Erro: ${e.message}</p>`;
   }
-}
-
-
-    // Pedidos de cotas adicionais
-    const cotasPend=(cotasReqs||[]).filter(c=>c.status==='pendente');
-    if(cotasPend.length>0){
-      html+=`<h2 style="font-family:'Oswald',sans-serif;font-size:1.1rem;margin:2rem 0 .8rem;color:var(--warning)">💳 PEDIDOS DE COTAS (${cotasPend.length})</h2><table style="width:100%;border-collapse:collapse;font-size:.82rem;margin-bottom:2rem"><thead><tr style="color:var(--text-muted);font-size:.7rem;text-transform:uppercase;border-bottom:1px solid var(--border)"><th style="padding:.5rem;text-align:left">Participante</th><th style="padding:.5rem;text-align:center">Atual</th><th style="padding:.5rem;text-align:center">Nova</th><th style="padding:.5rem;text-align:center">Valor</th><th style="padding:.5rem;text-align:center">Data</th><th style="padding:.5rem;text-align:center">Ações</th></tr></thead><tbody>`;
-      cotasPend.forEach(c=>{
-        const p=(profs||[]).find(x=>x.id===c.user_id);
-        const nome=p?.apelido||p?.nome||'?';
-        const dt=new Date(c.created_at).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-        html+=`<tr style="border-bottom:1px solid var(--border)"><td style="padding:.5rem;font-weight:600">${nome}</td><td style="padding:.5rem;text-align:center">${c.cotas_atual}</td><td style="padding:.5rem;text-align:center;color:var(--accent-gold);font-weight:700">${c.cotas_nova}</td><td style="padding:.5rem;text-align:center">R$ ${c.valor_adicional}</td><td style="padding:.5rem;text-align:center;color:var(--text-muted);font-size:.75rem">${dt}</td><td style="padding:.5rem;text-align:center"><button class="btn btn-sm" style="background:var(--success);color:#fff;padding:.2rem .7rem;font-size:.75rem" onclick="aprovarCotas('${c.id}','${c.inscricao_id}',${c.cotas_nova})">✅ Aprovar</button></td></tr>`;
-      });
-      html+=`</tbody></table>`;
-    }
-    
+}    
 async function loadAdmin(){
   const el=document.getElementById('admin-content');
   if(el&&!el.innerHTML.includes('Carregando'))el.innerHTML='<div class="loading"><div class="spinner"></div>Carregando admin...</div>';
@@ -2556,7 +2542,7 @@ async function loadAdmin(){
     if(cotasPend.length>0){
       const cpHtml=cotasPend.map(cc=>{
         const p=profMap[cc.user_id]||{};
-        return`<tr><td>${p.nome||'-'}</td><td>${cc.cotas_atual}x</td><td>${cc.cotas_nova}x</td><td>R$ ${cc.valor_adicional}</td><td><button class="ba" onclick="adminApproveCotas(${cc.id},${cc.inscricao_id},${cc.cotas_nova})">Aprovar</button><button class="br2" onclick="adminRejectCotas(${cc.id})">Rejeitar</button></td></tr>`;
+        return`<tr><td>${p.nome||'-'}</td><td>${cc.cotas_atual}x</td><td>${cc.cotas_nova}x</td><td>R$ ${cc.valor_adicional}</td><td><button class="ba" onclick="aprovarCotas('${cc.id}','${cc.inscricao_id}',${cc.cotas_nova})">Aprovar</button><button class="br2" onclick="adminRejectCotas(${cc.id})">Rejeitar</button></td></tr>`;
       }).join('');
       const section=document.getElementById('admin-cotas-pend-section');
       if(section)section.innerHTML=`<div style="margin-bottom:1.5rem"><h4 style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--warning);text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem">⏳ Solicitações de Mais Cotas (${cotasPend.length})</h4>
