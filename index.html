@@ -1129,7 +1129,17 @@ document.addEventListener('DOMContentLoaded',async()=>{
   try{await loadStats()}catch(e){console.warn('Stats error:',e)}
   
   // Listen for auth changes
-  sb.auth.onAuthStateChange(async(event,session)=>{
+  // Detectar hash na URL para deep link
+(function(){
+  const hash = window.location.hash.replace('#','').toLowerCase();
+  if(hash === 'jogos') { setTimeout(()=>goToJogos(), 800); }
+  else if(hash === 'class' || hash === 'classificacao') { setTimeout(()=>goToClass(), 800); }
+  else if(hash === 'ranking') { setTimeout(()=>{ scrollToSection('rank'); setTimeout(loadRanking,100); }, 800); }
+  else if(hash === 'palpites') { setTimeout(()=>navigate('palpites'), 1200); }
+  else if(hash === 'conta') { setTimeout(()=>navigate('conta'), 1200); }
+})();
+
+sb.auth.onAuthStateChange(async(event,session)=>{
     if(session?.user){
       currentUser=session.user;
       try{await loadUserData()}catch(e){console.warn('Auth change error:',e)}
@@ -2246,22 +2256,18 @@ function goTo(sectionId, tab){
   if(document.getElementById('page-home') && !document.getElementById('page-home').classList.contains('active')){
     navigate('home');
   }
-  // Aguardar navigate resetar o scroll e depois ir para a section
+  // 1. Ativar a aba imediatamente (sem esperar scroll)
+  if(tab && typeof showTab === 'function') showTab(tab);
+  // 2. Scroll após navigate resetar + layout estabilizar
   setTimeout(()=>{
     const el = document.getElementById(sectionId);
     if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
-    // Trocar aba se necessário
-    if(tab && typeof showTab === 'function'){
-      setTimeout(()=>{
-        showTab(tab);
-        // Re-scroll após showTab mudar o layout
-        setTimeout(()=>{
-          const el2 = document.getElementById(sectionId);
-          if(el2) el2.scrollIntoView({behavior:'smooth', block:'start'});
-        }, 150);
-      }, 50);
-    }
-  }, 400);
+    // 3. Re-scroll de segurança após conteúdo carregar (jogos/classificação são async)
+    setTimeout(()=>{
+      const el2 = document.getElementById(sectionId);
+      if(el2) el2.scrollIntoView({behavior:'smooth', block:'start'});
+    }, 600);
+  }, 450);
 }
 
 function showTab(tab){
