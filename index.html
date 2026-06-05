@@ -2252,22 +2252,28 @@ async function apurarGrupo(grupo, primeiro, segundo){
 
 
 function goTo(sectionId, tab){
-  // Navegar para home primeiro (se necessário)
-  if(document.getElementById('page-home') && !document.getElementById('page-home').classList.contains('active')){
-    navigate('home');
-  }
-  // 1. Ativar a aba imediatamente (sem esperar scroll)
+  // Ativar aba imediatamente
   if(tab && typeof showTab === 'function') showTab(tab);
-  // 2. Scroll após navigate resetar + layout estabilizar
-  setTimeout(()=>{
+  // Navegar para home se necessário
+  const pageHome = document.getElementById('page-home');
+  if(pageHome && !pageHome.classList.contains('active')) navigate('home');
+  // Função de scroll robusta: tenta várias vezes até acertar
+  function scrollTo_section(attempts){
     const el = document.getElementById(sectionId);
-    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
-    // 3. Re-scroll de segurança após conteúdo carregar (jogos/classificação são async)
-    setTimeout(()=>{
-      const el2 = document.getElementById(sectionId);
-      if(el2) el2.scrollIntoView({behavior:'smooth', block:'start'});
-    }, 600);
-  }, 450);
+    if(!el) return;
+    const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
+    window.scrollTo({top: Math.max(0, top), behavior: attempts===0 ? 'smooth' : 'auto'});
+    // Re-tentar se o elemento ainda não está visível (layout pode ter mudado)
+    if(attempts < 3){
+      setTimeout(()=>scrollTo_section(attempts+1), 300);
+    }
+  }
+  // Primeiro scroll após o browser renderizar
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      scrollTo_section(0);
+    });
+  });
 }
 
 function showTab(tab){
