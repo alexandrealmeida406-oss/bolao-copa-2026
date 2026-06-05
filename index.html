@@ -2993,7 +2993,7 @@ function solicitarReset(){
 }
 
 // ===== COMPRA DE COTAS ADICIONAIS =====
-let _novasCotas=null;
+var _novasCotas=null;
 
 function renderCompraCotas(cotasAtuais){
   if(cotasAtuais>=3)return`<div class="cotas-extra-box"><h4>🏆 Suas Cotas</h4><p style="color:var(--text-muted);font-size:.83rem">Você já tem o máximo de <strong>3 cotas</strong>. Boa sorte!</p></div>`;
@@ -3074,7 +3074,7 @@ async function confirmarCotas(){
 }
 
 // ===== COMPRA DE COTAS — PÁGINA DE PALPITES (IDs únicos) =====
-let _novasCotasPalp=null;
+var _novasCotasPalp=null;
 
 function toggleCotasPalp(){
   const det=document.getElementById('cotas-palp-detail');
