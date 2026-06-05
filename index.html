@@ -500,13 +500,13 @@ window.addEventListener('DOMContentLoaded', () => {
 <nav class="nav" id="nb">
 <a class="nav-logo" href="#" onclick="navigate('home')"><div class="li">⚽</div><span class="logo-text">Bolão Almeida Copa 2026</span></a>
 <ul class="nav-links" id="nl">
-<li><a onclick="navigate('home');scrollToSection('insc')">Inscrição</a></li>
-<li><a onclick="navigate('home');scrollToSection('val')">Valores</a></li>
-<li><a onclick="navigate('home');scrollToSection('prem')">Premiação</a></li>
-<li><a onclick="navigate('home');scrollToSection('cf')">Como Funciona</a></li>
-<li><a onclick="navigate('home');scrollToSection('rank');setTimeout(loadRanking,100)">Ranking</a></li>
-<li><a onclick="goToJogos()">Data dos Jogos</a></li>
-<li><a onclick="goToClass()">Classificação</a></li>
+<li><a onclick="document.getElementById('nl').classList.remove('open');navigate('home');scrollToSection('insc')">Inscrição</a></li>
+<li><a onclick="document.getElementById('nl').classList.remove('open');navigate('home');scrollToSection('val')">Valores</a></li>
+<li><a onclick="document.getElementById('nl').classList.remove('open');navigate('home');scrollToSection('prem')">Premiação</a></li>
+<li><a onclick="document.getElementById('nl').classList.remove('open');navigate('home');scrollToSection('cf')">Como Funciona</a></li>
+<li><a onclick="document.getElementById('nl').classList.remove('open');navigate('home');scrollToSection('rank');setTimeout(loadRanking,100)">Ranking</a></li>
+<li><a onclick="document.getElementById('nl').classList.remove('open');goToJogos()">Data dos Jogos</a></li>
+<li><a onclick="document.getElementById('nl').classList.remove('open');goToClass()">Classificação</a></li>
 <li id="nav-auth"></li>
 </ul>
 <button class="mmb" onclick="document.getElementById('nl').classList.toggle('open')">☰</button>
@@ -1217,6 +1217,8 @@ async function loadUserData(){
 
 // ===== NAVIGATION =====
 function navigate(page){
+  // Fechar menu mobile ao navegar
+  document.getElementById('nl')?.classList.remove('open');
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+page)?.classList.add('active');
   document.getElementById('nl').classList.remove('open');
