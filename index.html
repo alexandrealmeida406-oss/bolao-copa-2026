@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<!-- build: 2026-06-11 emissoras+deadline+scroll -->
+<!-- build: 2026-06-11 sync+emissoras+deadline -->
 
   <!-- PWA -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2098,79 +2098,93 @@ async function calcularPontosCota(inscricaoId, cotaNum){
 async function syncResultados(){
   const btn = document.getElementById('btn-sync-api');
   if(btn){ btn.disabled=true; btn.textContent='🔄 Buscando...'; }
-  
+
   try{
-    // 1. Buscar standings da Copa 2026
-    const r = await fetch(`${API_FOOTBALL_URL}/standings?league=1&season=2026`, {
-      headers: {'x-apisports-key': API_FOOTBALL_KEY}
-    });
-    const d = await r.json();
-    
-    if(!d.response || d.response.length === 0){
-      toast('API: Copa 2026 ainda sem resultados de grupos disponíveis.', 'e');
-      return;
-    }
-    
-    const standings = d.response[0]?.league?.standings || [];
-    if(standings.length === 0){
-      toast('Nenhum grupo encerrado ainda.', 'e');
-      return;
-    }
-    
-    // 2. Processar grupos encerrados (jogaram todas as 3 rodadas)
-    let apurados = 0;
     const session = await sb.auth.getSession();
     const token = session.data?.session?.access_token;
     const H = {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer '+token, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates'};
-    
+
+    // ── 1. Buscar PLACARES dos jogos (fixtures encerrados) ──────────────
+    if(btn) btn.textContent='🔄 Buscando placares...';
+    const rFix = await fetch(`${API_FOOTBALL_URL}/fixtures?league=1&season=2026&status=FT`, {
+      headers: {'x-apisports-key': API_FOOTBALL_KEY}
+    });
+    const dFix = await rFix.json();
+    const fixtures = dFix.response || [];
+    let placaresAtualizados = 0;
+
+    for(const fix of fixtures){
+      const home = NOME_MAP[fix.teams?.home?.name] || fix.teams?.home?.name;
+      const away = NOME_MAP[fix.teams?.away?.name] || fix.teams?.away?.name;
+      const golsCasa = fix.goals?.home;
+      const golsFora = fix.goals?.away;
+      if(home && away && golsCasa !== null && golsFora !== null){
+        // Atualizar tabela jogos pelo nome dos times
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/jogos?time_casa=eq.${encodeURIComponent(home)}&time_fora=eq.${encodeURIComponent(away)}`,
+          { method: 'PATCH', headers: H, body: JSON.stringify({gols_casa: golsCasa, gols_fora: golsFora}) }
+        );
+        if(res.ok) placaresAtualizados++;
+      }
+    }
+
+    // ── 2. Buscar CLASSIFICAÇÃO dos grupos (standings) ──────────────────
+    if(btn) btn.textContent='🔄 Buscando classificação...';
+    const rSt = await fetch(`${API_FOOTBALL_URL}/standings?league=1&season=2026`, {
+      headers: {'x-apisports-key': API_FOOTBALL_KEY}
+    });
+    const dSt = await rSt.json();
+    const standings = dSt.response?.[0]?.league?.standings || [];
+    let apurados = 0;
+
     for(const grp of standings){
-      // Só apurar grupos com 4 times e todos com 3 jogos (grupo encerrado)
       if(!grp || grp.length < 2) continue;
       const todoJogaram = grp.every(t => t.all?.played >= 3);
       if(!todoJogaram) continue;
-      
-      const apiGrupo = grp[0]?.group; // ex: "Group A"
-      const letraGrupo = GRUPO_MAP[apiGrupo];
+      const letraGrupo = GRUPO_MAP[grp[0]?.group];
       if(!letraGrupo) continue;
-      
-      // Converter nomes EN → PT
       const nomePrimeiro = NOME_MAP[grp[0]?.team?.name] || grp[0]?.team?.name;
       const nomeSegundo  = NOME_MAP[grp[1]?.team?.name] || grp[1]?.team?.name;
-      
-      // Salvar no banco
       const res = await fetch(SUPABASE_URL+'/rest/v1/classificacao_grupos', {
-        method: 'POST',
-        headers: H,
+        method: 'POST', headers: H,
         body: JSON.stringify({grupo: letraGrupo, primeiro: nomePrimeiro, segundo: nomeSegundo, apurado_por: currentUser.id}),
       });
-      
-      if(res.ok){ apurados++; }
+      if(res.ok) apurados++;
     }
-    
-    if(apurados === 0){
-      toast('Nenhum grupo encerrado ainda na API. Verifique após os jogos.', 'e');
-      return;
-    }
-    
-    // 3. Recalcular pontos de TODAS as cotas
-    toast(`✅ ${apurados} grupo(s) sincronizado(s)! Recalculando pontos...`, 's');
-    const { data: inscs } = await sb.from('inscricoes').select('id,cotas').eq('status','aprovado');
-    for(const insc of (inscs||[])){
-      for(let c=1; c<=insc.cotas; c++){
-        const pts = await calcularPontosCota(insc.id, c);
-        await sb.from('pontuacao_cotas').upsert({
-          inscricao_id: insc.id, cota_numero: c,
-          pts_grupos: pts.ptsGrupos, pts_artilheiro: pts.ptsArtilheiro,
-          pts_palpitao: pts.ptsPalpitao, total_pontos: pts.total,
-          grupos_apurados: pts.gruposApurados, updated_at: new Date().toISOString(),
-        }, {onConflict:'inscricao_id,cota_numero'});
+
+    // ── 3. Recalcular pontos se houver grupos encerrados ────────────────
+    if(apurados > 0){
+      if(btn) btn.textContent='🔄 Recalculando pontos...';
+      const { data: inscs } = await sb.from('inscricoes').select('id,cotas').eq('status','aprovado');
+      for(const insc of (inscs||[])){
+        for(let c=1; c<=insc.cotas; c++){
+          const pts = await calcularPontosCota(insc.id, c);
+          await sb.from('pontuacao_cotas').upsert({
+            inscricao_id: insc.id, cota_numero: c,
+            pts_grupos: pts.ptsGrupos, pts_artilheiro: pts.ptsArtilheiro,
+            pts_palpitao: pts.ptsPalpitao, total_pontos: pts.total,
+            grupos_apurados: pts.gruposApurados, updated_at: new Date().toISOString(),
+          }, {onConflict:'inscricao_id,cota_numero'});
+        }
       }
     }
-    
-    toast(`🏆 Pontuação atualizada! ${apurados} grupo(s) apurado(s).`, 's');
+
+    // ── Resultado ───────────────────────────────────────────────────────
+    const msgs = [];
+    if(placaresAtualizados > 0) msgs.push(`${placaresAtualizados} placar(es) atualizado(s)`);
+    if(apurados > 0) msgs.push(`${apurados} grupo(s) apurado(s)`);
+    if(msgs.length > 0){
+      toast('✅ ' + msgs.join(' · '), 's');
+    } else {
+      toast('⚡ Nenhuma atualização disponível ainda. Tente após os jogos encerrarem.', 's');
+    }
+
+    // Recarregar aba jogos e ranking
+    const jc = document.getElementById('jogos-content');
+    if(jc){ jc.dataset.loaded='false'; }
     loadAdmin();
     _refreshRankingDebounced();
-    
+
   }catch(e){
     toast('Erro na API: '+e.message, 'e');
   }finally{
@@ -2264,17 +2278,18 @@ function goTo(sectionId, tab){
   // Navegar para home se necessário
   const pageHome = document.getElementById('page-home');
   if(pageHome && !pageHome.classList.contains('active')) navigate('home');
-  // Scroll robusto — delays crescentes aguardam conteúdo dinâmico (ranking)
+  // Função de scroll robusta: tenta várias vezes até acertar
   function scrollTo_section(attempts){
     const el = document.getElementById(sectionId);
     if(!el) return;
-    const top = el.getBoundingClientRect().top + window.pageYOffset - 70;
-    window.scrollTo({top: Math.max(0, top), behavior: 'auto'});
-    const delays = [400, 800, 1200, 2000];
-    if(attempts < delays.length){
-      setTimeout(()=>scrollTo_section(attempts+1), delays[attempts]);
+    const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
+    window.scrollTo({top: Math.max(0, top), behavior: attempts===0 ? 'smooth' : 'auto'});
+    // Re-tentar se o elemento ainda não está visível (layout pode ter mudado)
+    if(attempts < 3){
+      setTimeout(()=>scrollTo_section(attempts+1), 300);
     }
   }
+  // Primeiro scroll após o browser renderizar
   requestAnimationFrame(()=>{
     requestAnimationFrame(()=>{
       scrollTo_section(0);
@@ -2599,6 +2614,14 @@ async function loadAdmin(){
         <div class="asc"><div class="av">${totalCotas}</div><div class="al">Cotas</div></div>
         <div class="asc"><div class="av">R$ ${totalPool}</div><div class="al">Prêmios</div></div>
         <div class="asc"><div class="av">R$ ${totalFees}</div><div class="al">Taxas</div></div>
+      </div>
+      <!-- SEÇÃO SYNC SEMPRE VISÍVEL -->
+      <div style="background:var(--bg-card);border:1px solid rgba(212,168,67,.3);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem">
+        <div>
+          <div style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.2rem">⚽ Atualizar Resultados</div>
+          <div style="font-size:.75rem;color:var(--text-muted)">Busca placares e classificação na API-Football e salva no banco</div>
+        </div>
+        <button id="btn-sync-api" class="btn btn-p btn-sm" onclick="syncResultados()" style="white-space:nowrap">🔄 Sincronizar via API</button>
       </div>
       <h3 style="font-family:'Oswald',sans-serif;margin-bottom:.8rem;font-size:1rem;text-transform:uppercase;letter-spacing:1px">Inscrições</h3>
       <div id="admin-cotas-pend-section"></div>
