@@ -2125,11 +2125,15 @@ async function syncResultados(){
     const fixtures = dFix.response || [];
     let placaresAtualizados = 0;
 
+    console.log('[SYNC] Fixtures FT encontrados:', fixtures.length);
     for(const fix of fixtures){
-      const home = NOME_MAP[fix.teams?.home?.name] || fix.teams?.home?.name;
-      const away = NOME_MAP[fix.teams?.away?.name] || fix.teams?.away?.name;
+      const homeRaw = fix.teams?.home?.name;
+      const awayRaw = fix.teams?.away?.name;
+      const home = NOME_MAP[homeRaw] || homeRaw;
+      const away = NOME_MAP[awayRaw] || awayRaw;
       const golsCasa = fix.goals?.home;
       const golsFora = fix.goals?.away;
+      console.log(`[SYNC] Jogo: ${homeRaw} (→${home}) x ${awayRaw} (→${away}) | ${golsCasa}-${golsFora}`);
       if(!home || !away || golsCasa === null || golsFora === null) continue;
 
       // PATCH na tabela jogos usando os nomes dos times como filtro
@@ -2139,7 +2143,12 @@ async function syncResultados(){
         headers: H,
         body: JSON.stringify({gols_casa: golsCasa, gols_fora: golsFora})
       });
+      console.log(`[SYNC] PATCH ${home} x ${away} → status ${res.status}`);
       if(res.ok || res.status === 204) placaresAtualizados++;
+      else {
+        const err = await res.text();
+        console.warn(`[SYNC] PATCH falhou:`, err);
+      }
     }
 
     // ── 2. Buscar CLASSIFICAÇÃO via API (standings) ─────────────────────
@@ -2151,11 +2160,11 @@ async function syncResultados(){
     const standings = dSt.response?.[0]?.league?.standings || [];
     let apurados = 0;
 
+    console.log('[SYNC] Grupos nos standings:', standings.length);
     for(const grp of standings){
       if(!grp || grp.length < 4) continue;
-      // Salvar classificação parcial (qualquer quantidade de jogos jogados)
-      // Só pula se nenhum time jogou ainda
       const alguemJogou = grp.some(t => (t.all?.played || 0) > 0);
+      console.log(`[SYNC] Grupo ${grp[0]?.group}: alguemJogou=${alguemJogou}, jogos=[${grp.map(t=>t.all?.played).join(',')}]`);
       if(!alguemJogou) continue;
 
       const letraGrupo = GRUPO_MAP[grp[0]?.group];
