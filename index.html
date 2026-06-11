@@ -2094,7 +2094,7 @@ async function calcularPontosCota(inscricaoId, cotaNum){
 }
 
 // ── Apurar grupo (admin lança 1º e 2º e recalcula tudo) ──────────────────
-// ── Sincronizar resultados via API-Football ────────────────────────────
+// ── Sincronizar resultados via API-Football (worldcup26.ir — free, no key) ────
 async function syncResultados(){
   const btn = document.getElementById('btn-sync-api');
   if(btn){ btn.disabled=true; btn.textContent='🔄 Buscando...'; }
@@ -2102,8 +2102,7 @@ async function syncResultados(){
   try{
     const session = await sb.auth.getSession();
     const token = session.data?.session?.access_token;
-    // Header para PATCH: return=minimal evita erro de RLS no retorno
-    const H = {
+    const Hpatch = {
       'apikey': SUPABASE_KEY,
       'Authorization': 'Bearer '+token,
       'Content-Type': 'application/json',
@@ -2116,79 +2115,96 @@ async function syncResultados(){
       'Prefer': 'resolution=merge-duplicates,return=minimal'
     };
 
-    // ── 1. Buscar PLACARES via API-Football (fixtures FT = encerrados) ──
+    // ── 1. Buscar jogos na API gratuita worldcup26.ir ───────────────────
     if(btn) btn.textContent='🔄 Buscando placares...';
-    const rFix = await fetch(`${API_FOOTBALL_URL}/fixtures?league=1&season=2026&status=FT`, {
-      headers: {'x-apisports-key': API_FOOTBALL_KEY}
-    });
-    const dFix = await rFix.json();
-    const fixtures = dFix.response || [];
+    const rGames = await fetch('https://worldcup26.ir/get/games');
+    const games = await rGames.json();
+
+    console.log('[SYNC] Total jogos na API:', games.length);
+
+    // Mapa EN→PT para nomes da nova API
+    const NM2 = {
+      'Mexico':'México','South Africa':'África do Sul','South Korea':'Coreia do Sul',
+      'Czech Republic':'República Tcheca','Czechia':'República Tcheca',
+      'Canada':'Canadá','Bosnia and Herzegovina':'Bósnia e Herzegovina',
+      'Qatar':'Catar','Switzerland':'Suíça','Brazil':'Brasil',
+      'Morocco':'Marrocos','Haiti':'Haiti','Scotland':'Escócia',
+      'USA':'EUA','United States':'EUA','Paraguay':'Paraguai',
+      'Australia':'Austrália','Turkey':'Turquia','Türkiye':'Turquia',
+      'Germany':'Alemanha','Ecuador':'Equador',
+      'Ivory Coast':'Costa do Marfim',"Cote d'Ivoire":'Costa do Marfim',
+      'Curacao':'Curaçao','Netherlands':'Holanda','Japan':'Japão',
+      'Sweden':'Suécia','Tunisia':'Tunísia','Belgium':'Bélgica',
+      'Iran':'Irã','Egypt':'Egito','New Zealand':'Nova Zelândia',
+      'Spain':'Espanha','Uruguay':'Uruguai','Saudi Arabia':'Arábia Saudita',
+      'Cape Verde':'Cabo Verde','France':'França','Senegal':'Senegal',
+      'Iraq':'Iraque','Norway':'Noruega','Argentina':'Argentina',
+      'Algeria':'Argélia','Austria':'Áustria','Jordan':'Jordânia',
+      'Portugal':'Portugal','DR Congo':'RD Congo','Uzbekistan':'Uzbequistão',
+      'Colombia':'Colômbia','England':'Inglaterra','Croatia':'Croácia',
+      'Ghana':'Gana','Panama':'Panamá',
+    };
+
     let placaresAtualizados = 0;
+    let apurados = 0;
 
-    console.log('[SYNC] Fixtures FT encontrados:', fixtures.length);
-    for(const fix of fixtures){
-      const homeRaw = fix.teams?.home?.name;
-      const awayRaw = fix.teams?.away?.name;
-      const home = NOME_MAP[homeRaw] || homeRaw;
-      const away = NOME_MAP[awayRaw] || awayRaw;
-      const golsCasa = fix.goals?.home;
-      const golsFora = fix.goals?.away;
-      console.log(`[SYNC] Jogo: ${homeRaw} (→${home}) x ${awayRaw} (→${away}) | ${golsCasa}-${golsFora}`);
-      if(!home || !away || golsCasa === null || golsFora === null) continue;
+    for(const g of games){
+      const homeEn = g.home_team_name_en;
+      const awayEn = g.away_team_name_en;
+      const home = NM2[homeEn] || homeEn;
+      const away = NM2[awayEn] || awayEn;
+      const golsCasa = parseInt(g.home_score);
+      const golsFora = parseInt(g.away_score);
+      const finished = g.finished === 'TRUE' || g.finished === true;
 
-      // PATCH na tabela jogos usando os nomes dos times como filtro
-      const url = `${SUPABASE_URL}/rest/v1/jogos?time_casa=eq.${encodeURIComponent(home)}&time_fora=eq.${encodeURIComponent(away)}`;
-      const res = await fetch(url, {
-        method: 'PATCH',
-        headers: H,
-        body: JSON.stringify({gols_casa: golsCasa, gols_fora: golsFora})
-      });
-      console.log(`[SYNC] PATCH ${home} x ${away} → status ${res.status}`);
-      if(res.ok || res.status === 204) placaresAtualizados++;
-      else {
-        const err = await res.text();
-        console.warn(`[SYNC] PATCH falhou:`, err);
+      console.log(`[SYNC] ${homeEn}→${home} x ${awayEn}→${away} | ${golsCasa}-${golsFora} | finished:${finished}`);
+
+      // Atualizar placar se jogo encerrado
+      if(finished && !isNaN(golsCasa) && !isNaN(golsFora)){
+        const url = `${SUPABASE_URL}/rest/v1/jogos?time_casa=eq.${encodeURIComponent(home)}&time_fora=eq.${encodeURIComponent(away)}`;
+        const res = await fetch(url, {
+          method: 'PATCH',
+          headers: Hpatch,
+          body: JSON.stringify({gols_casa: golsCasa, gols_fora: golsFora})
+        });
+        console.log(`[SYNC] PATCH ${home} x ${away} → ${res.status}`);
+        if(res.ok || res.status === 204) placaresAtualizados++;
       }
     }
 
-    // ── 2. Buscar CLASSIFICAÇÃO via API (standings) ─────────────────────
+    // ── 2. Buscar classificação dos grupos ──────────────────────────────
     if(btn) btn.textContent='🔄 Buscando classificação...';
-    const rSt = await fetch(`${API_FOOTBALL_URL}/standings?league=1&season=2026`, {
-      headers: {'x-apisports-key': API_FOOTBALL_KEY}
-    });
-    const dSt = await rSt.json();
-    const standings = dSt.response?.[0]?.league?.standings || [];
-    let apurados = 0;
+    const rGroups = await fetch('https://worldcup26.ir/get/groups');
+    const groupsData = await rGroups.json();
 
-    console.log('[SYNC] Grupos nos standings:', standings.length);
-    for(const grp of standings){
-      if(!grp || grp.length < 4) continue;
-      const alguemJogou = grp.some(t => (t.all?.played || 0) > 0);
-      console.log(`[SYNC] Grupo ${grp[0]?.group}: alguemJogou=${alguemJogou}, jogos=[${grp.map(t=>t.all?.played).join(',')}]`);
+    console.log('[SYNC] Grupos:', JSON.stringify(groupsData).substring(0,200));
+
+    // A API retorna grupos com times ordenados por posição
+    const grupos = Array.isArray(groupsData) ? groupsData : Object.values(groupsData);
+    for(const grp of grupos){
+      const times = Array.isArray(grp.teams) ? grp.teams : (grp.standings || []);
+      if(!times || times.length < 2) continue;
+      const alguemJogou = times.some(t => (parseInt(t.played||t.matches_played||0)) > 0);
       if(!alguemJogou) continue;
 
-      const letraGrupo = GRUPO_MAP[grp[0]?.group];
-      if(!letraGrupo) continue;
+      const letraGrupo = grp.group || grp.name || grp.group_name;
+      if(!letraGrupo || !GRUPO_MAP['Group '+letraGrupo] && letraGrupo.length > 1) continue;
+      const letra = letraGrupo.length === 1 ? letraGrupo : GRUPO_MAP['Group '+letraGrupo];
+      if(!letra) continue;
 
-      // Ordenar por pontos + saldo para pegar 1º e 2º reais
-      const ordenado = [...grp].sort((a,b) =>
-        (b.points||0) - (a.points||0) ||
-        (b.goalsDiff||0) - (a.goalsDiff||0) ||
-        (b.all?.goals?.for||0) - (a.all?.goals?.for||0)
-      );
-      const nomePrimeiro = NOME_MAP[ordenado[0]?.team?.name] || ordenado[0]?.team?.name;
-      const nomeSegundo  = NOME_MAP[ordenado[1]?.team?.name] || ordenado[1]?.team?.name;
+      const nomePrimeiro = NM2[times[0]?.team_name_en || times[0]?.name] || times[0]?.team_name_en || times[0]?.name;
+      const nomeSegundo  = NM2[times[1]?.team_name_en || times[1]?.name] || times[1]?.team_name_en || times[1]?.name;
       if(!nomePrimeiro || !nomeSegundo) continue;
 
       const res = await fetch(SUPABASE_URL+'/rest/v1/classificacao_grupos', {
-        method: 'POST',
-        headers: Hpost,
-        body: JSON.stringify({grupo: letraGrupo, primeiro: nomePrimeiro, segundo: nomeSegundo, apurado_por: currentUser.id}),
+        method: 'POST', headers: Hpost,
+        body: JSON.stringify({grupo: letra, primeiro: nomePrimeiro, segundo: nomeSegundo, apurado_por: currentUser.id}),
       });
+      console.log(`[SYNC] Grupo ${letra}: ${nomePrimeiro} / ${nomeSegundo} → ${res.status}`);
       if(res.ok || res.status === 204 || res.status === 201) apurados++;
     }
 
-    // ── 3. Recalcular pontos se algum grupo tiver resultado ─────────────
+    // ── 3. Recalcular pontos ────────────────────────────────────────────
     if(apurados > 0){
       if(btn) btn.textContent='🔄 Recalculando pontos...';
       const { data: inscs } = await sb.from('inscricoes').select('id,cotas').eq('status','aprovado');
@@ -2209,9 +2225,9 @@ async function syncResultados(){
     const msgs = [];
     if(placaresAtualizados > 0) msgs.push(`${placaresAtualizados} placar(es) atualizado(s)`);
     if(apurados > 0) msgs.push(`${apurados} grupo(s) com classificação`);
-    toast(msgs.length > 0 ? '✅ ' + msgs.join(' · ') : '⚡ Sem novidades ainda — tente após os jogos encerrarem.', msgs.length > 0 ? 's' : 's');
+    toast(msgs.length > 0 ? '✅ ' + msgs.join(' · ') : '⚡ Sem novidades ainda — jogos não encerrados.', 's');
 
-    // Recarregar aba de jogos forçando reload + ranking
+    // Recarregar aba jogos
     const jc = document.getElementById('jogos-content');
     if(jc){ jc.dataset.loaded='false'; jc.innerHTML='<div class="loading"><div class="spinner"></div>Atualizando...</div>'; }
     if(document.getElementById('panel-jogos')?.style.display !== 'none') loadJogos();
@@ -2220,7 +2236,7 @@ async function syncResultados(){
 
   }catch(e){
     toast('Erro: '+e.message, 'e');
-    console.error('syncResultados error:', e);
+    console.error('[SYNC] erro:', e);
   }finally{
     if(btn){ btn.disabled=false; btn.textContent='🔄 Sincronizar via API'; }
   }
