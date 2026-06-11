@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<!-- build: 2026-06-11 deadline-15h -->
+<!-- build: 2026-06-11 emissoras+deadline -->
 
   <!-- PWA -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2451,10 +2451,88 @@ async function loadJogos(){
         // Cidade
         const cidade = j.cidade ? `<span style="font-size:.65rem;color:var(--text-muted)">📍 ${j.cidade}</span>` : '';
 
-        
+        // Mapa de emissoras por jogo (grade oficial Copa 2026)
+        const EMISSORAS_MAP = {
+          'México x África do Sul':['cazé','globo','sbt','nsports','ge','sportv'],
+          'Coreia do Sul x República Tcheca':['cazé'],
+          'Canadá x Bósnia e Herzegovina':['cazé'],
+          'Estados Unidos x Paraguai':['cazé','globo','sbt','nsports','ge','sportv'],
+          'Catar x Suíça':['cazé'],
+          'Brasil x Marrocos':['cazé','globo','sbt','nsports','ge','sportv'],
+          'Haiti x Escócia':['cazé'],
+          'Austrália x Turquia':['cazé','globo','ge','sportv'],
+          'Alemanha x Curaçao':['cazé'],
+          'Holanda x Japão':['cazé','globo','sbt','nsports','ge','sportv'],
+          'Costa do Marfim x Equador':['cazé','globo','sportv'],
+          'Suécia x Tunísia':['cazé','globo','sportv'],
+          'Espanha x Cabo Verde':['cazé'],
+          'Bélgica x Egito':['cazé','globo','ge','sportv'],
+          'Arábia Saudita x Uruguai':['cazé','globo','sbt','nsports','sportv'],
+          'Irã x Nova Zelândia':['cazé'],
+          'França x Senegal':['cazé','globo','sbt','nsports','ge','sportv'],
+          'Iraque x Noruega':['cazé'],
+          'Argentina x Argélia':['cazé'],
+          'Áustria x Jordânia':['cazé','globo','sportv'],
+          'Portugal x RD Congo':['cazé'],
+          'Inglaterra x Croácia':['cazé','globo','sbt','nsports','ge','sportv'],
+          'Gana x Panamá':['cazé'],
+          'Uzbequistão x Colômbia':['cazé','globo','sportv'],
+          'Tunísia x Japão':['cazé','globo','sportv'],
+          'Espanha x Arábia Saudita':['cazé'],
+          'Bélgica x Irã':['cazé'],
+          'Uruguai x Cabo Verde':['cazé','globo','sbt','nsports','ge','sportv'],
+          'Nova Zelândia x Egito':['cazé','globo','sportv'],
+          'Argentina x Áustria':['cazé','globo','sbt','nsports','ge','sportv'],
+          'França x Iraque':['cazé'],
+          'Noruega x Senegal':['cazé','globo','sportv'],
+          'Jordânia x Argélia':['cazé','globo','sportv'],
+          'Portugal x Uzbequistão':['cazé'],
+          'Inglaterra x Gana':['cazé','globo','sbt','nsports','ge','sportv'],
+          'Panamá x Croácia':['cazé'],
+          'Colômbia x RD Congo':['cazé','globo','sportv'],
+          'Suíça x Canadá':['cazé'],
+          'Bósnia e Herzegovina x Catar':['cazé'],
+          'Escócia x Brasil':['cazé','globo','sbt','nsports','ge','sportv'],
+          'Marrocos x Haiti':['cazé'],
+          'República Tcheca x México':['cazé'],
+          'África do Sul x Coreia do Sul':['cazé'],
+          'Equador x Alemanha':['cazé'],
+          'Curaçao x Costa do Marfim':['cazé'],
+          'Tunísia x Holanda':['cazé'],
+          'Japão x Suécia':['cazé'],
+          'Turquia x Estados Unidos':['cazé'],
+          'Paraguai x Austrália':['cazé'],
+          'Noruega x França':['cazé'],
+          'Senegal x Iraque':['cazé'],
+          'Uruguai x Espanha':['cazé'],
+          'Cabo Verde x Arábia Saudita':['cazé'],
+          'Nova Zelândia x Bélgica':['cazé'],
+          'Egito x Irã':['cazé'],
+          'Panamá x Inglaterra':['cazé'],
+          'Croácia x Gana':['cazé'],
+          'Colômbia x Portugal':['cazé'],
+          'RD do Congo x Uzbequistão':['cazé'],
+          'Jordânia x Argentina':['cazé'],
+          'Argélia x Áustria':['cazé'],
+        };
+        const _EH = {
+          'cazé':   '<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.5px;background:#e63946;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">CAZÉ</span>',
+          'globo':  '<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.5px;background:#003087;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">GLOBO</span>',
+          'sbt':    '<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.5px;background:#00a859;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">SBT</span>',
+          'nsports':'<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.5px;background:#1a1a1a;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">NSPORTS</span>',
+          'ge':     '<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.5px;background:#006400;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">GE</span>',
+          'sportv': '<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.5px;background:#c8102e;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">SPORTV</span>',
+        };
+        const _jKey = `${j.time_casa} x ${j.time_fora}`;
+        const _emList = EMISSORAS_MAP[_jKey] || [];
+        const _emissorasRow = _emList.length > 0
+          ? `<span style="display:flex;align-items:center;gap:.25rem;flex-wrap:wrap">${_emList.map(e=>_EH[e]||'').join('')}</span>`
+          : '';
+
     html+=`<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:.7rem 1rem;position:relative${aoVivo?';border-color:var(--success)':''}">
-          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.45rem">
-            ${grpBadge}${cidade?`<span style="color:var(--border)">·</span>${cidade}`:''}
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.45rem;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">${grpBadge}${cidade?`<span style="color:var(--border)">·</span>${cidade}`:''}</div>
+            ${_emissorasRow}
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem">
             <!-- Time Casa -->
