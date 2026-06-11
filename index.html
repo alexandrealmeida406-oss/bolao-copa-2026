@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<!-- build: 2026-06-11 sync+emissoras+deadline -->
+<!-- build: 2026-06-11 football-data+emissoras+deadline -->
 
   <!-- PWA -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2094,117 +2094,116 @@ async function calcularPontosCota(inscricaoId, cotaNum){
 }
 
 // ── Apurar grupo (admin lança 1º e 2º e recalcula tudo) ──────────────────
-// ── Sincronizar resultados via API-Football (worldcup26.ir — free, no key) ────
+// ── Sincronizar resultados via football-data.org (free, Copa 2026) ────────────
 async function syncResultados(){
   const btn = document.getElementById('btn-sync-api');
   if(btn){ btn.disabled=true; btn.textContent='🔄 Buscando...'; }
+
+  const FD_TOKEN = 'fd42bed1f79342a5bb326f91f8094571';
+
+  // Mapa nomes EN (football-data.org) → PT (Supabase)
+  const NM_FD = {
+    'Mexico':'México','South Africa':'África do Sul','South Korea':'Coreia do Sul',
+    'Czech Republic':'República Tcheca','Canada':'Canadá',
+    'Bosnia and Herzegovina':'Bósnia e Herzegovina','Qatar':'Catar',
+    'Switzerland':'Suíça','Brazil':'Brasil','Morocco':'Marrocos',
+    'Haiti':'Haiti','Scotland':'Escócia','USA':'EUA','Paraguay':'Paraguai',
+    'Australia':'Austrália','Turkey':'Turquia','Germany':'Alemanha',
+    'Ecuador':'Equador','Ivory Coast':'Costa do Marfim','Curaçao':'Curaçao',
+    'Netherlands':'Holanda','Japan':'Japão','Sweden':'Suécia','Tunisia':'Tunísia',
+    'Belgium':'Bélgica','Iran':'Irã','Egypt':'Egito','New Zealand':'Nova Zelândia',
+    'Spain':'Espanha','Uruguay':'Uruguai','Saudi Arabia':'Arábia Saudita',
+    'Cape Verde':'Cabo Verde','France':'França','Senegal':'Senegal',
+    'Iraq':'Iraque','Norway':'Noruega','Argentina':'Argentina','Algeria':'Argélia',
+    'Austria':'Áustria','Jordan':'Jordânia','Portugal':'Portugal',
+    'Congo DR':'RD Congo','Uzbekistan':'Uzbequistão','Colombia':'Colômbia',
+    'England':'Inglaterra','Croatia':'Croácia','Ghana':'Gana','Panama':'Panamá',
+  };
 
   try{
     const session = await sb.auth.getSession();
     const token = session.data?.session?.access_token;
     const Hpatch = {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer '+token,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=minimal'
+      'apikey': SUPABASE_KEY, 'Authorization': 'Bearer '+token,
+      'Content-Type': 'application/json', 'Prefer': 'return=minimal'
     };
     const Hpost = {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer '+token,
+      'apikey': SUPABASE_KEY, 'Authorization': 'Bearer '+token,
       'Content-Type': 'application/json',
       'Prefer': 'resolution=merge-duplicates,return=minimal'
     };
 
-    // ── 1. Buscar jogos na API gratuita worldcup26.ir ───────────────────
+    // ── 1. Buscar todos os jogos da Copa 2026 ──────────────────────────
     if(btn) btn.textContent='🔄 Buscando placares...';
-    const rGames = await fetch('https://worldcup26.ir/get/games');
-    const games = await rGames.json();
+    const r = await fetch('https://api.football-data.org/v4/competitions/WC/matches', {
+      headers: { 'X-Auth-Token': FD_TOKEN }
+    });
+    if(!r.ok) throw new Error(`football-data.org: HTTP ${r.status}`);
+    const d = await r.json();
+    const matches = d.matches || [];
 
-    console.log('[SYNC] Total jogos na API:', games.length);
-
-    // Mapa EN→PT para nomes da nova API
-    const NM2 = {
-      'Mexico':'México','South Africa':'África do Sul','South Korea':'Coreia do Sul',
-      'Czech Republic':'República Tcheca','Czechia':'República Tcheca',
-      'Canada':'Canadá','Bosnia and Herzegovina':'Bósnia e Herzegovina',
-      'Qatar':'Catar','Switzerland':'Suíça','Brazil':'Brasil',
-      'Morocco':'Marrocos','Haiti':'Haiti','Scotland':'Escócia',
-      'USA':'EUA','United States':'EUA','Paraguay':'Paraguai',
-      'Australia':'Austrália','Turkey':'Turquia','Türkiye':'Turquia',
-      'Germany':'Alemanha','Ecuador':'Equador',
-      'Ivory Coast':'Costa do Marfim',"Cote d'Ivoire":'Costa do Marfim',
-      'Curacao':'Curaçao','Netherlands':'Holanda','Japan':'Japão',
-      'Sweden':'Suécia','Tunisia':'Tunísia','Belgium':'Bélgica',
-      'Iran':'Irã','Egypt':'Egito','New Zealand':'Nova Zelândia',
-      'Spain':'Espanha','Uruguay':'Uruguai','Saudi Arabia':'Arábia Saudita',
-      'Cape Verde':'Cabo Verde','France':'França','Senegal':'Senegal',
-      'Iraq':'Iraque','Norway':'Noruega','Argentina':'Argentina',
-      'Algeria':'Argélia','Austria':'Áustria','Jordan':'Jordânia',
-      'Portugal':'Portugal','DR Congo':'RD Congo','Uzbekistan':'Uzbequistão',
-      'Colombia':'Colômbia','England':'Inglaterra','Croatia':'Croácia',
-      'Ghana':'Gana','Panama':'Panamá',
-    };
+    console.log('[SYNC] Total jogos na API:', matches.length);
 
     let placaresAtualizados = 0;
     let apurados = 0;
 
-    for(const g of games){
-      const homeEn = g.home_team_name_en;
-      const awayEn = g.away_team_name_en;
-      const home = NM2[homeEn] || homeEn;
-      const away = NM2[awayEn] || awayEn;
-      const golsCasa = parseInt(g.home_score);
-      const golsFora = parseInt(g.away_score);
-      const finished = g.finished === 'TRUE' || g.finished === true;
+    // ── 2. Atualizar placares dos jogos encerrados ─────────────────────
+    for(const m of matches){
+      if(m.status !== 'FINISHED') continue;
 
-      console.log(`[SYNC] ${homeEn}→${home} x ${awayEn}→${away} | ${golsCasa}-${golsFora} | finished:${finished}`);
+      const homeEn = m.homeTeam?.name;
+      const awayEn = m.awayTeam?.name;
+      const home = NM_FD[homeEn] || homeEn;
+      const away = NM_FD[awayEn] || awayEn;
+      const gh = m.score?.fullTime?.home;
+      const ga = m.score?.fullTime?.away;
 
-      // Atualizar placar se jogo encerrado
-      if(finished && !isNaN(golsCasa) && !isNaN(golsFora)){
-        const url = `${SUPABASE_URL}/rest/v1/jogos?time_casa=eq.${encodeURIComponent(home)}&time_fora=eq.${encodeURIComponent(away)}`;
-        const res = await fetch(url, {
-          method: 'PATCH',
-          headers: Hpatch,
-          body: JSON.stringify({gols_casa: golsCasa, gols_fora: golsFora})
+      console.log(`[SYNC] ${home} x ${away} | ${gh}-${ga}`);
+      if(gh === null || ga === null) continue;
+
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/jogos?time_casa=eq.${encodeURIComponent(home)}&time_fora=eq.${encodeURIComponent(away)}`,
+        { method:'PATCH', headers:Hpatch, body:JSON.stringify({gols_casa:gh, gols_fora:ga}) }
+      );
+      console.log(`[SYNC] PATCH ${home} x ${away} → ${res.status}`);
+      if(res.ok || res.status===204) placaresAtualizados++;
+    }
+
+    // ── 3. Buscar classificação dos grupos ─────────────────────────────
+    if(btn) btn.textContent='🔄 Buscando classificação...';
+    const rSt = await fetch('https://api.football-data.org/v4/competitions/WC/standings', {
+      headers: { 'X-Auth-Token': FD_TOKEN }
+    });
+    if(rSt.ok){
+      const dSt = await rSt.json();
+      const standings = dSt.standings || [];
+
+      for(const grp of standings){
+        if(grp.type !== 'TOTAL') continue;
+        const times = grp.table || [];
+        if(times.length < 2) continue;
+        const alguemJogou = times.some(t => (t.playedGames||0) > 0);
+        if(!alguemJogou) continue;
+
+        // Pegar letra do grupo ex: "Group A" → "A"
+        const letraGrupo = (grp.group||'').replace('GROUP_','').replace('Group ','').trim();
+        if(!letraGrupo || letraGrupo.length > 1) continue;
+
+        // times já vem ordenados por posição
+        const nomePrimeiro = NM_FD[times[0]?.team?.name] || times[0]?.team?.name;
+        const nomeSegundo  = NM_FD[times[1]?.team?.name] || times[1]?.team?.name;
+        if(!nomePrimeiro || !nomeSegundo) continue;
+
+        const res = await fetch(SUPABASE_URL+'/rest/v1/classificacao_grupos', {
+          method:'POST', headers:Hpost,
+          body:JSON.stringify({grupo:letraGrupo, primeiro:nomePrimeiro, segundo:nomeSegundo, apurado_por:currentUser.id}),
         });
-        console.log(`[SYNC] PATCH ${home} x ${away} → ${res.status}`);
-        if(res.ok || res.status === 204) placaresAtualizados++;
+        console.log(`[SYNC] Grupo ${letraGrupo}: ${nomePrimeiro}/${nomeSegundo} → ${res.status}`);
+        if(res.ok || res.status===204 || res.status===201) apurados++;
       }
     }
 
-    // ── 2. Buscar classificação dos grupos ──────────────────────────────
-    if(btn) btn.textContent='🔄 Buscando classificação...';
-    const rGroups = await fetch('https://worldcup26.ir/get/groups');
-    const groupsData = await rGroups.json();
-
-    console.log('[SYNC] Grupos:', JSON.stringify(groupsData).substring(0,200));
-
-    // A API retorna grupos com times ordenados por posição
-    const grupos = Array.isArray(groupsData) ? groupsData : Object.values(groupsData);
-    for(const grp of grupos){
-      const times = Array.isArray(grp.teams) ? grp.teams : (grp.standings || []);
-      if(!times || times.length < 2) continue;
-      const alguemJogou = times.some(t => (parseInt(t.played||t.matches_played||0)) > 0);
-      if(!alguemJogou) continue;
-
-      const letraGrupo = grp.group || grp.name || grp.group_name;
-      if(!letraGrupo || !GRUPO_MAP['Group '+letraGrupo] && letraGrupo.length > 1) continue;
-      const letra = letraGrupo.length === 1 ? letraGrupo : GRUPO_MAP['Group '+letraGrupo];
-      if(!letra) continue;
-
-      const nomePrimeiro = NM2[times[0]?.team_name_en || times[0]?.name] || times[0]?.team_name_en || times[0]?.name;
-      const nomeSegundo  = NM2[times[1]?.team_name_en || times[1]?.name] || times[1]?.team_name_en || times[1]?.name;
-      if(!nomePrimeiro || !nomeSegundo) continue;
-
-      const res = await fetch(SUPABASE_URL+'/rest/v1/classificacao_grupos', {
-        method: 'POST', headers: Hpost,
-        body: JSON.stringify({grupo: letra, primeiro: nomePrimeiro, segundo: nomeSegundo, apurado_por: currentUser.id}),
-      });
-      console.log(`[SYNC] Grupo ${letra}: ${nomePrimeiro} / ${nomeSegundo} → ${res.status}`);
-      if(res.ok || res.status === 204 || res.status === 201) apurados++;
-    }
-
-    // ── 3. Recalcular pontos ────────────────────────────────────────────
+    // ── 4. Recalcular pontos se algum grupo atualizado ─────────────────
     if(apurados > 0){
       if(btn) btn.textContent='🔄 Recalculando pontos...';
       const { data: inscs } = await sb.from('inscricoes').select('id,cotas').eq('status','aprovado');
@@ -2212,22 +2211,24 @@ async function syncResultados(){
         for(let c=1; c<=insc.cotas; c++){
           const pts = await calcularPontosCota(insc.id, c);
           await sb.from('pontuacao_cotas').upsert({
-            inscricao_id: insc.id, cota_numero: c,
-            pts_grupos: pts.ptsGrupos, pts_artilheiro: pts.ptsArtilheiro,
-            pts_palpitao: pts.ptsPalpitao, total_pontos: pts.total,
-            grupos_apurados: pts.gruposApurados, updated_at: new Date().toISOString(),
-          }, {onConflict:'inscricao_id,cota_numero'});
+            inscricao_id:insc.id, cota_numero:c,
+            pts_grupos:pts.ptsGrupos, pts_artilheiro:pts.ptsArtilheiro,
+            pts_palpitao:pts.ptsPalpitao, total_pontos:pts.total,
+            grupos_apurados:pts.gruposApurados, updated_at:new Date().toISOString(),
+          },{onConflict:'inscricao_id,cota_numero'});
         }
       }
     }
 
-    // ── Resultado ───────────────────────────────────────────────────────
+    // ── Resultado ──────────────────────────────────────────────────────
     const msgs = [];
     if(placaresAtualizados > 0) msgs.push(`${placaresAtualizados} placar(es) atualizado(s)`);
     if(apurados > 0) msgs.push(`${apurados} grupo(s) com classificação`);
-    toast(msgs.length > 0 ? '✅ ' + msgs.join(' · ') : '⚡ Sem novidades ainda — jogos não encerrados.', 's');
+    toast(msgs.length > 0
+      ? '✅ ' + msgs.join(' · ')
+      : '⚡ Sem novidades ainda — tente após os jogos encerrarem.', 's');
 
-    // Recarregar aba jogos
+    // Recarregar aba jogos e ranking
     const jc = document.getElementById('jogos-content');
     if(jc){ jc.dataset.loaded='false'; jc.innerHTML='<div class="loading"><div class="spinner"></div>Atualizando...</div>'; }
     if(document.getElementById('panel-jogos')?.style.display !== 'none') loadJogos();
@@ -2665,11 +2666,10 @@ async function loadAdmin(){
         <div class="asc"><div class="av">R$ ${totalPool}</div><div class="al">Prêmios</div></div>
         <div class="asc"><div class="av">R$ ${totalFees}</div><div class="al">Taxas</div></div>
       </div>
-      <!-- SEÇÃO SYNC SEMPRE VISÍVEL -->
       <div style="background:var(--bg-card);border:1px solid rgba(212,168,67,.3);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem">
         <div>
           <div style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.2rem">⚽ Atualizar Resultados</div>
-          <div style="font-size:.75rem;color:var(--text-muted)">Busca placares e classificação na API-Football e salva no banco</div>
+          <div style="font-size:.75rem;color:var(--text-muted)">Busca placares e classificação via football-data.org</div>
         </div>
         <button id="btn-sync-api" class="btn btn-p btn-sm" onclick="syncResultados()" style="white-space:nowrap">🔄 Sincronizar via API</button>
       </div>
