@@ -2102,9 +2102,21 @@ async function syncResultados(){
   try{
     const session = await sb.auth.getSession();
     const token = session.data?.session?.access_token;
-    const H = {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer '+token, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates'};
+    // Header para PATCH: return=minimal evita erro de RLS no retorno
+    const H = {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer '+token,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    };
+    const Hpost = {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer '+token,
+      'Content-Type': 'application/json',
+      'Prefer': 'resolution=merge-duplicates,return=minimal'
+    };
 
-    // ── 1. Buscar PLACARES dos jogos (fixtures encerrados) ──────────────
+    // ── 1. Buscar PLACARES via API-Football (fixtures FT = encerrados) ──
     if(btn) btn.textContent='🔄 Buscando placares...';
     const rFix = await fetch(`${API_FOOTBALL_URL}/fixtures?league=1&season=2026&status=FT`, {
       headers: {'x-apisports-key': API_FOOTBALL_KEY}
@@ -2118,17 +2130,19 @@ async function syncResultados(){
       const away = NOME_MAP[fix.teams?.away?.name] || fix.teams?.away?.name;
       const golsCasa = fix.goals?.home;
       const golsFora = fix.goals?.away;
-      if(home && away && golsCasa !== null && golsFora !== null){
-        // Atualizar tabela jogos pelo nome dos times
-        const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/jogos?time_casa=eq.${encodeURIComponent(home)}&time_fora=eq.${encodeURIComponent(away)}`,
-          { method: 'PATCH', headers: H, body: JSON.stringify({gols_casa: golsCasa, gols_fora: golsFora}) }
-        );
-        if(res.ok) placaresAtualizados++;
-      }
+      if(!home || !away || golsCasa === null || golsFora === null) continue;
+
+      // PATCH na tabela jogos usando os nomes dos times como filtro
+      const url = `${SUPABASE_URL}/rest/v1/jogos?time_casa=eq.${encodeURIComponent(home)}&time_fora=eq.${encodeURIComponent(away)}`;
+      const res = await fetch(url, {
+        method: 'PATCH',
+        headers: H,
+        body: JSON.stringify({gols_casa: golsCasa, gols_fora: golsFora})
+      });
+      if(res.ok || res.status === 204) placaresAtualizados++;
     }
 
-    // ── 2. Buscar CLASSIFICAÇÃO dos grupos (standings) ──────────────────
+    // ── 2. Buscar CLASSIFICAÇÃO via API (standings) ─────────────────────
     if(btn) btn.textContent='🔄 Buscando classificação...';
     const rSt = await fetch(`${API_FOOTBALL_URL}/standings?league=1&season=2026`, {
       headers: {'x-apisports-key': API_FOOTBALL_KEY}
@@ -2138,21 +2152,34 @@ async function syncResultados(){
     let apurados = 0;
 
     for(const grp of standings){
-      if(!grp || grp.length < 2) continue;
-      const todoJogaram = grp.every(t => t.all?.played >= 3);
-      if(!todoJogaram) continue;
+      if(!grp || grp.length < 4) continue;
+      // Salvar classificação parcial (qualquer quantidade de jogos jogados)
+      // Só pula se nenhum time jogou ainda
+      const alguemJogou = grp.some(t => (t.all?.played || 0) > 0);
+      if(!alguemJogou) continue;
+
       const letraGrupo = GRUPO_MAP[grp[0]?.group];
       if(!letraGrupo) continue;
-      const nomePrimeiro = NOME_MAP[grp[0]?.team?.name] || grp[0]?.team?.name;
-      const nomeSegundo  = NOME_MAP[grp[1]?.team?.name] || grp[1]?.team?.name;
+
+      // Ordenar por pontos + saldo para pegar 1º e 2º reais
+      const ordenado = [...grp].sort((a,b) =>
+        (b.points||0) - (a.points||0) ||
+        (b.goalsDiff||0) - (a.goalsDiff||0) ||
+        (b.all?.goals?.for||0) - (a.all?.goals?.for||0)
+      );
+      const nomePrimeiro = NOME_MAP[ordenado[0]?.team?.name] || ordenado[0]?.team?.name;
+      const nomeSegundo  = NOME_MAP[ordenado[1]?.team?.name] || ordenado[1]?.team?.name;
+      if(!nomePrimeiro || !nomeSegundo) continue;
+
       const res = await fetch(SUPABASE_URL+'/rest/v1/classificacao_grupos', {
-        method: 'POST', headers: H,
+        method: 'POST',
+        headers: Hpost,
         body: JSON.stringify({grupo: letraGrupo, primeiro: nomePrimeiro, segundo: nomeSegundo, apurado_por: currentUser.id}),
       });
-      if(res.ok) apurados++;
+      if(res.ok || res.status === 204 || res.status === 201) apurados++;
     }
 
-    // ── 3. Recalcular pontos se houver grupos encerrados ────────────────
+    // ── 3. Recalcular pontos se algum grupo tiver resultado ─────────────
     if(apurados > 0){
       if(btn) btn.textContent='🔄 Recalculando pontos...';
       const { data: inscs } = await sb.from('inscricoes').select('id,cotas').eq('status','aprovado');
@@ -2172,21 +2199,19 @@ async function syncResultados(){
     // ── Resultado ───────────────────────────────────────────────────────
     const msgs = [];
     if(placaresAtualizados > 0) msgs.push(`${placaresAtualizados} placar(es) atualizado(s)`);
-    if(apurados > 0) msgs.push(`${apurados} grupo(s) apurado(s)`);
-    if(msgs.length > 0){
-      toast('✅ ' + msgs.join(' · '), 's');
-    } else {
-      toast('⚡ Nenhuma atualização disponível ainda. Tente após os jogos encerrarem.', 's');
-    }
+    if(apurados > 0) msgs.push(`${apurados} grupo(s) com classificação`);
+    toast(msgs.length > 0 ? '✅ ' + msgs.join(' · ') : '⚡ Sem novidades ainda — tente após os jogos encerrarem.', msgs.length > 0 ? 's' : 's');
 
-    // Recarregar aba jogos e ranking
+    // Recarregar aba de jogos forçando reload + ranking
     const jc = document.getElementById('jogos-content');
-    if(jc){ jc.dataset.loaded='false'; }
+    if(jc){ jc.dataset.loaded='false'; jc.innerHTML='<div class="loading"><div class="spinner"></div>Atualizando...</div>'; }
+    if(document.getElementById('panel-jogos')?.style.display !== 'none') loadJogos();
     loadAdmin();
     _refreshRankingDebounced();
 
   }catch(e){
-    toast('Erro na API: '+e.message, 'e');
+    toast('Erro: '+e.message, 'e');
+    console.error('syncResultados error:', e);
   }finally{
     if(btn){ btn.disabled=false; btn.textContent='🔄 Sincronizar via API'; }
   }
