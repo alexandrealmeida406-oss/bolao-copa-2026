@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<!-- build: 2026-04-05 13:53:50 -->
+<!-- build: 2026-06-11 deadline-15h -->
 
   <!-- PWA -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -536,7 +536,7 @@ window.addEventListener('DOMContentLoaded', () => {
 <p class="hh"><img src="https://flagcdn.com/w40/us.png" alt="EUA"> EUA <img src="https://flagcdn.com/w40/mx.png" alt="México"> México <img src="https://flagcdn.com/w40/ca.png" alt="Canadá"> Canadá</p>
 <div class="cds" style="grid-template-columns:1fr 1fr;max-width:500px;margin:0 auto 1.5rem">
 <div class="cdb"><div class="cdl">⏱ Início da Copa</div><div class="cdv gold" id="cdc"></div><div class="cds2 pending">11 Jun 2026</div></div>
-<div class="cdb"><div class="cdl">⚠️ Prazo Palpites</div><div class="cdv" id="cdp-count" style="color:var(--error)">--</div><div class="cds2 locked" id="cdp-badge">10 Jun · 19h</div></div>
+<div class="cdb"><div class="cdl">⚠️ Prazo Palpites</div><div class="cdv" id="cdp-count" style="color:var(--error)">--</div><div class="cds2 locked" id="cdp-badge">11 Jun · 15h</div></div>
 </div>
 <div class="hcta" id="hero-cta">
 <!-- Dynamic: shows login or inscription button -->
@@ -1085,7 +1085,7 @@ const waitAuthReady=()=>_authReady?Promise.resolve():new Promise(r=>_authReadyRe
 
 const PK='2b03f68f-4aae-49b9-99a5-705b31982b7b';
 const CS=new Date('2026-06-11T16:00:00-03:00');
-const DEADLINE=new Date('2026-06-10T19:00:00-03:00');
+const DEADLINE=new Date('2026-06-11T15:00:00-03:00');
 const PR={1:{c:20,t:3,v:23},2:{c:38,t:6,v:44},3:{c:55,t:8,v:63}};
 const CV={1:20,2:38,3:55};
 
@@ -1772,7 +1772,7 @@ function validarGrupo(grp, cotaNum){
 
 async function salvarPalpitesGrupos(cotaNum){
   if(!currentUser||!userInscricao)return;
-  if(new Date()>=DEADLINE){toast('⏰ Prazo encerrado! Palpites bloqueados desde 10/06 às 19h.','e');return;}
+  if(new Date()>=DEADLINE){toast('⏰ Prazo encerrado! Palpites bloqueados desde 11/06 às 15h.','e');return;}
 
   const GRUPOS_LIST = ['A','B','C','D','E','F','G','H','I','J','K','L'];
   const palpites = [];
