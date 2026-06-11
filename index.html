@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<!-- build: 2026-06-11 emissoras+deadline -->
+<!-- build: 2026-06-11 emissoras+deadline+scroll -->
 
   <!-- PWA -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1132,7 +1132,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   // Detectar hash na URL para deep link
 (function(){
   const hash = window.location.hash.replace('#','').toLowerCase();
-  if(hash === 'jogos') { setTimeout(()=>goToJogos(), 800); }
+  if(hash === 'jogos') { setTimeout(()=>goToJogos(), 1800); }
   else if(hash === 'class' || hash === 'classificacao') { setTimeout(()=>goToClass(), 800); }
   else if(hash === 'ranking') { setTimeout(()=>{ scrollToSection('rank'); setTimeout(loadRanking,100); }, 800); }
   else if(hash === 'palpites') { setTimeout(()=>navigate('palpites'), 1200); }
@@ -2264,18 +2264,17 @@ function goTo(sectionId, tab){
   // Navegar para home se necessário
   const pageHome = document.getElementById('page-home');
   if(pageHome && !pageHome.classList.contains('active')) navigate('home');
-  // Função de scroll robusta: tenta várias vezes até acertar
+  // Scroll robusto — delays crescentes aguardam conteúdo dinâmico (ranking)
   function scrollTo_section(attempts){
     const el = document.getElementById(sectionId);
     if(!el) return;
-    const top = el.getBoundingClientRect().top + window.pageYOffset - 60;
-    window.scrollTo({top: Math.max(0, top), behavior: attempts===0 ? 'smooth' : 'auto'});
-    // Re-tentar se o elemento ainda não está visível (layout pode ter mudado)
-    if(attempts < 3){
-      setTimeout(()=>scrollTo_section(attempts+1), 300);
+    const top = el.getBoundingClientRect().top + window.pageYOffset - 70;
+    window.scrollTo({top: Math.max(0, top), behavior: 'auto'});
+    const delays = [400, 800, 1200, 2000];
+    if(attempts < delays.length){
+      setTimeout(()=>scrollTo_section(attempts+1), delays[attempts]);
     }
   }
-  // Primeiro scroll após o browser renderizar
   requestAnimationFrame(()=>{
     requestAnimationFrame(()=>{
       scrollTo_section(0);
@@ -2451,7 +2450,6 @@ async function loadJogos(){
         // Cidade
         const cidade = j.cidade ? `<span style="font-size:.65rem;color:var(--text-muted)">📍 ${j.cidade}</span>` : '';
 
-        // Mapa de emissoras por jogo (grade oficial Copa 2026)
         const EMISSORAS_MAP = {
           'México x África do Sul':['cazé','globo','sbt','nsports','ge','sportv'],
           'Coreia do Sul x República Tcheca':['cazé'],
@@ -2516,12 +2514,12 @@ async function loadJogos(){
           'Argélia x Áustria':['cazé'],
         };
         const _EH = {
-          'cazé':   '<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.5px;background:#e63946;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">CAZÉ</span>',
-          'globo':  '<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.5px;background:#003087;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">GLOBO</span>',
-          'sbt':    '<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.5px;background:#00a859;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">SBT</span>',
-          'nsports':'<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.5px;background:#1a1a1a;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">NSPORTS</span>',
-          'ge':     '<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.5px;background:#006400;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">GE</span>',
-          'sportv': '<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.5px;background:#c8102e;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">SPORTV</span>',
+          'cazé':   '<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;background:#e63946;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">CAZÉ</span>',
+          'globo':  '<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;background:#003087;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">GLOBO</span>',
+          'sbt':    '<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;background:#00a859;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">SBT</span>',
+          'nsports':'<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;background:#1a1a1a;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">NSPORTS</span>',
+          'ge':     '<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;background:#006400;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">GE</span>',
+          'sportv': '<span style="font-family:\'Oswald\',sans-serif;font-size:.58rem;font-weight:700;background:#c8102e;color:#fff;padding:.12rem .38rem;border-radius:3px;white-space:nowrap">SPORTV</span>',
         };
         const _jKey = `${j.time_casa} x ${j.time_fora}`;
         const _emList = EMISSORAS_MAP[_jKey] || [];
