@@ -1993,16 +1993,22 @@ async function loadRanking(){
       } else if(!copaComecou){
         statusTag='<span style="font-size:.65rem;color:var(--success)">✓ palpites enviados</span>';
       } else {
-        // Copa em andamento — mostrar breakdown de pontos
         const gr=l.ptRow?.pts_grupos||0;
         const ar=l.ptRow?.pts_artilheiro||0;
         const pp=l.ptRow?.pts_palpitao||0;
         statusTag=`<span style="font-size:.65rem;color:var(--text-secondary)">grupos:${gr}pts${ar?` · art:${ar}pts`:''}${pp?` · palpitão:${pp}pts`:''}</span>`;
       }
 
-      const ptsDisplay=copaComecou&&l.preencheu
-        ?`<span style="font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:700;color:${l.pontos>0?'var(--accent-gold)':'var(--text-muted)'}">${l.pontos}</span>`
-        :'<span style="color:var(--text-muted);font-size:.9rem">—</span>';
+      // Pontuação: se copa começou usa pts calculados, senão mostra "pré-ranking" com base nos palpites
+      let ptsDisplay;
+      if(copaComecou && l.preencheu){
+        ptsDisplay=`<span style="font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:700;color:${l.pontos>0?'var(--accent-gold)':'var(--text-muted)'}">${l.pontos}</span>`;
+      } else if(!copaComecou && l.preencheu){
+        // Pré-ranking: mostrar "✓" indicando que enviou palpites
+        ptsDisplay=`<span style="font-size:.8rem;color:var(--success);font-weight:700">✓</span>`;
+      } else {
+        ptsDisplay='<span style="color:var(--text-muted);font-size:.9rem">—</span>';
+      }
 
       return`<tr style="${bg}">
         <td style="padding:.65rem .7rem;text-align:center;width:44px">${badge(l.pos)}</td>
@@ -2017,7 +2023,7 @@ async function loadRanking(){
     // Badge de status no topo
     let statusBadge='';
     if(!copaComecou){
-      statusBadge=`<span style="background:rgba(212,168,67,.12);color:var(--accent-gold);font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:50px;letter-spacing:1px">⏳ Aguardando Copa — 11 Jun</span>`;
+      statusBadge=`<span style="background:rgba(212,168,67,.12);color:var(--accent-gold);font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:50px;letter-spacing:1px">⏳ Pré-Ranking — Copa começa 11 Jun</span>`;
     } else if(gruposApurados<12){
       statusBadge=`<span style="background:rgba(34,197,94,.12);color:var(--success);font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:50px;letter-spacing:1px">⚽ Em andamento — ${gruposApurados}/12 grupos apurados</span>`;
     } else {
@@ -2039,7 +2045,10 @@ async function loadRanking(){
           <tbody>${rows}</tbody>
         </table>
       </div>
-      ${!copaComecou?`<p style="text-align:center;font-size:.76rem;color:var(--text-muted);margin-top:.7rem">Os pontos serão calculados automaticamente após cada grupo ser apurado ⚽</p>`:''}
+      ${!copaComecou?`<div style="margin-top:.8rem;background:rgba(212,168,67,.06);border:1px solid rgba(212,168,67,.15);border-radius:8px;padding:.7rem 1rem">
+        <p style="font-size:.75rem;color:var(--text-muted);text-align:center;margin-bottom:.3rem">⏳ <strong style="color:var(--accent-gold)">Pré-Ranking</strong> — ordenado por quem enviou palpites</p>
+        <p style="font-size:.72rem;color:var(--text-muted);text-align:center">Os pontos reais aparecem automaticamente conforme os jogos encerrarem ⚽</p>
+      </div>`:''}
     </div>`;
 
     // Realtime — só subscreve uma vez
@@ -2957,20 +2966,67 @@ async function loadConta(){
 }
 
 // ===== ADMIN PLACARES MANUAIS =====
-async function adminSalvarPlacar(timeCasa, timeFora, inputIdCasa, inputIdFora, btnId){
+async function adminSalvarPlacar(timeCasa, timeFora, inputIdCasa, inputIdFora, btnId, grupo){
   const gh = parseInt(document.getElementById(inputIdCasa)?.value);
   const ga = parseInt(document.getElementById(inputIdFora)?.value);
   const btn = document.getElementById(btnId);
   if(isNaN(gh)||isNaN(ga)){toast('Informe os dois placares!','e');return;}
   if(btn){btn.textContent='...';btn.disabled=true;}
   try{
+    // 1. Salvar placar na tabela jogos
     const{error}=await sb.from('jogos')
       .update({gols_casa:gh, gols_fora:ga})
       .eq('time_casa',timeCasa).eq('time_fora',timeFora);
     if(error)throw new Error(error.message);
-    toast(`✅ ${timeCasa} ${gh} x ${ga} ${timeFora} salvo!`,'s');
+
+    // 2. Recalcular classificação do grupo — buscar todos os jogos do grupo
+    if(grupo){
+      const{data:jogosGrupo}=await sb.from('jogos')
+        .select('time_casa,time_fora,gols_casa,gols_fora')
+        .eq('grupo',grupo);
+
+      if(jogosGrupo && jogosGrupo.length>0){
+        // Montar tabela de classificação
+        const tabela={};
+        const TIMES_GRUPO=new Set();
+        jogosGrupo.forEach(j=>{TIMES_GRUPO.add(j.time_casa);TIMES_GRUPO.add(j.time_fora);});
+        TIMES_GRUPO.forEach(t=>{tabela[t]={pts:0,gf:0,gc:0,sg:0,j:0};});
+
+        // Incluir o jogo atual que acabou de ser salvo
+        const todosJogos=jogosGrupo.map(j=>
+          j.time_casa===timeCasa&&j.time_fora===timeFora
+            ?{...j,gols_casa:gh,gols_fora:ga}:j
+        );
+
+        todosJogos.forEach(j=>{
+          if(j.gols_casa===null||j.gols_fora===null)return;
+          const gc=j.gols_casa, gf=j.gols_fora;
+          tabela[j.time_casa].j++;tabela[j.time_fora].j++;
+          tabela[j.time_casa].gf+=gc;tabela[j.time_casa].gc+=gf;
+          tabela[j.time_fora].gf+=gf;tabela[j.time_fora].gc+=gc;
+          if(gc>gf){tabela[j.time_casa].pts+=3;}
+          else if(gc===gf){tabela[j.time_casa].pts+=1;tabela[j.time_fora].pts+=1;}
+          else{tabela[j.time_fora].pts+=3;}
+        });
+
+        // Ordenar: pontos → saldo de gols → gols marcados
+        const ordenado=Object.entries(tabela)
+          .map(([nome,s])=>({nome,...s,sg:s.gf-s.gc}))
+          .sort((a,b)=>b.pts-a.pts||b.sg-a.sg||b.gf-a.gf);
+
+        if(ordenado.length>=2&&ordenado[0].j>0){
+          await sb.from('classificacao_grupos').upsert(
+            {grupo, primeiro:ordenado[0].nome, segundo:ordenado[1].nome},
+            {onConflict:'grupo'}
+          );
+        }
+      }
+    }
+
+    toast(`✅ ${timeCasa} ${gh} x ${ga} ${timeFora} — classificação atualizada!`,'s');
     if(btn){btn.textContent='✅';btn.style.background='var(--success)';}
-    // Recalcular pontos
+
+    // 3. Recalcular pontos de todas as cotas
     const{data:inscs}=await sb.from('inscricoes').select('id,cotas').eq('status','aprovado');
     for(const insc of(inscs||[])){
       for(let c=1;c<=insc.cotas;c++){
@@ -2984,9 +3040,14 @@ async function adminSalvarPlacar(timeCasa, timeFora, inputIdCasa, inputIdFora, b
       }
     }
     _refreshRankingDebounced();
-    // Recarregar jogos
+
+    // 4. Recarregar aba jogos e classificação
     const jc=document.getElementById('jogos-content');
     if(jc)jc.dataset.loaded='false';
+    const cc=document.getElementById('class-content');
+    if(cc){cc.dataset.loaded='false';}
+    if(document.getElementById('panel-class')?.style.display!=='none')loadClassificacao();
+
   }catch(e){
     toast('Erro: '+e.message,'e');
     if(btn){btn.textContent='Salvar';btn.disabled=false;}
@@ -3023,7 +3084,7 @@ async function renderAdminPlacares(el){
       <span style="font-family:'Barlow Condensed',sans-serif;font-size:.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${j.time_fora}
         <span style="display:block;font-size:.6rem;color:var(--text-muted)">${hrBR(j.data_jogo)} · Gpo ${j.grupo}</span>
       </span>
-      <button id="${idB}" onclick="adminSalvarPlacar('${j.time_casa}','${j.time_fora}','${idC}','${idF}','${idB}')"
+      <button id="${idB}" onclick="adminSalvarPlacar('${j.time_casa}','${j.time_fora}','${idC}','${idF}','${idB}','${j.grupo}')"
         style="background:var(--accent-teal);color:white;border:none;padding:.3rem .6rem;border-radius:5px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.7rem;text-transform:uppercase;white-space:nowrap;min-width:52px">
         ${enc?'✅':'Salvar'}
       </button>
