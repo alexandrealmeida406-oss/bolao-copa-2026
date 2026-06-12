@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<!-- build: 2026-06-11 football-data+emissoras+deadline -->
+<!-- build: 2026-06-11 placares-manuais+emissoras+deadline -->
 
   <!-- PWA -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2094,150 +2094,85 @@ async function calcularPontosCota(inscricaoId, cotaNum){
 }
 
 // ── Apurar grupo (admin lança 1º e 2º e recalcula tudo) ──────────────────
-// ── Sincronizar resultados via football-data.org (free, Copa 2026) ────────────
+// ── Sincronizar resultados via API-Football ────────────────────────────
 async function syncResultados(){
   const btn = document.getElementById('btn-sync-api');
   if(btn){ btn.disabled=true; btn.textContent='🔄 Buscando...'; }
-
-  const FD_TOKEN = 'fd42bed1f79342a5bb326f91f8094571';
-
-  // Mapa nomes EN (football-data.org) → PT (Supabase)
-  const NM_FD = {
-    'Mexico':'México','South Africa':'África do Sul','South Korea':'Coreia do Sul',
-    'Czech Republic':'República Tcheca','Canada':'Canadá',
-    'Bosnia and Herzegovina':'Bósnia e Herzegovina','Qatar':'Catar',
-    'Switzerland':'Suíça','Brazil':'Brasil','Morocco':'Marrocos',
-    'Haiti':'Haiti','Scotland':'Escócia','USA':'EUA','Paraguay':'Paraguai',
-    'Australia':'Austrália','Turkey':'Turquia','Germany':'Alemanha',
-    'Ecuador':'Equador','Ivory Coast':'Costa do Marfim','Curaçao':'Curaçao',
-    'Netherlands':'Holanda','Japan':'Japão','Sweden':'Suécia','Tunisia':'Tunísia',
-    'Belgium':'Bélgica','Iran':'Irã','Egypt':'Egito','New Zealand':'Nova Zelândia',
-    'Spain':'Espanha','Uruguay':'Uruguai','Saudi Arabia':'Arábia Saudita',
-    'Cape Verde':'Cabo Verde','France':'França','Senegal':'Senegal',
-    'Iraq':'Iraque','Norway':'Noruega','Argentina':'Argentina','Algeria':'Argélia',
-    'Austria':'Áustria','Jordan':'Jordânia','Portugal':'Portugal',
-    'Congo DR':'RD Congo','Uzbekistan':'Uzbequistão','Colombia':'Colômbia',
-    'England':'Inglaterra','Croatia':'Croácia','Ghana':'Gana','Panama':'Panamá',
-  };
-
+  
   try{
+    // 1. Buscar standings da Copa 2026
+    const r = await fetch(`${API_FOOTBALL_URL}/standings?league=1&season=2026`, {
+      headers: {'x-apisports-key': API_FOOTBALL_KEY}
+    });
+    const d = await r.json();
+    
+    if(!d.response || d.response.length === 0){
+      toast('API: Copa 2026 ainda sem resultados de grupos disponíveis.', 'e');
+      return;
+    }
+    
+    const standings = d.response[0]?.league?.standings || [];
+    if(standings.length === 0){
+      toast('Nenhum grupo encerrado ainda.', 'e');
+      return;
+    }
+    
+    // 2. Processar grupos encerrados (jogaram todas as 3 rodadas)
+    let apurados = 0;
     const session = await sb.auth.getSession();
     const token = session.data?.session?.access_token;
-    const Hpatch = {
-      'apikey': SUPABASE_KEY, 'Authorization': 'Bearer '+token,
-      'Content-Type': 'application/json', 'Prefer': 'return=minimal'
-    };
-    const Hpost = {
-      'apikey': SUPABASE_KEY, 'Authorization': 'Bearer '+token,
-      'Content-Type': 'application/json',
-      'Prefer': 'resolution=merge-duplicates,return=minimal'
-    };
-
-    // ── 1. Buscar todos os jogos da Copa 2026 ──────────────────────────
-    if(btn) btn.textContent='🔄 Buscando placares...';
-    const r = await fetch('https://api.football-data.org/v4/competitions/WC/matches', {
-      headers: { 'X-Auth-Token': FD_TOKEN }
-    });
-    if(!r.ok) throw new Error(`football-data.org: HTTP ${r.status}`);
-    const d = await r.json();
-    const matches = d.matches || [];
-
-    console.log('[SYNC] Total jogos na API:', matches.length);
-
-    let placaresAtualizados = 0;
-    let apurados = 0;
-
-    // ── 2. Atualizar placares dos jogos encerrados ─────────────────────
-    for(const m of matches){
-      if(m.status !== 'FINISHED') continue;
-
-      const homeEn = m.homeTeam?.name;
-      const awayEn = m.awayTeam?.name;
-      const home = NM_FD[homeEn] || homeEn;
-      const away = NM_FD[awayEn] || awayEn;
-      const gh = m.score?.fullTime?.home;
-      const ga = m.score?.fullTime?.away;
-
-      console.log(`[SYNC] ${home} x ${away} | ${gh}-${ga}`);
-      if(gh === null || ga === null) continue;
-
-      const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/jogos?time_casa=eq.${encodeURIComponent(home)}&time_fora=eq.${encodeURIComponent(away)}`,
-        { method:'PATCH', headers:Hpatch, body:JSON.stringify({gols_casa:gh, gols_fora:ga}) }
-      );
-      console.log(`[SYNC] PATCH ${home} x ${away} → ${res.status}`);
-      if(res.ok || res.status===204) placaresAtualizados++;
+    const H = {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer '+token, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates'};
+    
+    for(const grp of standings){
+      // Só apurar grupos com 4 times e todos com 3 jogos (grupo encerrado)
+      if(!grp || grp.length < 2) continue;
+      const todoJogaram = grp.every(t => t.all?.played >= 3);
+      if(!todoJogaram) continue;
+      
+      const apiGrupo = grp[0]?.group; // ex: "Group A"
+      const letraGrupo = GRUPO_MAP[apiGrupo];
+      if(!letraGrupo) continue;
+      
+      // Converter nomes EN → PT
+      const nomePrimeiro = NOME_MAP[grp[0]?.team?.name] || grp[0]?.team?.name;
+      const nomeSegundo  = NOME_MAP[grp[1]?.team?.name] || grp[1]?.team?.name;
+      
+      // Salvar no banco
+      const res = await fetch(SUPABASE_URL+'/rest/v1/classificacao_grupos', {
+        method: 'POST',
+        headers: H,
+        body: JSON.stringify({grupo: letraGrupo, primeiro: nomePrimeiro, segundo: nomeSegundo, apurado_por: currentUser.id}),
+      });
+      
+      if(res.ok){ apurados++; }
     }
-
-    // ── 3. Buscar classificação dos grupos ─────────────────────────────
-    if(btn) btn.textContent='🔄 Buscando classificação...';
-    const rSt = await fetch('https://api.football-data.org/v4/competitions/WC/standings', {
-      headers: { 'X-Auth-Token': FD_TOKEN }
-    });
-    if(rSt.ok){
-      const dSt = await rSt.json();
-      const standings = dSt.standings || [];
-
-      for(const grp of standings){
-        if(grp.type !== 'TOTAL') continue;
-        const times = grp.table || [];
-        if(times.length < 2) continue;
-        const alguemJogou = times.some(t => (t.playedGames||0) > 0);
-        if(!alguemJogou) continue;
-
-        // Pegar letra do grupo ex: "Group A" → "A"
-        const letraGrupo = (grp.group||'').replace('GROUP_','').replace('Group ','').trim();
-        if(!letraGrupo || letraGrupo.length > 1) continue;
-
-        // times já vem ordenados por posição
-        const nomePrimeiro = NM_FD[times[0]?.team?.name] || times[0]?.team?.name;
-        const nomeSegundo  = NM_FD[times[1]?.team?.name] || times[1]?.team?.name;
-        if(!nomePrimeiro || !nomeSegundo) continue;
-
-        const res = await fetch(SUPABASE_URL+'/rest/v1/classificacao_grupos', {
-          method:'POST', headers:Hpost,
-          body:JSON.stringify({grupo:letraGrupo, primeiro:nomePrimeiro, segundo:nomeSegundo, apurado_por:currentUser.id}),
-        });
-        console.log(`[SYNC] Grupo ${letraGrupo}: ${nomePrimeiro}/${nomeSegundo} → ${res.status}`);
-        if(res.ok || res.status===204 || res.status===201) apurados++;
+    
+    if(apurados === 0){
+      toast('Nenhum grupo encerrado ainda na API. Verifique após os jogos.', 'e');
+      return;
+    }
+    
+    // 3. Recalcular pontos de TODAS as cotas
+    toast(`✅ ${apurados} grupo(s) sincronizado(s)! Recalculando pontos...`, 's');
+    const { data: inscs } = await sb.from('inscricoes').select('id,cotas').eq('status','aprovado');
+    for(const insc of (inscs||[])){
+      for(let c=1; c<=insc.cotas; c++){
+        const pts = await calcularPontosCota(insc.id, c);
+        await sb.from('pontuacao_cotas').upsert({
+          inscricao_id: insc.id, cota_numero: c,
+          pts_grupos: pts.ptsGrupos, pts_artilheiro: pts.ptsArtilheiro,
+          pts_palpitao: pts.ptsPalpitao, total_pontos: pts.total,
+          grupos_apurados: pts.gruposApurados, updated_at: new Date().toISOString(),
+        }, {onConflict:'inscricao_id,cota_numero'});
       }
     }
-
-    // ── 4. Recalcular pontos se algum grupo atualizado ─────────────────
-    if(apurados > 0){
-      if(btn) btn.textContent='🔄 Recalculando pontos...';
-      const { data: inscs } = await sb.from('inscricoes').select('id,cotas').eq('status','aprovado');
-      for(const insc of (inscs||[])){
-        for(let c=1; c<=insc.cotas; c++){
-          const pts = await calcularPontosCota(insc.id, c);
-          await sb.from('pontuacao_cotas').upsert({
-            inscricao_id:insc.id, cota_numero:c,
-            pts_grupos:pts.ptsGrupos, pts_artilheiro:pts.ptsArtilheiro,
-            pts_palpitao:pts.ptsPalpitao, total_pontos:pts.total,
-            grupos_apurados:pts.gruposApurados, updated_at:new Date().toISOString(),
-          },{onConflict:'inscricao_id,cota_numero'});
-        }
-      }
-    }
-
-    // ── Resultado ──────────────────────────────────────────────────────
-    const msgs = [];
-    if(placaresAtualizados > 0) msgs.push(`${placaresAtualizados} placar(es) atualizado(s)`);
-    if(apurados > 0) msgs.push(`${apurados} grupo(s) com classificação`);
-    toast(msgs.length > 0
-      ? '✅ ' + msgs.join(' · ')
-      : '⚡ Sem novidades ainda — tente após os jogos encerrarem.', 's');
-
-    // Recarregar aba jogos e ranking
-    const jc = document.getElementById('jogos-content');
-    if(jc){ jc.dataset.loaded='false'; jc.innerHTML='<div class="loading"><div class="spinner"></div>Atualizando...</div>'; }
-    if(document.getElementById('panel-jogos')?.style.display !== 'none') loadJogos();
+    
+    toast(`🏆 Pontuação atualizada! ${apurados} grupo(s) apurado(s).`, 's');
     loadAdmin();
     _refreshRankingDebounced();
-
+    
   }catch(e){
-    toast('Erro: '+e.message, 'e');
-    console.error('[SYNC] erro:', e);
+    toast('Erro na API: '+e.message, 'e');
   }finally{
     if(btn){ btn.disabled=false; btn.textContent='🔄 Sincronizar via API'; }
   }
@@ -2666,12 +2601,12 @@ async function loadAdmin(){
         <div class="asc"><div class="av">R$ ${totalPool}</div><div class="al">Prêmios</div></div>
         <div class="asc"><div class="av">R$ ${totalFees}</div><div class="al">Taxas</div></div>
       </div>
-      <div style="background:var(--bg-card);border:1px solid rgba(212,168,67,.3);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem">
+      <div style="background:var(--bg-card);border:1px solid rgba(34,197,94,.3);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem">
         <div>
-          <div style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.2rem">⚽ Atualizar Resultados</div>
-          <div style="font-size:.75rem;color:var(--text-muted)">Busca placares e classificação via football-data.org</div>
+          <div style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--success);text-transform:uppercase;letter-spacing:1px;margin-bottom:.2rem">⚽ Placares dos Jogos</div>
+          <div style="font-size:.75rem;color:var(--text-muted)">Role para baixo para atualizar os resultados manualmente</div>
         </div>
-        <button id="btn-sync-api" class="btn btn-p btn-sm" onclick="syncResultados()" style="white-space:nowrap">🔄 Sincronizar via API</button>
+        <a onclick="document.getElementById('admin-placares-lista')?.scrollIntoView({behavior:'smooth'})" class="btn btn-s btn-sm" style="cursor:pointer">↓ Ver Placares</a>
       </div>
       <h3 style="font-family:'Oswald',sans-serif;margin-bottom:.8rem;font-size:1rem;text-transform:uppercase;letter-spacing:1px">Inscrições</h3>
       <div id="admin-cotas-pend-section"></div>
@@ -2727,6 +2662,18 @@ async function loadAdmin(){
 
 <div style="overflow-x:auto"><table class="atbl"><thead><tr><th>Nome</th><th>De</th><th>Para</th><th>+Valor</th><th>Ações</th></tr></thead><tbody>${cpHtml}</tbody></table></div></div>`;
     }
+
+    // Seção de placares manuais
+    const placarSection = document.createElement('div');
+    placarSection.style.marginTop = '2rem';
+    placarSection.innerHTML = `
+      <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem;color:var(--success)">⚽ Placares dos Jogos</h3>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1rem" id="admin-placares-lista">
+        <div class="loading"><div class="spinner"></div>Carregando jogos...</div>
+      </div>`;
+    el.appendChild(placarSection);
+    // Carregar lista de jogos
+    renderAdminPlacares(document.getElementById('admin-placares-lista'));
 
     // Seção de reset de senha — Admin
     const resetSection = document.createElement('div');
@@ -3007,6 +2954,89 @@ async function loadConta(){
       ${userInscricao?.status==='aprovado'?renderCompraCotas(userInscricao.cotas):''}
       <div style="text-align:center;margin-top:1rem"><button class="btn btn-danger btn-sm" onclick="logout()">Sair da Conta</button></div>
     </div>`;
+}
+
+// ===== ADMIN PLACARES MANUAIS =====
+async function adminSalvarPlacar(timeCasa, timeFora, inputIdCasa, inputIdFora, btnId){
+  const gh = parseInt(document.getElementById(inputIdCasa)?.value);
+  const ga = parseInt(document.getElementById(inputIdFora)?.value);
+  const btn = document.getElementById(btnId);
+  if(isNaN(gh)||isNaN(ga)){toast('Informe os dois placares!','e');return;}
+  if(btn){btn.textContent='...';btn.disabled=true;}
+  try{
+    const{error}=await sb.from('jogos')
+      .update({gols_casa:gh, gols_fora:ga})
+      .eq('time_casa',timeCasa).eq('time_fora',timeFora);
+    if(error)throw new Error(error.message);
+    toast(`✅ ${timeCasa} ${gh} x ${ga} ${timeFora} salvo!`,'s');
+    if(btn){btn.textContent='✅';btn.style.background='var(--success)';}
+    // Recalcular pontos
+    const{data:inscs}=await sb.from('inscricoes').select('id,cotas').eq('status','aprovado');
+    for(const insc of(inscs||[])){
+      for(let c=1;c<=insc.cotas;c++){
+        const pts=await calcularPontosCota(insc.id,c);
+        await sb.from('pontuacao_cotas').upsert({
+          inscricao_id:insc.id,cota_numero:c,
+          pts_grupos:pts.ptsGrupos,pts_artilheiro:pts.ptsArtilheiro,
+          pts_palpitao:pts.ptsPalpitao,total_pontos:pts.total,
+          grupos_apurados:pts.gruposApurados,updated_at:new Date().toISOString(),
+        },{onConflict:'inscricao_id,cota_numero'});
+      }
+    }
+    _refreshRankingDebounced();
+    // Recarregar jogos
+    const jc=document.getElementById('jogos-content');
+    if(jc)jc.dataset.loaded='false';
+  }catch(e){
+    toast('Erro: '+e.message,'e');
+    if(btn){btn.textContent='Salvar';btn.disabled=false;}
+  }
+}
+
+async function renderAdminPlacares(el){
+  const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
+  const jogos=await fetch(SUPABASE_URL+'/rest/v1/jogos?select=*&order=data_jogo',{headers:H}).then(r=>r.json());
+  if(!Array.isArray(jogos)||jogos.length===0){
+    el.innerHTML='<p style="color:var(--text-muted)">Nenhum jogo encontrado na tabela.</p>';
+    return;
+  }
+  const hrBR=(iso)=>new Date(iso).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',timeZone:'America/Sao_Paulo'});
+  const agora=new Date();
+  // Separar jogos passados dos futuros
+  const passados=jogos.filter(j=>new Date(j.data_jogo)<=agora);
+  const futuros=jogos.filter(j=>new Date(j.data_jogo)>agora);
+  // Mostrar passados primeiro, depois os próximos 6
+  const lista=[...passados,...futuros.slice(0,6)];
+
+  let rows='';
+  lista.forEach((j,idx)=>{
+    const enc=j.gols_casa!==null&&j.gols_fora!==null;
+    const isFuturo=new Date(j.data_jogo)>agora;
+    const idC=`pl-c-${idx}`, idF=`pl-f-${idx}`, idB=`pl-b-${idx}`;
+    rows+=`<div style="display:grid;grid-template-columns:1fr 48px 1rem 48px 1fr auto;align-items:center;gap:.4rem;padding:.5rem .3rem;border-bottom:1px solid var(--border);${isFuturo?'opacity:.5':''}">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:.85rem;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${j.time_casa}</span>
+      <input id="${idC}" type="number" min="0" max="99" value="${enc?j.gols_casa:''}" placeholder="-"
+        style="width:48px;height:38px;text-align:center;background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:'Oswald',sans-serif;font-size:1.1rem;${enc?'border-color:var(--success)':''}">
+      <span style="text-align:center;color:var(--text-muted);font-size:.8rem">x</span>
+      <input id="${idF}" type="number" min="0" max="99" value="${enc?j.gols_fora:''}" placeholder="-"
+        style="width:48px;height:38px;text-align:center;background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:'Oswald',sans-serif;font-size:1.1rem;${enc?'border-color:var(--success)':''}">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${j.time_fora}
+        <span style="display:block;font-size:.6rem;color:var(--text-muted)">${hrBR(j.data_jogo)} · Gpo ${j.grupo}</span>
+      </span>
+      <button id="${idB}" onclick="adminSalvarPlacar('${j.time_casa}','${j.time_fora}','${idC}','${idF}','${idB}')"
+        style="background:var(--accent-teal);color:white;border:none;padding:.3rem .6rem;border-radius:5px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.7rem;text-transform:uppercase;white-space:nowrap;min-width:52px">
+        ${enc?'✅':'Salvar'}
+      </button>
+    </div>`;
+  });
+
+  if(futuros.length>6){
+    rows+=`<p style="font-size:.72rem;color:var(--text-muted);text-align:center;padding:.5rem 0">+ ${futuros.length-6} jogos futuros não exibidos</p>`;
+  }
+
+  el.innerHTML=`<div style="font-size:.75rem;color:var(--text-muted);margin-bottom:.6rem">
+    Jogos já realizados aparecem primeiro. Preencha os placar e clique Salvar — os pontos são recalculados automaticamente.
+  </div>${rows}`;
 }
 
 // ===== STATS =====
