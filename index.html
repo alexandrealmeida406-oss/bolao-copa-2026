@@ -2041,6 +2041,13 @@ async function loadRanking(){
       </div>` : '';
 
     el.innerHTML=`<div style="max-width:580px;margin:0 auto">
+      ${copaComecou && gruposApurados<12 ? `<div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:.9rem 1.1rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:.6rem">
+        <span style="font-size:1.2rem;flex-shrink:0">⚠️</span>
+        <div>
+          <div style="font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--warning);text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem">Ranking Especulativo</div>
+          <p style="font-size:.78rem;color:var(--text-secondary);line-height:1.6">Este é um ranking <strong style="color:var(--text-primary)">parcial e especulativo</strong> baseado nos jogos realizados até agora. <strong style="color:var(--text-primary)">Tudo pode mudar!</strong> O ranking oficial será definido somente após o encerramento da 1ª fase em 26/Jun.</p>
+        </div>
+      </div>` : ''}
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:.4rem">
         ${statusBadge}
         <span style="font-size:.75rem;color:var(--text-muted)">${linhas.length} cotas · ${linhas.filter(l=>l.preencheu).length} preenchidas</span>
