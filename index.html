@@ -1983,9 +1983,16 @@ async function loadRanking(){
 
     const rows=linhas.map(l=>{
       const isMe=currentUser&&(userProfile?.apelido===l.apelido||userProfile?.nome?.includes(l.apelido));
-      const bg=isMe?'background:rgba(212,168,67,.1);border-left:3px solid var(--accent-gold);':'';
+      // Destaque por posição — todos os empatados recebem a mesma cor
+      let rowBg='';
+      if(copaComecou && l.preencheu){
+        if(l.pos===1)      rowBg='background:rgba(255,215,0,.08);border-left:3px solid #FFD700;';
+        else if(l.pos===2) rowBg='background:rgba(192,192,192,.08);border-left:3px solid #C0C0C0;';
+        else if(l.pos===3) rowBg='background:rgba(205,127,50,.08);border-left:3px solid #CD7F32;';
+      }
+      if(isMe) rowBg='background:rgba(212,168,67,.12);border-left:3px solid var(--accent-gold);';
       const nc=l.totalCotas>1?` <span style="font-size:.65rem;color:var(--text-muted);background:rgba(255,255,255,.07);padding:.1rem .35rem;border-radius:50px">cota ${l.cota}</span>`:'';
-      const nm=isMe?'color:var(--accent-gold)':'color:var(--text-primary)';
+      const nm=isMe?'color:var(--accent-gold)':l.pos===1&&copaComecou?'color:#FFD700':l.pos===2&&copaComecou?'color:#C0C0C0':l.pos===3&&copaComecou?'color:#CD7F32':'color:var(--text-primary)';
 
       let statusTag='';
       if(!l.preencheu){
@@ -1993,7 +2000,6 @@ async function loadRanking(){
       } else if(!copaComecou){
         statusTag='<span style="font-size:.65rem;color:var(--success)">✓ palpites enviados</span>';
       } else {
-        // Copa em andamento — mostrar breakdown de pontos
         const gr=l.ptRow?.pts_grupos||0;
         const ar=l.ptRow?.pts_artilheiro||0;
         const pp=l.ptRow?.pts_palpitao||0;
@@ -2001,10 +2007,10 @@ async function loadRanking(){
       }
 
       const ptsDisplay=copaComecou&&l.preencheu
-        ?`<span style="font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:700;color:${l.pontos>0?'var(--accent-gold)':'var(--text-muted)'}">${l.pontos}</span>`
+        ?`<span style="font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:700;color:${l.pos===1?'#FFD700':l.pos===2?'#C0C0C0':l.pos===3?'#CD7F32':l.pontos>0?'var(--accent-gold)':'var(--text-muted)'}">${l.pontos}</span>`
         :'<span style="color:var(--text-muted);font-size:.9rem">—</span>';
 
-      return`<tr style="${bg}">
+      return`<tr style="${rowBg}">
         <td style="padding:.65rem .7rem;text-align:center;width:44px">${badge(l.pos)}</td>
         <td style="padding:.65rem .4rem">
           <span style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:600;${nm}">${l.apelido}</span>${nc}<br>
@@ -2017,12 +2023,22 @@ async function loadRanking(){
     // Badge de status no topo
     let statusBadge='';
     if(!copaComecou){
-      statusBadge=`<span style="background:rgba(212,168,67,.12);color:var(--accent-gold);font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:50px;letter-spacing:1px">⏳ Aguardando Copa — 11 Jun</span>`;
+      statusBadge=`<span style="background:rgba(212,168,67,.12);color:var(--accent-gold);font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:50px;letter-spacing:1px">⏳ Pré-Ranking — Copa começa 11 Jun</span>`;
     } else if(gruposApurados<12){
       statusBadge=`<span style="background:rgba(34,197,94,.12);color:var(--success);font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:50px;letter-spacing:1px">⚽ Em andamento — ${gruposApurados}/12 grupos apurados</span>`;
     } else {
-      statusBadge=`<span style="background:rgba(212,168,67,.15);color:var(--accent-gold);font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:50px;letter-spacing:1px">🏁 1ª Fase concluída — Placar parcial</span>`;
+      statusBadge=`<span style="background:rgba(212,168,67,.15);color:var(--accent-gold);font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:50px;letter-spacing:1px">🏁 1ª Fase concluída</span>`;
     }
+
+    // Aviso de especulação (só quando copa em andamento mas não encerrada)
+    const avisoEspeculacao = copaComecou && gruposApurados<12 ? `
+      <div style="margin-top:.8rem;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:.7rem 1rem;display:flex;align-items:flex-start;gap:.5rem">
+        <span style="font-size:1rem;flex-shrink:0">⚠️</span>
+        <div>
+          <div style="font-family:'Oswald',sans-serif;font-size:.72rem;color:var(--warning);text-transform:uppercase;letter-spacing:1px;margin-bottom:.2rem">Ranking Especulativo</div>
+          <p style="font-size:.72rem;color:var(--text-muted);line-height:1.5">Este é um ranking parcial baseado nos jogos realizados até agora. <strong style="color:var(--text-secondary)">Tudo pode mudar!</strong> O ranking oficial será definido somente após o encerramento da 1ª fase (26/Jun).</p>
+        </div>
+      </div>` : '';
 
     el.innerHTML=`<div style="max-width:580px;margin:0 auto">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:.4rem">
@@ -2039,7 +2055,11 @@ async function loadRanking(){
           <tbody>${rows}</tbody>
         </table>
       </div>
-      ${!copaComecou?`<p style="text-align:center;font-size:.76rem;color:var(--text-muted);margin-top:.7rem">Os pontos serão calculados automaticamente após cada grupo ser apurado ⚽</p>`:''}
+      ${avisoEspeculacao}
+      ${!copaComecou?`<div style="margin-top:.8rem;background:rgba(212,168,67,.06);border:1px solid rgba(212,168,67,.15);border-radius:8px;padding:.7rem 1rem;text-align:center">
+        <p style="font-size:.75rem;color:var(--text-muted)">⏳ <strong style="color:var(--accent-gold)">Pré-Ranking</strong> — ordenado por quem enviou palpites</p>
+        <p style="font-size:.72rem;color:var(--text-muted);margin-top:.2rem">Os pontos reais aparecem conforme os jogos encerrarem ⚽</p>
+      </div>`:''}
     </div>`;
 
     // Realtime — só subscreve uma vez
