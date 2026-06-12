@@ -2974,9 +2974,11 @@ async function adminSalvarPlacar(timeCasa, timeFora, inputIdCasa, inputIdFora, b
   if(btn){btn.textContent='...';btn.disabled=true;}
   try{
     // 1. Salvar placar na tabela jogos
-    const{error}=await sb.from('jogos')
+    const{data:jogoAtualizado,error}=await sb.from('jogos')
       .update({gols_casa:gh, gols_fora:ga})
-      .eq('time_casa',timeCasa).eq('time_fora',timeFora);
+      .eq('time_casa',timeCasa).eq('time_fora',timeFora)
+      .select();
+    console.log('[PLACAR] update jogos:', jogoAtualizado, error?.message);
     if(error)throw new Error(error.message);
 
     // 2. Recalcular classificação do grupo — buscar todos os jogos do grupo
@@ -3015,10 +3017,13 @@ async function adminSalvarPlacar(timeCasa, timeFora, inputIdCasa, inputIdFora, b
           .sort((a,b)=>b.pts-a.pts||b.sg-a.sg||b.gf-a.gf);
 
         if(ordenado.length>=2&&ordenado[0].j>0){
-          await sb.from('classificacao_grupos').upsert(
-            {grupo, primeiro:ordenado[0].nome, segundo:ordenado[1].nome},
-            {onConflict:'grupo'}
+          // Delete + insert garante que funciona mesmo sem UNIQUE constraint
+          await sb.from('classificacao_grupos').delete().eq('grupo',grupo);
+          const{error:errCg}=await sb.from('classificacao_grupos').insert(
+            {grupo, primeiro:ordenado[0].nome, segundo:ordenado[1].nome, apurado_por:currentUser.id}
           );
+          if(errCg) console.warn('[PLACAR] classificacao erro:',errCg.message);
+          else console.log(`[PLACAR] Grupo ${grupo}: 1º ${ordenado[0].nome}, 2º ${ordenado[1].nome}`);
         }
       }
     }
@@ -3028,25 +3033,33 @@ async function adminSalvarPlacar(timeCasa, timeFora, inputIdCasa, inputIdFora, b
 
     // 3. Recalcular pontos de todas as cotas
     const{data:inscs}=await sb.from('inscricoes').select('id,cotas').eq('status','aprovado');
+    let cotasCalc=0;
     for(const insc of(inscs||[])){
       for(let c=1;c<=insc.cotas;c++){
         const pts=await calcularPontosCota(insc.id,c);
-        await sb.from('pontuacao_cotas').upsert({
+        const{error:errPts}=await sb.from('pontuacao_cotas').upsert({
           inscricao_id:insc.id,cota_numero:c,
           pts_grupos:pts.ptsGrupos,pts_artilheiro:pts.ptsArtilheiro,
           pts_palpitao:pts.ptsPalpitao,total_pontos:pts.total,
           grupos_apurados:pts.gruposApurados,updated_at:new Date().toISOString(),
         },{onConflict:'inscricao_id,cota_numero'});
+        if(errPts) console.warn('[PLACAR] pontuacao erro:',errPts.message);
+        else cotasCalc++;
       }
     }
+    console.log(`[PLACAR] ${cotasCalc} cotas recalculadas`);
     _refreshRankingDebounced();
 
     // 4. Recarregar aba jogos e classificação
     const jc=document.getElementById('jogos-content');
-    if(jc)jc.dataset.loaded='false';
+    if(jc){jc.dataset.loaded='false';}
     const cc=document.getElementById('class-content');
     if(cc){cc.dataset.loaded='false';}
-    if(document.getElementById('panel-class')?.style.display!=='none')loadClassificacao();
+    // Forçar reload das abas se estiverem abertas
+    setTimeout(()=>{
+      if(document.getElementById('panel-jogos')?.style.display!=='none') loadJogos();
+      if(document.getElementById('panel-class')?.style.display!=='none') loadClassificacao();
+    },500);
 
   }catch(e){
     toast('Erro: '+e.message,'e');
