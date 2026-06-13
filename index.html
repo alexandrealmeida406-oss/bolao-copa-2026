@@ -3102,11 +3102,28 @@ async function adminSalvarPlacar(timeCasa, timeFora, inputIdCasa, inputIdFora, b
         const ordenado=Object.entries(tabela)
           .map(([nome,s])=>({nome,...s,sg:s.gf-s.gc}))
           .sort((a,b)=>b.pts-a.pts||b.sg-a.sg||b.gf-a.gf);
-        if(ordenado.length>=2&&ordenado[0].j>0){
+        // 1º definido = lidera isolado em pontos
+        const primeiroDefinido = ordenado.length>=2 && ordenado[0].j>0
+          && ordenado[0].pts > ordenado[1].pts;
+
+        // 2º definido = isolado em pontos OU isolado em saldo de gols
+        const segundoDefinido = ordenado.length>=2 && ordenado[1].j>0 && (
+          ordenado.length===2 ||
+          ordenado[1].pts > (ordenado[2]?.pts||0) ||
+          (ordenado[1].pts===(ordenado[2]?.pts||0) && ordenado[1].sg>(ordenado[2]?.sg||0))
+        );
+
+        if(primeiroDefinido){
           await sb.from('classificacao_grupos').delete().eq('grupo',grupo);
-          await sb.from('classificacao_grupos').insert(
-            {grupo,primeiro:ordenado[0].nome,segundo:ordenado[1].nome,apurado_por:currentUser.id}
-          );
+          await sb.from('classificacao_grupos').insert({
+            grupo,
+            primeiro: ordenado[0].nome,
+            segundo: segundoDefinido ? ordenado[1].nome : '?',
+            apurado_por: currentUser.id
+          });
+          console.log(`[PLACAR] Grupo ${grupo}: 1º=${ordenado[0].nome} 2º=${segundoDefinido?ordenado[1].nome:'indefinido'}`);
+        } else {
+          console.log(`[PLACAR] Grupo ${grupo}: 1º indefinido ainda`);
         }
       }
     }
