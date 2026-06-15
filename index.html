@@ -2304,11 +2304,17 @@ function goToGrupos(){ goTo('grupos','jogos'); }
 function goToJogos(){ goTo('grupos','jogos'); }
 function goToClass(){ goTo('grupos','class'); }
 function goToElim(){
-  // Mostrar seção eliminatórias, esconder outras
-  document.querySelectorAll('section.sec').forEach(s=>s.style.display='none');
   const el=document.getElementById('eliminatorias');
-  if(el){ el.style.display=''; loadElim(); }
-  window.scrollTo({top:el?.offsetTop-70||0,behavior:'smooth'});
+  if(!el) return;
+  // Mostrar seção e carregar conteúdo
+  el.style.display='';
+  loadElim();
+  // Scroll com delays para aguardar render
+  const delays=[300,600,1000];
+  delays.forEach(d=>setTimeout(()=>{
+    const top=el.getBoundingClientRect().top+window.pageYOffset-70;
+    window.scrollTo({top:Math.max(0,top),behavior:'auto'});
+  },d));
 }
 
 async function loadClassificacao(){
