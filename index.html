@@ -3137,7 +3137,8 @@ function buildChaveamento(jogos){
   const porFase = {};
   jogos.forEach(j=>{ if(!porFase[j.fase]) porFase[j.fase]=[]; porFase[j.fase].push(j); });
   ['16avos','oitavas','quartas','semis'].forEach(fase=>{
-    const proxFase = {16avos:'oitavas',oitavas:'quartas',quartas:'semis',semis:'final'}[fase];
+    const proxFaseMap = {'16avos':'oitavas','oitavas':'quartas','quartas':'semis','semis':'final'};
+    const proxFase = proxFaseMap[fase];
     const atual = (porFase[fase]||[]).sort((a,b)=>a.ordem-b.ordem);
     const prox  = (porFase[proxFase]||[]).sort((a,b)=>a.ordem-b.ordem);
     // Cada par de jogos alimenta o próximo
