@@ -2922,9 +2922,9 @@ async function loadConta(){
 // ===== ELIMINATÓRIAS =====
 
 let _segundaFaseAberta = false;
-const FASE_PTS = {'16avos':5,'oitavas':6,'quartas':7,'semis':8,'final':12,'terceiro':0};
-const FASE_LABEL = {'16avos':'16-avos de Final','oitavas':'Oitavas de Final','quartas':'Quartas de Final','semis':'Semifinais','final':'🏆 Final','terceiro':'3º Lugar'};
-const FASE_ORDER = ['16avos','oitavas','quartas','semis','final'];
+const FASE_PTS = {'16avos':5,'oitavas':6,'quartas':7,'semis':8,'final':12,'terceiro':6};
+const FASE_LABEL = {'16avos':'16-avos de Final','oitavas':'Oitavas de Final','quartas':'Quartas de Final','semis':'Semifinais','final':'🏆 Final','terceiro':'🥉 3º Lugar'};
+const FASE_ORDER = ['16avos','oitavas','quartas','semis','final','terceiro'];
 
 async function _checkSegundaFase(){
   try{
@@ -3003,7 +3003,7 @@ async function loadElim(){
       palpMap[p.inscricao_id+'_'+p.cota_numero+'_'+p.jogo_id]=p.vencedor;
     });
 
-    const FASE_ORDER=['16avos','oitavas','quartas','semis','final']; // 3º lugar sem pontuação, não exibir
+    const FASE_ORDER=['16avos','oitavas','quartas','semis','final','terceiro'];
     const porFase={};
     jogos.forEach(j=>{ if(!porFase[j.fase])porFase[j.fase]=[]; porFase[j.fase].push(j); });
 
@@ -3037,7 +3037,7 @@ async function loadElim(){
         const pts = FASE_PTS[fase];
 
         // Subtítulo motivacional por fase
-        const FASE_SUB = {'16avos':'Escolha quem avança para as Oitavas de Final','oitavas':'Escolha quem avança para as Quartas de Final','quartas':'Escolha quem avança para as Semifinais','semis':'Escolha quem avança para a Final','final':'🏆 Escolha o Campeão do Mundo!'};
+        const FASE_SUB = {'16avos':'Escolha quem avança para as Oitavas de Final','oitavas':'Escolha quem avança para as Quartas de Final','quartas':'Escolha quem avança para as Semifinais','semis':'Escolha quem avança para a Final e para o 3º Lugar','final':'🏆 Escolha o Campeão do Mundo!','terceiro':'🥉 Disputa pelo 3º Lugar — os perdedores das Semifinais'};
 
         // Header da fase
         out += '<div style="margin-bottom:1.5rem">';
@@ -3142,6 +3142,8 @@ function buildChaveamento(jogos){
   const porFase = {};
   jogos.forEach(j=>{ if(!porFase[j.fase]) porFase[j.fase]=[]; porFase[j.fase].push(j); });
   const mapa = {'16avos':'oitavas','oitavas':'quartas','quartas':'semis','semis':'final'};
+
+  // Vencedores avançam para a próxima fase
   ['16avos','oitavas','quartas','semis'].forEach(fase=>{
     const proxFase = mapa[fase];
     const atual = (porFase[fase]||[]).sort((a,b)=>a.ordem-b.ordem);
@@ -3152,6 +3154,19 @@ function buildChaveamento(jogos){
       if(prox[proxIdx]) _chaveamento[j.id] = {proximoJogoId:prox[proxIdx].id, posicao:pos};
     });
   });
+
+  // Perdedores das semis vão para o 3º lugar
+  const semis    = (porFase['semis']   ||[]).sort((a,b)=>a.ordem-b.ordem);
+  const terceiro = (porFase['terceiro']||[]).sort((a,b)=>a.ordem-b.ordem);
+  if(semis.length>=2 && terceiro.length>=1){
+    // semi 1 perdedor → lado casa do 3º lugar
+    // semi 2 perdedor → lado fora do 3º lugar
+    _chaveamento[semis[0].id] = _chaveamento[semis[0].id] || {};
+    _chaveamento[semis[0].id].perdedor = {proximoJogoId:terceiro[0].id, posicao:'casa'};
+    _chaveamento[semis[1].id] = _chaveamento[semis[1].id] || {};
+    _chaveamento[semis[1].id].perdedor = {proximoJogoId:terceiro[0].id, posicao:'fora'};
+  }
+
   console.log('[CHAVEAMENTO] mapa:', _chaveamento);
 }
 
@@ -3162,9 +3177,26 @@ function escolherVencedor(inscricaoId, cotaNum, jogoId, vencedor){
   // Destacar o time escolhido no card atual
   _destacarEscolha(inscricaoId, jogoId, vencedor);
 
-  // Propagar para próxima fase
-  const prox = _chaveamento[jogoId];
-  if(prox) _propagarTime(inscricaoId, cotaNum, prox.proximoJogoId, prox.posicao, vencedor);
+  const entry = _chaveamento[jogoId];
+  if(!entry) return;
+
+  // Propagar vencedor para próxima fase
+  if(entry.proximoJogoId){
+    _propagarTime(inscricaoId, cotaNum, entry.proximoJogoId, entry.posicao, vencedor);
+  }
+
+  // Propagar perdedor para 3º lugar (só nas semis)
+  if(entry.perdedor){
+    // Descobrir qual time NÃO foi escolhido
+    const div = document.getElementById('jogo-'+inscricaoId+'-'+jogoId);
+    const btns = div ? div.querySelectorAll('button[data-lado]') : [];
+    let perdedor = null;
+    btns.forEach(b=>{
+      const nome = b.getAttribute('data-nome')||'';
+      if(nome && nome !== vencedor) perdedor = nome;
+    });
+    if(perdedor) _propagarTime(inscricaoId, cotaNum, entry.perdedor.proximoJogoId, entry.perdedor.posicao, perdedor);
+  }
 }
 
 function _destacarEscolha(inscricaoId, jogoId, vencedor){
