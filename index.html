@@ -2304,12 +2304,13 @@ function goToGrupos(){ goTo('grupos','jogos'); }
 function goToJogos(){ goTo('grupos','jogos'); }
 function goToClass(){ goTo('grupos','class'); }
 function goToElim(){
+  console.log('[ELIM] goToElim chamado');
   const el=document.getElementById('eliminatorias');
-  if(!el) return;
-  // Mostrar seção e carregar conteúdo
-  el.style.display='';
+  console.log('[ELIM] seção encontrada:', !!el, el?.style?.display);
+  if(!el){ console.error('[ELIM] seção #eliminatorias não encontrada!'); return; }
+  el.style.display='block';
+  console.log('[ELIM] seção exibida, chamando loadElim...');
   loadElim();
-  // Scroll com delays para aguardar render
   const delays=[300,600,1000];
   delays.forEach(d=>setTimeout(()=>{
     const top=el.getBoundingClientRect().top+window.pageYOffset-70;
@@ -3167,7 +3168,7 @@ async function renderAdminPlacares(el){
   const agora=new Date();
   const passados=jogos.filter(j=>new Date(j.data_jogo)<=agora);
   const futuros=jogos.filter(j=>new Date(j.data_jogo)>agora);
-  const lista=[...passados,...futuros.slice(0,6)];
+  const lista=[...passados,...futuros]; // todos os jogos
   let rows='';
   lista.forEach((j,idx)=>{
     const enc=j.gols_casa!==null&&j.gols_fora!==null;
@@ -3189,7 +3190,7 @@ async function renderAdminPlacares(el){
       </button>
     </div>`;
   });
-  if(futuros.length>6)rows+=`<p style="font-size:.72rem;color:var(--text-muted);text-align:center;padding:.5rem 0">+ ${futuros.length-6} jogos futuros não exibidos</p>`;
+
   el.innerHTML=`<div style="font-size:.75rem;color:var(--text-muted);margin-bottom:.6rem">Jogos realizados aparecem primeiro. Salve o placar — classificação e pontos são atualizados automaticamente.</div>${rows}`;
 }
 
