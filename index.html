@@ -3327,25 +3327,47 @@ async function renderAdminClassificados(el){
     out += '<div style="font-family:\'Oswald\',sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.8rem">1º e 2º de cada grupo</div>';
     out += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.5rem">';
 
+    // Times por grupo (ordem oficial FIFA)
+    const TIMES_GRUPO = {
+      A: ['México','África do Sul','Coreia do Sul','República Tcheca'],
+      B: ['Canadá','Bósnia e Herzegovina','Catar','Suíça'],
+      C: ['Brasil','Marrocos','Haiti','Escócia'],
+      D: ['EUA','Paraguai','Austrália','Turquia'],
+      E: ['Alemanha','Curaçao','Costa do Marfim','Equador'],
+      F: ['Holanda','Japão','Suécia','Tunísia'],
+      G: ['Bélgica','Egito','Irã','Nova Zelândia'],
+      H: ['Espanha','Cabo Verde','Arábia Saudita','Uruguai'],
+      I: ['França','Senegal','Iraque','Noruega'],
+      J: ['Argentina','Argélia','Áustria','Jordânia'],
+      K: ['Portugal','RD Congo','Uzbequistão','Colômbia'],
+      L: ['Inglaterra','Croácia','Gana','Panamá'],
+    };
+
     for(const g of GRUPOS){
       const cg = cgMap[g];
       const id1 = 'classif-1-'+g;
       const id2 = 'classif-2-'+g;
       const val1 = cg?.primeiro || slotMap['1'+g] || '';
-      const val2 = cg?.segundo || slotMap['2'+g] || '';
+      const val2 = cg?.segundo  || slotMap['2'+g] || '';
       const ok = val1 && val2 && val2 !== '?';
+      const times = TIMES_GRUPO[g] || [];
+
+      const opts1 = '<option value="">— selecione —</option>'
+        + times.map(t=>'<option value="'+t+'"'+(t===val1?' selected':'')+'>'+t+'</option>').join('');
+      const opts2 = '<option value="">— selecione —</option>'
+        + times.map(t=>'<option value="'+t+'"'+(t===val2?' selected':'')+'>'+t+'</option>').join('');
+
+      const selStyle = 'width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.28rem .4rem;color:var(--text-primary);font-size:.78rem';
 
       out += '<div style="background:var(--bg-dark);border:1px solid '+(ok?'var(--success)':'var(--border)')+';border-radius:6px;padding:.5rem .7rem">';
       out += '<div style="font-family:\'Oswald\',sans-serif;font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Grupo '+g+(ok?' ✅':'')+'</div>';
       out += '<div style="display:flex;gap:.4rem;align-items:center;margin-bottom:.3rem">';
       out += '<span style="font-size:.65rem;background:rgba(212,168,67,.2);color:var(--accent-gold);padding:.1rem .35rem;border-radius:3px;font-weight:700;min-width:18px;text-align:center">1º</span>';
-      out += '<input id="'+id1+'" value="'+val1+'" placeholder="Time 1º lugar"'
-        +' style="flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.25rem .4rem;color:var(--text-primary);font-size:.78rem">';
+      out += '<select id="'+id1+'" style="'+selStyle+'">'+opts1+'</select>';
       out += '</div>';
       out += '<div style="display:flex;gap:.4rem;align-items:center">';
       out += '<span style="font-size:.65rem;background:rgba(148,163,184,.2);color:var(--text-secondary);padding:.1rem .35rem;border-radius:3px;font-weight:700;min-width:18px;text-align:center">2º</span>';
-      out += '<input id="'+id2+'" value="'+val2+'" placeholder="Time 2º lugar"'
-        +' style="flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.25rem .4rem;color:var(--text-primary);font-size:.78rem">';
+      out += '<select id="'+id2+'" style="'+selStyle+'">'+opts2+'</select>';
       out += '</div>';
       out += '</div>';
     }
