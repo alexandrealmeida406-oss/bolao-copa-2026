@@ -863,12 +863,7 @@ window.addEventListener('DOMContentLoaded', () => {
 <div id="rank-content"></div>
 </section>
 
-<div class="page" id="page-elim">
-<div class="sec" style="margin-top:4rem">
-<h2 class="stitle" style="margin-bottom:1.5rem">🏆 Palpites — Fase Eliminatória</h2>
-<div id="elim-content"><div class="loading"><div class="spinner"></div>Carregando...</div></div>
-</div>
-</div>
+
 
 <section class="sec" id="grupos" style="padding-top:0">
 <div class="sh"><div class="stag">Copa do Mundo 2026</div><h2 class="stitle">Grupos da Copa</h2>
@@ -1014,6 +1009,13 @@ window.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <!-- ===================== ADMIN PAGE ===================== -->
+<div class="page" id="page-elim">
+<div class="sec" style="margin-top:4rem">
+<h2 class="stitle" style="margin-bottom:1.5rem">🏆 Palpites — Fase Eliminatória</h2>
+<div id="elim-content"><div class="loading"><div class="spinner"></div>Carregando...</div></div>
+</div>
+</div>
+
 <div class="page" id="page-admin">
 <div class="admin-page">
 <h2>⚙️ Administração — Bolão do Almeida</h2>
@@ -1227,6 +1229,10 @@ function navigate(page){
   document.getElementById('nl').classList.remove('open');
   // scrollTo só para pages dinâmicas — sections da home controlam o próprio scroll
   if(!['home','cf','val','insc','rank','prem','grupos'].includes(page))window.scrollTo(0,0);
+  // elim não existe como page no navigate padrão — garantir que page-elim existe
+  if(page==='elim' && !document.getElementById('page-elim')){
+    console.error('page-elim não encontrado!'); return;
+  }
   
   if(page==='admin'){
     const _ac=document.getElementById('admin-content');
@@ -1284,7 +1290,7 @@ function updateUI(){
         ${avatar?`<img src="${avatar}" alt="${name}">`:''}
         <span>${name.split(' ')[0]}</span>
         ${userInscricao?.status==='aprovado'?`<a onclick="navigate('palpites')" class="nav-palpites">🎯 Palpites 1ª Fase</a>`:''}
-${userInscricao?.status==='aprovado'&&_segundaFaseAberta?`<a onclick="navigate('elim')" class="nav-palpites" style="background:rgba(56,189,248,.15);border-color:var(--accent-teal);color:var(--accent-teal)">🏆 Palpites 2ª Fase</a>`:''}
+${userInscricao?.status==='aprovado'&&(_segundaFaseAberta||currentUser?.id==='665be71a-1893-4ac8-a087-ed93cfbe7dd3')?`<a onclick="navigate('elim')" class="nav-palpites" style="background:rgba(56,189,248,.15);border-color:var(--accent-teal);color:var(--accent-teal)">🏆 Palpites 2ª Fase</a>`:''}
         <a onclick="navigate('conta')">Conta</a>
         ${userProfile?.is_admin?'<a onclick="navigate(\'admin\')" style="color:var(--warning)">Admin</a>':''}
         <a onclick="logout()" style="color:var(--error);font-size:.7rem">Sair</a>
@@ -2305,20 +2311,7 @@ function showTab(tab){
 function goToGrupos(){ goTo('grupos','jogos'); }
 function goToJogos(){ goTo('grupos','jogos'); }
 function goToClass(){ goTo('grupos','class'); }
-function goToElim(){
-  console.log('[ELIM] goToElim chamado');
-  const el=document.getElementById('eliminatorias');
-  console.log('[ELIM] seção encontrada:', !!el, el?.style?.display);
-  if(!el){ console.error('[ELIM] seção #eliminatorias não encontrada!'); return; }
-  el.style.display='block';
-  console.log('[ELIM] seção exibida, chamando loadElim...');
-  loadElim();
-  const delays=[300,600,1000];
-  delays.forEach(d=>setTimeout(()=>{
-    const top=el.getBoundingClientRect().top+window.pageYOffset-70;
-    window.scrollTo({top:Math.max(0,top),behavior:'auto'});
-  },d));
-}
+function goToElim(){ navigate('elim'); }
 
 async function loadClassificacao(){
   const el=document.getElementById('class-content');
