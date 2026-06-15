@@ -506,7 +506,7 @@ window.addEventListener('DOMContentLoaded', () => {
 <li><a onclick="document.getElementById('nl').classList.remove('open');navigate('home');scrollToSection('cf')">Como Funciona</a></li>
 <li><a onclick="document.getElementById('nl').classList.remove('open');navigate('home');scrollToSection('rank');setTimeout(loadRanking,100)">Ranking</a></li>
 <li><a onclick="document.getElementById('nl').classList.remove('open');goToJogos()">Data dos Jogos</a></li>
-<li><a onclick="document.getElementById('nl').classList.remove('open');goToElim()">Eliminatórias</a></li>
+<li><a onclick="document.getElementById('nl').classList.remove('open');navigate('elim')">Eliminatórias</a></li>
 <li><a onclick="document.getElementById('nl').classList.remove('open');goToClass()">Classificação</a></li>
 <li id="nav-auth"></li>
 </ul>
@@ -863,13 +863,12 @@ window.addEventListener('DOMContentLoaded', () => {
 <div id="rank-content"></div>
 </section>
 
-<section class="sec" id="eliminatorias" style="padding-top:0;display:none">
-<div class="sh"><div class="stag">Copa do Mundo 2026</div><h2 class="stitle">Fase Eliminatória</h2>
-<p class="sdesc">Indique o vencedor de cada confronto — do mata-mata até a grande final!</p></div>
-<div id="elim-content">
-  <div class="loading"><div class="spinner"></div>Carregando...</div>
+<div class="page" id="page-elim">
+<div class="sec" style="margin-top:4rem">
+<h2 class="stitle" style="margin-bottom:1.5rem">🏆 Palpites — Fase Eliminatória</h2>
+<div id="elim-content"><div class="loading"><div class="spinner"></div>Carregando...</div></div>
 </div>
-</section>
+</div>
 
 <section class="sec" id="grupos" style="padding-top:0">
 <div class="sh"><div class="stag">Copa do Mundo 2026</div><h2 class="stitle">Grupos da Copa</h2>
@@ -1243,12 +1242,14 @@ function navigate(page){
     sb.removeChannel(_rankChannel);_rankChannel=null;
   }
   if(page==='palpites'){
-    // Small delay se auth ainda não resolveu
     if(!_authReady){
       document.getElementById('palpites-content').innerHTML=
         '<div class="loading"><div class="spinner"></div>Verificando sessão...</div>';
     }
     loadPalpites();
+  }
+  if(page==='elim'){
+    loadElim();
   }
 }
 
@@ -1283,6 +1284,7 @@ function updateUI(){
         ${avatar?`<img src="${avatar}" alt="${name}">`:''}
         <span>${name.split(' ')[0]}</span>
         ${userInscricao?.status==='aprovado'?`<a onclick="navigate('palpites')" class="nav-palpites">🎯 Palpites 1ª Fase</a>`:''}
+${userInscricao?.status==='aprovado'&&_segundaFaseAberta?`<a onclick="navigate('elim')" class="nav-palpites" style="background:rgba(56,189,248,.15);border-color:var(--accent-teal);color:var(--accent-teal)">🏆 Palpites 2ª Fase</a>`:''}
         <a onclick="navigate('conta')">Conta</a>
         ${userProfile?.is_admin?'<a onclick="navigate(\'admin\')" style="color:var(--warning)">Admin</a>':''}
         <a onclick="logout()" style="color:var(--error);font-size:.7rem">Sair</a>
@@ -2627,7 +2629,7 @@ async function loadAdmin(){
               ? `<button onclick="adminToggleSegundaFase(false)" style="padding:.5rem 1rem;background:var(--error);color:white;border:none;border-radius:6px;font-family:'Oswald',sans-serif;font-size:.8rem;cursor:pointer">🔒 Fechar 2ª Fase</button>`
               : `<button onclick="adminToggleSegundaFase(true)" style="padding:.5rem 1rem;background:var(--success);color:white;border:none;border-radius:6px;font-family:'Oswald',sans-serif;font-size:.8rem;cursor:pointer">🟢 Liberar para todos</button>`
             }
-            <button onclick="goToElim()" style="padding:.5rem 1rem;background:var(--bg-dark);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;font-family:'Oswald',sans-serif;font-size:.8rem;cursor:pointer">👁 Visualizar</button>
+            <button onclick="navigate('elim')" style="padding:.5rem 1rem;background:var(--bg-dark);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;font-family:'Oswald',sans-serif;font-size:.8rem;cursor:pointer">👁 Visualizar</button>
           </div>
         </div>`;
     })();
@@ -2915,12 +2917,20 @@ async function loadConta(){
 
 // ===== ELIMINATÓRIAS =====
 
+let _segundaFaseAberta = false;
 const FASE_PTS = {'16avos':5,'oitavas':6,'quartas':7,'semis':8,'final':12,'terceiro':0};
 const FASE_LABEL = {'16avos':'16-avos de Final','oitavas':'Oitavas de Final','quartas':'Quartas de Final','semis':'Semifinais','final':'🏆 Final','terceiro':'3º Lugar'};
 const FASE_ORDER = ['16avos','oitavas','quartas','semis','final','terceiro'];
 
+async function _checkSegundaFase(){
+  try{
+    const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
+    const r = await fetch(SUPABASE_URL+'/rest/v1/config_bolao?chave=eq.segunda_fase_aberta&select=valor',{headers:H}).then(r=>r.json());
+    _segundaFaseAberta = r?.[0]?.valor === 'true';
+  }catch(e){ _segundaFaseAberta = false; }
+}
+
 async function loadElim(){
-  console.log('[ELIM] loadElim() executando...');
   const el = document.getElementById('elim-content');
   console.log('[ELIM] elim-content:', !!el);
   if(!el){ console.error('[ELIM] elim-content NÃO ENCONTRADO'); return; }
