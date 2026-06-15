@@ -2920,9 +2920,12 @@ const FASE_LABEL = {'16avos':'16-avos de Final','oitavas':'Oitavas de Final','qu
 const FASE_ORDER = ['16avos','oitavas','quartas','semis','final','terceiro'];
 
 async function loadElim(){
+  console.log('[ELIM] loadElim() executando...');
   const el = document.getElementById('elim-content');
-  if(!el) return;
+  console.log('[ELIM] elim-content:', !!el);
+  if(!el){ console.error('[ELIM] elim-content NÃO ENCONTRADO'); return; }
   el.innerHTML='<div class="loading"><div class="spinner"></div>Carregando eliminatórias...</div>';
+  console.log('[ELIM] spinner exibido, buscando dados...');
 
   const ADMIN_ID = '665be71a-1893-4ac8-a087-ed93cfbe7dd3';
 
