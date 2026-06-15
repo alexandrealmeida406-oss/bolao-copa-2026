@@ -3377,18 +3377,30 @@ async function renderAdminClassificados(el){
     out += '<div style="margin-bottom:1.5rem">';
     out += '<div style="font-family:\'Oswald\',sans-serif;font-size:.8rem;color:var(--accent-teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">8 melhores terceiros colocados</div>';
     out += '<div style="font-size:.72rem;color:var(--text-muted);margin-bottom:.7rem">Informe os 8 times que avançaram como melhores terceiros (a FIFA define a ordem após a 1ª fase).</div>';
-    out += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.4rem">';
+    out += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.4rem">';
 
-    // Slots de terceiros no chaveamento
+    const TODOS_TIMES = [
+      'África do Sul','Alemanha','Arábia Saudita','Argélia','Argentina',
+      'Austrália','Áustria','Bélgica','Bósnia e Herzegovina','Brasil',
+      'Cabo Verde','Canadá','Catar','Colômbia','Coreia do Sul',
+      'Costa do Marfim','Croácia','Curaçao','Egito','Equador',
+      'Escócia','Espanha','EUA','França','Gana','Haiti','Holanda',
+      'Inglaterra','Irã','Iraque','Japão','Jordânia','Marrocos',
+      'México','Noruega','Nova Zelândia','Panamá','Paraguai',
+      'Portugal','RD Congo','República Tcheca','Senegal','Suécia',
+      'Suíça','Tunísia','Turquia','Uruguai','Uzbequistão'
+    ];
+
     const terceirosSlots = ['3ABCDF','3CDFGH','3CEFHI','3EHIJK','3BEFIJ','3AEHIJ','3EFGIJ','3ABEIJ'];
     for(let i=0;i<8;i++){
       const slot = terceirosSlots[i];
       const val = slotMap[slot] || '';
       const id = 'classif-3-'+i;
+      const opts3 = '<option value="">— selecione —</option>'
+        + TODOS_TIMES.map(t=>'<option value="'+t+'"'+(t===val?' selected':'')+'>'+t+'</option>').join('');
       out += '<div style="background:var(--bg-dark);border:1px solid '+(val?'var(--success)':'var(--border)')+';border-radius:6px;padding:.5rem .7rem">';
-      out += '<div style="font-size:.63rem;color:var(--text-muted);margin-bottom:.3rem">Slot: <code>'+slot+'</code></div>';
-      out += '<input id="'+id+'" data-slot="'+slot+'" value="'+val+'" placeholder="Time 3º colocado"'
-        +' style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.25rem .4rem;color:var(--text-primary);font-size:.78rem">';
+      out += '<div style="font-size:.63rem;color:var(--text-muted);margin-bottom:.3rem">3º colocado '+(i+1)+' — <code style="color:var(--accent-teal)">'+slot+'</code></div>';
+      out += '<select id="'+id+'" data-slot="'+slot+'" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.28rem .4rem;color:var(--text-primary);font-size:.78rem">'+opts3+'</select>';
       out += '</div>';
     }
     out += '</div></div>';
@@ -3444,19 +3456,17 @@ async function salvarClassificados(){
       if(e1){ erros.push('Grupo '+g+': '+e1.message); continue; }
 
       // Atualizar jogos_eliminatorias — 1º do grupo
-      const{error:e2}=await sb.from('jogos_eliminatorias')
-        .update({time_casa:v1}).eq('fase','16avos').eq('slot_casa','1'+g);
-      const{error:e3}=await sb.from('jogos_eliminatorias')
-        .update({time_fora:v1}).eq('fase','16avos').eq('slot_fora','1'+g);
-
+      const r2=await sb.from('jogos_eliminatorias').update({time_casa:v1}).eq('fase','16avos').eq('slot_casa','1'+g);
+      const r3=await sb.from('jogos_eliminatorias').update({time_fora:v1}).eq('fase','16avos').eq('slot_fora','1'+g);
       // Atualizar jogos_eliminatorias — 2º do grupo
-      const{error:e4}=await sb.from('jogos_eliminatorias')
-        .update({time_casa:v2}).eq('fase','16avos').eq('slot_casa','2'+g);
-      const{error:e5}=await sb.from('jogos_eliminatorias')
-        .update({time_fora:v2}).eq('fase','16avos').eq('slot_fora','2'+g);
+      const r4=await sb.from('jogos_eliminatorias').update({time_casa:v2}).eq('fase','16avos').eq('slot_casa','2'+g);
+      const r5=await sb.from('jogos_eliminatorias').update({time_fora:v2}).eq('fase','16avos').eq('slot_fora','2'+g);
 
-      if(e2||e3||e4||e5) erros.push('Grupo '+g+' elim: '+(e2||e3||e4||e5)?.message);
-      else salvos++;
+      console.log('[CLASSIF] Grupo '+g+' 1º='+v1+' 2º='+v2,
+        'r2:',r2.status,'r3:',r3.status,'r4:',r4.status,'r5:',r5.status);
+      if(r2.error||r3.error||r4.error||r5.error){
+        erros.push('Grupo '+g+': '+(r2.error||r3.error||r4.error||r5.error)?.message);
+      } else salvos++;
     }
 
     // ── 2. Salvar terceiros ──────────────────────────────────────────
@@ -3467,11 +3477,10 @@ async function salvarClassificados(){
       const val = inp?.value?.trim();
       if(!slot||!val) continue;
 
-      const{error:ea}=await sb.from('jogos_eliminatorias')
-        .update({time_casa:val}).eq('fase','16avos').eq('slot_casa',slot);
-      const{error:eb}=await sb.from('jogos_eliminatorias')
-        .update({time_fora:val}).eq('fase','16avos').eq('slot_fora',slot);
-      if(ea||eb) erros.push('Slot '+slot+': '+(ea||eb)?.message);
+      const ra=await sb.from('jogos_eliminatorias').update({time_casa:val}).eq('fase','16avos').eq('slot_casa',slot);
+      const rb=await sb.from('jogos_eliminatorias').update({time_fora:val}).eq('fase','16avos').eq('slot_fora',slot);
+      console.log('[CLASSIF] Slot '+slot+'='+val, 'ra:',ra.status,'rb:',rb.status);
+      if(ra.error||rb.error) erros.push('Slot '+slot+': '+(ra.error||rb.error)?.message);
     }
 
     if(erros.length){
