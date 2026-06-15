@@ -3128,103 +3128,93 @@ async function loadElim(){
   }
 }
 
-// Mapa de chaveamento: jogoId → próxima fase (jogoId, posição casa/fora)
-// Montado dinamicamente após carregar os jogos
-let _chaveamento = {}; // jogoId → {proximoJogoId, posicao: 'casa'|'fora'}
+// ── Chaveamento dinâmico ───────────────────────────────────────────────────
+let _chaveamento = {};
+
+const _FLAGS_MAP = {"México":"mx","África do Sul":"za","Coreia do Sul":"kr","República Tcheca":"cz","Canadá":"ca","Bósnia e Herzegovina":"ba","Catar":"qa","Suíça":"ch","Brasil":"br","Marrocos":"ma","Haiti":"ht","Escócia":"gb-sct","EUA":"us","Paraguai":"py","Austrália":"au","Turquia":"tr","Alemanha":"de","Curaçao":"cw","Costa do Marfim":"ci","Equador":"ec","Holanda":"nl","Japão":"jp","Suécia":"se","Tunísia":"tn","Bélgica":"be","Egito":"eg","Irã":"ir","Nova Zelândia":"nz","Espanha":"es","Cabo Verde":"cv","Arábia Saudita":"sa","Uruguai":"uy","França":"fr","Senegal":"sn","Iraque":"iq","Noruega":"no","Argentina":"ar","Argélia":"dz","Áustria":"at","Jordânia":"jo","Portugal":"pt","RD Congo":"cd","Uzbequistão":"uz","Colômbia":"co","Inglaterra":"gb-eng","Croácia":"hr","Gana":"gh","Panamá":"pa"};
 
 function buildChaveamento(jogos){
-  // Ordenar jogos por fase e ordem
   const porFase = {};
   jogos.forEach(j=>{ if(!porFase[j.fase]) porFase[j.fase]=[]; porFase[j.fase].push(j); });
+  const mapa = {'16avos':'oitavas','oitavas':'quartas','quartas':'semis','semis':'final'};
   ['16avos','oitavas','quartas','semis'].forEach(fase=>{
-    const proxFaseMap = {'16avos':'oitavas','oitavas':'quartas','quartas':'semis','semis':'final'};
-    const proxFase = proxFaseMap[fase];
+    const proxFase = mapa[fase];
     const atual = (porFase[fase]||[]).sort((a,b)=>a.ordem-b.ordem);
     const prox  = (porFase[proxFase]||[]).sort((a,b)=>a.ordem-b.ordem);
-    // Cada par de jogos alimenta o próximo
-    // Jogo 1 e 2 → próximo jogo 1 (1 casa, 2 fora)
-    // Jogo 3 e 4 → próximo jogo 2, etc
     atual.forEach((j,idx)=>{
       const proxIdx = Math.floor(idx/2);
       const pos = idx%2===0 ? 'casa' : 'fora';
-      if(prox[proxIdx]){
-        _chaveamento[j.id] = {proximoJogoId: prox[proxIdx].id, posicao: pos};
-      }
+      if(prox[proxIdx]) _chaveamento[j.id] = {proximoJogoId:prox[proxIdx].id, posicao:pos};
     });
   });
-  console.log('[CHAVEAMENTO]', _chaveamento);
+  console.log('[CHAVEAMENTO] mapa:', _chaveamento);
 }
 
 function escolherVencedor(inscricaoId, cotaNum, jogoId, vencedor){
-  const k=inscricaoId+'_'+cotaNum+'_'+jogoId;
-  _palpitesElimTemp[k]=vencedor;
+  const k = inscricaoId+'_'+cotaNum+'_'+jogoId;
+  _palpitesElimTemp[k] = vencedor;
 
-  // Atualizar visual do jogo atual
-  _atualizarCardJogo(inscricaoId, cotaNum, jogoId, vencedor);
+  // Destacar o time escolhido no card atual
+  _destacarEscolha(inscricaoId, jogoId, vencedor);
 
   // Propagar para próxima fase
   const prox = _chaveamento[jogoId];
-  if(prox){
-    _propagarParaProximaFase(inscricaoId, cotaNum, prox.proximoJogoId, prox.posicao, vencedor);
-  }
+  if(prox) _propagarTime(inscricaoId, cotaNum, prox.proximoJogoId, prox.posicao, vencedor);
 }
 
-function _atualizarCardJogo(inscricaoId, cotaNum, jogoId, vencedor){
-  const div=document.getElementById('jogo-'+inscricaoId+'-'+jogoId);
+function _destacarEscolha(inscricaoId, jogoId, vencedor){
+  const div = document.getElementById('jogo-'+inscricaoId+'-'+jogoId);
   if(!div) return;
-  const btns=div.querySelectorAll('button[data-lado]');
-  btns.forEach(b=>{
-    const label=b.getAttribute('data-nome')||'';
-    const sel=label===vencedor;
-    b.style.background=sel?'rgba(34,197,94,.12)':'transparent';
-    let badge=b.querySelector('.escolha-badge');
-    if(sel&&!badge){
-      badge=document.createElement('span');
-      badge.className='escolha-badge';
-      badge.style.cssText='font-size:.6rem;color:var(--success);font-weight:700;display:block';
-      badge.textContent='✓ SUA ESCOLHA';
-      b.appendChild(badge);
-    } else if(!sel&&badge){
-      badge.remove();
-    }
-    const nomeEl=b.querySelector('.btn-time-nome');
-    if(nomeEl){ nomeEl.style.color=sel?'var(--success)':'var(--text-primary)'; nomeEl.style.fontWeight=sel?'700':'500'; }
+  div.querySelectorAll('button[data-lado]').forEach(btn=>{
+    const nome = btn.getAttribute('data-nome')||'';
+    const sel  = nome === vencedor;
+    btn.style.background = sel ? 'rgba(34,197,94,.12)' : 'transparent';
+    // Nome
+    const nomeEl = btn.querySelector('.btn-time-nome');
+    if(nomeEl){ nomeEl.style.color = sel?'var(--success)':'var(--text-primary)'; nomeEl.style.fontWeight = sel?'700':'500'; }
+    // Badge
+    let badge = btn.querySelector('.escolha-badge');
+    if(sel && !badge){
+      badge = document.createElement('span');
+      badge.className = 'escolha-badge';
+      badge.style.cssText = 'font-size:.6rem;color:var(--success);font-weight:700;display:block;margin-top:2px';
+      badge.textContent = '✓ SUA ESCOLHA';
+      btn.appendChild(badge);
+    } else if(!sel && badge){ badge.remove(); }
   });
 }
 
-function _propagarParaProximaFase(inscricaoId, cotaNum, proximoJogoId, posicao, nomeTime){
-  const div=document.getElementById('jogo-'+inscricaoId+'-'+proximoJogoId);
-  if(!div) return;
+function _propagarTime(inscricaoId, cotaNum, jogoId, posicao, nomeTime){
+  const div = document.getElementById('jogo-'+inscricaoId+'-'+jogoId);
+  if(!div){ console.warn('[PROPAGAR] card não encontrado:', 'jogo-'+inscricaoId+'-'+jogoId); return; }
 
-  // Atualizar o botão do lado correto (casa ou fora)
-  const btn=div.querySelector('button[data-lado="'+posicao+'"]');
-  if(!btn) return;
+  const btn = div.querySelector('button[data-lado="'+posicao+'"]');
+  if(!btn){ console.warn('[PROPAGAR] botão não encontrado lado:', posicao); return; }
 
-  // Atualizar nome e bandeira
-  const nomeEl=btn.querySelector('.btn-time-nome');
-  const flagEl=btn.querySelector('.btn-time-flag');
-  if(nomeEl) nomeEl.textContent=nomeTime;
+  // Atualizar data-nome e onclick
+  btn.setAttribute('data-nome', nomeTime);
+  btn.setAttribute('onclick', 'escolherVencedor('+inscricaoId+','+cotaNum+','+jogoId+',\''+nomeTime.replace(/'/g,"\\'")+'\')');
+
+  // Atualizar texto
+  const nomeEl = btn.querySelector('.btn-time-nome');
+  if(nomeEl) nomeEl.textContent = nomeTime;
 
   // Atualizar bandeira
-  const FLAGS_LOCAL = {"México": "mx", "África do Sul": "za", "Coreia do Sul": "kr", "República Tcheca": "cz", "Canadá": "ca", "Bósnia e Herzegovina": "ba", "Catar": "qa", "Suíça": "ch", "Brasil": "br", "Marrocos": "ma", "Haiti": "ht", "Escócia": "gb-sct", "EUA": "us", "Paraguai": "py", "Austrália": "au", "Turquia": "tr", "Alemanha": "de", "Curaçao": "cw", "Costa do Marfim": "ci", "Equador": "ec", "Holanda": "nl", "Japão": "jp", "Suécia": "se", "Tunísia": "tn", "Bélgica": "be", "Egito": "eg", "Irã": "ir", "Nova Zelândia": "nz", "Espanha": "es", "Cabo Verde": "cv", "Arábia Saudita": "sa", "Uruguai": "uy", "França": "fr", "Senegal": "sn", "Iraque": "iq", "Noruega": "no", "Argentina": "ar", "Argélia": "dz", "Áustria": "at", "Jordânia": "jo", "Portugal": "pt", "RD Congo": "cd", "Uzbequistão": "uz", "Colômbia": "co", "Inglaterra": "gb-eng", "Croácia": "hr", "Gana": "gh", "Panamá": "pa"};
-  const code=FLAGS_LOCAL[nomeTime];
-  if(flagEl&&code){
-    flagEl.src='https://flagcdn.com/w40/'+code+'.png';
-    flagEl.style.display='';
+  const flagEl = btn.querySelector('.btn-time-flag');
+  const code = _FLAGS_MAP[nomeTime];
+  if(flagEl && code){
+    flagEl.src = 'https://flagcdn.com/w40/'+code+'.png';
+    flagEl.style.display = '';
   }
 
-  // Atualizar o onclick do botão para usar o novo nome
-  btn.setAttribute('onclick','escolherVencedor('+inscricaoId+','+cotaNum+','+proximoJogoId+',\''+nomeTime.replace(/'/g,"\'")+'\')');;
-  btn.setAttribute('data-nome', nomeTime);
-
-  // Se o time anterior havia sido escolhido nesse slot, limpar a escolha
-  const kProx=inscricaoId+'_'+cotaNum+'_'+proximoJogoId;
+  // Limpar escolha anterior nesse jogo se mudou
+  const kProx = inscricaoId+'_'+cotaNum+'_'+jogoId;
   if(_palpitesElimTemp[kProx]){
-    // Limpar só se o time que estava lá mudou
-    const outro=div.querySelector('button[data-lado="'+(posicao==='casa'?'fora':'casa')+'"]')?.getAttribute('data-nome')||'';
-    _palpitesElimTemp[kProx]=undefined;
-    _atualizarCardJogo(inscricaoId,cotaNum,proximoJogoId,null);
+    delete _palpitesElimTemp[kProx];
+    _destacarEscolha(inscricaoId, jogoId, null);
   }
+
+  console.log('[PROPAGAR] '+nomeTime+' → jogo '+jogoId+' lado '+posicao);
 }
 
 
