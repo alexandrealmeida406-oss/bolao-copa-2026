@@ -2580,6 +2580,40 @@ async function loadAdmin(){
 <div style="overflow-x:auto"><table class="atbl"><thead><tr><th>Nome</th><th>De</th><th>Para</th><th>+Valor</th><th>Ações</th></tr></thead><tbody>${cpHtml}</tbody></table></div></div>`;
     }
 
+    // Seção de controle 2ª fase
+    const fase2Section = document.createElement('div');
+    fase2Section.style.marginTop = '2rem';
+    fase2Section.innerHTML = `
+      <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem;color:var(--accent-gold)">🏆 2ª Fase — Eliminatórias</h3>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1rem" id="admin-fase2-status">
+        <div class="loading"><div class="spinner"></div>Verificando...</div>
+      </div>`;
+    el.appendChild(fase2Section);
+    // Carregar status da 2ª fase
+    (async()=>{
+      const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
+      const res = await fetch(SUPABASE_URL+'/rest/v1/config_bolao?chave=eq.segunda_fase_aberta&select=valor',{headers:H}).then(r=>r.json());
+      const aberta = res?.[0]?.valor === 'true';
+      const div = document.getElementById('admin-fase2-status');
+      if(!div) return;
+      div.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
+          <div>
+            <div style="font-size:.85rem;color:var(--text-primary);margin-bottom:.3rem">
+              Status: <strong style="color:${aberta?'var(--success)':'var(--warning)'}">${aberta?'🟢 Aberta para todos':'🔒 Fechada (só você vê)'}</strong>
+            </div>
+            <div style="font-size:.72rem;color:var(--text-muted)">Você pode testar os palpites sem afetar os participantes.</div>
+          </div>
+          <div style="display:flex;gap:.5rem">
+            ${aberta
+              ? `<button onclick="adminToggleSegundaFase(false)" style="padding:.5rem 1rem;background:var(--error);color:white;border:none;border-radius:6px;font-family:'Oswald',sans-serif;font-size:.8rem;cursor:pointer">🔒 Fechar 2ª Fase</button>`
+              : `<button onclick="adminToggleSegundaFase(true)" style="padding:.5rem 1rem;background:var(--success);color:white;border:none;border-radius:6px;font-family:'Oswald',sans-serif;font-size:.8rem;cursor:pointer">🟢 Liberar para todos</button>`
+            }
+            <button onclick="goToElim()" style="padding:.5rem 1rem;background:var(--bg-dark);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;font-family:'Oswald',sans-serif;font-size:.8rem;cursor:pointer">👁 Visualizar</button>
+          </div>
+        </div>`;
+    })();
+
     // Seção de reset de senha — Admin
     const resetSection = document.createElement('div');
     resetSection.style.marginTop = '2rem';
@@ -2872,8 +2906,9 @@ async function loadElim(){
   if(!el) return;
   el.innerHTML='<div class="loading"><div class="spinner"></div>Carregando eliminatórias...</div>';
 
+  const ADMIN_ID = '665be71a-1893-4ac8-a087-ed93cfbe7dd3';
+
   try{
-    // Verificar se 2ª fase está aberta
     const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
     const [configRes, jogosRes] = await Promise.all([
       fetch(SUPABASE_URL+'/rest/v1/config_bolao?chave=eq.segunda_fase_aberta&select=valor',{headers:H}).then(r=>r.json()),
@@ -2881,10 +2916,11 @@ async function loadElim(){
     ]);
 
     const aberta = configRes?.[0]?.valor === 'true';
+    const isAdmin = currentUser?.id === ADMIN_ID;
     const jogos = Array.isArray(jogosRes) ? jogosRes : [];
 
-    // Se não estiver logado ou fase fechada — mostrar preview
-    if(!currentUser || !aberta){
+    // Bloqueado para não-admin quando fase fechada
+    if(!currentUser || (!aberta && !isAdmin)){
       el.innerHTML=`
         <div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:1.5rem;text-align:center;max-width:500px;margin:2rem auto">
           <div style="font-size:2rem;margin-bottom:.5rem">🔒</div>
@@ -2892,6 +2928,19 @@ async function loadElim(){
           <p style="font-size:.85rem;color:var(--text-muted);line-height:1.6">Os palpites da fase eliminatória serão liberados após o encerramento da fase de grupos (26/Jun).<br><br>Você receberá aviso no grupo do WhatsApp! 🔔</p>
         </div>`;
       return;
+    }
+
+    // Banner de preview para admin quando fechado
+    if(isAdmin && !aberta){
+      el.innerHTML = (el.innerHTML||'') + `
+        <div style="background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.3);border-radius:8px;padding:.75rem 1rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem">
+          <span style="font-size:1rem">🔑</span>
+          <div style="flex:1">
+            <div style="font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px">Modo Admin — Preview</div>
+            <div style="font-size:.72rem;color:var(--text-muted)">Fase fechada para participantes. Use o botão abaixo para liberar quando estiver pronto.</div>
+          </div>
+          <button onclick="adminToggleSegundaFase(true)" style="padding:.4rem .8rem;background:var(--success);color:white;border:none;border-radius:6px;font-family:'Oswald',sans-serif;font-size:.75rem;cursor:pointer;white-space:nowrap">🟢 Liberar para todos</button>
+        </div>`;
     }
 
     // Buscar inscrição do usuário
@@ -3006,6 +3055,21 @@ function escolherVencedor(inscricaoId, cotaNum, jogoId, vencedor){
     b.style.background = isSelected?'rgba(34,197,94,.1)':'var(--bg-dark)';
     b.style.color = isSelected?'var(--success)':'var(--text-muted)';
   });
+}
+
+async function adminToggleSegundaFase(abrir){
+  const acao = abrir ? 'Liberar para TODOS os participantes' : 'Fechar a 2ª fase';
+  if(!confirm(`Confirma: ${acao}?`)) return;
+  try{
+    const{error}=await sb.from('config_bolao')
+      .update({valor: abrir?'true':'false', updated_at: new Date().toISOString()})
+      .eq('chave','segunda_fase_aberta');
+    if(error) throw new Error(error.message);
+    toast(abrir ? '✅ 2ª fase liberada para todos!' : '🔒 2ª fase fechada.','s');
+    loadAdmin();
+  }catch(e){
+    toast('Erro: '+e.message,'e');
+  }
 }
 
 async function salvarPalpitesElim(inscricaoId, cotaNum){
