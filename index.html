@@ -3424,48 +3424,73 @@ async function renderAdminClassificados(el){
 
 async function salvarClassificados(){
   const btn = document.querySelector('[onclick="salvarClassificados()"]');
-  if(btn){btn.disabled=true;btn.textContent='Salvando...';}
+  if(btn){btn.disabled=true;btn.textContent='💾 Salvando...';}
 
   try{
-    const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
-    const Hpatch={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=minimal'};
+    const grupos = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+    let salvos = 0;
+    let erros = [];
 
-    // Coletar 1ºs e 2ºs
-    for(const g of ['A','B','C','D','E','F','G','H','I','J','K','L']){
+    // ── 1. Salvar 1ºs e 2ºs ─────────────────────────────────────────
+    for(const g of grupos){
       const v1 = document.getElementById('classif-1-'+g)?.value?.trim();
       const v2 = document.getElementById('classif-2-'+g)?.value?.trim();
-      if(!v1||!v2) continue;
+      if(!v1 || !v2) continue;
 
-      // Salvar na classificacao_grupos
+      // Salvar classificacao_grupos
       await sb.from('classificacao_grupos').delete().eq('grupo',g);
-      await sb.from('classificacao_grupos').insert({grupo:g, primeiro:v1, segundo:v2, apurado_por:currentUser.id});
+      const{error:e1}=await sb.from('classificacao_grupos')
+        .insert({grupo:g, primeiro:v1, segundo:v2, apurado_por:currentUser.id});
+      if(e1){ erros.push('Grupo '+g+': '+e1.message); continue; }
 
-      // Atualizar time_casa/time_fora nos jogos_eliminatorias dos 16-avos
-      await fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?fase=eq.16avos&slot_casa=eq.1'+g, {method:'PATCH',headers:Hpatch,body:JSON.stringify({time_casa:v1})});
-      await fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?fase=eq.16avos&slot_fora=eq.1'+g, {method:'PATCH',headers:Hpatch,body:JSON.stringify({time_fora:v1})});
-      await fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?fase=eq.16avos&slot_casa=eq.2'+g, {method:'PATCH',headers:Hpatch,body:JSON.stringify({time_casa:v2})});
-      await fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?fase=eq.16avos&slot_fora=eq.2'+g, {method:'PATCH',headers:Hpatch,body:JSON.stringify({time_fora:v2})});
+      // Atualizar jogos_eliminatorias — 1º do grupo
+      const{error:e2}=await sb.from('jogos_eliminatorias')
+        .update({time_casa:v1}).eq('fase','16avos').eq('slot_casa','1'+g);
+      const{error:e3}=await sb.from('jogos_eliminatorias')
+        .update({time_fora:v1}).eq('fase','16avos').eq('slot_fora','1'+g);
+
+      // Atualizar jogos_eliminatorias — 2º do grupo
+      const{error:e4}=await sb.from('jogos_eliminatorias')
+        .update({time_casa:v2}).eq('fase','16avos').eq('slot_casa','2'+g);
+      const{error:e5}=await sb.from('jogos_eliminatorias')
+        .update({time_fora:v2}).eq('fase','16avos').eq('slot_fora','2'+g);
+
+      if(e2||e3||e4||e5) erros.push('Grupo '+g+' elim: '+(e2||e3||e4||e5)?.message);
+      else salvos++;
     }
 
-    // Coletar terceiros
+    // ── 2. Salvar terceiros ──────────────────────────────────────────
     const terceirosSlots = ['3ABCDF','3CDFGH','3CEFHI','3EHIJK','3BEFIJ','3AEHIJ','3EFGIJ','3ABEIJ'];
     for(let i=0;i<8;i++){
       const inp = document.getElementById('classif-3-'+i);
       const slot = inp?.dataset?.slot;
       const val = inp?.value?.trim();
       if(!slot||!val) continue;
-      await fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?fase=eq.16avos&slot_casa=eq.'+slot, {method:'PATCH',headers:Hpatch,body:JSON.stringify({time_casa:val})});
-      await fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?fase=eq.16avos&slot_fora=eq.'+slot, {method:'PATCH',headers:Hpatch,body:JSON.stringify({time_fora:val})});
+
+      const{error:ea}=await sb.from('jogos_eliminatorias')
+        .update({time_casa:val}).eq('fase','16avos').eq('slot_casa',slot);
+      const{error:eb}=await sb.from('jogos_eliminatorias')
+        .update({time_fora:val}).eq('fase','16avos').eq('slot_fora',slot);
+      if(ea||eb) erros.push('Slot '+slot+': '+(ea||eb)?.message);
     }
 
-    toast('✅ Classificados salvos e 16-avos montados!','s');
+    if(erros.length){
+      console.warn('Erros ao salvar:', erros);
+      toast('⚠️ Salvo com avisos: '+erros.join(', '),'s');
+    } else {
+      toast('✅ '+salvos+' grupos salvos e 16-avos montados!','s');
+    }
 
-    // Recarregar a seção
+    // Recarregar preview
     const container = document.getElementById('admin-classif-container');
-    if(container) renderAdminClassificados(container);
+    if(container){
+      container.innerHTML='<div class="loading"><div class="spinner"></div>Atualizando...</div>';
+      await renderAdminClassificados(container);
+    }
 
   }catch(e){
     toast('Erro: '+e.message,'e');
+    console.error(e);
   }finally{
     if(btn){btn.disabled=false;btn.textContent='💾 Salvar e Montar 16-avos';}
   }
