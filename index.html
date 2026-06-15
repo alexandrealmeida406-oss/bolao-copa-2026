@@ -3067,11 +3067,13 @@ async function loadElim(){
           // Time casa
           const casaSel = palp===labelCasa;
           const foraSel = palp===labelFora;
-          out += '<button onclick="escolherVencedor('+insc.id+','+cotaNum+','+j.id+',\''+labelCasa.replace(/'/g,"\\'")+'\')"'
+          // Botão casa — com data-lado, data-nome e classes para propagação
+          const flagCasa = nomeCasa?(flag(nomeCasa).match(/src="([^"]+)"/)||[])[1]||'':'';
+          out += '<button data-lado="casa" data-nome="'+labelCasa.replace(/"/g,'&quot;')+'" onclick="escolherVencedor('+insc.id+','+cotaNum+','+j.id+',\''+labelCasa.replace(/'/g,"\\'")+'\')"'
             +' style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;padding:.6rem .4rem;border:none;cursor:'+(encerrado?'default':'pointer')+';background:'+(casaSel?'rgba(34,197,94,.12)':'transparent')+';transition:background .15s;width:100%'+(encerrado?';pointer-events:none':'')+'">';
-          if(nomeCasa) out += flag(nomeCasa);
-          out += '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:.85rem;font-weight:'+(casaSel?'700':'500')+';color:'+(casaSel?'var(--success)':'var(--text-primary)')+';text-align:center;line-height:1.2">'+labelCasa+'</span>';
-          if(casaSel&&!encerrado) out += '<span style="font-size:.6rem;color:var(--success);font-weight:700">✓ SUA ESCOLHA</span>';
+          out += '<img class="btn-time-flag" src="'+flagCasa+'" style="width:20px;height:14px;object-fit:cover;border-radius:2px;'+(nomeCasa?'':'display:none')+'" onerror="this.style.display=\'none\'">';
+          out += '<span class="btn-time-nome" style="font-family:\'Barlow Condensed\',sans-serif;font-size:.85rem;font-weight:'+(casaSel?'700':'500')+';color:'+(casaSel?'var(--success)':'var(--text-primary)')+';text-align:center;line-height:1.2">'+labelCasa+'</span>';
+          if(casaSel&&!encerrado) out += '<span class="escolha-badge" style="font-size:.6rem;color:var(--success);font-weight:700">✓ SUA ESCOLHA</span>';
           out += '</button>';
 
           // Separador VS
@@ -3086,11 +3088,13 @@ async function loadElim(){
           out += '</div>';
 
           // Time fora
-          out += '<button onclick="escolherVencedor('+insc.id+','+cotaNum+','+j.id+',\''+labelFora.replace(/'/g,"\\'")+'\')"'
+          // Botão fora — com data-lado, data-nome e classes para propagação
+          const flagFora = nomeFora?(flag(nomeFora).match(/src="([^"]+)"/)||[])[1]||'':'';
+          out += '<button data-lado="fora" data-nome="'+labelFora.replace(/"/g,'&quot;')+'" onclick="escolherVencedor('+insc.id+','+cotaNum+','+j.id+',\''+labelFora.replace(/'/g,"\\'")+'\')"'
             +' style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;padding:.6rem .4rem;border:none;cursor:'+(encerrado?'default':'pointer')+';background:'+(foraSel?'rgba(34,197,94,.12)':'transparent')+';transition:background .15s;width:100%'+(encerrado?';pointer-events:none':'')+'">';
-          if(nomeFora) out += flag(nomeFora);
-          out += '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:.85rem;font-weight:'+(foraSel?'700':'500')+';color:'+(foraSel?'var(--success)':'var(--text-primary)')+';text-align:center;line-height:1.2">'+labelFora+'</span>';
-          if(foraSel&&!encerrado) out += '<span style="font-size:.6rem;color:var(--success);font-weight:700">✓ SUA ESCOLHA</span>';
+          out += '<img class="btn-time-flag" src="'+flagFora+'" style="width:20px;height:14px;object-fit:cover;border-radius:2px;'+(nomeFora?'':'display:none')+'" onerror="this.style.display=\'none\'">';
+          out += '<span class="btn-time-nome" style="font-family:\'Barlow Condensed\',sans-serif;font-size:.85rem;font-weight:'+(foraSel?'700':'500')+';color:'+(foraSel?'var(--success)':'var(--text-primary)')+';text-align:center;line-height:1.2">'+labelFora+'</span>';
+          if(foraSel&&!encerrado) out += '<span class="escolha-badge" style="font-size:.6rem;color:var(--success);font-weight:700">✓ SUA ESCOLHA</span>';
           out += '</button>';
 
           out += '</div>'; // grid
@@ -3115,41 +3119,111 @@ async function loadElim(){
 
     el.innerHTML = out;
 
+    // Montar mapa de chaveamento para propagação dinâmica
+    buildChaveamento(jogos);
+
   }catch(e){
     el.innerHTML='<p style="text-align:center;color:var(--error);padding:2rem">Erro: '+e.message+'</p>';
     console.error('loadElim:', e);
   }
 }
 
+// Mapa de chaveamento: jogoId → próxima fase (jogoId, posição casa/fora)
+// Montado dinamicamente após carregar os jogos
+let _chaveamento = {}; // jogoId → {proximoJogoId, posicao: 'casa'|'fora'}
+
+function buildChaveamento(jogos){
+  // Ordenar jogos por fase e ordem
+  const porFase = {};
+  jogos.forEach(j=>{ if(!porFase[j.fase]) porFase[j.fase]=[]; porFase[j.fase].push(j); });
+  ['16avos','oitavas','quartas','semis'].forEach(fase=>{
+    const proxFase = {16avos:'oitavas',oitavas:'quartas',quartas:'semis',semis:'final'}[fase];
+    const atual = (porFase[fase]||[]).sort((a,b)=>a.ordem-b.ordem);
+    const prox  = (porFase[proxFase]||[]).sort((a,b)=>a.ordem-b.ordem);
+    // Cada par de jogos alimenta o próximo
+    // Jogo 1 e 2 → próximo jogo 1 (1 casa, 2 fora)
+    // Jogo 3 e 4 → próximo jogo 2, etc
+    atual.forEach((j,idx)=>{
+      const proxIdx = Math.floor(idx/2);
+      const pos = idx%2===0 ? 'casa' : 'fora';
+      if(prox[proxIdx]){
+        _chaveamento[j.id] = {proximoJogoId: prox[proxIdx].id, posicao: pos};
+      }
+    });
+  });
+  console.log('[CHAVEAMENTO]', _chaveamento);
+}
+
 function escolherVencedor(inscricaoId, cotaNum, jogoId, vencedor){
   const k=inscricaoId+'_'+cotaNum+'_'+jogoId;
   _palpitesElimTemp[k]=vencedor;
 
+  // Atualizar visual do jogo atual
+  _atualizarCardJogo(inscricaoId, cotaNum, jogoId, vencedor);
+
+  // Propagar para próxima fase
+  const prox = _chaveamento[jogoId];
+  if(prox){
+    _propagarParaProximaFase(inscricaoId, cotaNum, prox.proximoJogoId, prox.posicao, vencedor);
+  }
+}
+
+function _atualizarCardJogo(inscricaoId, cotaNum, jogoId, vencedor){
   const div=document.getElementById('jogo-'+inscricaoId+'-'+jogoId);
   if(!div) return;
-
-  // Atualizar visual dos dois botões
-  const btns=div.querySelectorAll('button');
+  const btns=div.querySelectorAll('button[data-lado]');
   btns.forEach(b=>{
-    const nome=b.querySelector('span:not([style*="font-size:.6rem"])');
-    const label=nome?.textContent?.trim()||'';
+    const label=b.getAttribute('data-nome')||'';
     const sel=label===vencedor;
     b.style.background=sel?'rgba(34,197,94,.12)':'transparent';
-    // Atualizar "✓ SUA ESCOLHA"
     let badge=b.querySelector('.escolha-badge');
     if(sel&&!badge){
       badge=document.createElement('span');
       badge.className='escolha-badge';
-      badge.style.cssText='font-size:.6rem;color:var(--success);font-weight:700';
+      badge.style.cssText='font-size:.6rem;color:var(--success);font-weight:700;display:block';
       badge.textContent='✓ SUA ESCOLHA';
       b.appendChild(badge);
     } else if(!sel&&badge){
       badge.remove();
     }
-    // Cor do nome
-    if(nome) nome.style.color=sel?'var(--success)':'var(--text-primary)';
-    if(nome) nome.style.fontWeight=sel?'700':'500';
+    const nomeEl=b.querySelector('.btn-time-nome');
+    if(nomeEl){ nomeEl.style.color=sel?'var(--success)':'var(--text-primary)'; nomeEl.style.fontWeight=sel?'700':'500'; }
   });
+}
+
+function _propagarParaProximaFase(inscricaoId, cotaNum, proximoJogoId, posicao, nomeTime){
+  const div=document.getElementById('jogo-'+inscricaoId+'-'+proximoJogoId);
+  if(!div) return;
+
+  // Atualizar o botão do lado correto (casa ou fora)
+  const btn=div.querySelector('button[data-lado="'+posicao+'"]');
+  if(!btn) return;
+
+  // Atualizar nome e bandeira
+  const nomeEl=btn.querySelector('.btn-time-nome');
+  const flagEl=btn.querySelector('.btn-time-flag');
+  if(nomeEl) nomeEl.textContent=nomeTime;
+
+  // Atualizar bandeira
+  const FLAGS_LOCAL = {"México": "mx", "África do Sul": "za", "Coreia do Sul": "kr", "República Tcheca": "cz", "Canadá": "ca", "Bósnia e Herzegovina": "ba", "Catar": "qa", "Suíça": "ch", "Brasil": "br", "Marrocos": "ma", "Haiti": "ht", "Escócia": "gb-sct", "EUA": "us", "Paraguai": "py", "Austrália": "au", "Turquia": "tr", "Alemanha": "de", "Curaçao": "cw", "Costa do Marfim": "ci", "Equador": "ec", "Holanda": "nl", "Japão": "jp", "Suécia": "se", "Tunísia": "tn", "Bélgica": "be", "Egito": "eg", "Irã": "ir", "Nova Zelândia": "nz", "Espanha": "es", "Cabo Verde": "cv", "Arábia Saudita": "sa", "Uruguai": "uy", "França": "fr", "Senegal": "sn", "Iraque": "iq", "Noruega": "no", "Argentina": "ar", "Argélia": "dz", "Áustria": "at", "Jordânia": "jo", "Portugal": "pt", "RD Congo": "cd", "Uzbequistão": "uz", "Colômbia": "co", "Inglaterra": "gb-eng", "Croácia": "hr", "Gana": "gh", "Panamá": "pa"};
+  const code=FLAGS_LOCAL[nomeTime];
+  if(flagEl&&code){
+    flagEl.src='https://flagcdn.com/w40/'+code+'.png';
+    flagEl.style.display='';
+  }
+
+  // Atualizar o onclick do botão para usar o novo nome
+  btn.setAttribute('onclick','escolherVencedor('+inscricaoId+','+cotaNum+','+proximoJogoId+',\''+nomeTime.replace(/'/g,"\'")+'\')');;
+  btn.setAttribute('data-nome', nomeTime);
+
+  // Se o time anterior havia sido escolhido nesse slot, limpar a escolha
+  const kProx=inscricaoId+'_'+cotaNum+'_'+proximoJogoId;
+  if(_palpitesElimTemp[kProx]){
+    // Limpar só se o time que estava lá mudou
+    const outro=div.querySelector('button[data-lado="'+(posicao==='casa'?'fora':'casa')+'"]')?.getAttribute('data-nome')||'';
+    _palpitesElimTemp[kProx]=undefined;
+    _atualizarCardJogo(inscricaoId,cotaNum,proximoJogoId,null);
+  }
 }
 
 
