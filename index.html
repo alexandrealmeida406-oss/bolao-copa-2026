@@ -2927,46 +2927,30 @@ async function loadElim(){
   const ADMIN_ID = '665be71a-1893-4ac8-a087-ed93cfbe7dd3';
 
   try{
-    console.log('[ELIM] loadElim iniciado, currentUser:', currentUser?.id);
     const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
-    console.log('[ELIM] buscando config e jogos...');
     const [configRes, jogosRes] = await Promise.all([
       fetch(SUPABASE_URL+'/rest/v1/config_bolao?chave=eq.segunda_fase_aberta&select=valor',{headers:H}).then(r=>r.json()),
       fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?select=*&order=id',{headers:H}).then(r=>r.json()),
     ]);
-    console.log('[ELIM] configRes:', configRes);
-    console.log('[ELIM] jogosRes:', jogosRes?.length, 'jogos');
 
     const aberta = configRes?.[0]?.valor === 'true';
     const isAdmin = currentUser?.id === ADMIN_ID;
     const jogos = Array.isArray(jogosRes) ? jogosRes : [];
-    console.log('[ELIM] aberta:', aberta, '| isAdmin:', isAdmin, '| jogos:', jogos.length);
 
     // Bloqueado para não-admin quando fase fechada
     if(!currentUser || (!aberta && !isAdmin)){
-      el.innerHTML=`
-        <div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:1.5rem;text-align:center;max-width:500px;margin:2rem auto">
-          <div style="font-size:2rem;margin-bottom:.5rem">🔒</div>
-          <div style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--warning);text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem">Em Breve</div>
-          <p style="font-size:.85rem;color:var(--text-muted);line-height:1.6">Os palpites da fase eliminatória serão liberados após o encerramento da fase de grupos (26/Jun).<br><br>Você receberá aviso no grupo do WhatsApp! 🔔</p>
-        </div>`;
+      el.innerHTML = '<div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:1.5rem;text-align:center;max-width:500px;margin:2rem auto">'
+        + '<div style="font-size:2rem;margin-bottom:.5rem">🔒</div>'
+        + '<div style="font-family:\'Oswald\',sans-serif;font-size:1.1rem;color:var(--warning);text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem">Em Breve</div>'
+        + '<p style="font-size:.85rem;color:var(--text-muted);line-height:1.6">Os palpites da fase eliminatória serão liberados após o encerramento da fase de grupos (26/Jun).<br><br>Você receberá aviso no grupo do WhatsApp! 🔔</p>'
+        + '</div>';
       return;
     }
-
-    // Banner de preview para admin quando fechado
-    const bannerAdmin = isAdmin && !aberta
-      ? '<div style="background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.3);border-radius:8px;padding:.75rem 1rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">'
-        + '<span style="font-size:1rem">🔑</span>'
-        + '<div style="flex:1"><div style="font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px">Modo Admin — Preview</div>'
-        + '<div style="font-size:.72rem;color:var(--text-muted)">Fase fechada para participantes. Libere quando estiver pronto.</div></div>'
-        + '<button onclick="adminToggleSegundaFase(true)" style="padding:.4rem .8rem;background:var(--success);color:white;border:none;border-radius:6px;cursor:pointer;font-size:.75rem;white-space:nowrap">🟢 Liberar para todos</button>'
-        + '</div>'
-      : '';
 
     // Buscar inscrição do usuário
     const{data:inscricoes}=await sb.from('inscricoes').select('id,cotas').eq('user_id',currentUser.id).eq('status','aprovado');
     if(!inscricoes?.length){
-      el.innerHTML=bannerAdmin+'<p style="text-align:center;color:var(--text-muted);padding:2rem">Você não tem inscrição aprovada.</p>';
+      el.innerHTML='<p style="text-align:center;color:var(--text-muted);padding:2rem">Você não tem inscrição aprovada.</p>';
       return;
     }
 
@@ -2978,79 +2962,91 @@ async function loadElim(){
 
     const palpMap={};
     (palpitesExist||[]).forEach(p=>{
-      const k=`${p.inscricao_id}_${p.cota_numero}_${p.jogo_id}`;
+      const k=p.inscricao_id+'_'+p.cota_numero+'_'+p.jogo_id;
       palpMap[k]=p.vencedor;
     });
 
     // Agrupar jogos por fase
+    const FASE_ORDER=['16avos','oitavas','quartas','semis','final','terceiro'];
     const porFase={};
     jogos.forEach(j=>{
       if(!porFase[j.fase]) porFase[j.fase]=[];
       porFase[j.fase].push(j);
     });
 
+    // Banner admin
+    let out = '';
+    if(isAdmin && !aberta){
+      out += '<div style="background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.3);border-radius:8px;padding:.75rem 1rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">'
+        + '<span>🔑</span>'
+        + '<div style="flex:1;font-size:.78rem;color:var(--accent-gold)"><strong>Modo Admin — Preview</strong><br>'
+        + '<span style="color:var(--text-muted);font-size:.72rem">Fase fechada para participantes.</span></div>'
+        + '<button onclick="adminToggleSegundaFase(true)" style="padding:.4rem .8rem;background:var(--success);color:white;border:none;border-radius:6px;cursor:pointer;font-size:.75rem">🟢 Liberar para todos</button>'
+        + '</div>';
+    }
+
     // Renderizar por cota
-    let html=bannerAdmin;
     for(const insc of inscricoes){
-      const cotaLabel = inscricoes.length>1 ? ` — Cota ${insc.cota_numero||insc.cotas}` : '';
-      html+=`<div style="margin-bottom:2rem">`;
-      if(inscricoes.length>1) html+=`<div style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)">Cota ${insc.id}</div>`;
+      const cotaNum = insc.cota_numero || 1;
+      if(inscricoes.length>1){
+        out += '<div style="font-family:\'Oswald\',sans-serif;font-size:.9rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin:1.2rem 0 .6rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)">Cota '+cotaNum+'</div>';
+      }
 
       for(const fase of FASE_ORDER){
         const js = porFase[fase];
-        if(!js) continue;
+        if(!js||!js.length) continue;
         const pts = FASE_PTS[fase];
-        html+=`
-          <div style="margin-bottom:1.2rem">
-            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">
-              <span style="font-family:'Oswald',sans-serif;font-size:.85rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px">${FASE_LABEL[fase]}</span>
-              ${pts>0?`<span style="font-size:.65rem;background:rgba(34,197,94,.1);color:var(--success);padding:.1rem .45rem;border-radius:50px;font-weight:600">${pts}pts</span>`:'<span style="font-size:.65rem;color:var(--text-muted)">sem pontuação</span>'}
-            </div>
-            <div style="display:flex;flex-direction:column;gap:.5rem">
-              ${js.map(j=>{
-                const nomeCasa = j.time_casa || j.slot_casa;
-                const nomeFora = j.time_fora || j.slot_fora;
-                const palp = palpMap[`${insc.id}_1_${j.id}`]; // cota 1 por default
-                const encerrado = !!j.vencedor;
-                const acertou = encerrado && palp===j.vencedor;
-                const errou = encerrado && palp && palp!==j.vencedor;
-                return `
-                <div style="background:var(--bg-card);border:1px solid ${acertou?'var(--success)':errou?'var(--error)':'var(--border)'};border-radius:8px;padding:.65rem .85rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap" id="jogo-${insc.id}-${j.id}">
-                  <div style="flex:1;display:flex;align-items:center;justify-content:space-between;gap:.5rem;min-width:180px">
-                    <span style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:600;${palp===nomeCasa?'color:var(--success)':''}">${nomeCasa}</span>
-                    <span style="font-size:.7rem;color:var(--text-muted)">vs</span>
-                    <span style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:600;${palp===nomeFora?'color:var(--success)':''}">${nomeFora}</span>
-                  </div>
-                  <div style="display:flex;gap:.4rem;align-items:center">
-                    ${encerrado
-                      ? `<span style="font-size:.8rem;font-weight:700;color:${acertou?'var(--success)':'var(--error)'}">${acertou?'✅ +'+pts+' pts':'❌ 0 pts'}</span>
-                         <span style="font-size:.72rem;color:var(--text-muted)">Vencedor: ${j.vencedor}</span>`
-                      : `<button onclick="escolherVencedor(${insc.id},1,${j.id},'${nomeCasa}')" 
-                           style="padding:.3rem .7rem;border-radius:5px;border:1px solid ${palp===nomeCasa?'var(--success)':'var(--border)'};background:${palp===nomeCasa?'rgba(34,197,94,.1)':'var(--bg-dark)'};color:${palp===nomeCasa?'var(--success)':'var(--text-muted)'};font-family:'Barlow Condensed',sans-serif;font-size:.82rem;cursor:pointer">
-                           ${nomeCasa}
-                         </button>
-                         <button onclick="escolherVencedor(${insc.id},1,${j.id},'${nomeFora}')"
-                           style="padding:.3rem .7rem;border-radius:5px;border:1px solid ${palp===nomeFora?'var(--success)':'var(--border)'};background:${palp===nomeFora?'rgba(34,197,94,.1)':'var(--bg-dark)'};color:${palp===nomeFora?'var(--success)':'var(--text-muted)'};font-family:'Barlow Condensed',sans-serif;font-size:.82rem;cursor:pointer">
-                           ${nomeFora}
-                         </button>`
-                    }
-                  </div>
-                </div>`;
-              }).join('')}
-            </div>
-          </div>`;
+
+        out += '<div style="margin-bottom:1.2rem">';
+        out += '<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">';
+        out += '<span style="font-family:\'Oswald\',sans-serif;font-size:.85rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px">'+FASE_LABEL[fase]+'</span>';
+        if(pts>0) out += '<span style="font-size:.65rem;background:rgba(34,197,94,.1);color:var(--success);padding:.1rem .45rem;border-radius:50px;font-weight:600">'+pts+'pts</span>';
+        else out += '<span style="font-size:.65rem;color:var(--text-muted)">sem pontuação</span>';
+        out += '</div>';
+        out += '<div style="display:flex;flex-direction:column;gap:.5rem">';
+
+        for(const j of js){
+          const nomeCasa = j.time_casa || j.slot_casa;
+          const nomeFora = j.time_fora || j.slot_fora;
+          const palp = palpMap[insc.id+'_'+cotaNum+'_'+j.id];
+          const encerrado = !!j.vencedor;
+          const acertou = encerrado && palp===j.vencedor;
+          const errou = encerrado && palp && palp!==j.vencedor;
+          const corBorda = acertou?'var(--success)':errou?'var(--error)':'var(--border)';
+
+          out += '<div style="background:var(--bg-card);border:1px solid '+corBorda+';border-radius:8px;padding:.65rem .85rem" id="jogo-'+insc.id+'-'+j.id+'">';
+          out += '<div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">';
+          out += '<div style="flex:1;display:flex;align-items:center;justify-content:space-between;gap:.5rem;min-width:160px">';
+          out += '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:.9rem;font-weight:600;'+(palp===nomeCasa?'color:var(--success)':'')+'">'+nomeCasa+'</span>';
+          out += '<span style="font-size:.7rem;color:var(--text-muted)">vs</span>';
+          out += '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:.9rem;font-weight:600;'+(palp===nomeFora?'color:var(--success)':'')+'">'+nomeFora+'</span>';
+          out += '</div>';
+
+          if(encerrado){
+            out += '<span style="font-size:.8rem;font-weight:700;color:'+(acertou?'var(--success)':'var(--error)')+'">'+( acertou?'✅ +'+pts+' pts':'❌ 0 pts')+'</span>';
+            out += '<span style="font-size:.72rem;color:var(--text-muted)">'+j.vencedor+'</span>';
+          } else {
+            out += '<button onclick="escolherVencedor('+insc.id+','+cotaNum+','+j.id+',\''+nomeCasa+'\')"'
+              +' style="padding:.3rem .7rem;border-radius:5px;border:1px solid '+(palp===nomeCasa?'var(--success)':'var(--border)')+';background:'+(palp===nomeCasa?'rgba(34,197,94,.1)':'var(--bg-dark)')+';color:'+(palp===nomeCasa?'var(--success)':'var(--text-muted)')+';font-family:\'Barlow Condensed\',sans-serif;font-size:.82rem;cursor:pointer">'
+              +nomeCasa+'</button>';
+            out += '<button onclick="escolherVencedor('+insc.id+','+cotaNum+','+j.id+',\''+nomeFora+'\')"'
+              +' style="padding:.3rem .7rem;border-radius:5px;border:1px solid '+(palp===nomeFora?'var(--success)':'var(--border)')+';background:'+(palp===nomeFora?'rgba(34,197,94,.1)':'var(--bg-dark)')+';color:'+(palp===nomeFora?'var(--success)':'var(--text-muted)')+';font-family:\'Barlow Condensed\',sans-serif;font-size:.82rem;cursor:pointer">'
+              +nomeFora+'</button>';
+          }
+
+          out += '</div></div>';
+        }
+
+        out += '</div></div>';
       }
 
       // Botão salvar
-      html+=`
-        <button onclick="salvarPalpitesElim(${insc.id},1)" 
-          style="width:100%;padding:.75rem;background:var(--accent-teal);color:white;border:none;border-radius:8px;font-family:'Oswald',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer;margin-top:.5rem">
-          💾 Salvar Palpites
-        </button>
-      </div>`;
+      out += '<button onclick="salvarPalpitesElim('+insc.id+','+cotaNum+')"'
+        +' style="width:100%;padding:.75rem;background:var(--accent-teal);color:white;border:none;border-radius:8px;font-family:\'Oswald\',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer;margin-top:.5rem">'
+        +'💾 Salvar Palpites</button>';
     }
 
-    el.innerHTML=html;
+    el.innerHTML = out;
 
   }catch(e){
     el.innerHTML='<p style="text-align:center;color:var(--error);padding:2rem">Erro: '+e.message+'</p>';
@@ -3058,24 +3054,19 @@ async function loadElim(){
   }
 }
 
-// Palpites em memória antes de salvar
-const _palpitesElimTemp = {};
-
 function escolherVencedor(inscricaoId, cotaNum, jogoId, vencedor){
-  const k=`${inscricaoId}_${cotaNum}_${jogoId}`;
+  const k=inscricaoId+'_'+cotaNum+'_'+jogoId;
   _palpitesElimTemp[k]=vencedor;
-
-  // Atualizar visual dos botões
-  const div=document.getElementById(`jogo-${inscricaoId}-${jogoId}`);
+  const div=document.getElementById('jogo-'+inscricaoId+'-'+jogoId);
   if(!div) return;
-  const btns=div.querySelectorAll('button');
-  btns.forEach(b=>{
-    const isSelected = b.textContent.trim()===vencedor;
-    b.style.borderColor = isSelected?'var(--success)':'var(--border)';
-    b.style.background = isSelected?'rgba(34,197,94,.1)':'var(--bg-dark)';
-    b.style.color = isSelected?'var(--success)':'var(--text-muted)';
+  div.querySelectorAll('button').forEach(b=>{
+    const sel=b.textContent.trim()===vencedor;
+    b.style.borderColor=sel?'var(--success)':'var(--border)';
+    b.style.background=sel?'rgba(34,197,94,.1)':'var(--bg-dark)';
+    b.style.color=sel?'var(--success)':'var(--text-muted)';
   });
 }
+
 
 async function adminSalvarPlacar(timeCasa, timeFora, inputIdCasa, inputIdFora, btnId, grupo){
   const gh = parseInt(document.getElementById(inputIdCasa)?.value);
