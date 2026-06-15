@@ -2627,6 +2627,17 @@ async function loadAdmin(){
         </div>`;
     })();
 
+    // Seção de classificados / 16-avos
+    const classifSection = document.createElement('div');
+    classifSection.style.marginTop = '2rem';
+    classifSection.innerHTML = `
+      <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem;color:var(--accent-teal)">🏆 Classificados — Montar 16-avos</h3>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1rem" id="admin-classif-container">
+        <div class="loading"><div class="spinner"></div>Carregando...</div>
+      </div>`;
+    el.appendChild(classifSection);
+    renderAdminClassificados(document.getElementById('admin-classif-container'));
+
     // Seção de reset de senha — Admin
     const resetSection = document.createElement('div');
     resetSection.style.marginTop = '2rem';
@@ -2913,7 +2924,7 @@ async function loadConta(){
 let _segundaFaseAberta = false;
 const FASE_PTS = {'16avos':5,'oitavas':6,'quartas':7,'semis':8,'final':12,'terceiro':0};
 const FASE_LABEL = {'16avos':'16-avos de Final','oitavas':'Oitavas de Final','quartas':'Quartas de Final','semis':'Semifinais','final':'🏆 Final','terceiro':'3º Lugar'};
-const FASE_ORDER = ['16avos','oitavas','quartas','semis','final','terceiro'];
+const FASE_ORDER = ['16avos','oitavas','quartas','semis','final'];
 
 async function _checkSegundaFase(){
   try{
@@ -2992,7 +3003,7 @@ async function loadElim(){
       palpMap[p.inscricao_id+'_'+p.cota_numero+'_'+p.jogo_id]=p.vencedor;
     });
 
-    const FASE_ORDER=['16avos','oitavas','quartas','semis','final','terceiro'];
+    const FASE_ORDER=['16avos','oitavas','quartas','semis','final']; // 3º lugar sem pontuação, não exibir
     const porFase={};
     jogos.forEach(j=>{ if(!porFase[j.fase])porFase[j.fase]=[]; porFase[j.fase].push(j); });
 
@@ -3261,6 +3272,181 @@ async function renderAdminPlacares(el){
   });
 
   el.innerHTML=`<div style="font-size:.75rem;color:var(--text-muted);margin-bottom:.6rem">Jogos realizados aparecem primeiro. Salve o placar — classificação e pontos são atualizados automaticamente.</div>${rows}`;
+}
+
+// ===== ADMIN CLASSIFICADOS / 16-AVOS =====
+
+// Chaveamento oficial FIFA 2026 — slot → descrição
+const SLOTS_16AVOS = [
+  {id:null, ordem:1,  casa:'2A',      fora:'2B'},
+  {id:null, ordem:2,  casa:'1E',      fora:'3ABCDF'},
+  {id:null, ordem:3,  casa:'1F',      fora:'2C'},
+  {id:null, ordem:4,  casa:'1C',      fora:'2F'},
+  {id:null, ordem:5,  casa:'1I',      fora:'3CDFGH'},
+  {id:null, ordem:6,  casa:'2E',      fora:'2I'},
+  {id:null, ordem:7,  casa:'1A',      fora:'3CEFHI'},
+  {id:null, ordem:8,  casa:'1L',      fora:'3EHIJK'},
+  {id:null, ordem:9,  casa:'1D',      fora:'3BEFIJ'},
+  {id:null, ordem:10, casa:'1G',      fora:'3AEHIJ'},
+  {id:null, ordem:11, casa:'2K',      fora:'2L'},
+  {id:null, ordem:12, casa:'1H',      fora:'2J'},
+  {id:null, ordem:13, casa:'1B',      fora:'3EFGIJ'},
+  {id:null, ordem:14, casa:'1J',      fora:'2H'},
+  {id:null, ordem:15, casa:'2D',      fora:'2G'},
+  {id:null, ordem:16, casa:'1K',      fora:'3ABEIJ'},
+];
+
+const GRUPOS = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+
+async function renderAdminClassificados(el){
+  if(!el) return;
+
+  try{
+    const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
+
+    // Buscar classificação atual e jogos_eliminatorias (16-avos)
+    const [cgRes, elimRes] = await Promise.all([
+      fetch(SUPABASE_URL+'/rest/v1/classificacao_grupos?select=grupo,primeiro,segundo&order=grupo',{headers:H}).then(r=>r.json()),
+      fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?select=id,ordem,slot_casa,slot_fora,time_casa,time_fora&fase=eq.16avos&order=ordem',{headers:H}).then(r=>r.json()),
+    ]);
+
+    const cgMap = {}; // grupo → {primeiro, segundo}
+    (cgRes||[]).forEach(c=>cgMap[c.grupo]=c);
+
+    // Montar mapa slot → time já preenchido no banco
+    const slotMap = {}; // ex: '1A' → 'México'
+    (elimRes||[]).forEach(j=>{
+      if(j.time_casa) slotMap[j.slot_casa] = j.time_casa;
+      if(j.time_fora) slotMap[j.slot_fora] = j.time_fora;
+    });
+
+    let out = '';
+
+    // ── Seção 1: 1ºs e 2ºs de cada grupo ────────────────────────────
+    out += '<div style="margin-bottom:1.5rem">';
+    out += '<div style="font-family:\'Oswald\',sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.8rem">1º e 2º de cada grupo</div>';
+    out += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.5rem">';
+
+    for(const g of GRUPOS){
+      const cg = cgMap[g];
+      const id1 = 'classif-1-'+g;
+      const id2 = 'classif-2-'+g;
+      const val1 = cg?.primeiro || slotMap['1'+g] || '';
+      const val2 = cg?.segundo || slotMap['2'+g] || '';
+      const ok = val1 && val2 && val2 !== '?';
+
+      out += '<div style="background:var(--bg-dark);border:1px solid '+(ok?'var(--success)':'var(--border)')+';border-radius:6px;padding:.5rem .7rem">';
+      out += '<div style="font-family:\'Oswald\',sans-serif;font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Grupo '+g+(ok?' ✅':'')+'</div>';
+      out += '<div style="display:flex;gap:.4rem;align-items:center;margin-bottom:.3rem">';
+      out += '<span style="font-size:.65rem;background:rgba(212,168,67,.2);color:var(--accent-gold);padding:.1rem .35rem;border-radius:3px;font-weight:700;min-width:18px;text-align:center">1º</span>';
+      out += '<input id="'+id1+'" value="'+val1+'" placeholder="Time 1º lugar"'
+        +' style="flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.25rem .4rem;color:var(--text-primary);font-size:.78rem">';
+      out += '</div>';
+      out += '<div style="display:flex;gap:.4rem;align-items:center">';
+      out += '<span style="font-size:.65rem;background:rgba(148,163,184,.2);color:var(--text-secondary);padding:.1rem .35rem;border-radius:3px;font-weight:700;min-width:18px;text-align:center">2º</span>';
+      out += '<input id="'+id2+'" value="'+val2+'" placeholder="Time 2º lugar"'
+        +' style="flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.25rem .4rem;color:var(--text-primary);font-size:.78rem">';
+      out += '</div>';
+      out += '</div>';
+    }
+    out += '</div></div>';
+
+    // ── Seção 2: 8 melhores terceiros ────────────────────────────────
+    out += '<div style="margin-bottom:1.5rem">';
+    out += '<div style="font-family:\'Oswald\',sans-serif;font-size:.8rem;color:var(--accent-teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">8 melhores terceiros colocados</div>';
+    out += '<div style="font-size:.72rem;color:var(--text-muted);margin-bottom:.7rem">Informe os 8 times que avançaram como melhores terceiros (a FIFA define a ordem após a 1ª fase).</div>';
+    out += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.4rem">';
+
+    // Slots de terceiros no chaveamento
+    const terceirosSlots = ['3ABCDF','3CDFGH','3CEFHI','3EHIJK','3BEFIJ','3AEHIJ','3EFGIJ','3ABEIJ'];
+    for(let i=0;i<8;i++){
+      const slot = terceirosSlots[i];
+      const val = slotMap[slot] || '';
+      const id = 'classif-3-'+i;
+      out += '<div style="background:var(--bg-dark);border:1px solid '+(val?'var(--success)':'var(--border)')+';border-radius:6px;padding:.5rem .7rem">';
+      out += '<div style="font-size:.63rem;color:var(--text-muted);margin-bottom:.3rem">Slot: <code>'+slot+'</code></div>';
+      out += '<input id="'+id+'" data-slot="'+slot+'" value="'+val+'" placeholder="Time 3º colocado"'
+        +' style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.25rem .4rem;color:var(--text-primary);font-size:.78rem">';
+      out += '</div>';
+    }
+    out += '</div></div>';
+
+    // ── Preview dos 16-avos ───────────────────────────────────────────
+    out += '<div style="margin-bottom:1rem">';
+    out += '<div style="font-family:\'Oswald\',sans-serif;font-size:.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.7rem">Preview dos 16-avos</div>';
+    out += '<div style="display:flex;flex-direction:column;gap:.3rem" id="preview-16avos">';
+
+    for(const s of SLOTS_16AVOS){
+      const tc = slotMap[s.casa] || s.casa;
+      const tf = slotMap[s.fora] || s.fora;
+      const ok = !s.casa.match(/^[123]/) || slotMap[s.casa];
+      out += '<div style="display:flex;align-items:center;gap:.5rem;font-size:.78rem;padding:.3rem .5rem;background:var(--bg-dark);border-radius:5px;border:1px solid '+(slotMap[s.casa]&&slotMap[s.fora]?'var(--success)':'var(--border)')+'">';
+      out += '<span style="font-size:.65rem;color:var(--text-muted);min-width:14px">'+s.ordem+'.</span>';
+      out += '<span style="flex:1;text-align:right;font-family:\'Barlow Condensed\',sans-serif;font-weight:600;color:'+(slotMap[s.casa]?'var(--text-primary)':'var(--text-muted)')+'">'+tc+'</span>';
+      out += '<span style="font-size:.65rem;color:var(--text-muted)">×</span>';
+      out += '<span style="flex:1;font-family:\'Barlow Condensed\',sans-serif;font-weight:600;color:'+(slotMap[s.fora]?'var(--text-primary)':'var(--text-muted)')+'">'+tf+'</span>';
+      out += '</div>';
+    }
+    out += '</div></div>';
+
+    // ── Botão salvar ─────────────────────────────────────────────────
+    out += '<button onclick="salvarClassificados()" style="width:100%;padding:.75rem;background:var(--accent-teal);color:white;border:none;border-radius:8px;font-family:\'Oswald\',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer">💾 Salvar e Montar 16-avos</button>';
+
+    el.innerHTML = out;
+
+  }catch(e){
+    el.innerHTML='<p style="color:var(--error);font-size:.8rem">Erro: '+e.message+'</p>';
+    console.error(e);
+  }
+}
+
+async function salvarClassificados(){
+  const btn = document.querySelector('[onclick="salvarClassificados()"]');
+  if(btn){btn.disabled=true;btn.textContent='Salvando...';}
+
+  try{
+    const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
+    const Hpatch={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=minimal'};
+
+    // Coletar 1ºs e 2ºs
+    for(const g of ['A','B','C','D','E','F','G','H','I','J','K','L']){
+      const v1 = document.getElementById('classif-1-'+g)?.value?.trim();
+      const v2 = document.getElementById('classif-2-'+g)?.value?.trim();
+      if(!v1||!v2) continue;
+
+      // Salvar na classificacao_grupos
+      await sb.from('classificacao_grupos').delete().eq('grupo',g);
+      await sb.from('classificacao_grupos').insert({grupo:g, primeiro:v1, segundo:v2, apurado_por:currentUser.id});
+
+      // Atualizar time_casa/time_fora nos jogos_eliminatorias dos 16-avos
+      await fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?fase=eq.16avos&slot_casa=eq.1'+g, {method:'PATCH',headers:Hpatch,body:JSON.stringify({time_casa:v1})});
+      await fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?fase=eq.16avos&slot_fora=eq.1'+g, {method:'PATCH',headers:Hpatch,body:JSON.stringify({time_fora:v1})});
+      await fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?fase=eq.16avos&slot_casa=eq.2'+g, {method:'PATCH',headers:Hpatch,body:JSON.stringify({time_casa:v2})});
+      await fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?fase=eq.16avos&slot_fora=eq.2'+g, {method:'PATCH',headers:Hpatch,body:JSON.stringify({time_fora:v2})});
+    }
+
+    // Coletar terceiros
+    const terceirosSlots = ['3ABCDF','3CDFGH','3CEFHI','3EHIJK','3BEFIJ','3AEHIJ','3EFGIJ','3ABEIJ'];
+    for(let i=0;i<8;i++){
+      const inp = document.getElementById('classif-3-'+i);
+      const slot = inp?.dataset?.slot;
+      const val = inp?.value?.trim();
+      if(!slot||!val) continue;
+      await fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?fase=eq.16avos&slot_casa=eq.'+slot, {method:'PATCH',headers:Hpatch,body:JSON.stringify({time_casa:val})});
+      await fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?fase=eq.16avos&slot_fora=eq.'+slot, {method:'PATCH',headers:Hpatch,body:JSON.stringify({time_fora:val})});
+    }
+
+    toast('✅ Classificados salvos e 16-avos montados!','s');
+
+    // Recarregar a seção
+    const container = document.getElementById('admin-classif-container');
+    if(container) renderAdminClassificados(container);
+
+  }catch(e){
+    toast('Erro: '+e.message,'e');
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='💾 Salvar e Montar 16-avos';}
+  }
 }
 
 async function adminToggleSegundaFase(abrir){
