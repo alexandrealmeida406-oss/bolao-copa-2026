@@ -3036,13 +3036,17 @@ async function loadElim(){
         if(!js||!js.length) continue;
         const pts = FASE_PTS[fase];
 
+        // Subtítulo motivacional por fase
+        const FASE_SUB = {'16avos':'Escolha quem avança para as Oitavas de Final','oitavas':'Escolha quem avança para as Quartas de Final','quartas':'Escolha quem avança para as Semifinais','semis':'Escolha quem avança para a Final','final':'🏆 Escolha o Campeão do Mundo!'};
+
         // Header da fase
         out += '<div style="margin-bottom:1.5rem">';
-        out += '<div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem">';
+        out += '<div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.3rem">';
         out += '<div style="font-family:\'Oswald\',sans-serif;font-size:.95rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-primary)">'+FASE_LABEL[fase]+'</div>';
         if(pts>0) out += '<span style="font-size:.65rem;background:rgba(34,197,94,.12);color:var(--success);padding:.15rem .5rem;border-radius:50px;font-weight:700">+'+pts+' pts</span>';
         else out += '<span style="font-size:.65rem;color:var(--text-muted);padding:.15rem .5rem">sem pontuação</span>';
         out += '</div>';
+        out += '<div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.8rem">'+(FASE_SUB[fase]||'')+'</div>';
 
         out += '<div style="display:flex;flex-direction:column;gap:.6rem">';
 
