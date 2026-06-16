@@ -3111,7 +3111,7 @@ async function loadElim(){
           // Cor da borda
           const borda = acertou?'var(--success)':errou?'var(--error)':palp?'rgba(56,189,248,.4)':'var(--border)';
 
-          out += '<div style="background:var(--bg-card);border:1px solid '+borda+';border-radius:10px;overflow:hidden" id="jogo-'+inscId+'-'+j.id+'">';
+          out += '<div style="background:var(--bg-card);border:1px solid '+borda+';border-radius:10px;overflow:hidden" id="jogo-'+inscId+'-'+cotaNum+'-'+j.id+'">';
 
           // Jogo número
           out += '<div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;min-height:64px">';
@@ -3223,7 +3223,7 @@ function escolherVencedor(inscricaoId, cotaNum, jogoId, vencedor){
   _palpitesElimTemp[k] = vencedor;
 
   // Destacar o time escolhido no card atual
-  _destacarEscolha(inscricaoId, jogoId, vencedor);
+  _destacarEscolha(inscricaoId, cotaNum, jogoId, vencedor);
 
   const entry = _chaveamento[jogoId];
   if(!entry) return;
@@ -3236,7 +3236,7 @@ function escolherVencedor(inscricaoId, cotaNum, jogoId, vencedor){
   // Propagar perdedor para 3º lugar (só nas semis)
   if(entry.perdedor){
     // Descobrir qual time NÃO foi escolhido
-    const div = document.getElementById('jogo-'+inscricaoId+'-'+jogoId);
+    const div = document.getElementById('jogo-'+inscricaoId+'-'+cotaNum+'-'+jogoId);
     const btns = div ? div.querySelectorAll('button[data-lado]') : [];
     let perdedor = null;
     btns.forEach(b=>{
@@ -3247,8 +3247,8 @@ function escolherVencedor(inscricaoId, cotaNum, jogoId, vencedor){
   }
 }
 
-function _destacarEscolha(inscricaoId, jogoId, vencedor){
-  const div = document.getElementById('jogo-'+inscricaoId+'-'+jogoId);
+function _destacarEscolha(inscricaoId, cotaNum, jogoId, vencedor){
+  const div = document.getElementById('jogo-'+inscricaoId+'-'+cotaNum+'-'+jogoId);
   if(!div) return;
   div.querySelectorAll('button[data-lado]').forEach(btn=>{
     const nome = btn.getAttribute('data-nome')||'';
@@ -3270,7 +3270,7 @@ function _destacarEscolha(inscricaoId, jogoId, vencedor){
 }
 
 function _propagarTime(inscricaoId, cotaNum, jogoId, posicao, nomeTime){
-  const div = document.getElementById('jogo-'+inscricaoId+'-'+jogoId);
+  const div = document.getElementById('jogo-'+inscricaoId+'-'+cotaNum+'-'+jogoId);
   if(!div){ console.warn('[PROPAGAR] card não encontrado:', 'jogo-'+inscricaoId+'-'+jogoId); return; }
 
   const btn = div.querySelector('button[data-lado="'+posicao+'"]');
