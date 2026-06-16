@@ -2655,6 +2655,19 @@ async function loadAdmin(){
 <div style="overflow-x:auto"><table class="atbl"><thead><tr><th>Nome</th><th>De</th><th>Para</th><th>+Valor</th><th>Ações</th></tr></thead><tbody>${cpHtml}</tbody></table></div></div>`;
     }
 
+    // Botão recalcular todos
+    const recalcSection = document.createElement('div');
+    recalcSection.style.marginBottom='1rem';
+    recalcSection.innerHTML=`
+      <div style="background:var(--bg-card);border:1px solid rgba(212,168,67,.3);border-radius:10px;padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem">
+        <div>
+          <div style="font-family:Oswald,sans-serif;font-size:.9rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.2rem">🔄 Recalcular Pontuação</div>
+          <div style="font-size:.75rem;color:var(--text-muted)">Recalcula os pontos de todas as cotas com base nos resultados atuais</div>
+        </div>
+        <button id="btn-recalcular" onclick="adminRecalcularTodos()" style="padding:.5rem 1rem;background:var(--accent-gold);color:var(--bg-dark);border:none;border-radius:6px;font-family:Oswald,sans-serif;font-size:.85rem;font-weight:700;cursor:pointer">🔄 Recalcular Pontos</button>
+      </div>`;
+    el.appendChild(recalcSection);
+
     // Seção de placares manuais
     const placarSection = document.createElement('div');
     placarSection.style.marginTop='2rem';
@@ -3844,6 +3857,34 @@ function adminSalvarResultadoElimBtn(jogoId, selectId){
   const val = document.getElementById(selectId)?.value;
   if(!val){ toast('Selecione o vencedor!','e'); return; }
   adminSalvarResultadoElim(jogoId, val);
+}
+
+async function adminRecalcularTodos(){
+  const btn = document.getElementById('btn-recalcular');
+  if(btn){ btn.disabled=true; btn.textContent='🔄 Recalculando...'; }
+  try{
+    const{data:inscs}=await sb.from('inscricoes').select('id,cotas').eq('status','aprovado');
+    let total = 0;
+    for(const insc of(inscs||[])){
+      for(let c=1;c<=insc.cotas;c++){
+        const pts=await calcularPontosCota(insc.id,c);
+        await sb.from('pontuacao_cotas').upsert({
+          inscricao_id:insc.id, cota_numero:c,
+          pts_grupos:pts.ptsGrupos, pts_artilheiro:pts.ptsArtilheiro,
+          pts_palpitao:pts.ptsPalpitao, pts_eliminatorias:pts.ptsEliminatorias||0,
+          total_pontos:pts.total, grupos_apurados:pts.gruposApurados,
+          updated_at:new Date().toISOString(),
+        },{onConflict:'inscricao_id,cota_numero'});
+        total++;
+      }
+    }
+    toast(`✅ ${total} cotas recalculadas com sucesso!`,'s');
+    _refreshRankingDebounced();
+  }catch(e){
+    toast('Erro: '+e.message,'e');
+  }finally{
+    if(btn){ btn.disabled=false; btn.textContent='🔄 Recalcular Pontos'; }
+  }
 }
 
 async function adminToggleSegundaFase(abrir){
