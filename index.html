@@ -54,15 +54,15 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 /* NAV */
 .nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.7rem 1rem;display:flex;justify-content:space-between;align-items:center;transition:all .3s;gap:.3rem}
 .nav.scrolled{background:rgba(10,14,23,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.nav-logo{font-family:'Oswald',sans-serif;font-weight:700;font-size:1rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:.4rem;text-decoration:none}
+.nav-logo{font-family:Oswald,sans-serif;font-weight:700;font-size:1rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:.4rem;text-decoration:none}
 .nav-logo .li{width:32px;height:32px;background:var(--gradient-gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
 .nav-logo .logo-text{white-space:nowrap}
 .nav-links{display:flex;gap:1.2rem;list-style:none;align-items:center}
-.nav-links a{color:var(--text-secondary);text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:.8rem;text-transform:uppercase;letter-spacing:1.5px;transition:color .3s;cursor:pointer}
+.nav-links a{color:var(--text-secondary);text-decoration:none;font-family:Barlow Condensed,sans-serif;font-size:.8rem;text-transform:uppercase;letter-spacing:1.5px;transition:color .3s;cursor:pointer}
 .nav-links a:hover{color:var(--accent-gold)}
 .nav-user{display:flex;align-items:center;gap:.5rem}
 .nav-user img{width:28px;height:28px;border-radius:50%;border:2px solid var(--accent-gold)}
-.nav-user span{font-family:'Barlow Condensed',sans-serif;font-size:.8rem;color:var(--text-secondary)}
+.nav-user span{font-family:Barlow Condensed,sans-serif;font-size:.8rem;color:var(--text-secondary)}
 
 /* Nav links desktop — compacto */
 .nav-links{display:flex;align-items:center;gap:.15rem;list-style:none;white-space:nowrap}
@@ -76,7 +76,7 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 .nav-user span{display:none}}
 
 /* BUTTONS */
-.btn{min-height:44px;font-family:'Oswald',sans-serif;font-weight:600;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;padding:.8rem 1.8rem;border:none;border-radius:4px;cursor:pointer;transition:all .3s ease;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem}
+.btn{min-height:44px;font-family:Oswald,sans-serif;font-weight:600;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;padding:.8rem 1.8rem;border:none;border-radius:4px;cursor:pointer;transition:all .3s ease;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem}
 .btn-p{background:var(--gradient-gold);color:var(--primary-dark);box-shadow:0 4px 20px rgba(212,168,67,.3)}
 .btn-p:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(212,168,67,.5)}
 .btn-s{background:transparent;color:var(--text-primary);border:1px solid var(--border)}
@@ -93,11 +93,11 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 .hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 20% 50%,rgba(139,21,56,.3) 0%,transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(0,180,216,.15) 0%,transparent 60%),radial-gradient(ellipse at 50% 100%,rgba(26,58,92,.3) 0%,transparent 60%),var(--bg-dark)}
 .hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
 .hc{position:relative;z-index:2;text-align:center;padding:2rem 1rem;max-width:860px}
-.hy{font-family:'Oswald',sans-serif;font-size:clamp(4rem,12vw,8rem);font-weight:700;line-height:1;background:linear-gradient(180deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.01) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:absolute;top:-10px;left:50%;transform:translateX(-50%);z-index:-1;letter-spacing:8px}
+.hy{font-family:Oswald,sans-serif;font-size:clamp(4rem,12vw,8rem);font-weight:700;line-height:1;background:linear-gradient(180deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.01) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:absolute;top:-10px;left:50%;transform:translateX(-50%);z-index:-1;letter-spacing:8px}
 .trophy-svg{width:100px;height:120px;margin:0 auto .8rem;animation:tg 3s ease-in-out infinite;filter:drop-shadow(0 0 30px rgba(212,168,67,.4))}
 @keyframes tg{0%,100%{transform:scale(1);filter:drop-shadow(0 0 25px rgba(212,168,67,.4))}50%{transform:scale(1.04);filter:drop-shadow(0 0 45px rgba(212,168,67,.6))}}
-.hbadge{display:inline-block;background:var(--gradient-gold);color:var(--primary-dark);font-family:'Oswald',sans-serif;font-weight:700;font-size:.75rem;letter-spacing:3px;text-transform:uppercase;padding:.35rem 1.3rem;border-radius:50px;margin-bottom:.8rem}
-.hero h1{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(1.8rem,6vw,4rem);text-transform:uppercase;line-height:.95;letter-spacing:-1px;margin-bottom:.3rem}
+.hbadge{display:inline-block;background:var(--gradient-gold);color:var(--primary-dark);font-family:Oswald,sans-serif;font-weight:700;font-size:.75rem;letter-spacing:3px;text-transform:uppercase;padding:.35rem 1.3rem;border-radius:50px;margin-bottom:.8rem}
+.hero h1{font-family:Oswald,sans-serif;font-weight:700;font-size:clamp(1.8rem,6vw,4rem);text-transform:uppercase;line-height:.95;letter-spacing:-1px;margin-bottom:.3rem}
 .hero h1 .l1{display:block;font-size:.5em;letter-spacing:3px;color:var(--text-secondary);font-weight:500}
 .hero h1 .l2{display:block;background:var(--gradient-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hero h1 .l3{display:block;background:var(--gradient-copa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:.75em}
@@ -107,8 +107,8 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 /* COUNTDOWNS */
 .cds{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.8rem;margin-bottom:1.5rem}
 .cdb{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:.8rem;text-align:center}
-.cdb .cdl{font-family:'Barlow Condensed',sans-serif;font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:.3rem}
-.cdb .cdv{font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:700}
+.cdb .cdl{font-family:Barlow Condensed,sans-serif;font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:.3rem}
+.cdb .cdv{font-family:Oswald,sans-serif;font-size:1.3rem;font-weight:700}
 .cdv.gold{color:var(--accent-gold)}.cdv.teal{color:var(--accent-teal)}.cdv.green{color:var(--success)}
 .cdb .cds2{font-size:.65rem;margin-top:.2rem;padding:.1rem .4rem;border-radius:50px;display:inline-block}
 .cds2.active{background:rgba(34,197,94,.15);color:var(--success)}.cds2.pending{background:rgba(245,158,11,.15);color:var(--warning)}.cds2.locked{background:rgba(239,68,68,.15);color:var(--error)}
@@ -117,14 +117,14 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 
 .sbar{display:flex;justify-content:center;gap:2rem;margin-top:1.5rem;flex-wrap:wrap}
 .si{text-align:center}
-.sn{font-family:'Oswald',sans-serif;font-size:1.4rem;font-weight:700;color:var(--accent-gold)}
+.sn{font-family:Oswald,sans-serif;font-size:1.4rem;font-weight:700;color:var(--accent-gold)}
 .sl{font-size:.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
 
 /* SECTIONS */
 .sec{padding:4rem 1.2rem;max-width:1050px;margin:0 auto}@media(max-width:768px){.sec{padding:2.8rem 1rem}}
 .sh{text-align:center;margin-bottom:2.5rem}
-.stag{font-family:'Barlow Condensed',sans-serif;font-size:.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-teal);margin-bottom:.3rem}
-.stitle{font-family:'Oswald',sans-serif;font-size:clamp(1.6rem,5vw,2.8rem);font-weight:700;text-transform:uppercase;line-height:1}
+.stag{font-family:Barlow Condensed,sans-serif;font-size:.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-teal);margin-bottom:.3rem}
+.stitle{font-family:Oswald,sans-serif;font-size:clamp(1.6rem,5vw,2.8rem);font-weight:700;text-transform:uppercase;line-height:1}
 .sdesc{color:var(--text-secondary);font-size:.95rem;max-width:520px;margin:.6rem auto 0}
 
 /* RULES */
@@ -132,9 +132,9 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 .rc{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;position:relative;overflow:hidden;transition:all .3s ease}
 .rc:hover{border-color:var(--accent-gold);transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
 .rc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient-copa)}
-.rn{font-family:'Oswald',sans-serif;font-size:3rem;font-weight:700;color:rgba(212,168,67,.07);position:absolute;top:.2rem;right:.6rem}
+.rn{font-family:Oswald,sans-serif;font-size:3rem;font-weight:700;color:rgba(212,168,67,.07);position:absolute;top:.2rem;right:.6rem}
 .ri{font-size:1.6rem;margin-bottom:.5rem}
-.rc h3{font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem}
+.rc h3{font-family:Oswald,sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem}
 .rc p{color:var(--text-secondary);font-size:.85rem;line-height:1.5}
 
 /* PRICING */
@@ -143,12 +143,12 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 .pc{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1.8rem 1.3rem;text-align:center;position:relative;transition:all .3s ease}
 .pc:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
 .pc.ft{border-color:var(--accent-gold);background:linear-gradient(180deg,rgba(212,168,67,.05) 0%,var(--bg-card) 40%)}
-.pc.ft::before{content:'MAIS POPULAR';position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--gradient-gold);color:var(--primary-dark);font-family:'Oswald',sans-serif;font-weight:700;font-size:.6rem;letter-spacing:2px;padding:.2rem 1rem;border-radius:50px}
-.pcc{font-family:'Oswald',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-secondary);margin-bottom:.4rem}
-.pvl{font-family:'Oswald',sans-serif;font-size:2.5rem;font-weight:700}
+.pc.ft::before{content:'MAIS POPULAR';position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--gradient-gold);color:var(--primary-dark);font-family:Oswald,sans-serif;font-weight:700;font-size:.6rem;letter-spacing:2px;padding:.2rem 1rem;border-radius:50px}
+.pcc{font-family:Oswald,sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-secondary);margin-bottom:.4rem}
+.pvl{font-family:Oswald,sans-serif;font-size:2.5rem;font-weight:700}
 .pvl small{font-size:.9rem;font-weight:400;color:var(--text-muted)}
 .pbd{font-size:.75rem;color:var(--text-muted);margin:.2rem 0}
-.ppd{display:inline-block;background:rgba(34,197,94,.1);color:var(--success);font-family:'Oswald',sans-serif;font-size:.7rem;letter-spacing:1px;padding:.15rem .6rem;border-radius:50px;margin:.5rem 0 .8rem}
+.ppd{display:inline-block;background:rgba(34,197,94,.1);color:var(--success);font-family:Oswald,sans-serif;font-size:.7rem;letter-spacing:1px;padding:.15rem .6rem;border-radius:50px;margin:.5rem 0 .8rem}
 .pf{list-style:none;text-align:left;margin-bottom:1.2rem}
 .pf li{padding:.3rem 0;color:var(--text-secondary);font-size:.8rem;display:flex;align-items:center;gap:.35rem}
 .pf li::before{content:'✓';color:var(--success);font-weight:700;font-size:.75rem}
@@ -156,10 +156,10 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 /* FORM */
 .fc{max-width:700px;margin:0 auto;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:2.2rem;position:relative;overflow:hidden}
 .fc::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gradient-copa)}
-.fst{font-family:'Oswald',sans-serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem}
+.fst{font-family:Oswald,sans-serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem}
 .fsd{color:var(--text-muted);margin-bottom:1.3rem;font-size:.85rem}
 .fg{margin-bottom:1rem}
-.fg label{display:block;font-family:'Barlow Condensed',sans-serif;font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:.3rem}
+.fg label{display:block;font-family:Barlow Condensed,sans-serif;font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:.3rem}
 .fg input,.fg select{width:100%;padding:.75rem .9rem;background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:'Barlow',sans-serif;font-size:1rem;transition:border-color .3s;min-height:48px;-webkit-appearance:none;appearance:none}
 .fg input:focus,.fg select:focus{outline:none;border-color:var(--accent-teal)}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
@@ -170,28 +170,28 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 @media(max-width:500px){.cs{grid-template-columns:1fr}}
 .co{background:var(--bg-dark);border:2px solid var(--border);border-radius:8px;padding:1rem .6rem;text-align:center;cursor:pointer;transition:all .3s ease}
 .co:hover{border-color:var(--accent-teal)}.co.sel{border-color:var(--accent-gold);background:rgba(212,168,67,.05)}
-.co .cn{font-family:'Oswald',sans-serif;font-size:1.6rem;font-weight:700;color:var(--accent-gold)}
+.co .cn{font-family:Oswald,sans-serif;font-size:1.6rem;font-weight:700;color:var(--accent-gold)}
 .co .cl{font-size:.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
-.co .cp{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:600;margin-top:.2rem}
+.co .cp{font-family:Oswald,sans-serif;font-size:1rem;font-weight:600;margin-top:.2rem}
 .co .cd{font-size:.65rem;color:var(--text-muted);margin-top:.1rem}
 .co .csv{font-size:.65rem;color:var(--success);margin-top:.15rem}
 
 /* CHECKOUT */
 .csum{background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;padding:1.2rem;margin-bottom:1.2rem}
 .cln{display:flex;justify-content:space-between;padding:.35rem 0;font-size:.85rem;color:var(--text-secondary)}
-.cln.tot{border-top:1px solid var(--border);padding-top:.6rem;margin-top:.4rem;font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--accent-gold);font-weight:700}
+.cln.tot{border-top:1px solid var(--border);padding-top:.6rem;margin-top:.4rem;font-family:Oswald,sans-serif;font-size:1.1rem;color:var(--accent-gold);font-weight:700}
 .pixs{text-align:center;background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;padding:1.3rem;margin-bottom:1.2rem}
-.pixt{font-family:'Oswald',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.8rem;color:var(--accent-teal)}
+.pixt{font-family:Oswald,sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.8rem;color:var(--accent-teal)}
 .qrc{display:inline-block;background:white;padding:10px;border-radius:8px;margin-bottom:.8rem}
 .qrc img{display:block;border-radius:4px}
 .pkd{background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.15);border-radius:6px;padding:.6rem;margin:.6rem 0;display:flex;align-items:center;justify-content:center;gap:.4rem}
 .pkd code{font-family:'Barlow',monospace;font-size:1rem;color:var(--accent-teal);letter-spacing:1px}
-.pkd button{background:var(--accent-teal);color:white;border:none;padding:.25rem .5rem;border-radius:4px;font-size:.65rem;cursor:pointer;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:1px}
+.pkd button{background:var(--accent-teal);color:white;border:none;padding:.25rem .5rem;border-radius:4px;font-size:.65rem;cursor:pointer;font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:1px}
 .pixn{font-size:.75rem;color:var(--text-muted);margin-top:.4rem}
 
 /* LOGIN SECTION */
 .login-box{text-align:center;padding:3rem 2rem;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;max-width:450px;margin:0 auto}
-.login-box h3{font-family:'Oswald',sans-serif;font-size:1.3rem;margin-bottom:.5rem}
+.login-box h3{font-family:Oswald,sans-serif;font-size:1.3rem;margin-bottom:.5rem}
 .login-box p{color:var(--text-secondary);font-size:.9rem;margin-bottom:1.5rem}
 
 /* PRIZES */
@@ -202,36 +202,36 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 .prc.gd{border-color:#FFD700;background:linear-gradient(180deg,rgba(255,215,0,.05) 0%,var(--bg-card) 50%)}
 .prc.sv{border-color:#C0C0C0}.prc.bz{border-color:#CD7F32}
 .prm{font-size:2.2rem;margin-bottom:.5rem}
-.prpl{font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:.2rem}
-.prpc{font-family:'Oswald',sans-serif;font-size:2.2rem;font-weight:700;background:var(--gradient-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.prpv{font-family:'Oswald',sans-serif;font-size:1rem;color:var(--text-secondary);margin-top:.2rem}
+.prpl{font-family:Oswald,sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:.2rem}
+.prpc{font-family:Oswald,sans-serif;font-size:2.2rem;font-weight:700;background:var(--gradient-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.prpv{font-family:Oswald,sans-serif;font-size:1rem;color:var(--text-secondary);margin-top:.2rem}
 
 /* WA BANNER */
 .wab{background:linear-gradient(135deg,rgba(37,211,102,.08) 0%,rgba(37,211,102,.02) 100%);border:1px solid rgba(37,211,102,.15);border-radius:10px;padding:1.5rem;text-align:center;max-width:550px;margin:2.5rem auto 0}
-.wab h3{font-family:'Oswald',sans-serif;font-size:1.1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem}
+.wab h3{font-family:Oswald,sans-serif;font-size:1.1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem}
 .wab p{color:var(--text-secondary);font-size:.85rem;margin-bottom:.8rem}
 
 /* ADMIN */
 .admin-page{max-width:1100px;margin:5rem auto 2rem;padding:0 1.5rem}
-.admin-page h2{font-family:'Oswald',sans-serif;font-size:1.5rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem}
+.admin-page h2{font-family:Oswald,sans-serif;font-size:1.5rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem}
 .ast{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.8rem;margin-bottom:1.5rem}
 .asc{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center}
-.asc .av{font-family:'Oswald',sans-serif;font-size:1.7rem;font-weight:700;color:var(--accent-gold)}
+.asc .av{font-family:Oswald,sans-serif;font-size:1.7rem;font-weight:700;color:var(--accent-gold)}
 .asc .al{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
 .atbl{width:100%;border-collapse:collapse;background:var(--bg-card);border-radius:8px;overflow:hidden}
-.atbl th{background:rgba(0,0,0,.3);font-family:'Barlow Condensed',sans-serif;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:.6rem;text-align:left}
+.atbl th{background:rgba(0,0,0,.3);font-family:Barlow Condensed,sans-serif;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:.6rem;text-align:left}
 .atbl td{padding:.6rem;border-bottom:1px solid var(--border);font-size:.8rem}
 .stp{color:var(--warning)}.sta{color:var(--success)}
-.atbl button{padding:.25rem .5rem;border:none;border-radius:4px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;margin-right:.2rem}
+.atbl button{padding:.25rem .5rem;border:none;border-radius:4px;cursor:pointer;font-family:Oswald,sans-serif;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;margin-right:.2rem}
 .ba{background:var(--success);color:white}.br2{background:var(--error);color:white}
 
 /* USER STATUS BAR */
 .user-status{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1.2rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem}
 .user-status .us-info{display:flex;align-items:center;gap:.8rem}
 .user-status .us-info img{width:40px;height:40px;border-radius:50%;border:2px solid var(--accent-gold)}
-.user-status .us-name{font-family:'Oswald',sans-serif;font-size:1rem}
+.user-status .us-name{font-family:Oswald,sans-serif;font-size:1rem}
 .user-status .us-email{font-size:.75rem;color:var(--text-muted)}
-.user-status .us-badge{font-size:.7rem;padding:.2rem .6rem;border-radius:50px;font-family:'Oswald',sans-serif;letter-spacing:1px}
+.user-status .us-badge{font-size:.7rem;padding:.2rem .6rem;border-radius:50px;font-family:Oswald,sans-serif;letter-spacing:1px}
 .badge-pending{background:rgba(245,158,11,.15);color:var(--warning)}
 .badge-approved{background:rgba(34,197,94,.15);color:var(--success)}
 .badge-none{background:rgba(100,116,139,.15);color:var(--text-muted)}
@@ -239,7 +239,7 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 
 /* FOOTER */
 .ft{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center}
-.ftl{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;color:var(--accent-gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:.2rem}
+.ftl{font-family:Oswald,sans-serif;font-size:1.1rem;font-weight:700;color:var(--accent-gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:.2rem}
 .ft p{color:var(--text-muted);font-size:.75rem}
 .ftf{margin:.4rem 0;display:flex;justify-content:center;gap:6px}
 .ftf img{width:28px;height:19px;border-radius:2px}
@@ -268,7 +268,7 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 /* GROUPS GRID */
 .groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.2rem}
 .group-card{background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;padding:1.2rem}
-.group-header{font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent-teal);margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+.group-header{font-family:Oswald,sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent-teal);margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
 .group-card select{width:100%;padding:.6rem .7rem;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;color:var(--text-primary);font-family:'Barlow',sans-serif;font-size:.85rem;margin-bottom:.6rem;cursor:pointer}
 .group-card select:focus{outline:none;border-color:var(--accent-teal)}
 .group-card .sel-label{font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:.2rem}
@@ -301,7 +301,7 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 }
 .match-row .team-home img{flex-shrink:0;width:22px;height:15px;border-radius:2px}
 .match-row .score-inp-home{grid-column:2;grid-row:1}
-.match-row .score-sep{grid-column:3;grid-row:1;color:var(--accent-gold);font-size:.9rem;font-family:'Oswald',sans-serif;font-weight:700;text-align:center}
+.match-row .score-sep{grid-column:3;grid-row:1;color:var(--accent-gold);font-size:.9rem;font-family:Oswald,sans-serif;font-weight:700;text-align:center}
 .match-row .score-inp-away{grid-column:4;grid-row:1}
 .match-row .team-away{
   grid-column:5;grid-row:1;
@@ -316,7 +316,7 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 .score-inp{
   width:50px;height:44px;text-align:center;padding:.3rem .2rem;
   background:var(--bg-card);border:2px solid var(--border);border-radius:6px;
-  color:var(--text-primary);font-family:'Oswald',sans-serif;font-size:1.25rem;
+  color:var(--text-primary);font-family:Oswald,sans-serif;font-size:1.25rem;
   -moz-appearance:textfield;appearance:textfield;transition:border-color .2s;
   display:block;
 }
@@ -336,31 +336,31 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 
 /* LOGIN BOX TABS */
 .login-box-inner{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:2rem;max-width:460px;margin:0 auto;text-align:left}
-.login-box-inner h3{font-family:'Oswald',sans-serif;font-size:1.2rem;margin-bottom:.3rem;text-align:center}
+.login-box-inner h3{font-family:Oswald,sans-serif;font-size:1.2rem;margin-bottom:.3rem;text-align:center}
 .login-box-inner .lb-sub{color:var(--text-secondary);font-size:.85rem;text-align:center;margin-bottom:1.2rem}
 .ltabs{display:flex;gap:.4rem;background:var(--bg-dark);border-radius:8px;padding:.3rem;margin-bottom:1.3rem}
-.ltab{flex:1;padding:.48rem;border:none;border-radius:6px;font-family:'Oswald',sans-serif;font-size:.73rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.ltab{flex:1;padding:.48rem;border:none;border-radius:6px;font-family:Oswald,sans-serif;font-size:.73rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
 .ltab.on{background:var(--gradient-gold);color:var(--primary-dark)}
 .ltab.off{background:transparent;color:var(--text-muted)}
 .emtabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1rem}
-.emtab{flex:1;padding:.4rem;border:none;background:transparent;font-family:'Oswald',sans-serif;font-size:.73rem;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-muted);transition:all .2s}
+.emtab{flex:1;padding:.4rem;border:none;background:transparent;font-family:Oswald,sans-serif;font-size:.73rem;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-muted);transition:all .2s}
 .emtab.on{border-bottom-color:var(--accent-teal);color:var(--text-primary)}
 
 /* COMPRA COTAS */
 .cotas-extra-box{background:linear-gradient(135deg,rgba(0,180,216,.06),rgba(212,168,67,.04));border:1px solid rgba(0,180,216,.15);border-radius:10px;padding:1.4rem;margin-top:1.2rem}
-.cotas-extra-box h4{font-family:'Oswald',sans-serif;font-size:.95rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-teal);margin-bottom:.6rem}
+.cotas-extra-box h4{font-family:Oswald,sans-serif;font-size:.95rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-teal);margin-bottom:.6rem}
 
 /* MANUAL */
 .manual-box{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.4rem;margin-bottom:1rem}
-.manual-box h4{font-family:'Oswald',sans-serif;font-size:.95rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-gold);margin-bottom:.7rem}
+.manual-box h4{font-family:Oswald,sans-serif;font-size:.95rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-gold);margin-bottom:.7rem}
 .manual-box p,.manual-box li{color:var(--text-secondary);font-size:.85rem;line-height:1.65}
 .manual-box ul,.manual-box ol{padding-left:1.2rem;margin-top:.4rem}
 .manual-box li{margin-bottom:.3rem}
 .pts-tbl{width:100%;border-collapse:collapse;margin-top:.6rem;font-size:.82rem}
-.pts-tbl th{background:rgba(0,0,0,.25);font-family:'Barlow Condensed',sans-serif;font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:.45rem .6rem;text-align:left}
+.pts-tbl th{background:rgba(0,0,0,.25);font-family:Barlow Condensed,sans-serif;font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:.45rem .6rem;text-align:left}
 .pts-tbl td{padding:.4rem .6rem;border-bottom:1px solid var(--border);color:var(--text-secondary)}
 .pts-tbl tr:last-child td{border-bottom:none}
-.pb{display:inline-block;font-family:'Oswald',sans-serif;font-weight:700;font-size:.88rem;padding:.1rem .45rem;border-radius:4px}
+.pb{display:inline-block;font-family:Oswald,sans-serif;font-weight:700;font-size:.88rem;padding:.1rem .45rem;border-radius:4px}
 .pb-g{background:rgba(34,197,94,.15);color:var(--success)}
 .pb-w{background:rgba(245,158,11,.15);color:var(--warning)}
 .pb-e{background:rgba(100,116,139,.12);color:var(--text-muted)}
@@ -542,7 +542,7 @@ window.addEventListener('DOMContentLoaded', () => {
 <div class="hcta" id="hero-cta">
 <!-- Dynamic: shows login or inscription button -->
 </div>
-<div style="display:flex;align-items:center;justify-content:center;max-width:480px;margin:0 auto 1.2rem;gap:0"><div style="display:flex;flex-direction:column;align-items:center;flex:1"><div class="hero-step" style="width:32px;height:32px;border-radius:50%;background:rgba(212,168,67,.15);border:2px solid var(--accent-gold);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:.85rem;color:var(--accent-gold);transition:all .3s">1</div><div style="font-size:.58rem;color:var(--text-muted);margin-top:.25rem;text-align:center">Login</div></div><div style="flex:1;height:2px;background:var(--border);margin-bottom:16px;max-width:32px"></div><div style="display:flex;flex-direction:column;align-items:center;flex:1"><div class="hero-step" style="width:32px;height:32px;border-radius:50%;background:rgba(212,168,67,.15);border:2px solid var(--accent-gold);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:.85rem;color:var(--accent-gold);transition:all .3s">2</div><div style="font-size:.58rem;color:var(--text-muted);margin-top:.25rem;text-align:center">Inscrição</div></div><div style="flex:1;height:2px;background:var(--border);margin-bottom:16px;max-width:32px"></div><div style="display:flex;flex-direction:column;align-items:center;flex:1"><div class="hero-step" style="width:32px;height:32px;border-radius:50%;background:rgba(212,168,67,.15);border:2px solid var(--accent-gold);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:.85rem;color:var(--accent-gold);transition:all .3s">3</div><div style="font-size:.58rem;color:var(--text-muted);margin-top:.25rem;text-align:center">Aprovação</div></div><div style="flex:1;height:2px;background:var(--border);margin-bottom:16px;max-width:32px"></div><div style="display:flex;flex-direction:column;align-items:center;flex:1"><div class="hero-step" style="width:32px;height:32px;border-radius:50%;background:rgba(212,168,67,.15);border:2px solid var(--accent-gold);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:.85rem;color:var(--accent-gold);transition:all .3s">4</div><div style="font-size:.58rem;color:var(--text-muted);margin-top:.25rem;text-align:center">Palpites!</div></div></div>
+<div style="display:flex;align-items:center;justify-content:center;max-width:480px;margin:0 auto 1.2rem;gap:0"><div style="display:flex;flex-direction:column;align-items:center;flex:1"><div class="hero-step" style="width:32px;height:32px;border-radius:50%;background:rgba(212,168,67,.15);border:2px solid var(--accent-gold);display:flex;align-items:center;justify-content:center;font-family:Oswald,sans-serif;font-weight:700;font-size:.85rem;color:var(--accent-gold);transition:all .3s">1</div><div style="font-size:.58rem;color:var(--text-muted);margin-top:.25rem;text-align:center">Login</div></div><div style="flex:1;height:2px;background:var(--border);margin-bottom:16px;max-width:32px"></div><div style="display:flex;flex-direction:column;align-items:center;flex:1"><div class="hero-step" style="width:32px;height:32px;border-radius:50%;background:rgba(212,168,67,.15);border:2px solid var(--accent-gold);display:flex;align-items:center;justify-content:center;font-family:Oswald,sans-serif;font-weight:700;font-size:.85rem;color:var(--accent-gold);transition:all .3s">2</div><div style="font-size:.58rem;color:var(--text-muted);margin-top:.25rem;text-align:center">Inscrição</div></div><div style="flex:1;height:2px;background:var(--border);margin-bottom:16px;max-width:32px"></div><div style="display:flex;flex-direction:column;align-items:center;flex:1"><div class="hero-step" style="width:32px;height:32px;border-radius:50%;background:rgba(212,168,67,.15);border:2px solid var(--accent-gold);display:flex;align-items:center;justify-content:center;font-family:Oswald,sans-serif;font-weight:700;font-size:.85rem;color:var(--accent-gold);transition:all .3s">3</div><div style="font-size:.58rem;color:var(--text-muted);margin-top:.25rem;text-align:center">Aprovação</div></div><div style="flex:1;height:2px;background:var(--border);margin-bottom:16px;max-width:32px"></div><div style="display:flex;flex-direction:column;align-items:center;flex:1"><div class="hero-step" style="width:32px;height:32px;border-radius:50%;background:rgba(212,168,67,.15);border:2px solid var(--accent-gold);display:flex;align-items:center;justify-content:center;font-family:Oswald,sans-serif;font-weight:700;font-size:.85rem;color:var(--accent-gold);transition:all .3s">4</div><div style="font-size:.58rem;color:var(--text-muted);margin-top:.25rem;text-align:center">Palpites!</div></div></div>
 <div class="sbar">
 <div class="si"><div class="sn" id="sp">0</div><div class="sl">Inscritos</div></div>
 <div class="si"><div class="sn">48</div><div class="sl">Seleções</div></div>
@@ -583,7 +583,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   <!-- 2 Cotas — destaque -->
   <div class="pc ft">
-    <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--accent-gold);color:var(--bg-dark);font-family:'Oswald',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .8rem;border-radius:50px;white-space:nowrap">⭐ Mais Popular</div>
+    <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--accent-gold);color:var(--bg-dark);font-family:Oswald,sans-serif;font-size:.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .8rem;border-radius:50px;white-space:nowrap">⭐ Mais Popular</div>
     <div class="pcc">2 Cotas</div>
     <div class="pvl">R$ 44<small>,00</small></div>
     <div class="pbd">R$ 38 cotas + R$ 6 taxa</div>
@@ -617,7 +617,7 @@ window.addEventListener('DOMContentLoaded', () => {
 </section>
 
 <section class="sec" id="prem">
-<div class="sh"><div style="display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap"><div class="stag">Prêmios</div><span style="display:inline-flex;align-items:center;gap:.35rem;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--success);font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .6rem;border-radius:50px"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse 1.5s infinite"></span>Ao Vivo</span></div><h2 class="stitle">Premiação</h2><p class="sdesc">Os valores atualizam automaticamente com cada nova inscrição</p></div>
+<div class="sh"><div style="display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap"><div class="stag">Prêmios</div><span style="display:inline-flex;align-items:center;gap:.35rem;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--success);font-family:Barlow Condensed,sans-serif;font-size:.7rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .6rem;border-radius:50px"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse 1.5s infinite"></span>Ao Vivo</span></div><h2 class="stitle">Premiação</h2><p class="sdesc">Os valores atualizam automaticamente com cada nova inscrição</p></div>
 <div class="prg">
 <div class="prc sv"><div class="prm">🥈</div><div class="prpl">2º Lugar</div><div class="prpc">30%</div><div class="prpv" id="pz2">R$ 0,00</div></div>
 <div class="prc gd"><div class="prm">🥇</div><div class="prpl">1º Lugar</div><div class="prpc">60%</div><div class="prpv" id="pz1">R$ 0,00</div></div>
@@ -686,8 +686,8 @@ window.addEventListener('DOMContentLoaded', () => {
 <!-- 1ª Rodada -->
 <div style="background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:1rem;margin-bottom:.8rem">
   <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">
-    <span style="background:var(--success);color:white;font-family:'Oswald',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:1px;padding:.2rem .6rem;border-radius:50px;text-transform:uppercase">✅ Liberada agora</span>
-    <strong style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">1ª Rodada — Fase de Grupos</strong>
+    <span style="background:var(--success);color:white;font-family:Oswald,sans-serif;font-size:.7rem;font-weight:700;letter-spacing:1px;padding:.2rem .6rem;border-radius:50px;text-transform:uppercase">✅ Liberada agora</span>
+    <strong style="font-family:Oswald,sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">1ª Rodada — Fase de Grupos</strong>
   </div>
   <ul style="margin-left:1rem;margin-bottom:.7rem">
     <li style="margin-bottom:.3rem">Você palpita o <strong>1º e 2º colocado</strong> de cada um dos 12 grupos da Copa</li>
@@ -699,7 +699,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   <!-- Pontuação grupos -->
   <div style="margin-top:.5rem;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:8px;padding:.7rem .9rem;margin-bottom:.6rem">
-    <div style="font-family:'Oswald',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--success);margin-bottom:.5rem">⭐ Pontuação — Classificação dos Grupos</div>
+    <div style="font-family:Oswald,sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--success);margin-bottom:.5rem">⭐ Pontuação — Classificação dos Grupos</div>
     <div style="display:grid;grid-template-columns:1fr auto;gap:.25rem .8rem;font-size:.82rem">
       <span style="color:var(--text-secondary)">🥇 Acertou 1º E 2º do grupo</span><strong style="color:var(--success)">5 pts</strong>
       <span style="color:var(--text-secondary)">🥇 Acertou só o 1º colocado</span><strong style="color:var(--warning)">3 pts</strong>
@@ -713,7 +713,7 @@ window.addEventListener('DOMContentLoaded', () => {
   <!-- Palpitão -->
   <div style="background:rgba(212,168,67,.07);border:1px solid rgba(212,168,67,.3);border-radius:8px;padding:.8rem .9rem">
     <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem">
-      <span style="font-family:'Oswald',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-gold)">🎯 Palpitão — Palpite às Cegas</span>
+      <span style="font-family:Oswald,sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-gold)">🎯 Palpitão — Palpite às Cegas</span>
       <span style="background:rgba(212,168,67,.2);border-radius:50px;font-size:.6rem;font-weight:700;color:var(--accent-gold);padding:.1rem .5rem;letter-spacing:1px">NOVO</span>
     </div>
     <p style="font-size:.78rem;color:var(--text-secondary);line-height:1.5;margin-bottom:.6rem">
@@ -722,20 +722,20 @@ window.addEventListener('DOMContentLoaded', () => {
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem;text-align:center">
       <div style="background:rgba(212,168,67,.1);border-radius:6px;padding:.5rem .3rem">
         <div style="font-size:.9rem">🥇</div>
-        <div style="font-family:'Oswald',sans-serif;font-size:.65rem;color:var(--accent-gold);text-transform:uppercase;margin:.15rem 0">Campeão</div>
-        <div style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--accent-gold);font-weight:700">+15</div>
+        <div style="font-family:Oswald,sans-serif;font-size:.65rem;color:var(--accent-gold);text-transform:uppercase;margin:.15rem 0">Campeão</div>
+        <div style="font-family:Oswald,sans-serif;font-size:1.1rem;color:var(--accent-gold);font-weight:700">+15</div>
         <div style="font-size:.6rem;color:var(--text-muted)">pts bônus</div>
       </div>
       <div style="background:rgba(148,163,184,.07);border-radius:6px;padding:.5rem .3rem">
         <div style="font-size:.9rem">🥈</div>
-        <div style="font-family:'Oswald',sans-serif;font-size:.65rem;color:var(--text-secondary);text-transform:uppercase;margin:.15rem 0">Vice</div>
-        <div style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--text-primary);font-weight:700">+8</div>
+        <div style="font-family:Oswald,sans-serif;font-size:.65rem;color:var(--text-secondary);text-transform:uppercase;margin:.15rem 0">Vice</div>
+        <div style="font-family:Oswald,sans-serif;font-size:1.1rem;color:var(--text-primary);font-weight:700">+8</div>
         <div style="font-size:.6rem;color:var(--text-muted)">pts bônus</div>
       </div>
       <div style="background:rgba(180,120,60,.07);border-radius:6px;padding:.5rem .3rem">
         <div style="font-size:.9rem">🥉</div>
-        <div style="font-family:'Oswald',sans-serif;font-size:.65rem;color:var(--text-secondary);text-transform:uppercase;margin:.15rem 0">3º Lugar</div>
-        <div style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--text-primary);font-weight:700">+5</div>
+        <div style="font-family:Oswald,sans-serif;font-size:.65rem;color:var(--text-secondary);text-transform:uppercase;margin:.15rem 0">3º Lugar</div>
+        <div style="font-family:Oswald,sans-serif;font-size:1.1rem;color:var(--text-primary);font-weight:700">+5</div>
         <div style="font-size:.6rem;color:var(--text-muted)">pts bônus</div>
       </div>
     </div>
@@ -746,8 +746,8 @@ window.addEventListener('DOMContentLoaded', () => {
 <!-- 2ª Rodada -->
 <div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:1rem">
   <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">
-    <span style="background:var(--warning);color:var(--bg-dark);font-family:'Oswald',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:1px;padding:.2rem .6rem;border-radius:50px;text-transform:uppercase">🔒 Em breve</span>
-    <strong style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">2ª Rodada — Fase Eliminatória</strong>
+    <span style="background:var(--warning);color:var(--bg-dark);font-family:Oswald,sans-serif;font-size:.7rem;font-weight:700;letter-spacing:1px;padding:.2rem .6rem;border-radius:50px;text-transform:uppercase">🔒 Em breve</span>
+    <strong style="font-family:Oswald,sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">2ª Rodada — Fase Eliminatória</strong>
   </div>
 
   <ul style="margin-left:1rem;margin-bottom:.9rem">
@@ -760,7 +760,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   <!-- Tabela de pontuação por fase -->
   <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:8px;padding:.9rem;overflow-x:auto">
-    <div style="font-family:'Oswald',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--warning);margin-bottom:.8rem">⭐ Pontuação — acertar o vencedor de cada confronto</div>
+    <div style="font-family:Oswald,sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--warning);margin-bottom:.8rem">⭐ Pontuação — acertar o vencedor de cada confronto</div>
 
     <table style="width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:.8rem">
       <thead>
@@ -802,7 +802,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     <!-- Exemplo prático -->
     <div style="background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.2);border-radius:6px;padding:.7rem .8rem">
-      <div style="font-family:'Oswald',sans-serif;font-size:.68rem;color:var(--accent-teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">💡 Exemplo</div>
+      <div style="font-family:Oswald,sans-serif;font-size:.68rem;color:var(--accent-teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">💡 Exemplo</div>
       <p style="font-size:.78rem;color:var(--text-secondary);line-height:1.6">
         Você apostou no <strong style="color:var(--text-primary)">Brasil</strong> como campeão no Palpitão e acertou todos os confrontos:
         <strong style="color:var(--success)">5+6+7+8+12 = 38 pts</strong> pelos confrontos
@@ -869,8 +869,8 @@ window.addEventListener('DOMContentLoaded', () => {
 <div class="sh"><div class="stag">Copa do Mundo 2026</div><h2 class="stitle">Grupos da Copa</h2>
 <p class="sdesc">48 seleções classificadas após todas as repescagens. Grupos definitivos.</p></div>
 <div style="display:flex;gap:.5rem;margin-bottom:1.2rem;border-bottom:2px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none">
-  <button id="tab-jogos" onclick="showTab('jogos')" style="padding:.75rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid var(--accent-gold);color:var(--accent-gold);cursor:pointer;margin-bottom:-2px;min-height:44px;white-space:nowrap">Data dos Jogos</button>
-  <button id="tab-class" onclick="showTab('class')" style="padding:.75rem 1.2rem;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text-muted);cursor:pointer;margin-bottom:-2px;min-height:44px;white-space:nowrap">Classificação</button>
+  <button id="tab-jogos" onclick="showTab('jogos')" style="padding:.75rem 1.2rem;font-family:Oswald,sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid var(--accent-gold);color:var(--accent-gold);cursor:pointer;margin-bottom:-2px;min-height:44px;white-space:nowrap">Data dos Jogos</button>
+  <button id="tab-class" onclick="showTab('class')" style="padding:.75rem 1.2rem;font-family:Oswald,sans-serif;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text-muted);cursor:pointer;margin-bottom:-2px;min-height:44px;white-space:nowrap">Classificação</button>
 </div>
 <div id="panel-grupos" style="display:none">
 <div class="groups-grid" style="grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:.9rem">
@@ -1032,9 +1032,9 @@ window.addEventListener('DOMContentLoaded', () => {
 <p style="margin-top:.3rem"><a href="https://bolaocopa.com">bolaocopa.com</a></p>
 
   <div style="border-top:1px solid rgba(255,255,255,.1);margin-top:2rem;padding-top:1.8rem;text-align:center">
-    <div style="display:flex;align-items:center;justify-content:center;gap:.6rem;margin-bottom:.9rem"><span style="font-size:1.2rem">💛</span><span style="font-family:'Oswald',sans-serif;font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-gold)">Uma mensagem especial</span><span style="font-size:1.2rem">❤️</span></div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:.6rem;margin-bottom:.9rem"><span style="font-size:1.2rem">💛</span><span style="font-family:Oswald,sans-serif;font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-gold)">Uma mensagem especial</span><span style="font-size:1.2rem">❤️</span></div>
     <p style="font-family:'Barlow',sans-serif;font-size:.83rem;color:var(--text-secondary);line-height:1.8;max-width:520px;margin:0 auto .8rem">Este projeto foi construído com muito carinho. <strong style="color:var(--text-primary)">Gabriel</strong> e <strong style="color:var(--text-primary)">Marcos</strong>, meus filhos, e <strong style="color:var(--text-primary)">Tatiana</strong>, minha esposa — vocês foram minha maior inspiração. Esse projeto é nosso — e é pra vocês! Amo vocês demais! 🏆</p>
-    <div style="font-family:'Oswald',sans-serif;font-size:.68rem;color:var(--text-muted);letter-spacing:1.5px">— Alexandre Almeida</div>
+    <div style="font-family:Oswald,sans-serif;font-size:.68rem;color:var(--text-muted);letter-spacing:1.5px">— Alexandre Almeida</div>
   </div>
 </footer>
 
@@ -1045,7 +1045,7 @@ window.addEventListener('DOMContentLoaded', () => {
     <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--gradient-gold);border-radius:12px 12px 0 0"></div>
     <div style="text-align:center;margin-bottom:1.2rem">
       <p style="font-size:2rem;margin-bottom:.4rem">🔑</p>
-      <h3 style="font-family:'Oswald',sans-serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem">Crie sua nova senha</h3>
+      <h3 style="font-family:Oswald,sans-serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem">Crie sua nova senha</h3>
       <p style="color:var(--text-muted);font-size:.85rem">O admin resetou sua senha. Por segurança, crie uma nova senha definitiva agora.</p>
     </div>
     <div class="fg"><label>Nova Senha *</label><input type="password" id="nova-senha-def" placeholder="Mínimo 8 caracteres" style="font-size:16px"></div>
@@ -1315,7 +1315,7 @@ ${userInscricao?.status==='aprovado'&&(_segundaFaseAberta||currentUser?.id==='66
             </div>
             <div>
               <div style="font-size:.7rem;color:var(--text-muted);text-transform:uppercase">${userInscricao.cotas} cota${userInscricao.cotas>1?'s':''}</div>
-              <div style="font-family:'Oswald',sans-serif;font-size:1.2rem;color:var(--accent-gold)">R$ ${userInscricao.valor_total}</div>
+              <div style="font-family:Oswald,sans-serif;font-size:1.2rem;color:var(--accent-gold)">R$ ${userInscricao.valor_total}</div>
               <span class="us-badge ${statusClass}">${statusText}</span>
             </div>
           </div>
@@ -1328,7 +1328,7 @@ ${userInscricao?.status==='aprovado'&&(_segundaFaseAberta||currentUser?.id==='66
         <div class="fc">
           <div style="text-align:center;padding:1rem;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;margin-bottom:1.2rem">
             <p style="font-size:1.5rem;margin-bottom:.4rem">❌</p>
-            <p style="font-family:'Oswald',sans-serif;font-size:1rem;color:var(--error);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Inscrição Rejeitada</p>
+            <p style="font-family:Oswald,sans-serif;font-size:1rem;color:var(--error);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Inscrição Rejeitada</p>
             <p style="color:var(--text-muted);font-size:.85rem;line-height:1.5">Sua inscrição anterior foi rejeitada pelo admin (pagamento não confirmado).<br>
             Você pode fazer uma nova inscrição pagando o PIX e confirmando abaixo.</p>
           </div>
@@ -1582,7 +1582,7 @@ async function loadPalpites(){
 
   // Pontuação resumo
   html += `<div style="background:rgba(212,168,67,.06);border:1px solid rgba(212,168,67,.2);border-radius:8px;padding:.8rem 1rem;margin-bottom:1.2rem;font-size:.82rem">
-    <div style="font-family:'Oswald',sans-serif;font-size:.75rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem">⭐ Pontuação desta fase</div>
+    <div style="font-family:Oswald,sans-serif;font-size:.75rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem">⭐ Pontuação desta fase</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.3rem .8rem;color:var(--text-secondary)">
       <span>🥇 1º e 2º corretos</span><strong style="color:var(--success)">5 pts</strong>
       <span>🥇 Só 1º correto</span><strong style="color:var(--warning)">3 pts</strong>
@@ -1600,8 +1600,8 @@ async function loadPalpites(){
 
     html += `<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:1.2rem">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-        <div style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">Cota ${c}</div>
-        ${totalPts>0?`<span style="font-family:'Oswald',sans-serif;color:var(--accent-gold);font-size:.9rem">+${totalPts} pts</span>`:''}
+        <div style="font-family:Oswald,sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:.5px">Cota ${c}</div>
+        ${totalPts>0?`<span style="font-family:Oswald,sans-serif;color:var(--accent-gold);font-size:.9rem">+${totalPts} pts</span>`:''}
         ${allSaved&&!bloqueado?`<button class="btn btn-s btn-sm" onclick="editarPalpitesGrupos(${c})">✏️ Editar</button>`:''}
       </div>`;
 
@@ -1630,7 +1630,7 @@ async function loadPalpites(){
 
       html += `<div style="background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;padding:.7rem .8rem">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-          <span style="font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase">Grupo ${grp}</span>
+          <span style="font-family:Oswald,sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase">Grupo ${grp}</span>
           ${grpStatus?`<span style="font-size:.72rem;color:${grpPts>0?'var(--success)':'var(--error)'}">${grpStatus}</span>`:''}
           ${resultado?`<span style="font-size:.68rem;color:var(--text-muted)">1º ${resultado.primeiro} · 2º ${resultado.segundo}</span>`:''}
         </div>
@@ -1650,7 +1650,7 @@ async function loadPalpites(){
 
     // Artilheiro
     html += `<div style="background:rgba(212,168,67,.06);border:1px solid rgba(212,168,67,.2);border-radius:8px;padding:.7rem .9rem;margin-bottom:.8rem">
-      <div style="font-family:'Oswald',sans-serif;font-size:.78rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem">⚽ Artilheiro da Copa — 5 pts se acertar</div>
+      <div style="font-family:Oswald,sans-serif;font-size:.78rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem">⚽ Artilheiro da Copa — 5 pts se acertar</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
         <div>
           <label style="font-size:.72rem;color:var(--text-muted);display:block;margin-bottom:.2rem">Nome do jogador</label>
@@ -1666,7 +1666,7 @@ async function loadPalpites(){
 
     <div style="background:rgba(212,168,67,.07);border:1px solid rgba(212,168,67,.3);border-radius:8px;padding:.8rem .9rem;margin-bottom:.8rem">
       <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">
-        <span style="font-family:'Oswald',sans-serif;font-size:.78rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px">🎯 Palpitão — Palpite às Cegas</span>
+        <span style="font-family:Oswald,sans-serif;font-size:.78rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px">🎯 Palpitão — Palpite às Cegas</span>
         <span style="background:rgba(212,168,67,.2);border-radius:50px;font-size:.6rem;font-weight:700;color:var(--accent-gold);padding:.1rem .5rem;letter-spacing:1px">NOVO</span>
       </div>
       <p style="font-size:.75rem;color:var(--text-secondary);margin-bottom:.6rem;line-height:1.5">Indique o <strong>Campeão, Vice e 3º Lugar</strong> da Copa — palpite às cegas antes dos jogos! Bônus aplicados no fim do torneio.</p>
@@ -1703,7 +1703,7 @@ async function loadPalpites(){
         html += `<div style="text-align:center;color:var(--success);font-size:.82rem">✅ Palpites da Cota ${c} salvos</div>`;
       }
     } else if(!allSaved){
-      html += `<div style="text-align:center;color:var(--error);font-size:.82rem;font-family:'Oswald',sans-serif">⏰ Prazo encerrado — palpites bloqueados</div>`;
+      html += `<div style="text-align:center;color:var(--error);font-size:.82rem;font-family:Oswald,sans-serif">⏰ Prazo encerrado — palpites bloqueados</div>`;
     }
 
     html += `</div>`;
@@ -1718,7 +1718,7 @@ async function loadPalpites(){
       return `<button onclick="selCotasPalp(${n})" class="btn btn-sm" style="flex:1;min-width:100px">${n} cotas — +R$ ${add}</button>`;
     }).join('');
     html += `<div style="margin-top:2rem;padding:1.2rem;background:var(--bg-card);border:1px solid var(--border);border-radius:12px">
-      <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;margin:0 0 .8rem;color:var(--accent-gold)">➕ Adicionar Cotas</h3>
+      <h3 style="font-family:Oswald,sans-serif;font-size:1rem;margin:0 0 .8rem;color:var(--accent-gold)">➕ Adicionar Cotas</h3>
       <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem">Você tem ${_cotas} cota(s). Adicionar mais aumenta suas chances!</p>
       <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:.8rem">${_opts}</div>
       <div id="palp-extra-det" style="display:none;margin-top:1rem">
@@ -1980,7 +1980,7 @@ async function loadRanking(){
       if(pos===1)return'<span style="font-size:1.2rem">🥇</span>';
       if(pos===2)return'<span style="font-size:1.2rem">🥈</span>';
       if(pos===3)return'<span style="font-size:1.2rem">🥉</span>';
-      return`<b style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--text-muted)">${pos}º</b>`;
+      return`<b style="font-family:Oswald,sans-serif;font-size:.9rem;color:var(--text-muted)">${pos}º</b>`;
     };
 
     const rows=linhas.map(l=>{
@@ -1999,17 +1999,23 @@ async function loadRanking(){
         const gr=l.ptRow?.pts_grupos||0;
         const ar=l.ptRow?.pts_artilheiro||0;
         const pp=l.ptRow?.pts_palpitao||0;
-        statusTag=`<span style="font-size:.65rem;color:var(--text-secondary)">grupos:${gr}pts${ar?` · art:${ar}pts`:''}${pp?` · palpitão:${pp}pts`:''}</span>`;
+        const el=l.ptRow?.pts_eliminatorias||0;
+        const partes=[];
+        if(gr) partes.push('grupos:'+gr+'pts');
+        if(el) partes.push('elim:'+el+'pts');
+        if(ar) partes.push('art:'+ar+'pts');
+        if(pp) partes.push('palpitão:'+pp+'pts');
+        statusTag=`<span style="font-size:.65rem;color:var(--text-secondary)">${partes.join(' · ')}</span>`;
       }
 
       const ptsDisplay=copaComecou&&l.preencheu
-        ?`<span style="font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:700;color:${l.pontos>0?'var(--accent-gold)':'var(--text-muted)'}">${l.pontos}</span>`
+        ?`<span style="font-family:Oswald,sans-serif;font-size:1.15rem;font-weight:700;color:${l.pontos>0?'var(--accent-gold)':'var(--text-muted)'}">${l.pontos}</span>`
         :'<span style="color:var(--text-muted);font-size:.9rem">—</span>';
 
       return`<tr style="${bg}">
         <td style="padding:.65rem .7rem;text-align:center;width:44px">${badge(l.pos)}</td>
         <td style="padding:.65rem .4rem">
-          <span style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:600;${nm}">${l.apelido}</span>${nc}<br>
+          <span style="font-family:Barlow Condensed,sans-serif;font-size:1rem;font-weight:600;${nm}">${l.apelido}</span>${nc}<br>
           ${statusTag}
         </td>
         <td style="padding:.65rem .7rem;text-align:right">${ptsDisplay}</td>
@@ -2067,32 +2073,57 @@ function _refreshRankingDebounced(){
 // ── Calcular pontos de uma cota baseado nos grupos apurados ──────────────
 async function calcularPontosCota(inscricaoId, cotaNum){
   const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
-  const[pg,cg,pa]=await Promise.all([
+  const[pg,cg,pa,pe,je,cfg]=await Promise.all([
     fetch(SUPABASE_URL+'/rest/v1/palpites_grupos?select=grupo,primeiro,segundo&inscricao_id=eq.'+inscricaoId+'&cota_numero=eq.'+cotaNum,{headers:H}).then(r=>r.json()),
     fetch(SUPABASE_URL+'/rest/v1/classificacao_grupos?select=grupo,primeiro,segundo',{headers:H}).then(r=>r.json()),
     fetch(SUPABASE_URL+'/rest/v1/palpites_artilheiro?select=campeao,vice,terceiro&inscricao_id=eq.'+inscricaoId+'&cota_numero=eq.'+cotaNum,{headers:H}).then(r=>r.json()),
+    fetch(SUPABASE_URL+'/rest/v1/palpites_eliminatorias?select=jogo_id,vencedor&inscricao_id=eq.'+inscricaoId+'&cota_numero=eq.'+cotaNum,{headers:H}).then(r=>r.json()),
+    fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?select=id,fase,vencedor',{headers:H}).then(r=>r.json()),
+    fetch(SUPABASE_URL+'/rest/v1/config_bolao?select=chave,valor',{headers:H}).then(r=>r.json()),
   ]);
 
-  let ptsGrupos=0, gruposApurados=cg.length;
-  pg.forEach(p=>{
-    const real=cg.find(c=>c.grupo===p.grupo);
+  // ── 1. Pontos dos grupos ─────────────────────────────────────────────
+  let ptsGrupos=0, gruposApurados=Array.isArray(cg)?cg.length:0;
+  (Array.isArray(pg)?pg:[]).forEach(p=>{
+    const real=(Array.isArray(cg)?cg:[]).find(c=>c.grupo===p.grupo);
     if(!real)return;
-    const acertou1=p.primeiro===real.primeiro;
-    const acertou2=p.segundo===real.segundo;
-    if(acertou1&&acertou2) ptsGrupos+=5;
-    else if(acertou1) ptsGrupos+=3;
-    else if(acertou2) ptsGrupos+=2;
+    if(p.primeiro===real.primeiro&&p.segundo===real.segundo) ptsGrupos+=5;
+    else if(p.primeiro===real.primeiro) ptsGrupos+=3;
+    else if(p.segundo===real.segundo) ptsGrupos+=2;
   });
 
-  // Palpitão — só calcula quando todos os 12 grupos forem apurados
+  // ── 2. Pontos das eliminatórias ──────────────────────────────────────
+  let ptsEliminatorias=0;
+  const FASE_PTS_CALC = {'16avos':5,'oitavas':6,'quartas':7,'semis':8,'final':12};
+  const jogoMap={};
+  (Array.isArray(je)?je:[]).forEach(j=>jogoMap[j.id]=j);
+  const palpElimMap={};
+  (Array.isArray(pe)?pe:[]).forEach(p=>palpElimMap[p.jogo_id]=p.vencedor);
+
+  Object.entries(palpElimMap).forEach(([jogoId,palpite])=>{
+    const jogo=jogoMap[jogoId];
+    if(!jogo||!jogo.vencedor||!palpite) return;
+    if(palpite===jogo.vencedor){
+      ptsEliminatorias += FASE_PTS_CALC[jogo.fase]||0;
+    }
+  });
+
+  // ── 3. Palpitão (Campeão/Vice/3º) ───────────────────────────────────
   let ptsPalpitao=0;
-  if(gruposApurados===12&&pa[0]){
-    // Buscar resultado final (campeão/vice/3o do torneio ficará em config)
-    // Por ora usar classificacao_grupos para Palpitão quando disponível
+  const cfgMap={};
+  (Array.isArray(cfg)?cfg:[]).forEach(c=>cfgMap[c.chave]=c.valor);
+  const palpitao = Array.isArray(pa)&&pa[0] ? pa[0] : null;
+  if(palpitao){
+    const campReal  = cfgMap['campeao_copa']  || null;
+    const viceReal  = cfgMap['vice_copa']     || null;
+    const terceReal = cfgMap['terceiro_copa'] || null;
+    if(campReal  && palpitao.campeao  === campReal)  ptsPalpitao += 15;
+    if(viceReal  && palpitao.vice     === viceReal)  ptsPalpitao += 8;
+    if(terceReal && palpitao.terceiro === terceReal) ptsPalpitao += 5;
   }
 
-  const total=ptsGrupos+ptsPalpitao;
-  return {ptsGrupos, ptsPalpitao, ptsArtilheiro:0, total, gruposApurados};
+  const total = ptsGrupos + ptsPalpitao + ptsEliminatorias;
+  return {ptsGrupos, ptsPalpitao, ptsArtilheiro:0, ptsEliminatorias, total, gruposApurados};
 }
 
 // ── Apurar grupo (admin lança 1º e 2º e recalcula tudo) ──────────────────
@@ -2163,7 +2194,7 @@ async function syncResultados(){
         await sb.from('pontuacao_cotas').upsert({
           inscricao_id: insc.id, cota_numero: c,
           pts_grupos: pts.ptsGrupos, pts_artilheiro: pts.ptsArtilheiro,
-          pts_palpitao: pts.ptsPalpitao, total_pontos: pts.total,
+          pts_palpitao: pts.ptsPalpitao, pts_eliminatorias: pts.ptsEliminatorias||0, total_pontos: pts.total,
           grupos_apurados: pts.gruposApurados, updated_at: new Date().toISOString(),
         }, {onConflict:'inscricao_id,cota_numero'});
       }
@@ -2242,7 +2273,7 @@ async function apurarGrupo(grupo, primeiro, segundo){
         await sb.from('pontuacao_cotas').upsert({
           inscricao_id:insc.id, cota_numero:c,
           pts_grupos:pts.ptsGrupos, pts_artilheiro:pts.ptsArtilheiro,
-          pts_palpitao:pts.ptsPalpitao, total_pontos:pts.total,
+          pts_palpitao:pts.ptsPalpitao, pts_eliminatorias:pts.ptsEliminatorias||0, total_pontos:pts.total,
           grupos_apurados:pts.gruposApurados, updated_at:new Date().toISOString(),
         },{onConflict:'inscricao_id,cota_numero'});
         atualizados++;
@@ -2357,10 +2388,10 @@ async function loadClassificacao(){
           const nomeDiv=document.createElement('div');nomeDiv.style.cssText='display:flex;align-items:center;gap:.35rem';
           const badge=document.createElement('span');badge.style.cssText='font-size:.65rem;width:.9rem';badge.textContent=idx===0?'🥇':idx===1?'🥈':'';
           const img=mkImg('https://media.api-sports.io/football/teams/'+(t.team&&t.team.id)+'.png',18,18);
-          const span=document.createElement('span');span.style.cssText="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.76rem;line-height:1.2;overflow:hidden;text-overflow:ellipsis";span.textContent=nome;
+          const span=document.createElement('span');span.style.cssText="font-family:Barlow Condensed,sans-serif;font-weight:600;font-size:.76rem;line-height:1.2;overflow:hidden;text-overflow:ellipsis";span.textContent=nome;
           nomeDiv.appendChild(badge);nomeDiv.appendChild(img);nomeDiv.appendChild(span);tdNome.appendChild(nomeDiv);tr.appendChild(tdNome);
           [t.all&&t.all.played||0,t.all&&t.all.win||0,t.all&&t.all.draw||0,t.all&&t.all.lose||0,sg,t.points||0].forEach(function(v,ci){
-            const td=document.createElement('td');td.style.cssText='text-align:center;padding:.3rem .2rem'+(ci===5?";font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold)":'');td.textContent=v;tr.appendChild(td);
+            const td=document.createElement('td');td.style.cssText='text-align:center;padding:.3rem .2rem'+(ci===5?";font-family:Oswald,sans-serif;font-weight:700;color:var(--accent-gold)":'');td.textContent=v;tr.appendChild(td);
           });
           tbody.appendChild(tr);
         });
@@ -2376,7 +2407,7 @@ async function loadClassificacao(){
           const tdNome=document.createElement('td');tdNome.style.cssText='padding:.3rem .3rem;width:55%';
           const nomeDiv=document.createElement('div');nomeDiv.style.cssText='display:flex;align-items:center;gap:.4rem';
           const img=mkImg('https://flagcdn.com/w40/'+t[0]+'.png',18,12);
-          const span=document.createElement('span');span.style.cssText="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.76rem;line-height:1.2;overflow:hidden;text-overflow:ellipsis";span.textContent=t[1];
+          const span=document.createElement('span');span.style.cssText="font-family:Barlow Condensed,sans-serif;font-weight:600;font-size:.76rem;line-height:1.2;overflow:hidden;text-overflow:ellipsis";span.textContent=t[1];
           nomeDiv.appendChild(img);nomeDiv.appendChild(span);tdNome.appendChild(nomeDiv);tr.appendChild(tdNome);
           for(var ci=0;ci<6;ci++){const td=document.createElement('td');td.style.cssText='text-align:center;padding:.3rem .2rem;color:'+(ci===5?'var(--accent-gold)':'var(--text-muted)');if(ci===5){td.style.fontFamily="'Oswald',sans-serif";td.style.fontWeight='700';}td.textContent='0';tr.appendChild(td);}
           tbody.appendChild(tr);
@@ -2425,7 +2456,7 @@ async function loadJogos(){
       html += `<div style="margin-bottom:1.5rem">
         <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem">
           <div style="height:1px;flex:1;background:var(--border)"></div>
-          <span style="font-family:'Oswald',sans-serif;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent-gold);white-space:nowrap">${key}</span>
+          <span style="font-family:Oswald,sans-serif;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent-gold);white-space:nowrap">${key}</span>
           <div style="height:1px;flex:1;background:var(--border)"></div>
         </div>
         <div style="display:flex;flex-direction:column;gap:.5rem">`;
@@ -2438,17 +2469,17 @@ async function loadJogos(){
         const futuro = !aoVivo && !encerrado;
 
         // Badge de grupo
-        const grpBadge = `<span style="font-family:'Oswald',sans-serif;font-size:.65rem;font-weight:700;background:rgba(212,168,67,.15);color:var(--accent-gold);padding:.1rem .4rem;border-radius:4px;white-space:nowrap">Gpo ${j.grupo} · R${j.rodada}</span>`;
+        const grpBadge = `<span style="font-family:Oswald,sans-serif;font-size:.65rem;font-weight:700;background:rgba(212,168,67,.15);color:var(--accent-gold);padding:.1rem .4rem;border-radius:4px;white-space:nowrap">Gpo ${j.grupo} · R${j.rodada}</span>`;
 
         // Placar
         let placar;
         if(aoVivo){
-          placar=`<span style="font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:900;color:var(--success);min-width:3rem;text-align:center">${j.gols_casa??0} · ${j.gols_fora??0}</span>
+          placar=`<span style="font-family:Oswald,sans-serif;font-size:1.3rem;font-weight:900;color:var(--success);min-width:3rem;text-align:center">${j.gols_casa??0} · ${j.gols_fora??0}</span>
                   <span style="font-size:.6rem;color:var(--success);font-weight:700;background:rgba(34,197,94,.15);padding:.1rem .4rem;border-radius:4px;position:absolute;top:-.3rem">🔴 AO VIVO</span>`;
         } else if(encerrado){
-          placar=`<span style="font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:900;color:var(--text-primary);min-width:3rem;text-align:center">${j.gols_casa} · ${j.gols_fora}</span>`;
+          placar=`<span style="font-family:Oswald,sans-serif;font-size:1.3rem;font-weight:900;color:var(--text-primary);min-width:3rem;text-align:center">${j.gols_casa} · ${j.gols_fora}</span>`;
         } else {
-          placar=`<span style="font-family:'Oswald',sans-serif;font-size:.95rem;font-weight:700;color:var(--text-muted);min-width:3rem;text-align:center">${hora}</span>`;
+          placar=`<span style="font-family:Oswald,sans-serif;font-size:.95rem;font-weight:700;color:var(--text-muted);min-width:3rem;text-align:center">${hora}</span>`;
         }
 
         // Cidade
@@ -2463,13 +2494,13 @@ async function loadJogos(){
             <!-- Time Casa -->
             <div style="display:flex;align-items:center;gap:.5rem;flex:1;min-width:0">
               <img src="https://flagcdn.com/w40/${j.time_casa_flag}.png" style="width:28px;height:19px;border-radius:3px;object-fit:cover;flex-shrink:0" alt="${j.time_casa}" onerror="this.style.display='none'">
-              <span style="font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:700;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${j.time_casa}</span>
+              <span style="font-family:Barlow Condensed,sans-serif;font-size:.95rem;font-weight:700;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${j.time_casa}</span>
             </div>
             <!-- Placar/Hora -->
             <div style="position:relative;text-align:center;flex-shrink:0">${placar}</div>
             <!-- Time Fora -->
             <div style="display:flex;align-items:center;gap:.5rem;flex:1;min-width:0;justify-content:flex-end">
-              <span style="font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:700;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right">${j.time_fora}</span>
+              <span style="font-family:Barlow Condensed,sans-serif;font-size:.95rem;font-weight:700;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right">${j.time_fora}</span>
               <img src="https://flagcdn.com/w40/${j.time_fora_flag}.png" style="width:28px;height:19px;border-radius:3px;object-fit:cover;flex-shrink:0" alt="${j.time_fora}" onerror="this.style.display='none'">
             </div>
           </div>
@@ -2527,7 +2558,7 @@ async function loadAdmin(){
         <div class="asc"><div class="av">R$ ${totalPool}</div><div class="al">Prêmios</div></div>
         <div class="asc"><div class="av">R$ ${totalFees}</div><div class="al">Taxas</div></div>
       </div>
-      <h3 style="font-family:'Oswald',sans-serif;margin-bottom:.8rem;font-size:1rem;text-transform:uppercase;letter-spacing:1px">Inscrições</h3>
+      <h3 style="font-family:Oswald,sans-serif;margin-bottom:.8rem;font-size:1rem;text-transform:uppercase;letter-spacing:1px">Inscrições</h3>
       <div id="admin-cotas-pend-section"></div>
       <div style="overflow-x:auto">
       <table class="atbl"><thead><tr><th>Nome</th><th>E-mail</th><th>WhatsApp</th><th>Cotas</th><th>Palpites</th><th>Valor</th><th>Conheceu</th><th>Indicação</th><th>Status</th><th>Ações</th></tr></thead>
@@ -2553,10 +2584,10 @@ async function loadAdmin(){
             <td class="${isPending?'stp':'sta'}">${isPending?'⏳ Pendente':'✅ Aprovado'}</td>
             <td style="white-space:nowrap">
               ${isPending?`<button class="ba" onclick="adminApprove(${i.id})">✅ Aprovar</button><button class="br2" onclick="adminReject(${i.id})">❌ Rejeitar</button>`:''}
-              ${i.status==='rejeitado'?`<button style="background:var(--warning);color:var(--bg-dark);padding:.25rem .5rem;border:none;border-radius:4px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.62rem;text-transform:uppercase;letter-spacing:.5px" onclick="adminReativar(${i.id})">🔄 Reativar</button>`:''}
-              ${i.status==='aprovado'&&emailUser?`<button style="background:var(--accent-teal);color:white;padding:.25rem .45rem;border:none;border-radius:4px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.6rem;text-transform:uppercase" onclick="preencherReset('${emailUser}')">🔑 Reset</button>`:''}
-              ${i.cotas<3&&i.status==='aprovado'?`<button style="background:rgba(212,168,67,.15);color:var(--accent-gold);border:1px solid rgba(212,168,67,.3);padding:.25rem .5rem;border-radius:4px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.6rem;text-transform:uppercase;margin-left:.15rem" onclick="adminAdicionarCota(${i.id},'${p?.apelido||p?.nome||'?'}',${i.cotas})">➕ Cota</button>`:''}
-              <button style="background:rgba(239,68,68,.15);color:var(--error);border:1px solid rgba(239,68,68,.3);padding:.25rem .5rem;border-radius:4px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.6rem;text-transform:uppercase;margin-left:.15rem" onclick="adminExcluirCadastro('${i.user_id}',${i.id},'${i.user_id?.substring(0,8)}')">🗑 Excluir</button>
+              ${i.status==='rejeitado'?`<button style="background:var(--warning);color:var(--bg-dark);padding:.25rem .5rem;border:none;border-radius:4px;cursor:pointer;font-family:Oswald,sans-serif;font-size:.62rem;text-transform:uppercase;letter-spacing:.5px" onclick="adminReativar(${i.id})">🔄 Reativar</button>`:''}
+              ${i.status==='aprovado'&&emailUser?`<button style="background:var(--accent-teal);color:white;padding:.25rem .45rem;border:none;border-radius:4px;cursor:pointer;font-family:Oswald,sans-serif;font-size:.6rem;text-transform:uppercase" onclick="preencherReset('${emailUser}')">🔑 Reset</button>`:''}
+              ${i.cotas<3&&i.status==='aprovado'?`<button style="background:rgba(212,168,67,.15);color:var(--accent-gold);border:1px solid rgba(212,168,67,.3);padding:.25rem .5rem;border-radius:4px;cursor:pointer;font-family:Oswald,sans-serif;font-size:.6rem;text-transform:uppercase;margin-left:.15rem" onclick="adminAdicionarCota(${i.id},'${p?.apelido||p?.nome||'?'}',${i.cotas})">➕ Cota</button>`:''}
+              <button style="background:rgba(239,68,68,.15);color:var(--error);border:1px solid rgba(239,68,68,.3);padding:.25rem .5rem;border-radius:4px;cursor:pointer;font-family:Oswald,sans-serif;font-size:.6rem;text-transform:uppercase;margin-left:.15rem" onclick="adminExcluirCadastro('${i.user_id}',${i.id},'${i.user_id?.substring(0,8)}')">🗑 Excluir</button>
             </td>
           </tr>`;}).join('')}</tbody></table>
       </div>`;
@@ -2569,14 +2600,14 @@ async function loadAdmin(){
         return`<tr><td>${p.nome||'-'}</td><td>${cc.cotas_atual}x</td><td>${cc.cotas_nova}x</td><td>R$ ${cc.valor_adicional}</td><td><button class="ba" onclick="aprovarCotas('${cc.id}','${cc.inscricao_id}',${cc.cotas_nova})">Aprovar</button><button class="br2" onclick="adminRejectCotas(${cc.id})">Rejeitar</button></td></tr>`;
       }).join('');
       const section=document.getElementById('admin-cotas-pend-section');
-      if(section)section.innerHTML=`<div style="margin-bottom:1.5rem"><h4 style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--warning);text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem">⏳ Solicitações de Mais Cotas (${cotasPend.length})</h4>
+      if(section)section.innerHTML=`<div style="margin-bottom:1.5rem"><h4 style="font-family:Oswald,sans-serif;font-size:.9rem;color:var(--warning);text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem">⏳ Solicitações de Mais Cotas (${cotasPend.length})</h4>
 <div class="re" id="apuracao-grupos" style="margin-top:2rem">
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;margin-bottom:.3rem">
-    <h3 style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--accent-gold);margin:0">⚽ APURAÇÃO DOS GRUPOS</h3>
+    <h3 style="font-family:Oswald,sans-serif;font-size:1.1rem;color:var(--accent-gold);margin:0">⚽ APURAÇÃO DOS GRUPOS</h3>
     <button id="btn-sync-api" class="btn btn-s" onclick="syncResultados()" style="background:var(--accent-gold);color:var(--dark);font-weight:700;padding:.4rem 1rem;font-size:.85rem">🔄 Sincronizar via API</button>
   </div>
   <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem">Após encerrar cada grupo, selecione o 1º e 2º e clique em Apurar. Todos os pontos serão recalculados automaticamente.</p>
-  <div id="apuracao-lista" style="max-width:700px"><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo A</span><select id="ap-A-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="México">México</option><option value="África do Sul">África do Sul</option><option value="Coreia do Sul">Coreia do Sul</option><option value="República Tcheca">República Tcheca</option></select><select id="ap-A-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="México">México</option><option value="África do Sul">África do Sul</option><option value="Coreia do Sul">Coreia do Sul</option><option value="República Tcheca">República Tcheca</option></select><button id="btn-apurar-A" class="btn btn-s" onclick="apurarGrupo('A',document.getElementById('ap-A-1').value,document.getElementById('ap-A-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo B</span><select id="ap-B-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Canadá">Canadá</option><option value="Bósnia e Herzegovina">Bósnia e Herzegovina</option><option value="Catar">Catar</option><option value="Suíça">Suíça</option></select><select id="ap-B-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Canadá">Canadá</option><option value="Bósnia e Herzegovina">Bósnia e Herzegovina</option><option value="Catar">Catar</option><option value="Suíça">Suíça</option></select><button id="btn-apurar-B" class="btn btn-s" onclick="apurarGrupo('B',document.getElementById('ap-B-1').value,document.getElementById('ap-B-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo C</span><select id="ap-C-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Brasil">Brasil</option><option value="Marrocos">Marrocos</option><option value="Haiti">Haiti</option><option value="Escócia">Escócia</option></select><select id="ap-C-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Brasil">Brasil</option><option value="Marrocos">Marrocos</option><option value="Haiti">Haiti</option><option value="Escócia">Escócia</option></select><button id="btn-apurar-C" class="btn btn-s" onclick="apurarGrupo('C',document.getElementById('ap-C-1').value,document.getElementById('ap-C-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo D</span><select id="ap-D-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="EUA">EUA</option><option value="Paraguai">Paraguai</option><option value="Austrália">Austrália</option><option value="Turquia">Turquia</option></select><select id="ap-D-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="EUA">EUA</option><option value="Paraguai">Paraguai</option><option value="Austrália">Austrália</option><option value="Turquia">Turquia</option></select><button id="btn-apurar-D" class="btn btn-s" onclick="apurarGrupo('D',document.getElementById('ap-D-1').value,document.getElementById('ap-D-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo E</span><select id="ap-E-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Alemanha">Alemanha</option><option value="Equador">Equador</option><option value="Costa do Marfim">Costa do Marfim</option><option value="Curaçao">Curaçao</option></select><select id="ap-E-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Alemanha">Alemanha</option><option value="Equador">Equador</option><option value="Costa do Marfim">Costa do Marfim</option><option value="Curaçao">Curaçao</option></select><button id="btn-apurar-E" class="btn btn-s" onclick="apurarGrupo('E',document.getElementById('ap-E-1').value,document.getElementById('ap-E-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo F</span><select id="ap-F-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Holanda">Holanda</option><option value="Japão">Japão</option><option value="Suécia">Suécia</option><option value="Tunísia">Tunísia</option></select><select id="ap-F-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Holanda">Holanda</option><option value="Japão">Japão</option><option value="Suécia">Suécia</option><option value="Tunísia">Tunísia</option></select><button id="btn-apurar-F" class="btn btn-s" onclick="apurarGrupo('F',document.getElementById('ap-F-1').value,document.getElementById('ap-F-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo G</span><select id="ap-G-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Bélgica">Bélgica</option><option value="Irã">Irã</option><option value="Egito">Egito</option><option value="Nova Zelândia">Nova Zelândia</option></select><select id="ap-G-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Bélgica">Bélgica</option><option value="Irã">Irã</option><option value="Egito">Egito</option><option value="Nova Zelândia">Nova Zelândia</option></select><button id="btn-apurar-G" class="btn btn-s" onclick="apurarGrupo('G',document.getElementById('ap-G-1').value,document.getElementById('ap-G-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo H</span><select id="ap-H-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Espanha">Espanha</option><option value="Uruguai">Uruguai</option><option value="Arábia Saudita">Arábia Saudita</option><option value="Cabo Verde">Cabo Verde</option></select><select id="ap-H-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Espanha">Espanha</option><option value="Uruguai">Uruguai</option><option value="Arábia Saudita">Arábia Saudita</option><option value="Cabo Verde">Cabo Verde</option></select><button id="btn-apurar-H" class="btn btn-s" onclick="apurarGrupo('H',document.getElementById('ap-H-1').value,document.getElementById('ap-H-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo I</span><select id="ap-I-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="França">França</option><option value="Senegal">Senegal</option><option value="Iraque">Iraque</option><option value="Noruega">Noruega</option></select><select id="ap-I-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="França">França</option><option value="Senegal">Senegal</option><option value="Iraque">Iraque</option><option value="Noruega">Noruega</option></select><button id="btn-apurar-I" class="btn btn-s" onclick="apurarGrupo('I',document.getElementById('ap-I-1').value,document.getElementById('ap-I-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo J</span><select id="ap-J-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Argentina">Argentina</option><option value="Argélia">Argélia</option><option value="Áustria">Áustria</option><option value="Jordânia">Jordânia</option></select><select id="ap-J-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Argentina">Argentina</option><option value="Argélia">Argélia</option><option value="Áustria">Áustria</option><option value="Jordânia">Jordânia</option></select><button id="btn-apurar-J" class="btn btn-s" onclick="apurarGrupo('J',document.getElementById('ap-J-1').value,document.getElementById('ap-J-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo K</span><select id="ap-K-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Portugal">Portugal</option><option value="RD Congo">RD Congo</option><option value="Uzbequistão">Uzbequistão</option><option value="Colômbia">Colômbia</option></select><select id="ap-K-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Portugal">Portugal</option><option value="RD Congo">RD Congo</option><option value="Uzbequistão">Uzbequistão</option><option value="Colômbia">Colômbia</option></select><button id="btn-apurar-K" class="btn btn-s" onclick="apurarGrupo('K',document.getElementById('ap-K-1').value,document.getElementById('ap-K-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo L</span><select id="ap-L-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Inglaterra">Inglaterra</option><option value="Croácia">Croácia</option><option value="Gana">Gana</option><option value="Panamá">Panamá</option></select><select id="ap-L-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Inglaterra">Inglaterra</option><option value="Croácia">Croácia</option><option value="Gana">Gana</option><option value="Panamá">Panamá</option></select><button id="btn-apurar-L" class="btn btn-s" onclick="apurarGrupo('L',document.getElementById('ap-L-1').value,document.getElementById('ap-L-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div></div>
+  <div id="apuracao-lista" style="max-width:700px"><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:Oswald,sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo A</span><select id="ap-A-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="México">México</option><option value="África do Sul">África do Sul</option><option value="Coreia do Sul">Coreia do Sul</option><option value="República Tcheca">República Tcheca</option></select><select id="ap-A-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="México">México</option><option value="África do Sul">África do Sul</option><option value="Coreia do Sul">Coreia do Sul</option><option value="República Tcheca">República Tcheca</option></select><button id="btn-apurar-A" class="btn btn-s" onclick="apurarGrupo('A',document.getElementById('ap-A-1').value,document.getElementById('ap-A-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:Oswald,sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo B</span><select id="ap-B-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Canadá">Canadá</option><option value="Bósnia e Herzegovina">Bósnia e Herzegovina</option><option value="Catar">Catar</option><option value="Suíça">Suíça</option></select><select id="ap-B-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Canadá">Canadá</option><option value="Bósnia e Herzegovina">Bósnia e Herzegovina</option><option value="Catar">Catar</option><option value="Suíça">Suíça</option></select><button id="btn-apurar-B" class="btn btn-s" onclick="apurarGrupo('B',document.getElementById('ap-B-1').value,document.getElementById('ap-B-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:Oswald,sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo C</span><select id="ap-C-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Brasil">Brasil</option><option value="Marrocos">Marrocos</option><option value="Haiti">Haiti</option><option value="Escócia">Escócia</option></select><select id="ap-C-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Brasil">Brasil</option><option value="Marrocos">Marrocos</option><option value="Haiti">Haiti</option><option value="Escócia">Escócia</option></select><button id="btn-apurar-C" class="btn btn-s" onclick="apurarGrupo('C',document.getElementById('ap-C-1').value,document.getElementById('ap-C-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:Oswald,sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo D</span><select id="ap-D-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="EUA">EUA</option><option value="Paraguai">Paraguai</option><option value="Austrália">Austrália</option><option value="Turquia">Turquia</option></select><select id="ap-D-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="EUA">EUA</option><option value="Paraguai">Paraguai</option><option value="Austrália">Austrália</option><option value="Turquia">Turquia</option></select><button id="btn-apurar-D" class="btn btn-s" onclick="apurarGrupo('D',document.getElementById('ap-D-1').value,document.getElementById('ap-D-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:Oswald,sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo E</span><select id="ap-E-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Alemanha">Alemanha</option><option value="Equador">Equador</option><option value="Costa do Marfim">Costa do Marfim</option><option value="Curaçao">Curaçao</option></select><select id="ap-E-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Alemanha">Alemanha</option><option value="Equador">Equador</option><option value="Costa do Marfim">Costa do Marfim</option><option value="Curaçao">Curaçao</option></select><button id="btn-apurar-E" class="btn btn-s" onclick="apurarGrupo('E',document.getElementById('ap-E-1').value,document.getElementById('ap-E-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:Oswald,sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo F</span><select id="ap-F-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Holanda">Holanda</option><option value="Japão">Japão</option><option value="Suécia">Suécia</option><option value="Tunísia">Tunísia</option></select><select id="ap-F-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Holanda">Holanda</option><option value="Japão">Japão</option><option value="Suécia">Suécia</option><option value="Tunísia">Tunísia</option></select><button id="btn-apurar-F" class="btn btn-s" onclick="apurarGrupo('F',document.getElementById('ap-F-1').value,document.getElementById('ap-F-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:Oswald,sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo G</span><select id="ap-G-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Bélgica">Bélgica</option><option value="Irã">Irã</option><option value="Egito">Egito</option><option value="Nova Zelândia">Nova Zelândia</option></select><select id="ap-G-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Bélgica">Bélgica</option><option value="Irã">Irã</option><option value="Egito">Egito</option><option value="Nova Zelândia">Nova Zelândia</option></select><button id="btn-apurar-G" class="btn btn-s" onclick="apurarGrupo('G',document.getElementById('ap-G-1').value,document.getElementById('ap-G-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:Oswald,sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo H</span><select id="ap-H-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Espanha">Espanha</option><option value="Uruguai">Uruguai</option><option value="Arábia Saudita">Arábia Saudita</option><option value="Cabo Verde">Cabo Verde</option></select><select id="ap-H-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Espanha">Espanha</option><option value="Uruguai">Uruguai</option><option value="Arábia Saudita">Arábia Saudita</option><option value="Cabo Verde">Cabo Verde</option></select><button id="btn-apurar-H" class="btn btn-s" onclick="apurarGrupo('H',document.getElementById('ap-H-1').value,document.getElementById('ap-H-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:Oswald,sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo I</span><select id="ap-I-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="França">França</option><option value="Senegal">Senegal</option><option value="Iraque">Iraque</option><option value="Noruega">Noruega</option></select><select id="ap-I-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="França">França</option><option value="Senegal">Senegal</option><option value="Iraque">Iraque</option><option value="Noruega">Noruega</option></select><button id="btn-apurar-I" class="btn btn-s" onclick="apurarGrupo('I',document.getElementById('ap-I-1').value,document.getElementById('ap-I-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:Oswald,sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo J</span><select id="ap-J-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Argentina">Argentina</option><option value="Argélia">Argélia</option><option value="Áustria">Áustria</option><option value="Jordânia">Jordânia</option></select><select id="ap-J-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Argentina">Argentina</option><option value="Argélia">Argélia</option><option value="Áustria">Áustria</option><option value="Jordânia">Jordânia</option></select><button id="btn-apurar-J" class="btn btn-s" onclick="apurarGrupo('J',document.getElementById('ap-J-1').value,document.getElementById('ap-J-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:Oswald,sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo K</span><select id="ap-K-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Portugal">Portugal</option><option value="RD Congo">RD Congo</option><option value="Uzbequistão">Uzbequistão</option><option value="Colômbia">Colômbia</option></select><select id="ap-K-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Portugal">Portugal</option><option value="RD Congo">RD Congo</option><option value="Uzbequistão">Uzbequistão</option><option value="Colômbia">Colômbia</option></select><button id="btn-apurar-K" class="btn btn-s" onclick="apurarGrupo('K',document.getElementById('ap-K-1').value,document.getElementById('ap-K-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div><div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:Oswald,sans-serif;font-weight:700;color:var(--accent-gold);width:2.5rem">Gpo L</span><select id="ap-L-1" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">1º colocado...</option><option value="Inglaterra">Inglaterra</option><option value="Croácia">Croácia</option><option value="Gana">Gana</option><option value="Panamá">Panamá</option></select><select id="ap-L-2" style="flex:1;min-width:130px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:.3rem .5rem;border-radius:6px;font-size:.85rem"><option value="">2º colocado...</option><option value="Inglaterra">Inglaterra</option><option value="Croácia">Croácia</option><option value="Gana">Gana</option><option value="Panamá">Panamá</option></select><button id="btn-apurar-L" class="btn btn-s" onclick="apurarGrupo('L',document.getElementById('ap-L-1').value,document.getElementById('ap-L-2').value)" style="background:var(--success);color:#fff;padding:.3rem .8rem;font-size:.8rem">Apurar</button></div></div>
 </div>
 
 <div style="overflow-x:auto"><table class="atbl"><thead><tr><th>Nome</th><th>De</th><th>Para</th><th>+Valor</th><th>Ações</th></tr></thead><tbody>${cpHtml}</tbody></table></div></div>`;
@@ -2586,7 +2617,7 @@ async function loadAdmin(){
     const placarSection = document.createElement('div');
     placarSection.style.marginTop='2rem';
     placarSection.innerHTML=`
-      <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem;color:var(--success)">⚽ Placares dos Jogos</h3>
+      <h3 style="font-family:Oswald,sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem;color:var(--success)">⚽ Placares dos Jogos</h3>
       <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1rem" id="admin-placares-lista">
         <div class="loading"><div class="spinner"></div>Carregando jogos...</div>
       </div>`;
@@ -2597,7 +2628,7 @@ async function loadAdmin(){
     const fase2Section = document.createElement('div');
     fase2Section.style.marginTop = '2rem';
     fase2Section.innerHTML = `
-      <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem;color:var(--accent-gold)">🏆 2ª Fase — Eliminatórias</h3>
+      <h3 style="font-family:Oswald,sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem;color:var(--accent-gold)">🏆 2ª Fase — Eliminatórias</h3>
       <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1rem" id="admin-fase2-status">
         <div class="loading"><div class="spinner"></div>Verificando...</div>
       </div>`;
@@ -2619,10 +2650,10 @@ async function loadAdmin(){
           </div>
           <div style="display:flex;gap:.5rem">
             ${aberta
-              ? `<button onclick="adminToggleSegundaFase(false)" style="padding:.5rem 1rem;background:var(--error);color:white;border:none;border-radius:6px;font-family:'Oswald',sans-serif;font-size:.8rem;cursor:pointer">🔒 Fechar 2ª Fase</button>`
-              : `<button onclick="adminToggleSegundaFase(true)" style="padding:.5rem 1rem;background:var(--success);color:white;border:none;border-radius:6px;font-family:'Oswald',sans-serif;font-size:.8rem;cursor:pointer">🟢 Liberar para todos</button>`
+              ? `<button onclick="adminToggleSegundaFase(false)" style="padding:.5rem 1rem;background:var(--error);color:white;border:none;border-radius:6px;font-family:Oswald,sans-serif;font-size:.8rem;cursor:pointer">🔒 Fechar 2ª Fase</button>`
+              : `<button onclick="adminToggleSegundaFase(true)" style="padding:.5rem 1rem;background:var(--success);color:white;border:none;border-radius:6px;font-family:Oswald,sans-serif;font-size:.8rem;cursor:pointer">🟢 Liberar para todos</button>`
             }
-            <button onclick="navigate('elim')" style="padding:.5rem 1rem;background:var(--bg-dark);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;font-family:'Oswald',sans-serif;font-size:.8rem;cursor:pointer">👁 Visualizar</button>
+            <button onclick="navigate('elim')" style="padding:.5rem 1rem;background:var(--bg-dark);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;font-family:Oswald,sans-serif;font-size:.8rem;cursor:pointer">👁 Visualizar</button>
           </div>
         </div>`;
     })();
@@ -2631,18 +2662,29 @@ async function loadAdmin(){
     const classifSection = document.createElement('div');
     classifSection.style.marginTop = '2rem';
     classifSection.innerHTML = `
-      <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem;color:var(--accent-teal)">🏆 Classificados — Montar 16-avos</h3>
+      <h3 style="font-family:Oswald,sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem;color:var(--accent-teal)">🏆 Classificados — Montar 16-avos</h3>
       <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1rem" id="admin-classif-container">
         <div class="loading"><div class="spinner"></div>Carregando...</div>
       </div>`;
     el.appendChild(classifSection);
     renderAdminClassificados(document.getElementById('admin-classif-container'));
 
+    // Seção de resultados eliminatórias
+    const elimResultSection = document.createElement('div');
+    elimResultSection.style.marginTop = '2rem';
+    elimResultSection.innerHTML = `
+      <h3 style="font-family:Oswald,sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem;color:var(--accent-teal)">🏆 Resultados — Fase Eliminatória</h3>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1rem" id="admin-elim-resultados">
+        <div class="loading"><div class="spinner"></div>Carregando...</div>
+      </div>`;
+    el.appendChild(elimResultSection);
+    renderAdminElimResultados(document.getElementById('admin-elim-resultados'));
+
     // Seção de reset de senha — Admin
     const resetSection = document.createElement('div');
     resetSection.style.marginTop = '2rem';
     resetSection.innerHTML = `
-      <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem;color:var(--accent-teal)">🔑 Reset de Senha — Usuários</h3>
+      <h3 style="font-family:Oswald,sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem;color:var(--accent-teal)">🔑 Reset de Senha — Usuários</h3>
       <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1.2rem">
         <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:1rem">Informe o e-mail do usuário e a nova senha temporária. Avise o usuário pelo WhatsApp para fazer login com a nova senha.</p>
         <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:.6rem;align-items:end">
@@ -2861,7 +2903,7 @@ async function loadConta(){
       </div>
       <div style="text-align:center;padding:1rem;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;margin-bottom:1.2rem">
         <p style="font-size:1.5rem;margin-bottom:.4rem">❌</p>
-        <p style="font-family:'Oswald',sans-serif;font-size:1rem;color:var(--error);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Inscrição Rejeitada</p>
+        <p style="font-family:Oswald,sans-serif;font-size:1rem;color:var(--error);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Inscrição Rejeitada</p>
         <p style="color:var(--text-muted);font-size:.85rem;line-height:1.5">Sua inscrição anterior foi rejeitada pelo admin (pagamento não confirmado).<br>Você pode fazer uma nova inscrição pagando o PIX e confirmando abaixo.</p>
       </div>
       <h3 class="fst" style="margin-bottom:.3rem">Nova Inscrição</h3>
@@ -2924,7 +2966,7 @@ async function loadConta(){
 let _segundaFaseAberta = false;
 const FASE_PTS = {'16avos':5,'oitavas':6,'quartas':7,'semis':8,'final':12,'terceiro':6};
 const FASE_LABEL = {'16avos':'16-avos de Final','oitavas':'Oitavas de Final','quartas':'Quartas de Final','semis':'Semifinais','final':'🏆 Final','terceiro':'🥉 3º Lugar'};
-const FASE_ORDER = ['16avos','oitavas','quartas','semis','final','terceiro'];
+const FASE_ORDER = ['16avos','oitavas','quartas','semis','final'];
 
 async function _checkSegundaFase(){
   try{
@@ -3003,7 +3045,7 @@ async function loadElim(){
       palpMap[p.inscricao_id+'_'+p.cota_numero+'_'+p.jogo_id]=p.vencedor;
     });
 
-    const FASE_ORDER=['16avos','oitavas','quartas','semis','final','terceiro'];
+    const FASE_ORDER=['16avos','oitavas','quartas','semis','final'];
     const porFase={};
     jogos.forEach(j=>{ if(!porFase[j.fase])porFase[j.fase]=[]; porFase[j.fase].push(j); });
 
@@ -3037,7 +3079,7 @@ async function loadElim(){
         const pts = FASE_PTS[fase];
 
         // Subtítulo motivacional por fase
-        const FASE_SUB = {'16avos':'Escolha quem avança para as Oitavas de Final','oitavas':'Escolha quem avança para as Quartas de Final','quartas':'Escolha quem avança para as Semifinais','semis':'Escolha quem avança para a Final e para o 3º Lugar','final':'🏆 Escolha o Campeão do Mundo!','terceiro':'🥉 Disputa pelo 3º Lugar — os perdedores das Semifinais'};
+        const FASE_SUB = {'16avos':'Escolha quem avança para as Oitavas de Final','oitavas':'Escolha quem avança para as Quartas de Final','quartas':'Escolha quem avança para as Semifinais','semis':'Escolha quem avança para a Final','final':'🏆 Escolha o Campeão do Mundo!','terceiro':'Escolha o 3º Lugar da Copa'};
 
         // Header da fase
         out += '<div style="margin-bottom:1.5rem">';
@@ -3357,17 +3399,17 @@ async function renderAdminPlacares(el){
     const isFuturo=new Date(j.data_jogo)>agora;
     const idC=`pl-c-${idx}`,idF=`pl-f-${idx}`,idB=`pl-b-${idx}`;
     rows+=`<div style="display:grid;grid-template-columns:1fr 48px 1rem 48px 1fr auto;align-items:center;gap:.4rem;padding:.5rem .3rem;border-bottom:1px solid var(--border);${isFuturo?'opacity:.5':''}">
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:.85rem;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${j.time_casa}</span>
+      <span style="font-family:Barlow Condensed,sans-serif;font-size:.85rem;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${j.time_casa}</span>
       <input id="${idC}" type="number" min="0" max="99" value="${enc?j.gols_casa:''}" placeholder="-"
-        style="width:48px;height:38px;text-align:center;background:var(--bg-dark);border:1px solid ${enc?'var(--success)':'var(--border)'};border-radius:6px;color:var(--text-primary);font-family:'Oswald',sans-serif;font-size:1.1rem">
+        style="width:48px;height:38px;text-align:center;background:var(--bg-dark);border:1px solid ${enc?'var(--success)':'var(--border)'};border-radius:6px;color:var(--text-primary);font-family:Oswald,sans-serif;font-size:1.1rem">
       <span style="text-align:center;color:var(--text-muted);font-size:.8rem">x</span>
       <input id="${idF}" type="number" min="0" max="99" value="${enc?j.gols_fora:''}" placeholder="-"
-        style="width:48px;height:38px;text-align:center;background:var(--bg-dark);border:1px solid ${enc?'var(--success)':'var(--border)'};border-radius:6px;color:var(--text-primary);font-family:'Oswald',sans-serif;font-size:1.1rem">
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${j.time_fora}
+        style="width:48px;height:38px;text-align:center;background:var(--bg-dark);border:1px solid ${enc?'var(--success)':'var(--border)'};border-radius:6px;color:var(--text-primary);font-family:Oswald,sans-serif;font-size:1.1rem">
+      <span style="font-family:Barlow Condensed,sans-serif;font-size:.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${j.time_fora}
         <span style="display:block;font-size:.6rem;color:var(--text-muted)">${hrBR(j.data_jogo)} · Gpo ${j.grupo}</span>
       </span>
       <button id="${idB}" onclick="adminSalvarPlacar('${j.time_casa}','${j.time_fora}','${idC}','${idF}','${idB}','${j.grupo}')"
-        style="background:${enc?'var(--success)':'var(--accent-teal)'};color:white;border:none;padding:.3rem .6rem;border-radius:5px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.7rem;text-transform:uppercase;white-space:nowrap;min-width:52px">
+        style="background:${enc?'var(--success)':'var(--accent-teal)'};color:white;border:none;padding:.3rem .6rem;border-radius:5px;cursor:pointer;font-family:Oswald,sans-serif;font-size:.7rem;text-transform:uppercase;white-space:nowrap;min-width:52px">
         ${enc?'✅ OK':'Salvar'}
       </button>
     </div>`;
@@ -3604,6 +3646,142 @@ async function salvarClassificados(){
     console.error(e);
   }finally{
     if(btn){btn.disabled=false;btn.textContent='💾 Salvar e Montar 16-avos';}
+  }
+}
+
+// ── Admin: salvar resultado de jogo eliminatório ──────────────────────────
+async function adminSalvarResultadoElim(jogoId, vencedor){
+  try{
+    const{error}=await sb.from('jogos_eliminatorias')
+      .update({vencedor})
+      .eq('id', jogoId);
+    if(error) throw new Error(error.message);
+
+    toast('✅ Resultado salvo! Recalculando pontos...','s');
+
+    // Recalcular pontos de todas as cotas
+    const{data:inscs}=await sb.from('inscricoes').select('id,cotas').eq('status','aprovado');
+    for(const insc of(inscs||[])){
+      for(let c=1;c<=insc.cotas;c++){
+        const pts=await calcularPontosCota(insc.id,c);
+        await sb.from('pontuacao_cotas').upsert({
+          inscricao_id:insc.id, cota_numero:c,
+          pts_grupos:pts.ptsGrupos, pts_artilheiro:pts.ptsArtilheiro,
+          pts_palpitao:pts.ptsPalpitao, pts_eliminatorias:pts.ptsEliminatorias||0,
+          total_pontos:pts.total, grupos_apurados:pts.gruposApurados,
+          updated_at:new Date().toISOString(),
+        },{onConflict:'inscricao_id,cota_numero'});
+      }
+    }
+    toast('🏆 Pontuação atualizada!','s');
+    _refreshRankingDebounced();
+  }catch(e){
+    toast('Erro: '+e.message,'e');
+  }
+}
+
+// ── Admin: definir Campeão/Vice/3º para calcular Palpitão ─────────────────
+async function adminDefinirCampeoes(campeao, vice, terceiro){
+  try{
+    for(const[chave,valor] of [['campeao_copa',campeao],['vice_copa',vice],['terceiro_copa',terceiro]]){
+      await sb.from('config_bolao').upsert({chave,valor,updated_at:new Date().toISOString()},{onConflict:'chave'});
+    }
+    toast('✅ Campeão/Vice/3º salvos! Recalculando Palpitão...','s');
+    const{data:inscs}=await sb.from('inscricoes').select('id,cotas').eq('status','aprovado');
+    for(const insc of(inscs||[])){
+      for(let c=1;c<=insc.cotas;c++){
+        const pts=await calcularPontosCota(insc.id,c);
+        await sb.from('pontuacao_cotas').upsert({
+          inscricao_id:insc.id, cota_numero:c,
+          pts_grupos:pts.ptsGrupos, pts_artilheiro:pts.ptsArtilheiro,
+          pts_palpitao:pts.ptsPalpitao, pts_eliminatorias:pts.ptsEliminatorias||0,
+          total_pontos:pts.total, grupos_apurados:pts.gruposApurados,
+          updated_at:new Date().toISOString(),
+        },{onConflict:'inscricao_id,cota_numero'});
+      }
+    }
+    toast('🏆 Palpitão calculado!','s');
+    _refreshRankingDebounced();
+  }catch(e){
+    toast('Erro: '+e.message,'e');
+  }
+}
+
+async function renderAdminElimResultados(el){
+  if(!el) return;
+  try{
+    const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
+    const [jogosRes, cfgRes] = await Promise.all([
+      fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?select=*&order=id',{headers:H}).then(r=>r.json()),
+      fetch(SUPABASE_URL+'/rest/v1/config_bolao?select=chave,valor',{headers:H}).then(r=>r.json()),
+    ]);
+
+    const jogos = (Array.isArray(jogosRes)?jogosRes:[]).filter(j=>j.fase!=='terceiro');
+    const cfgMap = {};
+    (Array.isArray(cfgRes)?cfgRes:[]).forEach(c=>cfgMap[c.chave]=c.valor);
+
+    const FASES = ['16avos','oitavas','quartas','semis','final'];
+    const LABELS = {'16avos':'16-avos','oitavas':'Oitavas','quartas':'Quartas','semis':'Semifinais','final':'Final'};
+    const porFase = {};
+    jogos.forEach(j=>{ if(!porFase[j.fase])porFase[j.fase]=[]; porFase[j.fase].push(j); });
+
+    let out = '';
+
+    for(const fase of FASES){
+      const js = (porFase[fase]||[]).sort((a,b)=>a.ordem-b.ordem);
+      if(!js.length) continue;
+      const temTimes = js.some(j=>j.time_casa||j.time_fora);
+      if(!temTimes) continue; // só mostra se tiver times definidos
+
+      out += '<div style="margin-bottom:1.2rem">';
+      out += '<div style="font-family:Oswald,sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem">'+LABELS[fase]+'</div>';
+      out += '<div style="display:flex;flex-direction:column;gap:.4rem">';
+
+      for(const j of js){
+        const tc = j.time_casa || j.slot_casa;
+        const tf = j.time_fora || j.slot_fora;
+        if(!j.time_casa && !j.time_fora) continue;
+        const enc = !!j.vencedor;
+        const idV = 'elim-v-'+j.id;
+
+        out += '<div style="display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:.5rem;padding:.4rem .5rem;background:var(--bg-dark);border:1px solid '+(enc?'var(--success)':'var(--border)')+';border-radius:6px">';
+        out += '<span style="font-size:.8rem;font-family:Barlow Condensed,sans-serif">'
+          +'<strong style="color:'+(j.vencedor===tc?'var(--success)':'var(--text-primary)')+'">'+tc+'</strong>'
+          +' <span style="color:var(--text-muted)">×</span> '
+          +'<strong style="color:'+(j.vencedor===tf?'var(--success)':'var(--text-primary)')+'">'+tf+'</strong>'
+          +(enc?' <span style="font-size:.65rem;color:var(--success)">✅ '+j.vencedor+'</span>':'')
+          +'</span>';
+        out += '<select id="'+idV+'" style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.2rem .4rem;color:var(--text-primary);font-size:.75rem">'
+          +'<option value="">vencedor</option>'
+          +'<option value="'+tc+'"'+(j.vencedor===tc?' selected':'')+'>'+tc+'</option>'
+          +'<option value="'+tf+'"'+(j.vencedor===tf?' selected':'')+'>'+tf+'</option>'
+          +'</select>';
+        out += '<button onclick="adminSalvarResultadoElim('+j.id+',document.getElementById(''+idV+'').value)" style="padding:.25rem .6rem;background:var(--accent-teal);color:white;border:none;border-radius:4px;cursor:pointer;font-size:.72rem;font-family:Oswald,sans-serif">Salvar</button>';
+        out += '</div>';
+      }
+      out += '</div></div>';
+    }
+
+    // Seção Palpitão — definir Campeão/Vice/3º
+    const TODOS = ['África do Sul','Alemanha','Arábia Saudita','Argélia','Argentina','Austrália','Áustria','Bélgica','Bósnia e Herzegovina','Brasil','Cabo Verde','Canadá','Catar','Colômbia','Coreia do Sul','Costa do Marfim','Croácia','Curaçao','Egito','Equador','Escócia','Espanha','EUA','França','Gana','Haiti','Holanda','Inglaterra','Irã','Iraque','Japão','Jordânia','Marrocos','México','Noruega','Nova Zelândia','Panamá','Paraguai','Portugal','RD Congo','República Tcheca','Senegal','Suécia','Suíça','Tunísia','Turquia','Uruguai','Uzbequistão'];
+    const mkOpts = (val) => '<option value="">—</option>'+TODOS.map(t=>'<option value="'+t+'"'+(t===val?' selected':'')+'>'+t+'</option>').join('');
+
+    out += '<div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--border)">';
+    out += '<div style="font-family:Oswald,sans-serif;font-size:.8rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.6rem">🎯 Palpitão — Definir Resultado Final</div>';
+    out += '<div style="font-size:.72rem;color:var(--text-muted);margin-bottom:.7rem">Defina o Campeão, Vice e 3º Lugar para calcular os bônus do Palpitão (+15/+8/+5 pts).</div>';
+    out += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.6rem">';
+    out += '<div><div style="font-size:.65rem;color:var(--accent-gold);margin-bottom:.2rem">🥇 Campeão</div><select id="cfg-campeao" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.25rem .4rem;color:var(--text-primary);font-size:.75rem">'+mkOpts(cfgMap['campeao_copa']||'')+'</select></div>';
+    out += '<div><div style="font-size:.65rem;color:var(--text-secondary);margin-bottom:.2rem">🥈 Vice</div><select id="cfg-vice" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.25rem .4rem;color:var(--text-primary);font-size:.75rem">'+mkOpts(cfgMap['vice_copa']||'')+'</select></div>';
+    out += '<div><div style="font-size:.65rem;color:var(--text-secondary);margin-bottom:.2rem">🥉 3º Lugar</div><select id="cfg-terceiro" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.25rem .4rem;color:var(--text-primary);font-size:.75rem">'+mkOpts(cfgMap['terceiro_copa']||'')+'</select></div>';
+    out += '</div>';
+    out += '<button onclick="adminDefinirCampeoes(document.getElementById('cfg-campeao').value,document.getElementById('cfg-vice').value,document.getElementById('cfg-terceiro').value)" style="width:100%;padding:.6rem;background:var(--accent-gold);color:var(--bg-dark);border:none;border-radius:6px;font-family:Oswald,sans-serif;font-size:.85rem;font-weight:700;cursor:pointer">💾 Salvar e Calcular Palpitão</button>';
+    out += '</div>';
+
+    if(!out) out = '<p style="font-size:.8rem;color:var(--text-muted);text-align:center;padding:1rem">Os times dos 16-avos ainda não foram definidos. Preencha a seção de Classificados acima.</p>';
+
+    el.innerHTML = out;
+  }catch(e){
+    el.innerHTML='<p style="color:var(--error);font-size:.8rem">Erro: '+e.message+'</p>';
   }
 }
 
@@ -4106,7 +4284,7 @@ function mostrarBannerInstall(){
     banner.innerHTML = `
       <img src="/icon-192.png" alt="Bolão do Almeida" style="width:42px;height:42px;border-radius:10px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.4)">
       <div style="flex:1;min-width:0">
-        <div style="font-family:'Oswald',sans-serif;font-size:.82rem;color:#D4A843;text-transform:uppercase;letter-spacing:1px;margin-bottom:.2rem">📲 Instalar como App</div>
+        <div style="font-family:Oswald,sans-serif;font-size:.82rem;color:#D4A843;text-transform:uppercase;letter-spacing:1px;margin-bottom:.2rem">📲 Instalar como App</div>
         <div style="font-size:.78rem;color:#CBD5E1;line-height:1.4">
           Toque em 
           <span style="display:inline-flex;align-items:center;gap:2px;background:rgba(255,255,255,.12);border-radius:4px;padding:1px 5px">
@@ -4124,11 +4302,11 @@ function mostrarBannerInstall(){
     banner.innerHTML = `
       <img src="/icon-192.png" alt="Bolão do Almeida" style="width:42px;height:42px;border-radius:10px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.4)">
       <div style="flex:1;min-width:0">
-        <div style="font-family:'Oswald',sans-serif;font-size:.82rem;color:#D4A843;text-transform:uppercase;letter-spacing:1px;margin-bottom:.2rem">📲 Instalar como App</div>
+        <div style="font-family:Oswald,sans-serif;font-size:.82rem;color:#D4A843;text-transform:uppercase;letter-spacing:1px;margin-bottom:.2rem">📲 Instalar como App</div>
         <div style="font-size:.75rem;color:#94A3B8">Acesso rápido na tela inicial, funciona offline!</div>
       </div>
       <button onclick="instalarPWA()" 
-        style="background:linear-gradient(135deg,#D4A843,#F0D78C);color:#0A0E17;border:none;padding:.5rem .9rem;border-radius:6px;font-family:'Oswald',sans-serif;font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer;flex-shrink:0;white-space:nowrap;-webkit-tap-highlight-color:transparent">
+        style="background:linear-gradient(135deg,#D4A843,#F0D78C);color:#0A0E17;border:none;padding:.5rem .9rem;border-radius:6px;font-family:Oswald,sans-serif;font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer;flex-shrink:0;white-space:nowrap;-webkit-tap-highlight-color:transparent">
         Instalar
       </button>
       <button onclick="sessionStorage.setItem('pwa-banner-dismissed','1');document.getElementById('pwa-banner').remove()" 
