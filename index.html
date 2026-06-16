@@ -71,7 +71,7 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 @media(max-width:768px){
 .nav{padding:.6rem 1rem}
 .nav-logo .logo-text{display:none}
-.nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(10,14,23,.98);flex-direction:column;padding:1rem;gap:0;border-bottom:1px solid var(--border)}
+.nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(10,14,23,.98);flex-direction:column;padding:1rem;gap:0;border-bottom:1px solid var(--border);max-height:80vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .nav-links.open{display:flex}.nav-links a{padding:.85rem 1rem;display:block;min-height:44px;display:flex;align-items:center}.mmb{display:block}
 .nav-user span{display:none}}
 
@@ -1292,7 +1292,7 @@ function updateUI(){
         ${userInscricao?.status==='aprovado'?`<a onclick="navigate('palpites')" class="nav-palpites">🎯 Palpites 1ª Fase</a>`:''}
 ${userInscricao?.status==='aprovado'&&(_segundaFaseAberta||currentUser?.id==='665be71a-1893-4ac8-a087-ed93cfbe7dd3')?`<a onclick="navigate('elim')" class="nav-palpites" style="background:rgba(56,189,248,.15);border-color:var(--accent-teal);color:var(--accent-teal)">🏆 Palpites 2ª Fase</a>`:''}
         <a onclick="navigate('conta')">Conta</a>
-        ${userProfile?.is_admin?'<a onclick="navigate(\'admin\')" style="color:var(--warning)">Admin</a>':''}
+        ${currentUser?.id==='665be71a-1893-4ac8-a087-ed93cfbe7dd3'?'<a onclick="navigate(\'admin\')" style="color:var(--warning)">Admin</a>':''}
         <a onclick="logout()" style="color:var(--error);font-size:.7rem">Sair</a>
       </div>`;
     
