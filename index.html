@@ -2349,10 +2349,13 @@ async function loadClassificacao(){
   if(!el)return;
   el.innerHTML='<div class="loading"><div class="spinner"></div>Carregando classificação...</div>';
   try{
-    const resp=await fetch('https://v3.football.api-sports.io/standings?league=1&season=2026',{headers:{'x-apisports-key':API_FOOTBALL_KEY}});
-    const d=await resp.json();
-    const standings=d.response&&d.response[0]&&d.response[0].league?d.response[0].league.standings:null;
-    const NM=typeof NOME_MAP!=='undefined'?NOME_MAP:{};
+    const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
+    const[jogosRes,classRes]=await Promise.all([
+      fetch(SUPABASE_URL+'/rest/v1/jogos?select=*&order=data_jogo',{headers:H}).then(r=>r.json()),
+      fetch(SUPABASE_URL+'/rest/v1/classificacao_grupos?select=*',{headers:H}).then(r=>r.json()),
+    ]);
+    const jogos=Array.isArray(jogosRes)?jogosRes:[];
+
     const GF=[
       {g:'A',ts:[['mx','México'],['za','África do Sul'],['kr','Coreia do Sul'],['cz','República Tcheca']]},
       {g:'B',ts:[['ca','Canadá'],['ba','Bósnia e Herzegovina'],['qa','Catar'],['ch','Suíça']]},
@@ -2367,59 +2370,98 @@ async function loadClassificacao(){
       {g:'K',ts:[['pt','Portugal'],['cd','RD Congo'],['uz','Uzbequistão'],['co','Colômbia']]},
       {g:'L',ts:[['gb-eng','Inglaterra'],['hr','Croácia'],['gh','Gana'],['pa','Panamá']]},
     ];
-    function mkImg(src,w,h){const img=document.createElement('img');img.src=src;img.style.cssText='width:'+w+'px;height:'+h+'px;object-fit:cover;border-radius:2px;flex-shrink:0';img.onerror=function(){this.style.display='none';};return img;}
-    function mkThead(){const thead=document.createElement('thead');const tr=document.createElement('tr');tr.style.cssText='color:var(--text-muted);font-size:.63rem;text-transform:uppercase;letter-spacing:.5px';['Seleção','J','V','E','D','SG','Pts'].forEach(function(t,i){const th=document.createElement('th');th.textContent=t;th.style.cssText=i===0?'text-align:left;padding:.25rem .3rem;width:55%':'padding:.25rem .2rem;text-align:center';if(t==='Pts')th.style.color='var(--accent-gold)';tr.appendChild(th);});thead.appendChild(tr);return thead;}
-    function mkTable(){const t=document.createElement('table');t.style.cssText='width:100%;border-collapse:collapse;font-size:.78rem;table-layout:fixed';t.appendChild(mkThead());return t;}
-    function mkCard(titulo){const c=document.createElement('div');c.className='group-card';c.style.overflow='hidden';const h=document.createElement('div');h.className='group-header';h.textContent=titulo;c.appendChild(h);return c;}
+
+    // Calcular tabela de cada grupo com base nos placares do Supabase
+    const tabelaGrupos={};
+    GF.forEach(({g,ts})=>{
+      const tabela={};
+      ts.forEach(([flag,nome])=>{ tabela[nome]={pts:0,j:0,v:0,e:0,d:0,gf:0,gc:0,sg:0,flag}; });
+      jogos.filter(j=>j.grupo===g).forEach(j=>{
+        if(j.gols_casa===null||j.gols_fora===null)return;
+        const gc=j.gols_casa,gf=j.gols_fora;
+        if(!tabela[j.time_casa]||!tabela[j.time_fora])return;
+        tabela[j.time_casa].j++;tabela[j.time_fora].j++;
+        tabela[j.time_casa].gf+=gc;tabela[j.time_casa].gc+=gf;
+        tabela[j.time_fora].gf+=gf;tabela[j.time_fora].gc+=gc;
+        if(gc>gf){tabela[j.time_casa].pts+=3;tabela[j.time_casa].v++;tabela[j.time_fora].d++;}
+        else if(gc===gf){tabela[j.time_casa].pts+=1;tabela[j.time_fora].pts+=1;tabela[j.time_casa].e++;tabela[j.time_fora].e++;}
+        else{tabela[j.time_fora].pts+=3;tabela[j.time_fora].v++;tabela[j.time_casa].d++;}
+      });
+      tabelaGrupos[g]=Object.entries(tabela)
+        .map(([nome,s])=>({nome,...s,sg:s.gf-s.gc}))
+        .sort((a,b)=>b.pts-a.pts||b.sg-a.sg||b.gf-a.gf);
+    });
+
     const wrapper=document.createElement('div');
     wrapper.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.8rem';
-    if(standings&&standings.length>0){
-      standings.forEach(function(grp){
-        const letra=(grp[0]&&grp[0].group||'').replace('Group ','');
-        const card=mkCard('Grupo '+letra);
-        const table=mkTable();
-        const tbody=document.createElement('tbody');
-        grp.forEach(function(t,idx){
-          const nome=NM[t.team&&t.team.name]||t.team&&t.team.name||'';
-          const sg=(t.goalsDiff>=0?'+':'')+t.goalsDiff;
-          const tr=document.createElement('tr');
-          tr.style.cssText='border-top:1px solid var(--border)'+(idx<2?';background:rgba(34,197,94,.07)':'');
-          const tdNome=document.createElement('td');tdNome.style.cssText='padding:.3rem .3rem;width:55%';
-          const nomeDiv=document.createElement('div');nomeDiv.style.cssText='display:flex;align-items:center;gap:.35rem';
-          const badge=document.createElement('span');badge.style.cssText='font-size:.65rem;width:.9rem';badge.textContent=idx===0?'🥇':idx===1?'🥈':'';
-          const img=mkImg('https://media.api-sports.io/football/teams/'+(t.team&&t.team.id)+'.png',18,18);
-          const span=document.createElement('span');span.style.cssText="font-family:Barlow Condensed,sans-serif;font-weight:600;font-size:.76rem;line-height:1.2;overflow:hidden;text-overflow:ellipsis";span.textContent=nome;
-          nomeDiv.appendChild(badge);nomeDiv.appendChild(img);nomeDiv.appendChild(span);tdNome.appendChild(nomeDiv);tr.appendChild(tdNome);
-          [t.all&&t.all.played||0,t.all&&t.all.win||0,t.all&&t.all.draw||0,t.all&&t.all.lose||0,sg,t.points||0].forEach(function(v,ci){
-            const td=document.createElement('td');td.style.cssText='text-align:center;padding:.3rem .2rem'+(ci===5?";font-family:Oswald,sans-serif;font-weight:700;color:var(--accent-gold)":'');td.textContent=v;tr.appendChild(td);
-          });
-          tbody.appendChild(tr);
-        });
-        table.appendChild(tbody);card.appendChild(table);wrapper.appendChild(card);
-      });
-    } else {
-      GF.forEach(function(gf){
-        const card=mkCard('Grupo '+gf.g);
-        const table=mkTable();
-        const tbody=document.createElement('tbody');
-        gf.ts.forEach(function(t){
-          const tr=document.createElement('tr');tr.style.borderTop='1px solid var(--border)';
-          const tdNome=document.createElement('td');tdNome.style.cssText='padding:.3rem .3rem;width:55%';
-          const nomeDiv=document.createElement('div');nomeDiv.style.cssText='display:flex;align-items:center;gap:.4rem';
-          const img=mkImg('https://flagcdn.com/w40/'+t[0]+'.png',18,12);
-          const span=document.createElement('span');span.style.cssText="font-family:Barlow Condensed,sans-serif;font-weight:600;font-size:.76rem;line-height:1.2;overflow:hidden;text-overflow:ellipsis";span.textContent=t[1];
-          nomeDiv.appendChild(img);nomeDiv.appendChild(span);tdNome.appendChild(nomeDiv);tr.appendChild(tdNome);
-          for(var ci=0;ci<6;ci++){const td=document.createElement('td');td.style.cssText='text-align:center;padding:.3rem .2rem;color:'+(ci===5?'var(--accent-gold)':'var(--text-muted)');if(ci===5){td.style.fontFamily="'Oswald',sans-serif";td.style.fontWeight='700';}td.textContent='0';tr.appendChild(td);}
-          tbody.appendChild(tr);
-        });
-        table.appendChild(tbody);card.appendChild(table);wrapper.appendChild(card);
-      });
-      const notice=document.createElement('p');notice.style.cssText='text-align:center;font-size:.75rem;color:var(--text-muted);margin-top:1rem;grid-column:1/-1';notice.textContent='⏳ Copa começa em 11 Jun — classificação atualiza automaticamente após cada rodada';wrapper.appendChild(notice);
-    }
-    el.dataset.loaded='true';el.innerHTML='';el.appendChild(wrapper);
-  }catch(e){el.innerHTML='<p style="text-align:center;padding:2rem;color:var(--error)">Erro: '+e.message+'</p>';}
-}
 
+    GF.forEach(({g})=>{
+      const times=tabelaGrupos[g]||[];
+      const temJogos=times.some(t=>t.j>0);
+      const card=document.createElement('div');
+      card.className='group-card';card.style.overflow='hidden';
+      const header=document.createElement('div');
+      header.className='group-header';header.textContent='Grupo '+g;
+      card.appendChild(header);
+      const table=document.createElement('table');
+      table.style.cssText='width:100%;border-collapse:collapse;font-size:.78rem;table-layout:fixed';
+      const thead=document.createElement('thead');
+      const trh=document.createElement('tr');
+      trh.style.cssText='color:var(--text-muted);font-size:.63rem;text-transform:uppercase;letter-spacing:.5px';
+      ['Seleção','J','V','E','D','SG','Pts'].forEach((t,i)=>{
+        const th=document.createElement('th');
+        th.textContent=t;
+        th.style.cssText=i===0?'text-align:left;padding:.25rem .3rem;width:55%':'padding:.25rem .2rem;text-align:center';
+        if(t==='Pts')th.style.color='var(--accent-gold)';
+        trh.appendChild(th);
+      });
+      thead.appendChild(trh);table.appendChild(thead);
+      const tbody=document.createElement('tbody');
+      times.forEach((t,idx)=>{
+        const tr=document.createElement('tr');
+        tr.style.cssText='border-top:1px solid var(--border)'+(idx<2&&temJogos?';background:rgba(34,197,94,.07)':'');
+        const tdNome=document.createElement('td');
+        tdNome.style.cssText='padding:.3rem .3rem;width:55%';
+        const nomeDiv=document.createElement('div');
+        nomeDiv.style.cssText='display:flex;align-items:center;gap:.35rem';
+        const badge=document.createElement('span');
+        badge.style.cssText='font-size:.65rem;width:.9rem';
+        badge.textContent=temJogos?(idx===0?'🥇':idx===1?'🥈':''):'';
+        const img=document.createElement('img');
+        img.src='https://flagcdn.com/w40/'+t.flag+'.png';
+        img.style.cssText='width:18px;height:12px;object-fit:cover;border-radius:2px;flex-shrink:0';
+        img.onerror=function(){this.style.display='none';};
+        const span=document.createElement('span');
+        span.style.cssText="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.76rem;overflow:hidden;text-overflow:ellipsis";
+        span.textContent=t.nome;
+        nomeDiv.appendChild(badge);nomeDiv.appendChild(img);nomeDiv.appendChild(span);
+        tdNome.appendChild(nomeDiv);tr.appendChild(tdNome);
+        const sg=(t.sg>=0?'+':'')+t.sg;
+        [t.j,t.v,t.e,t.d,temJogos?sg:'0',t.pts].forEach((v,ci)=>{
+          const td=document.createElement('td');
+          td.style.cssText='text-align:center;padding:.3rem .2rem'+(ci===5?";font-family:'Oswald',sans-serif;font-weight:700;color:var(--accent-gold)":'');
+          td.textContent=v;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);card.appendChild(table);
+      if(!temJogos){
+        const nota=document.createElement('p');
+        nota.style.cssText='font-size:.65rem;color:var(--text-muted);text-align:center;padding:.3rem 0';
+        nota.textContent='Aguardando jogos...';
+        card.appendChild(nota);
+      }
+      wrapper.appendChild(card);
+    });
+    el.dataset.loaded='true';
+    el.innerHTML='';
+    el.appendChild(wrapper);
+  }catch(e){
+    el.innerHTML='<p style="text-align:center;padding:2rem;color:var(--error)">Erro: '+e.message+'</p>';
+    console.error('loadClassificacao erro:',e);
+  }
+}
 
 async function loadJogos(){
   const el = document.getElementById('jogos-content');
