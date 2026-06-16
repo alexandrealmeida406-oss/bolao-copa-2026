@@ -3066,11 +3066,17 @@ async function loadElim(){
       + '<p style="font-size:.82rem;color:var(--text-secondary);line-height:1.6">👇 <strong>Clique no time que você acha que vai vencer</strong> cada confronto. Para as fases seguintes (oitavas, quartas...) chute com base no seu feeling — faz parte da estratégia! Ao terminar, clique em <strong>💾 Salvar</strong>.</p>'
       + '</div>';
 
-    for(const insc of inscricoes){
-      const cotaNum = insc.cota_numero || 1;
+    // Montar lista de cotas: uma entrada por cota (ex: 3 cotas → 3 entradas)
+    const cotasList = [];
+    inscricoes.forEach(insc=>{
+      for(let c=1;c<=insc.cotas;c++) cotasList.push({inscId:insc.id, cotaNum:c, totalCotas:insc.cotas});
+    });
+    const totalCotas = cotasList.length;
 
-      if(inscricoes.length > 1){
-        out += '<div style="font-family:\'Oswald\',sans-serif;font-size:.9rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin:1.5rem 0 .8rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)">Cota '+cotaNum+'</div>';
+    for(const {inscId, cotaNum, totalCotas: tc} of cotasList){
+
+      if(totalCotas > 1){
+        out += '<div style="font-family:\'Oswald\',sans-serif;font-size:.9rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;margin:1.5rem 0 .8rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)">🎯 Cota '+cotaNum+' de '+tc+'</div>';
       }
 
       for(const fase of FASE_ORDER){
@@ -3097,7 +3103,7 @@ async function loadElim(){
           const nomeFora = j.time_fora || null;
           const labelCasa = slotLabel(j.slot_casa, nomeCasa);
           const labelFora = slotLabel(j.slot_fora, nomeFora);
-          const palp = palpMap[insc.id+'_'+cotaNum+'_'+j.id];
+          const palp = palpMap[inscId+'_'+cotaNum+'_'+j.id];
           const encerrado = !!j.vencedor;
           const acertou = encerrado && palp===j.vencedor;
           const errou = encerrado && palp && palp!==j.vencedor;
@@ -3105,7 +3111,7 @@ async function loadElim(){
           // Cor da borda
           const borda = acertou?'var(--success)':errou?'var(--error)':palp?'rgba(56,189,248,.4)':'var(--border)';
 
-          out += '<div style="background:var(--bg-card);border:1px solid '+borda+';border-radius:10px;overflow:hidden" id="jogo-'+insc.id+'-'+j.id+'">';
+          out += '<div style="background:var(--bg-card);border:1px solid '+borda+';border-radius:10px;overflow:hidden" id="jogo-'+inscId+'-'+j.id+'">';
 
           // Jogo número
           out += '<div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;min-height:64px">';
@@ -3115,7 +3121,7 @@ async function loadElim(){
           const foraSel = palp===labelFora;
           // Botão casa — com data-lado, data-nome e classes para propagação
           const flagCasa = nomeCasa?(flag(nomeCasa).match(/src="([^"]+)"/)||[])[1]||'':'';
-          out += '<button data-lado="casa" data-nome="'+labelCasa.replace(/"/g,'&quot;')+'" onclick="escolherVencedor('+insc.id+','+cotaNum+','+j.id+',\''+labelCasa.replace(/'/g,"\\'")+'\')"'
+          out += '<button data-lado="casa" data-nome="'+labelCasa.replace(/"/g,'&quot;')+'" onclick="escolherVencedor('+inscId+','+cotaNum+','+j.id+',\''+labelCasa.replace(/'/g,"\\'")+'\')"'
             +' style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;padding:.6rem .4rem;border:none;cursor:'+(encerrado?'default':'pointer')+';background:'+(casaSel?'rgba(34,197,94,.12)':'transparent')+';transition:background .15s;width:100%'+(encerrado?';pointer-events:none':'')+'">';
           out += '<img class="btn-time-flag" src="'+flagCasa+'" style="width:20px;height:14px;object-fit:cover;border-radius:2px;'+(nomeCasa?'':'display:none')+'" onerror="this.style.display=\'none\'">';
           out += '<span class="btn-time-nome" style="font-family:\'Barlow Condensed\',sans-serif;font-size:.85rem;font-weight:'+(casaSel?'700':'500')+';color:'+(casaSel?'var(--success)':'var(--text-primary)')+';text-align:center;line-height:1.2">'+labelCasa+'</span>';
@@ -3136,7 +3142,7 @@ async function loadElim(){
           // Time fora
           // Botão fora — com data-lado, data-nome e classes para propagação
           const flagFora = nomeFora?(flag(nomeFora).match(/src="([^"]+)"/)||[])[1]||'':'';
-          out += '<button data-lado="fora" data-nome="'+labelFora.replace(/"/g,'&quot;')+'" onclick="escolherVencedor('+insc.id+','+cotaNum+','+j.id+',\''+labelFora.replace(/'/g,"\\'")+'\')"'
+          out += '<button data-lado="fora" data-nome="'+labelFora.replace(/"/g,'&quot;')+'" onclick="escolherVencedor('+inscId+','+cotaNum+','+j.id+',\''+labelFora.replace(/'/g,"\\'")+'\')"'
             +' style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;padding:.6rem .4rem;border:none;cursor:'+(encerrado?'default':'pointer')+';background:'+(foraSel?'rgba(34,197,94,.12)':'transparent')+';transition:background .15s;width:100%'+(encerrado?';pointer-events:none':'')+'">';
           out += '<img class="btn-time-flag" src="'+flagFora+'" style="width:20px;height:14px;object-fit:cover;border-radius:2px;'+(nomeFora?'':'display:none')+'" onerror="this.style.display=\'none\'">';
           out += '<span class="btn-time-nome" style="font-family:\'Barlow Condensed\',sans-serif;font-size:.85rem;font-weight:'+(foraSel?'700':'500')+';color:'+(foraSel?'var(--success)':'var(--text-primary)')+';text-align:center;line-height:1.2">'+labelFora+'</span>';
@@ -3158,7 +3164,7 @@ async function loadElim(){
 
       // Botão salvar
       out += '<div style="position:sticky;bottom:1rem;padding:.5rem 0">'
-        + '<button onclick="salvarPalpitesElim('+insc.id+','+cotaNum+')"'
+        + '<button onclick="salvarPalpitesElim('+inscId+','+cotaNum+')"'
         + ' style="width:100%;padding:.85rem;background:var(--accent-teal);color:white;border:none;border-radius:10px;font-family:\'Oswald\',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer;box-shadow:0 4px 12px rgba(0,180,216,.3)">'
         + '💾 Salvar Palpites</button></div>';
     }
@@ -3756,7 +3762,7 @@ async function renderAdminElimResultados(el){
           +'<option value="'+tc+'"'+(j.vencedor===tc?' selected':'')+'>'+tc+'</option>'
           +'<option value="'+tf+'"'+(j.vencedor===tf?' selected':'')+'>'+tf+'</option>'
           +'</select>';
-        out += '<button onclick="adminSalvarResultadoElim('+j.id+',document.getElementById(''+idV+'').value)" style="padding:.25rem .6rem;background:var(--accent-teal);color:white;border:none;border-radius:4px;cursor:pointer;font-size:.72rem;font-family:Oswald,sans-serif">Salvar</button>';
+        out += '<button onclick="adminSalvarResultadoElimBtn('+j.id+',\''+idV+'\')" style="padding:.25rem .6rem;background:var(--accent-teal);color:white;border:none;border-radius:4px;cursor:pointer;font-size:.72rem;font-family:Oswald,sans-serif">Salvar</button>';
         out += '</div>';
       }
       out += '</div></div>';
@@ -3774,7 +3780,7 @@ async function renderAdminElimResultados(el){
     out += '<div><div style="font-size:.65rem;color:var(--text-secondary);margin-bottom:.2rem">🥈 Vice</div><select id="cfg-vice" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.25rem .4rem;color:var(--text-primary);font-size:.75rem">'+mkOpts(cfgMap['vice_copa']||'')+'</select></div>';
     out += '<div><div style="font-size:.65rem;color:var(--text-secondary);margin-bottom:.2rem">🥉 3º Lugar</div><select id="cfg-terceiro" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.25rem .4rem;color:var(--text-primary);font-size:.75rem">'+mkOpts(cfgMap['terceiro_copa']||'')+'</select></div>';
     out += '</div>';
-    out += '<button onclick="adminDefinirCampeoes(document.getElementById('cfg-campeao').value,document.getElementById('cfg-vice').value,document.getElementById('cfg-terceiro').value)" style="width:100%;padding:.6rem;background:var(--accent-gold);color:var(--bg-dark);border:none;border-radius:6px;font-family:Oswald,sans-serif;font-size:.85rem;font-weight:700;cursor:pointer">💾 Salvar e Calcular Palpitão</button>';
+    out += '<button onclick="adminDefinirCampeoesBtn()" style="width:100%;padding:.6rem;background:var(--accent-gold);color:var(--bg-dark);border:none;border-radius:6px;font-family:Oswald,sans-serif;font-size:.85rem;font-weight:700;cursor:pointer">💾 Salvar e Calcular Palpitão</button>';
     out += '</div>';
 
     if(!out) out = '<p style="font-size:.8rem;color:var(--text-muted);text-align:center;padding:1rem">Os times dos 16-avos ainda não foram definidos. Preencha a seção de Classificados acima.</p>';
@@ -3783,6 +3789,19 @@ async function renderAdminElimResultados(el){
   }catch(e){
     el.innerHTML='<p style="color:var(--error);font-size:.8rem">Erro: '+e.message+'</p>';
   }
+}
+
+function adminDefinirCampeoesBtn(){
+  const c = document.getElementById('cfg-campeao')?.value;
+  const v = document.getElementById('cfg-vice')?.value;
+  const t = document.getElementById('cfg-terceiro')?.value;
+  adminDefinirCampeoes(c,v,t);
+}
+
+function adminSalvarResultadoElimBtn(jogoId, selectId){
+  const val = document.getElementById(selectId)?.value;
+  if(!val){ toast('Selecione o vencedor!','e'); return; }
+  adminSalvarResultadoElim(jogoId, val);
 }
 
 async function adminToggleSegundaFase(abrir){
