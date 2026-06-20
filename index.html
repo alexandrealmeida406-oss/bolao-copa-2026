@@ -2558,14 +2558,17 @@ async function loadJogos(){
     el.innerHTML = html;
 
     // Scroll automático até o dia atual (ou próximo jogo futuro)
+    // Disputa com o scroll do goTo() — rodar múltiplas vezes para garantir que vence a corrida
     if(primeiroDiaFuturoId){
-      setTimeout(()=>{
-        const diaEl = document.getElementById(primeiroDiaFuturoId);
-        if(diaEl){
-          const top = diaEl.getBoundingClientRect().top + window.pageYOffset - 90;
-          window.scrollTo({top: Math.max(0, top), behavior:'smooth'});
-        }
-      }, 150);
+      const idAlvo = primeiroDiaFuturoId;
+      const scrollParaDiaAtual = ()=>{
+        const diaEl = document.getElementById(idAlvo);
+        if(!diaEl) return;
+        const topo = diaEl.getBoundingClientRect().top + window.pageYOffset - 90;
+        window.scrollTo({top: Math.max(0, topo), behavior:'auto'});
+      };
+      // Repetir em vários momentos para sobrescrever o scroll do goTo() que roda em paralelo
+      [200, 500, 900, 1300].forEach(delay=>setTimeout(scrollParaDiaAtual, delay));
     }
 
   }catch(e){
