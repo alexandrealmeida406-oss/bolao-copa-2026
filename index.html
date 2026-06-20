@@ -2472,16 +2472,11 @@ async function loadJogos(){
     const jogos = await fetch(SUPABASE_URL+'/rest/v1/jogos?select=*&order=data_jogo',{headers:H}).then(r=>r.json());
     if(!Array.isArray(jogos)||jogos.length===0){el.innerHTML='<p style="text-align:center;color:var(--text-muted)">Nenhum jogo encontrado.</p>';return;}
 
-    // Agrupar por data (dia)
-    const TZ_OFFSET = -3; // Brasília UTC-3
+    // Agrupar por data (dia) — usar SEMPRE timeZone:'America/Sao_Paulo' direto no Date original,
+    // sem manipulação manual de horas (evita bugs de fuso duplicado)
     const byDay = {};
     jogos.forEach(j=>{
-      const dt = new Date(j.data_jogo);
-      const dtBR = new Date(dt.getTime() + (dt.getTimezoneOffset()*60000) + (TZ_OFFSET*3600000 + dt.getTimezoneOffset()*60000));
-      // Usar o dia em Brasília
-      const dataBR = new Date(j.data_jogo);
-      dataBR.setHours(dataBR.getHours() + TZ_OFFSET - (-dataBR.getTimezoneOffset()/60));
-      const key = dataBR.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',timeZone:'America/Sao_Paulo'});
+      const key = new Date(j.data_jogo).toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',timeZone:'America/Sao_Paulo'});
       if(!byDay[key]) byDay[key]={key, jogos:[], dateObj: new Date(j.data_jogo)};
       byDay[key].jogos.push(j);
     });
@@ -2494,8 +2489,16 @@ async function loadJogos(){
     const agora = new Date();
 
     let html = '';
+    let primeiroDiaFuturoId = null;
+    const hojeISO = new Date().toLocaleDateString('en-CA',{timeZone:'America/Sao_Paulo'}); // yyyy-mm-dd
     Object.values(byDay).forEach(({key, jogos: dayJogos})=>{
-      html += `<div style="margin-bottom:1.5rem">
+      // ISO da data deste grupo (baseado no primeiro jogo do dia)
+      const diaISO = new Date(dayJogos[0].data_jogo).toLocaleDateString('en-CA',{timeZone:'America/Sao_Paulo'});
+      const diaId = 'dia-'+diaISO;
+      // Marcar o primeiro dia que é hoje ou futuro (para scroll automático)
+      if(primeiroDiaFuturoId===null && diaISO >= hojeISO) primeiroDiaFuturoId = diaId;
+
+      html += `<div id="${diaId}" style="margin-bottom:1.5rem">
         <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem">
           <div style="height:1px;flex:1;background:var(--border)"></div>
           <span style="font-family:Oswald,sans-serif;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent-gold);white-space:nowrap">${key}</span>
@@ -2553,6 +2556,17 @@ async function loadJogos(){
     });
 
     el.innerHTML = html;
+
+    // Scroll automático até o dia atual (ou próximo jogo futuro)
+    if(primeiroDiaFuturoId){
+      setTimeout(()=>{
+        const diaEl = document.getElementById(primeiroDiaFuturoId);
+        if(diaEl){
+          const top = diaEl.getBoundingClientRect().top + window.pageYOffset - 90;
+          window.scrollTo({top: Math.max(0, top), behavior:'smooth'});
+        }
+      }, 150);
+    }
 
   }catch(e){
     el.innerHTML=`<p style="text-align:center;padding:2rem;color:var(--error)">Erro: ${e.message}</p>`;
