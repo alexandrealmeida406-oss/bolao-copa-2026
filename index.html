@@ -2494,12 +2494,6 @@ async function loadArtilharia(){
     (Array.isArray(inscRes)?inscRes:[]).forEach(i=>inscricoesMap[i.id]=i.user_id);
     const profilesMap={};
     (Array.isArray(profRes)?profRes:[]).forEach(p=>profilesMap[p.id]=p.apelido||p.nome||'?');
-    console.log('[ART-DEBUG] palpites:', palpites.length, palpites.slice(0,3));
-    console.log('[ART-DEBUG] inscRes:', Array.isArray(inscRes)?inscRes.length:inscRes, Array.isArray(inscRes)?inscRes.slice(0,3):'');
-    console.log('[ART-DEBUG] profRes:', Array.isArray(profRes)?profRes.length:profRes, Array.isArray(profRes)?profRes.slice(0,3):'');
-    console.log('[ART-DEBUG] inscricoesMap FULL:', JSON.stringify(inscricoesMap));
-    console.log('[ART-DEBUG] profilesMap FULL:', JSON.stringify(profilesMap));
-    console.log('[ART-DEBUG] teste match p[0]:', palpites[0], '-> userId:', inscricoesMap[palpites[0].inscricao_id], '-> apelido:', profilesMap[inscricoesMap[palpites[0].inscricao_id]]);
 
     if(!lista.length){
       el.innerHTML='<p style="text-align:center;padding:2rem;color:var(--text-muted)">Artilharia ainda não disponível.</p>';
@@ -2610,7 +2604,7 @@ async function loadArtilharia(){
       const textoApostas = qtdApostas===1 ? '1 cota escolheu' : qtdApostas+' cotas escolheram';
       const apelidos = apelidosPalpite(j.jogador);
       const tooltipTexto = apelidos.length ? apelidos.join(', ') : '';
-      html += '<td style="text-align:center;padding:.5rem .3rem">'+(apostado?'<span title="'+tooltipTexto.replace(/"/g,'&quot;')+'" style="font-size:.68rem;color:var(--accent-teal);font-weight:700;cursor:help;border-bottom:1px dotted var(--accent-teal)">'+textoApostas+'</span>':'<span style="color:var(--text-muted);font-size:.7rem">—</span>')+'</td>';
+      html += '<td style="text-align:center;padding:.5rem .3rem">'+(apostado?'<span title="'+tooltipTexto.replace(/"/g,'&quot;')+'" style="font-size:.68rem;color:var(--accent-teal);font-weight:700;border-bottom:1px dotted var(--accent-teal)">'+textoApostas+'</span>':'<span style="color:var(--text-muted);font-size:.7rem">—</span>')+'</td>';
       html += '</tr>';
     });
 
