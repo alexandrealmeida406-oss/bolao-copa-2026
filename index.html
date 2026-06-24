@@ -2496,36 +2496,54 @@ async function loadArtilharia(){
     }
 
     // Normalizar nome do jogador para comparar palpites com a lista oficial
-    // remove acentos, espaços extras, deixa minúsculo, e pega só o último sobrenome relevante
     function normalizarNome(nome){
       return (nome||'').toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // remove acentos
-        .replace(/[^a-z\s]/g,'') // remove pontuação
-        .trim()
-        .split(/\s+/)
-        .filter(p=>p.length>1) // ignora iniciais como "k."
-        .join(' ');
+        .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+        .replace(/[^a-z\s]/g,'')
+        .replace(/\s+/g,' ')
+        .trim();
     }
 
-    // Contar quantas cotas apostaram em cada jogador (por nome normalizado)
+    // Mapa de aliases conhecidos (variações de escrita/erros comuns) -> nome oficial normalizado
+    const ALIASES_JOGADORES = {
+      'mbape':'kylian mbappe','mbappe':'kylian mbappe','mbapee':'kylian mbappe',
+      'kylian mbappe':'kylian mbappe','killian mbappe':'kylian mbappe',
+      'k mbape':'kylian mbappe','m bappe':'kylian mbappe','bappe':'kylian mbappe',
+      'harry kane':'harry kane','harry cane':'harry kane',
+      'cristiano ronaldo':'cristiano ronaldo',
+      'messi':'lionel messi','lionel messi':'lionel messi',
+      'haaland':'erling haaland','erling haaland':'erling haaland',
+      'olise':'michael olise','michael olise':'michael olise',
+      'dembele':'ousmane dembele','ousmane dembele':'ousmane dembele',
+      'vinicius jr':'vinicius junior','vinicius junior':'vinicius junior',
+      'vini junior':'vinicius junior','vinicius':'vinicius junior',
+      'neymar':'neymar','oyarzabal':'mikel oyarzabal','mikel oyarzabal':'mikel oyarzabal',
+      'endrick':'endrick','lautaro martinez':'lautaro martinez',
+    };
+
+    function resolverAlias(nomeNormalizado){
+      if(ALIASES_JOGADORES[nomeNormalizado]) return ALIASES_JOGADORES[nomeNormalizado];
+      // Fallback: tentar achar por substring (ex: nome com sobrenome composto)
+      for(const key in ALIASES_JOGADORES){
+        if(nomeNormalizado.includes(key) || key.includes(nomeNormalizado)){
+          return ALIASES_JOGADORES[key];
+        }
+      }
+      return nomeNormalizado; // sem alias conhecido, mantém como está
+    }
+
+    // Contar quantas cotas apostaram em cada jogador (resolvendo aliases)
     const contagemPalpites={};
     palpites.forEach(p=>{
       const norm = normalizarNome(p.nome_jogador);
       if(!norm) return;
-      contagemPalpites[norm] = (contagemPalpites[norm]||0)+1;
+      const resolvido = resolverAlias(norm);
+      contagemPalpites[resolvido] = (contagemPalpites[resolvido]||0)+1;
     });
 
-    // Para cada jogador da lista oficial, ver se o sobrenome dele aparece em algum palpite normalizado
     function temPalpite(jogadorOficial){
-      const partesOficial = normalizarNome(jogadorOficial).split(' ');
-      const ultimoSobrenome = partesOficial[partesOficial.length-1];
-      let count=0;
-      for(const key in contagemPalpites){
-        if(key.includes(ultimoSobrenome) || ultimoSobrenome.includes(key.split(' ').pop())){
-          count += contagemPalpites[key];
-        }
-      }
-      return count;
+      const normOficial = resolverAlias(normalizarNome(jogadorOficial));
+      return contagemPalpites[normOficial] || 0;
     }
 
     const ultimaAtt = lista.reduce((max,j)=> new Date(j.updated_at)>new Date(max)?j.updated_at:max, lista[0].updated_at);
