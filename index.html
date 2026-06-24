@@ -2494,6 +2494,11 @@ async function loadArtilharia(){
     (Array.isArray(inscRes)?inscRes:[]).forEach(i=>inscricoesMap[i.id]=i.user_id);
     const profilesMap={};
     (Array.isArray(profRes)?profRes:[]).forEach(p=>profilesMap[p.id]=p.apelido||p.nome||'?');
+    console.log('[ART-DEBUG] palpites:', palpites.length, palpites.slice(0,3));
+    console.log('[ART-DEBUG] inscRes:', Array.isArray(inscRes)?inscRes.length:inscRes, Array.isArray(inscRes)?inscRes.slice(0,3):'');
+    console.log('[ART-DEBUG] profRes:', Array.isArray(profRes)?profRes.length:profRes, Array.isArray(profRes)?profRes.slice(0,3):'');
+    console.log('[ART-DEBUG] inscricoesMap sample:', Object.entries(inscricoesMap).slice(0,3));
+    console.log('[ART-DEBUG] profilesMap sample:', Object.entries(profilesMap).slice(0,3));
 
     if(!lista.length){
       el.innerHTML='<p style="text-align:center;padding:2rem;color:var(--text-muted)">Artilharia ainda não disponível.</p>';
