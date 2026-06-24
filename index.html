@@ -2482,12 +2482,18 @@ async function loadArtilharia(){
   el.innerHTML='<div class="loading"><div class="spinner"></div>Carregando artilharia...</div>';
   try{
     const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
-    const [res, palpRes] = await Promise.all([
+    const [res, palpRes, inscRes, profRes] = await Promise.all([
       fetch(SUPABASE_URL+'/rest/v1/artilharia_copa?select=*&order=posicao',{headers:H}).then(r=>r.json()),
-      fetch(SUPABASE_URL+'/rest/v1/palpites_artilheiro?select=nome_jogador',{headers:H}).then(r=>r.json()),
+      fetch(SUPABASE_URL+'/rest/v1/palpites_artilheiro?select=inscricao_id,cota_numero,nome_jogador',{headers:H}).then(r=>r.json()),
+      fetch(SUPABASE_URL+'/rest/v1/inscricoes?select=id,user_id&status=eq.aprovado',{headers:H}).then(r=>r.json()),
+      fetch(SUPABASE_URL+'/rest/v1/profiles?select=id,apelido,nome',{headers:H}).then(r=>r.json()),
     ]);
     const lista=Array.isArray(res)?res:[];
     const palpites=Array.isArray(palpRes)?palpRes:[];
+    const inscricoesMap={};
+    (Array.isArray(inscRes)?inscRes:[]).forEach(i=>inscricoesMap[i.id]=i.user_id);
+    const profilesMap={};
+    (Array.isArray(profRes)?profRes:[]).forEach(p=>profilesMap[p.id]=p.apelido||p.nome||'?');
 
     if(!lista.length){
       el.innerHTML='<p style="text-align:center;padding:2rem;color:var(--text-muted)">Artilharia ainda não disponível.</p>';
@@ -2532,18 +2538,28 @@ async function loadArtilharia(){
       return nomeNormalizado; // sem alias conhecido, mantém como está
     }
 
-    // Contar quantas cotas apostaram em cada jogador (resolvendo aliases)
+    // Contar quantas cotas apostaram em cada jogador + guardar nomes dos apostadores
     const contagemPalpites={};
+    const apostadoresPalpites={}; // jogador resolvido -> array de apelidos
     palpites.forEach(p=>{
       const norm = normalizarNome(p.nome_jogador);
       if(!norm) return;
       const resolvido = resolverAlias(norm);
       contagemPalpites[resolvido] = (contagemPalpites[resolvido]||0)+1;
+      const userId = inscricoesMap[p.inscricao_id];
+      const apelido = profilesMap[userId] || '?';
+      if(!apostadoresPalpites[resolvido]) apostadoresPalpites[resolvido]=[];
+      apostadoresPalpites[resolvido].push(apelido);
     });
 
     function temPalpite(jogadorOficial){
       const normOficial = resolverAlias(normalizarNome(jogadorOficial));
       return contagemPalpites[normOficial] || 0;
+    }
+
+    function apelidosPalpite(jogadorOficial){
+      const normOficial = resolverAlias(normalizarNome(jogadorOficial));
+      return apostadoresPalpites[normOficial] || [];
     }
 
     const ultimaAtt = lista.reduce((max,j)=> new Date(j.updated_at)>new Date(max)?j.updated_at:max, lista[0].updated_at);
@@ -2586,7 +2602,9 @@ async function loadArtilharia(){
       html += '<td style="text-align:center;padding:.5rem .3rem;font-size:.78rem;color:var(--text-secondary)">'+j.selecao+'</td>';
       html += '<td style="text-align:center;padding:.5rem .3rem;font-family:Oswald,sans-serif;font-weight:700;color:var(--accent-gold)">'+j.gols+'</td>';
       const textoApostas = qtdApostas===1 ? '1 cota escolheu' : qtdApostas+' cotas escolheram';
-      html += '<td style="text-align:center;padding:.5rem .3rem">'+(apostado?'<span style="font-size:.68rem;color:var(--accent-teal);font-weight:700">'+textoApostas+'</span>':'<span style="color:var(--text-muted);font-size:.7rem">—</span>')+'</td>';
+      const apelidos = apelidosPalpite(j.jogador);
+      const tooltipTexto = apelidos.length ? apelidos.join(', ') : '';
+      html += '<td style="text-align:center;padding:.5rem .3rem">'+(apostado?'<span title="'+tooltipTexto.replace(/"/g,'&quot;')+'" style="font-size:.68rem;color:var(--accent-teal);font-weight:700;cursor:help;border-bottom:1px dotted var(--accent-teal)">'+textoApostas+'</span>':'<span style="color:var(--text-muted);font-size:.7rem">—</span>')+'</td>';
       html += '</tr>';
     });
 
