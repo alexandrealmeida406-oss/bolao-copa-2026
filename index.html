@@ -3349,6 +3349,36 @@ async function loadElim(){
     });
     const totalCotas = cotasList.length;
 
+    // Pré-resolver chaveamento (jogo atual -> de onde vêm os 2 times) para reconstruir nomes propagados
+    const mapaFaseSeguinte = {'16avos':'oitavas','oitavas':'quartas','quartas':'semis','semis':'final'};
+    const origemPorJogo = {}; // jogoId -> {casaDeJogoId, foraDeJogoId}
+    FASE_ORDER.forEach(fase=>{
+      const proxFase = mapaFaseSeguinte[fase];
+      if(!proxFase) return;
+      const atual = (porFase[fase]||[]).slice().sort((a,b)=>a.ordem-b.ordem);
+      const prox  = (porFase[proxFase]||[]).slice().sort((a,b)=>a.ordem-b.ordem);
+      atual.forEach((j,idx)=>{
+        const proxIdx = Math.floor(idx/2);
+        const pos = idx%2===0 ? 'casa' : 'fora';
+        if(prox[proxIdx]){
+          if(!origemPorJogo[prox[proxIdx].id]) origemPorJogo[prox[proxIdx].id]={};
+          origemPorJogo[prox[proxIdx].id][pos+'DeJogoId'] = j.id;
+        }
+      });
+    });
+
+    // Para cada cota, resolve recursivamente o nome real de cada slot a partir dos palpites salvos
+    function resolverNomePropagado(inscId, cotaNum, jogoId, lado){
+      const origem = origemPorJogo[jogoId];
+      if(!origem) return null;
+      const origemJogoId = origem[lado+'DeJogoId'];
+      if(!origemJogoId) return null;
+      // Se o palpite desse jogo de origem já foi salvo, retorna o vencedor escolhido
+      const palpOrigem = palpMap[inscId+'_'+cotaNum+'_'+origemJogoId];
+      if(palpOrigem) return palpOrigem;
+      return null;
+    }
+
     // CSS do bracket (injetado uma vez)
     out += '<style>'
       + '.bkt-wrap{overflow-x:auto;padding-bottom:.5rem;-webkit-overflow-scrolling:touch}'
@@ -3402,8 +3432,8 @@ async function loadElim(){
           if(temPar) out += '<div class="bkt-vline"></div>';
 
           par.forEach(j=>{
-          const nomeCasa = j.time_casa || null;
-          const nomeFora = j.time_fora || null;
+          const nomeCasa = j.time_casa || resolverNomePropagado(inscId, cotaNum, j.id, 'casa') || null;
+          const nomeFora = j.time_fora || resolverNomePropagado(inscId, cotaNum, j.id, 'fora') || null;
           const labelCasa = slotLabel(j.slot_casa, nomeCasa);
           const labelFora = slotLabel(j.slot_fora, nomeFora);
           const palp = palpMap[inscId+'_'+cotaNum+'_'+j.id];
