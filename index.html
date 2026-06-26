@@ -3417,7 +3417,8 @@ async function loadElim(){
       // Linha vertical ligando o centro do 1º slot ao centro do 2º slot de cada par
       + '.bkt-vline{position:absolute;left:-16px;top:25%;bottom:25%;width:1px;background:var(--border)}'
       // Caixinha do Campeão
-      + '.bkt-champion{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;background:linear-gradient(135deg,rgba(212,168,67,.18),rgba(212,168,67,.06));border:1.5px solid var(--accent-gold);border-radius:10px;padding:.7rem .5rem;min-height:64px;text-align:center}'
+      + '.bkt-champion{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;background:linear-gradient(135deg,rgba(212,168,67,.18),rgba(212,168,67,.06));border:1.5px solid var(--accent-gold);border-radius:10px;padding:.7rem .5rem;min-height:64px;text-align:center}'
+      + '.bkt-champion-trophy{font-size:1.1rem;line-height:1}'
       + '.bkt-champion img{width:28px;height:19px;object-fit:cover;border-radius:2px;box-shadow:0 2px 6px rgba(0,0,0,.3)}'
       + '.bkt-champion span{font-family:Oswald,sans-serif;font-size:.78rem;font-weight:700;color:var(--accent-gold);text-transform:uppercase;letter-spacing:.5px;line-height:1.2}'
       + '.bkt-champion-empty{font-family:\'Barlow Condensed\',sans-serif!important;font-size:.68rem!important;font-weight:500!important;color:var(--text-muted)!important;text-transform:none!important;letter-spacing:0!important}'
@@ -3508,14 +3509,16 @@ async function loadElim(){
         const growFinal = Math.pow(2, FASE_ORDER.indexOf('final'));
 
         out += '<div class="bkt-col" style="min-width:130px">';
-        out += '<div class="bkt-col-head">🏆 Campeão</div>';
+        out += '<div class="bkt-col-head">Campeão</div>';
         out += '<div class="bkt-col-body"><div class="bkt-pair-wrap" style="flex:'+growFinal+' 0 0;position:relative;display:flex;flex-direction:column">';
         out += '<div class="bkt-slot" style="flex:'+growFinal+' 0 0">';
         out += '<div class="bkt-champion" id="campeao-'+inscId+'-'+cotaNum+'">';
         if(campeaoNome){
+          out += '<span class="bkt-champion-trophy">🏆</span>';
           if(campeaoFlag) out += '<img src="'+campeaoFlag+'">';
           out += '<span>'+campeaoNome+'</span>';
         } else {
+          out += '<span class="bkt-champion-trophy" style="opacity:.3">🏆</span>';
           out += '<span class="bkt-champion-empty">Escolha o<br>finalista vencedor</span>';
         }
         out += '</div></div></div></div>'; // bkt-champion wrap, bkt-slot, bkt-pair-wrap, bkt-col
@@ -3634,7 +3637,7 @@ function _atualizarCampeaoBox(inscricaoId, cotaNum, jogoId, vencedor){
   const box = document.getElementById('campeao-'+inscricaoId+'-'+cotaNum);
   if(!box) return;
   const code = _FLAGS_MAP[vencedor];
-  box.innerHTML = (code?'<img src="https://flagcdn.com/w40/'+code+'.png">':'')+'<span>'+vencedor+'</span>';
+  box.innerHTML = '<span class="bkt-champion-trophy">🏆</span>'+(code?'<img src="https://flagcdn.com/w40/'+code+'.png">':'')+'<span>'+vencedor+'</span>';
 }
 
 function _propagarTime(inscricaoId, cotaNum, jogoId, posicao, nomeTime){
