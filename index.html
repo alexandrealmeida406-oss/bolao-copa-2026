@@ -1135,6 +1135,7 @@ const flagsRight=['be','ir','eg','nz','es','uy','sa','cv','fr','sn','iq','no','a
 
 let currentUser=null,userProfile=null,userInscricao=null,selC=1;
 let _segundaFaseAberta = false;
+let _palpitesJaSalvos = {};
 let _segundaFaseCheckDone = false;
 
 // ===== INIT =====
@@ -3318,6 +3319,7 @@ async function loadElim(){
     (palpitesExist||[]).forEach(p=>{
       palpMap[p.inscricao_id+'_'+p.cota_numero+'_'+p.jogo_id]=p.vencedor;
     });
+    _palpitesJaSalvos = palpMap; // expor globalmente para validação no salvar
 
     const FASE_ORDER=['16avos','oitavas','quartas','semis','final'];
     const porFase={};
@@ -3350,11 +3352,12 @@ async function loadElim(){
     // CSS do bracket (injetado uma vez)
     out += '<style>'
       + '.bkt-wrap{overflow-x:auto;padding-bottom:.5rem;-webkit-overflow-scrolling:touch}'
-      + '.bkt{display:flex;gap:0;min-width:max-content;padding:.5rem 0}'
-      + '.bkt-col{display:flex;flex-direction:column;justify-content:center;min-width:148px;position:relative}'
-      + '.bkt-col-head{position:sticky;top:0;text-align:center;font-family:Oswald,sans-serif;font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:.5rem;padding:0 .3rem}'
+      + '.bkt{display:flex;gap:0;min-width:max-content;padding:.5rem 0;align-items:stretch}'
+      + '.bkt-col{display:flex;flex-direction:column;min-width:148px;position:relative}'
+      + '.bkt-col-head{text-align:center;font-family:Oswald,sans-serif;font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:.5rem;padding:0 .3rem}'
       + '.bkt-col-head .bkt-pts{display:block;font-size:.6rem;color:var(--success);margin-top:1px}'
-      + '.bkt-slot{flex:1;display:flex;flex-direction:column;justify-content:center;position:relative;padding:.25rem .4rem}'
+      + '.bkt-col-body{flex:1;display:flex;flex-direction:column}'
+      + '.bkt-slot{display:flex;flex-direction:column;justify-content:center;position:relative;padding:.2rem .4rem}'
       + '.bkt-match{background:var(--bg-card);border:1px solid var(--border);border-radius:7px;overflow:hidden;position:relative;z-index:1}'
       + '.bkt-side{display:flex;align-items:center;gap:.35rem;padding:.4rem .45rem;cursor:pointer;border:none;background:transparent;width:100%;text-align:left;transition:background .12s}'
       + '.bkt-side.sel{background:rgba(34,197,94,.14)}'
@@ -3364,14 +3367,12 @@ async function loadElim(){
       + '.bkt-side span{font-family:\'Barlow Condensed\',sans-serif;font-size:.68rem;font-weight:500;color:var(--text-primary);line-height:1.1;word-break:break-word}'
       + '.bkt-side.sel span{color:var(--success);font-weight:700}'
       + '.bkt-divider{height:1px;background:var(--border)}'
-      // Conectores entre colunas (linhas horizontais saindo de cada slot até o meio do gap)
-      + '.bkt-col:not(:first-child) .bkt-slot::before{content:\'\';position:absolute;left:-16px;top:50%;width:16px;height:1px;background:var(--border)}'
+      // Conector saindo da DIREITA de cada slot até o meio do gap entre colunas
       + '.bkt-col:not(:last-child) .bkt-slot::after{content:\'\';position:absolute;right:-16px;top:50%;width:16px;height:1px;background:var(--border)}'
-      // Linha vertical conectando 2 jogos ao próximo (a cada par de slots)
-      + '.bkt-pair{position:relative}'
-      + '.bkt-pair::after{content:\'\';position:absolute;right:-16px;top:25%;bottom:25%;width:1px;background:var(--border)}'
-      + '.bkt-col:last-child .bkt-pair::after{display:none}'
-      + '.bkt-col:first-child .bkt-slot::before{display:none}'
+      // Conector chegando pela ESQUERDA em cada slot (exceto 1ª coluna)
+      + '.bkt-col:not(:first-child) .bkt-slot::before{content:\'\';position:absolute;left:-16px;top:50%;width:16px;height:1px;background:var(--border)}'
+      // Linha vertical ligando o centro do 1º slot ao centro do 2º slot de cada par
+      + '.bkt-vline{position:absolute;left:-16px;top:25%;bottom:25%;width:1px;background:var(--border)}'
       + '@media(max-width:640px){.bkt-col{min-width:124px}.bkt-side span{font-size:.62rem}}'
       + '</style>';
 
@@ -3388,11 +3389,19 @@ async function loadElim(){
         if(!js||!js.length) return;
         const pts = FASE_PTS[fase];
         const jsOrdenados = [...js].sort((a,b)=>a.ordem-b.ordem);
+        const grow = Math.pow(2, faseIdx); // 16avos=1, oitavas=2, quartas=4, semis=8, final=16
 
         out += '<div class="bkt-col">';
         out += '<div class="bkt-col-head">'+FASE_LABEL[fase].replace('🏆 ','')+(pts>0?'<span class="bkt-pts">+'+pts+'pts</span>':'')+'</div>';
+        out += '<div class="bkt-col-body">';
 
-        jsOrdenados.forEach((j, idx)=>{
+        for(let idx=0; idx<jsOrdenados.length; idx+=2){
+          const par = [jsOrdenados[idx], jsOrdenados[idx+1]].filter(Boolean);
+          const temPar = par.length===2;
+          out += '<div class="bkt-pair-wrap" style="flex:'+(grow*par.length)+' 0 0;position:relative;display:flex;flex-direction:column">';
+          if(temPar) out += '<div class="bkt-vline"></div>';
+
+          par.forEach(j=>{
           const nomeCasa = j.time_casa || null;
           const nomeFora = j.time_fora || null;
           const labelCasa = slotLabel(j.slot_casa, nomeCasa);
@@ -3407,9 +3416,8 @@ async function loadElim(){
           const flagCasa = nomeCasa?(flag(nomeCasa).match(/src="([^"]+)"/)||[])[1]||'':'';
           const flagFora = nomeFora?(flag(nomeFora).match(/src="([^"]+)"/)||[])[1]||'':'';
 
-          const isPair = idx%2===0 && jsOrdenados[idx+1];
-          out += '<div class="bkt-slot'+(isPair?' bkt-pair':'')+'" id="jogo-'+inscId+'-'+cotaNum+'-'+j.id+'">';
-          out += '<div class="bkt-match">';
+          out += '<div class="bkt-slot" style="flex:'+grow+' 0 0">';
+          out += '<div class="bkt-match" id="jogo-'+inscId+'-'+cotaNum+'-'+j.id+'">';
 
           out += '<button class="bkt-side'+(casaSel&&!encerrado?' sel':'')+(encerrado?(casaWin?' fim-win':' fim-lose'):'')+'" data-lado="casa" data-nome="'+labelCasa.replace(/"/g,'&quot;')+'" '
             +(encerrado?'style="pointer-events:none;cursor:default"':'onclick="escolherVencedor('+inscId+','+cotaNum+','+j.id+',\''+labelCasa.replace(/'/g,"\\'")+'\')"')
@@ -3430,9 +3438,12 @@ async function loadElim(){
           out += '</button>';
 
           out += '</div></div>'; // bkt-match, bkt-slot
-        });
+          });
 
-        out += '</div>'; // bkt-col
+          out += '</div>'; // bkt-pair-wrap
+        }
+
+        out += '</div></div>'; // bkt-col-body, bkt-col
       });
 
       out += '</div></div>'; // bkt, bkt-wrap
@@ -4117,8 +4128,36 @@ async function adminToggleSegundaFase(abrir){
 
 async function salvarPalpitesElim(inscricaoId, cotaNum){
   const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
-  const jogosRes=await fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?select=id',{headers:H}).then(r=>r.json());
-  const jogoIds=jogosRes.map(j=>j.id);
+  const jogosRes=await fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?select=id,fase,vencedor',{headers:H}).then(r=>r.json());
+
+  // Só exige preenchimento dos jogos que ainda não têm resultado oficial (vencedor null)
+  const jogosPendentes = jogosRes.filter(j=>!j.vencedor);
+  const jogoIds = jogosRes.map(j=>j.id);
+
+  // Validar: todo jogo pendente precisa ter um palpite preenchido (no temp ou já salvo)
+  const faltando = [];
+  for(const j of jogosPendentes){
+    const k = `${inscricaoId}_${cotaNum}_${j.id}`;
+    const temNoTemp = !!_palpitesElimTemp[k];
+    const temNoBanco = !!_palpitesJaSalvos?.[k];
+    if(!temNoTemp && !temNoBanco) faltando.push(j.id);
+  }
+
+  if(faltando.length){
+    // Destacar visualmente os cards não preenchidos
+    faltando.forEach(jogoId=>{
+      const div = document.getElementById('jogo-'+inscricaoId+'-'+cotaNum+'-'+jogoId);
+      if(div){
+        const match = div.querySelector('.bkt-match');
+        if(match){ match.style.border='2px solid var(--warning)'; match.style.boxShadow='0 0 0 3px rgba(245,158,11,.2)'; }
+      }
+    });
+    toast(`⚠️ Faltam ${faltando.length} confronto(s) sem palpite! Escolha um time em cada um.`,'e');
+    // Rolar até o primeiro card faltante
+    const primeiro = document.getElementById('jogo-'+inscricaoId+'-'+cotaNum+'-'+faltando[0]);
+    if(primeiro) primeiro.closest('.bkt-wrap')?.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
 
   const upserts=[];
   jogoIds.forEach(jogoId=>{
@@ -4128,7 +4167,7 @@ async function salvarPalpitesElim(inscricaoId, cotaNum){
     }
   });
 
-  if(!upserts.length){ toast('Nenhum palpite para salvar!','e'); return; }
+  if(!upserts.length){ toast('Nenhum palpite novo para salvar!','e'); return; }
 
   const{error}=await sb.from('palpites_eliminatorias').upsert(upserts,{onConflict:'inscricao_id,cota_numero,jogo_id'});
   if(error){ toast('Erro: '+error.message,'e'); return; }
