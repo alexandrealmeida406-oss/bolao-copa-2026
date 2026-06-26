@@ -3295,6 +3295,12 @@ async function loadElim(){
     const isAdmin = currentUser?.id === ADMIN_ID;
     const jogos = Array.isArray(jogosRes) ? jogosRes : [];
 
+    // Calcular prazo: edição liberada até 4h antes do 1º jogo dos 16-avos
+    const jogos16 = jogos.filter(j=>j.fase==='16avos' && j.data_jogo).sort((a,b)=>new Date(a.data_jogo)-new Date(b.data_jogo));
+    const primeiroJogo16 = jogos16[0];
+    const prazoFinal = primeiroJogo16 ? new Date(new Date(primeiroJogo16.data_jogo).getTime() - 4*60*60*1000) : null;
+    const prazoEncerrado = prazoFinal ? (new Date() >= prazoFinal) : false;
+
     if(!currentUser || (!aberta && !isAdmin)){
       el.innerHTML = '<div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:1.5rem;text-align:center;max-width:500px;margin:2rem auto">'
         + '<div style="font-size:2rem;margin-bottom:.5rem">🔒</div>'
@@ -3338,9 +3344,16 @@ async function loadElim(){
     }
 
     // Instrução
-    out += '<div style="background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.2);border-radius:8px;padding:.8rem 1rem;margin-bottom:1.5rem">'
-      + '<p style="font-size:.82rem;color:var(--text-secondary);line-height:1.6">👇 <strong>Clique no time que você acha que vai vencer</strong> cada confronto. Para as fases seguintes (oitavas, quartas...) chute com base no seu feeling — faz parte da estratégia! Ao terminar, clique em <strong>💾 Salvar</strong>.</p>'
-      + '</div>';
+    if(prazoEncerrado){
+      out += '<div style="background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.3);border-radius:8px;padding:.8rem 1rem;margin-bottom:1.5rem">'
+        + '<p style="font-size:.82rem;color:var(--error);line-height:1.6;font-weight:600">🔒 Prazo de edição encerrado! Os palpites estão travados a partir de 4h antes do início dos 16-avos.</p>'
+        + '</div>';
+    } else {
+      out += '<div style="background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.2);border-radius:8px;padding:.8rem 1rem;margin-bottom:1.5rem">'
+        + '<p style="font-size:.82rem;color:var(--text-secondary);line-height:1.6">👇 <strong>Clique no time que você acha que vai vencer</strong> cada confronto. Para as fases seguintes (oitavas, quartas...) chute com base no seu feeling — faz parte da estratégia! Ao terminar, clique em <strong>💾 Salvar</strong>.</p>'
+        + (prazoFinal?'<p style="font-size:.74rem;color:var(--warning);margin-top:.4rem">⏰ Edição liberada até <strong>'+prazoFinal.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',timeZone:'America/Sao_Paulo'})+'</strong> (4h antes do 1º jogo dos 16-avos).</p>':'')
+        + '</div>';
+    }
 
     // Montar lista de cotas: uma entrada por cota (ex: 3 cotas → 3 entradas)
     const cotasList = [];
@@ -3403,6 +3416,11 @@ async function loadElim(){
       + '.bkt-col:not(:first-child) .bkt-slot::before{content:\'\';position:absolute;left:-16px;top:50%;width:16px;height:1px;background:var(--border)}'
       // Linha vertical ligando o centro do 1º slot ao centro do 2º slot de cada par
       + '.bkt-vline{position:absolute;left:-16px;top:25%;bottom:25%;width:1px;background:var(--border)}'
+      // Caixinha do Campeão
+      + '.bkt-champion{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;background:linear-gradient(135deg,rgba(212,168,67,.18),rgba(212,168,67,.06));border:1.5px solid var(--accent-gold);border-radius:10px;padding:.7rem .5rem;min-height:64px;text-align:center}'
+      + '.bkt-champion img{width:28px;height:19px;object-fit:cover;border-radius:2px;box-shadow:0 2px 6px rgba(0,0,0,.3)}'
+      + '.bkt-champion span{font-family:Oswald,sans-serif;font-size:.78rem;font-weight:700;color:var(--accent-gold);text-transform:uppercase;letter-spacing:.5px;line-height:1.2}'
+      + '.bkt-champion-empty{font-family:\'Barlow Condensed\',sans-serif!important;font-size:.68rem!important;font-weight:500!important;color:var(--text-muted)!important;text-transform:none!important;letter-spacing:0!important}'
       + '@media(max-width:640px){.bkt-col{min-width:124px}.bkt-side span{font-size:.62rem}}'
       + '</style>';
 
@@ -3437,7 +3455,7 @@ async function loadElim(){
           const labelCasa = slotLabel(j.slot_casa, nomeCasa);
           const labelFora = slotLabel(j.slot_fora, nomeFora);
           const palp = palpMap[inscId+'_'+cotaNum+'_'+j.id];
-          const encerrado = !!j.vencedor;
+          const encerrado = !!j.vencedor || prazoEncerrado;
           const casaSel = palp===labelCasa;
           const foraSel = palp===labelFora;
           const casaWin = encerrado && j.vencedor===labelCasa;
@@ -3476,16 +3494,45 @@ async function loadElim(){
         out += '</div></div>'; // bkt-col-body, bkt-col
       });
 
+      // Coluna extra: Campeão (espelha o vencedor da Final)
+      const jogoFinal = (porFase['final']||[])[0];
+      if(jogoFinal) _jogoFinalId = jogoFinal.id;
+      if(jogoFinal){
+        const nomeCasaF = jogoFinal.time_casa || resolverNomePropagado(inscId, cotaNum, jogoFinal.id, 'casa') || null;
+        const nomeForaF = jogoFinal.time_fora || resolverNomePropagado(inscId, cotaNum, jogoFinal.id, 'fora') || null;
+        const labelCasaF = slotLabel(jogoFinal.slot_casa, nomeCasaF);
+        const labelForaF = slotLabel(jogoFinal.slot_fora, nomeForaF);
+        const palpFinal = palpMap[inscId+'_'+cotaNum+'_'+jogoFinal.id];
+        const campeaoNome = palpFinal || null;
+        const campeaoFlag = campeaoNome?(flag(campeaoNome).match(/src="([^"]+)"/)||[])[1]||'':'';
+        const growFinal = Math.pow(2, FASE_ORDER.indexOf('final'));
+
+        out += '<div class="bkt-col" style="min-width:130px">';
+        out += '<div class="bkt-col-head">🏆 Campeão</div>';
+        out += '<div class="bkt-col-body"><div class="bkt-pair-wrap" style="flex:'+growFinal+' 0 0;position:relative;display:flex;flex-direction:column">';
+        out += '<div class="bkt-slot" style="flex:'+growFinal+' 0 0">';
+        out += '<div class="bkt-champion" id="campeao-'+inscId+'-'+cotaNum+'">';
+        if(campeaoNome){
+          if(campeaoFlag) out += '<img src="'+campeaoFlag+'">';
+          out += '<span>'+campeaoNome+'</span>';
+        } else {
+          out += '<span class="bkt-champion-empty">Escolha o<br>finalista vencedor</span>';
+        }
+        out += '</div></div></div></div>'; // bkt-champion wrap, bkt-slot, bkt-pair-wrap, bkt-col
+      }
+
       out += '</div></div>'; // bkt, bkt-wrap
 
       // Legenda rápida
       out += '<div style="font-size:.66rem;color:var(--text-muted);text-align:center;margin:.5rem 0 1rem">👈 Arraste para o lado para ver até a Final · Clique no time vencedor de cada confronto</div>';
 
-      // Botão salvar
-      out += '<div style="position:sticky;bottom:1rem;padding:.5rem 0">'
-        + '<button onclick="salvarPalpitesElim('+inscId+','+cotaNum+')"'
-        + ' style="width:100%;padding:.85rem;background:var(--accent-teal);color:white;border:none;border-radius:10px;font-family:\'Oswald\',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer;box-shadow:0 4px 12px rgba(0,180,216,.3)">'
-        + '💾 Salvar Palpites</button></div>';
+      // Botão salvar (escondido se o prazo já encerrou)
+      if(!prazoEncerrado){
+        out += '<div style="padding:1rem 0 .5rem">'
+          + '<button onclick="salvarPalpitesElim('+inscId+','+cotaNum+')"'
+          + ' style="width:100%;padding:.85rem;background:var(--accent-teal);color:white;border:none;border-radius:10px;font-family:\'Oswald\',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer;box-shadow:0 4px 12px rgba(0,180,216,.3)">'
+          + '💾 Salvar Palpites</button></div>';
+      }
     }
 
     el.innerHTML = out;
@@ -3501,6 +3548,7 @@ async function loadElim(){
 
 // ── Chaveamento dinâmico ───────────────────────────────────────────────────
 let _chaveamento = {};
+let _jogoFinalId = null;
 const _palpitesElimTemp = {};
 
 const _FLAGS_MAP = {"México":"mx","África do Sul":"za","Coreia do Sul":"kr","República Tcheca":"cz","Canadá":"ca","Bósnia e Herzegovina":"ba","Catar":"qa","Suíça":"ch","Brasil":"br","Marrocos":"ma","Haiti":"ht","Escócia":"gb-sct","EUA":"us","Paraguai":"py","Austrália":"au","Turquia":"tr","Alemanha":"de","Curaçao":"cw","Costa do Marfim":"ci","Equador":"ec","Holanda":"nl","Japão":"jp","Suécia":"se","Tunísia":"tn","Bélgica":"be","Egito":"eg","Irã":"ir","Nova Zelândia":"nz","Espanha":"es","Cabo Verde":"cv","Arábia Saudita":"sa","Uruguai":"uy","França":"fr","Senegal":"sn","Iraque":"iq","Noruega":"no","Argentina":"ar","Argélia":"dz","Áustria":"at","Jordânia":"jo","Portugal":"pt","RD Congo":"cd","Uzbequistão":"uz","Colômbia":"co","Inglaterra":"gb-eng","Croácia":"hr","Gana":"gh","Panamá":"pa"};
@@ -3544,6 +3592,9 @@ function escolherVencedor(inscricaoId, cotaNum, jogoId, vencedor){
   // Destacar o time escolhido no card atual
   _destacarEscolha(inscricaoId, cotaNum, jogoId, vencedor);
 
+  // Se esse jogo é a Final, atualizar a caixinha de Campeão
+  _atualizarCampeaoBox(inscricaoId, cotaNum, jogoId, vencedor);
+
   const entry = _chaveamento[jogoId];
   if(!entry) return;
 
@@ -3576,6 +3627,14 @@ function _destacarEscolha(inscricaoId, cotaNum, jogoId, vencedor){
     const nomeEl = btn.querySelector('.btn-time-nome');
     if(nomeEl){ nomeEl.style.color = sel?'var(--success)':''; nomeEl.style.fontWeight = sel?'700':''; }
   });
+}
+
+function _atualizarCampeaoBox(inscricaoId, cotaNum, jogoId, vencedor){
+  if(!_jogoFinalId || jogoId !== _jogoFinalId) return;
+  const box = document.getElementById('campeao-'+inscricaoId+'-'+cotaNum);
+  if(!box) return;
+  const code = _FLAGS_MAP[vencedor];
+  box.innerHTML = (code?'<img src="https://flagcdn.com/w40/'+code+'.png">':'')+'<span>'+vencedor+'</span>';
 }
 
 function _propagarTime(inscricaoId, cotaNum, jogoId, posicao, nomeTime){
@@ -4158,7 +4217,17 @@ async function adminToggleSegundaFase(abrir){
 
 async function salvarPalpitesElim(inscricaoId, cotaNum){
   const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
-  const jogosRes=await fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?select=id,fase,vencedor',{headers:H}).then(r=>r.json());
+  const jogosRes=await fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?select=id,fase,vencedor,data_jogo',{headers:H}).then(r=>r.json());
+
+  // Checar prazo: 4h antes do 1º jogo dos 16-avos
+  const jogos16Check = jogosRes.filter(j=>j.fase==='16avos' && j.data_jogo).sort((a,b)=>new Date(a.data_jogo)-new Date(b.data_jogo));
+  if(jogos16Check.length){
+    const prazoCheck = new Date(new Date(jogos16Check[0].data_jogo).getTime() - 4*60*60*1000);
+    if(new Date() >= prazoCheck){
+      toast('🔒 Prazo de edição encerrado! Os palpites não podem mais ser alterados.','e');
+      return;
+    }
+  }
 
   // Só exige preenchimento dos jogos exibidos na tela (exclui fase 'terceiro', que não é mostrada)
   // e que ainda não têm resultado oficial (vencedor null)
