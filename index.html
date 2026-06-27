@@ -3892,9 +3892,9 @@ async function renderAdminClassificados(el){
       const ok = val1 && val2 && val2 !== '?';
       const times = TIMES_GRUPO[g] || [];
 
-      const opts1 = (val1 ? '' : '<option value="">— selecione —</option>')
+      const opts1 = '<option value="">— selecione —</option>'
         + times.map(t=>'<option value="'+t+'"'+(t===val1?' selected':'')+'>'+t+'</option>').join('');
-      const opts2 = (val2 ? '' : '<option value="">— selecione —</option>')
+      const opts2 = '<option value="">— selecione —</option>'
         + times.map(t=>'<option value="'+t+'"'+(t===val2?' selected':'')+'>'+t+'</option>').join('');
 
       const selStyle = 'width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.28rem .4rem;color:var(--text-primary);font-size:.78rem';
@@ -3936,7 +3936,7 @@ async function renderAdminClassificados(el){
       const slot = terceirosSlots[i];
       const val = slotMap[slot] || '';
       const id = 'classif-3-'+i;
-      const opts3 = (val ? '' : '<option value="">— selecione —</option>')
+      const opts3 = '<option value="">— selecione —</option>'
         + TODOS_TIMES.map(t=>'<option value="'+t+'"'+(t===val?' selected':'')+'>'+t+'</option>').join('');
       out += '<div style="background:var(--bg-dark);border:1px solid '+(val?'var(--success)':'var(--border)')+';border-radius:6px;padding:.5rem .7rem">';
       out += '<div style="font-size:.63rem;color:var(--text-muted);margin-bottom:.3rem">3º colocado '+(i+1)+' — <code style="color:var(--accent-teal)">'+slot+'</code></div>';
