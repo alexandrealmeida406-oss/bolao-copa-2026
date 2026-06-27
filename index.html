@@ -3626,6 +3626,22 @@ async function loadElim(){
 // ── Chaveamento dinâmico ───────────────────────────────────────────────────
 let _chaveamento = {};
 let _jogoFinalId = null;
+
+// Função global (mesma lógica usada dentro do bracket) para calcular o rótulo
+// genérico de um slot ainda não definido — usada na reconciliação de palpites
+function slotLabelGlobal(slot, timeReal){
+  if(timeReal) return timeReal;
+  if(/^[12][A-L]$/.test(slot)){
+    const pos = slot[0]==='1' ? '1º' : '2º';
+    const grp = slot[1];
+    return pos+' Grupo '+grp;
+  }
+  if(slot.startsWith('3')){
+    const grupos = slot.slice(1).split('').join('/');
+    return '3º melhor (Grp '+grupos+')';
+  }
+  return slot;
+}
 const _palpitesElimTemp = {};
 
 const _FLAGS_MAP = {"México":"mx","África do Sul":"za","Coreia do Sul":"kr","República Tcheca":"cz","Canadá":"ca","Bósnia e Herzegovina":"ba","Catar":"qa","Suíça":"ch","Brasil":"br","Marrocos":"ma","Haiti":"ht","Escócia":"gb-sct","EUA":"us","Paraguai":"py","Austrália":"au","Turquia":"tr","Alemanha":"de","Curaçao":"cw","Costa do Marfim":"ci","Equador":"ec","Holanda":"nl","Japão":"jp","Suécia":"se","Tunísia":"tn","Bélgica":"be","Egito":"eg","Irã":"ir","Nova Zelândia":"nz","Espanha":"es","Cabo Verde":"cv","Arábia Saudita":"sa","Uruguai":"uy","França":"fr","Senegal":"sn","Iraque":"iq","Noruega":"no","Argentina":"ar","Argélia":"dz","Áustria":"at","Jordânia":"jo","Portugal":"pt","RD Congo":"cd","Uzbequistão":"uz","Colômbia":"co","Inglaterra":"gb-eng","Croácia":"hr","Gana":"gh","Panamá":"pa"};
@@ -4054,12 +4070,35 @@ async function salvarClassificados(){
         await sb.from('classificacao_grupos').delete().eq('grupo',g);
       }
 
+      // Buscar jogos afetados ANTES de atualizar, para calcular o label genérico antigo
+      const{data:jogosAfetados1}=await sb.from('jogos_eliminatorias').select('id,slot_casa,slot_fora,time_casa,time_fora').eq('fase','16avos').or(`slot_casa.eq.1${g},slot_fora.eq.1${g}`);
+      const{data:jogosAfetados2}=await sb.from('jogos_eliminatorias').select('id,slot_casa,slot_fora,time_casa,time_fora').eq('fase','16avos').or(`slot_casa.eq.2${g},slot_fora.eq.2${g}`);
+
       // Atualizar jogos_eliminatorias — 1º do grupo (null limpa o campo)
       const r2=await sb.from('jogos_eliminatorias').update({time_casa:v1}).eq('fase','16avos').eq('slot_casa','1'+g);
       const r3=await sb.from('jogos_eliminatorias').update({time_fora:v1}).eq('fase','16avos').eq('slot_fora','1'+g);
       // Atualizar jogos_eliminatorias — 2º do grupo (null limpa o campo)
       const r4=await sb.from('jogos_eliminatorias').update({time_casa:v2}).eq('fase','16avos').eq('slot_casa','2'+g);
       const r5=await sb.from('jogos_eliminatorias').update({time_fora:v2}).eq('fase','16avos').eq('slot_fora','2'+g);
+
+      // RECONCILIAÇÃO: atualizar palpites antigos que apontavam para o label genérico,
+      // trocando para o nome real recém-definido (só se v1/v2 não forem null)
+      if(v1){
+        for(const j of (jogosAfetados1||[])){
+          const labelAntigo = slotLabelGlobal('1'+g, j.time_casa);
+          if(labelAntigo !== v1){
+            await sb.from('palpites_eliminatorias').update({vencedor:v1}).eq('jogo_id',j.id).eq('vencedor',labelAntigo);
+          }
+        }
+      }
+      if(v2){
+        for(const j of (jogosAfetados2||[])){
+          const labelAntigo = slotLabelGlobal('2'+g, j.time_casa);
+          if(labelAntigo !== v2){
+            await sb.from('palpites_eliminatorias').update({vencedor:v2}).eq('jogo_id',j.id).eq('vencedor',labelAntigo);
+          }
+        }
+      }
 
       console.log('[CLASSIF] Grupo '+g+' 1º='+v1+' 2º='+v2,
         'r2:',r2.status,'r3:',r3.status,'r4:',r4.status,'r5:',r5.status);
@@ -4076,8 +4115,22 @@ async function salvarClassificados(){
       const val = inp?.value?.trim() || null;
       if(!slot) continue;
 
+      // Buscar jogos afetados ANTES de atualizar, para reconciliar palpites depois
+      const{data:jogosAfetadosT}=await sb.from('jogos_eliminatorias').select('id,slot_casa,slot_fora,time_casa,time_fora').eq('fase','16avos').or(`slot_casa.eq.${slot},slot_fora.eq.${slot}`);
+
       const ra=await sb.from('jogos_eliminatorias').update({time_casa:val}).eq('fase','16avos').eq('slot_casa',slot);
       const rb=await sb.from('jogos_eliminatorias').update({time_fora:val}).eq('fase','16avos').eq('slot_fora',slot);
+
+      // RECONCILIAÇÃO: trocar palpites que apontavam pro label genérico do slot de terceiro
+      if(val){
+        for(const j of (jogosAfetadosT||[])){
+          const labelAntigo = slotLabelGlobal(slot, j.time_casa);
+          if(labelAntigo !== val){
+            await sb.from('palpites_eliminatorias').update({vencedor:val}).eq('jogo_id',j.id).eq('vencedor',labelAntigo);
+          }
+        }
+      }
+
       console.log('[CLASSIF] Slot '+slot+'='+val, 'ra:',ra.status,'rb:',rb.status);
       if(ra.error||rb.error) erros.push('Slot '+slot+': '+(ra.error||rb.error)?.message);
     }
