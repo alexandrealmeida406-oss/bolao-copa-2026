@@ -561,8 +561,8 @@ window.addEventListener('DOMContentLoaded', () => {
 <li><a onclick="document.getElementById('nl').classList.remove('open');navigate('elim')">Eliminatórias</a></li>
 <li><a onclick="document.getElementById('nl').classList.remove('open');goToClass()">Classificação</a></li>
 <li><a onclick="document.getElementById('nl').classList.remove('open');goToArt()">Artilharia</a></li>
-<li id="nav-auth"></li>
 </ul>
+<div id="nav-auth"></div>
 <button class="mmb" onclick="document.getElementById('nl').classList.toggle('open')">☰</button>
 </nav>
 
@@ -588,9 +588,8 @@ window.addEventListener('DOMContentLoaded', () => {
 <div class="hbadge">Inscrições Abertas</div>
 <h1><span class="l1">Bolão do Almeida</span><span class="l2">Copa do Mundo</span><span class="l3">2026</span></h1>
 <p class="hh"><img src="https://flagcdn.com/w40/us.png" alt="EUA"> EUA <img src="https://flagcdn.com/w40/mx.png" alt="México"> México <img src="https://flagcdn.com/w40/ca.png" alt="Canadá"> Canadá</p>
-<div class="cds" style="grid-template-columns:1fr 1fr 1fr;max-width:680px;margin:0 auto 1.5rem">
+<div class="cds" style="grid-template-columns:1fr 1fr;max-width:500px;margin:0 auto 1.5rem">
 <div class="cdb"><div class="cdl">⏱ Início da Copa</div><div class="cdv gold" id="cdc"></div><div class="cds2 pending">11 Jun 2026</div></div>
-<div class="cdb"><div class="cdl">⚠️ Prazo Palpites</div><div class="cdv" id="cdp-count" style="color:var(--error)">--</div><div class="cds2 locked" id="cdp-badge">11 Jun · 15h</div></div>
 <div class="cdb"><div class="cdl">🏆 Prazo 2ª Fase</div><div class="cdv" id="cdp2-count" style="color:var(--error)">--</div><div class="cds2 locked" id="cdp2-badge">28 Jun · 15h30</div></div>
 </div>
 <div class="hcta" id="hero-cta">
@@ -1162,7 +1161,6 @@ document.addEventListener('DOMContentLoaded',async()=>{
   },2000);
   renderFlags();
   uc();setInterval(uc,1000);
-  updDeadline();setInterval(updDeadline,1000);
   updDeadline2();setInterval(updDeadline2,1000);
   
   // Check URL for admin route
@@ -2687,7 +2685,24 @@ async function loadJogos(){
   el.innerHTML='<div class="loading"><div class="spinner"></div>Carregando jogos...</div>';
   try{
     const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
-    const jogos = await fetch(SUPABASE_URL+'/rest/v1/jogos?select=*&order=data_jogo',{headers:H}).then(r=>r.json());
+    const [jogosGrupos, jogosElim] = await Promise.all([
+      fetch(SUPABASE_URL+'/rest/v1/jogos?select=*&order=data_jogo',{headers:H}).then(r=>r.json()),
+      fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?select=*&data_jogo=not.is.null&order=data_jogo',{headers:H}).then(r=>r.json()),
+    ]);
+    // Normalizar jogos da 2ª fase para o mesmo formato usado pelos jogos de grupo
+    const FASE_LABEL_JOGOS = {'16avos':'16-avos de Final','oitavas':'Oitavas de Final','quartas':'Quartas de Final','semis':'Semifinais','final':'Final','terceiro':'3º Lugar'};
+    const elimNormalizados = (Array.isArray(jogosElim)?jogosElim:[]).map(j=>({
+      id: 'elim-'+j.id,
+      time_casa: j.time_casa || j.slot_casa,
+      time_fora: j.time_fora || j.slot_fora,
+      gols_casa: null, gols_fora: null,
+      data_jogo: j.data_jogo,
+      grupo: FASE_LABEL_JOGOS[j.fase] || j.fase,
+      cidade: null,
+      _isElim: true,
+    }));
+    const jogos = [...(Array.isArray(jogosGrupos)?jogosGrupos:[]), ...elimNormalizados]
+      .sort((a,b)=>new Date(a.data_jogo)-new Date(b.data_jogo));
     if(!Array.isArray(jogos)||jogos.length===0){el.innerHTML='<p style="text-align:center;color:var(--text-muted)">Nenhum jogo encontrado.</p>';return;}
 
     // Agrupar por data (dia) — usar SEMPRE timeZone:'America/Sao_Paulo' direto no Date original,
@@ -2731,8 +2746,10 @@ async function loadJogos(){
         const encerrado = j.gols_casa !== null && j.gols_fora !== null;
         const futuro = !aoVivo && !encerrado;
 
-        // Badge de grupo
-        const grpBadge = `<span style="font-family:Oswald,sans-serif;font-size:.65rem;font-weight:700;background:rgba(212,168,67,.15);color:var(--accent-gold);padding:.1rem .4rem;border-radius:4px;white-space:nowrap">Gpo ${j.grupo} · R${j.rodada}</span>`;
+        // Badge de grupo/fase
+        const grpBadge = j._isElim
+          ? `<span style="font-family:Oswald,sans-serif;font-size:.65rem;font-weight:700;background:rgba(56,189,248,.15);color:var(--accent-teal);padding:.1rem .4rem;border-radius:4px;white-space:nowrap">🏆 ${j.grupo}</span>`
+          : `<span style="font-family:Oswald,sans-serif;font-size:.65rem;font-weight:700;background:rgba(212,168,67,.15);color:var(--accent-gold);padding:.1rem .4rem;border-radius:4px;white-space:nowrap">Gpo ${j.grupo} · R${j.rodada}</span>`;
 
         // Placar
         let placar;
