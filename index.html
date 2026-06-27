@@ -3077,6 +3077,8 @@ function _subscribeAdminPalpites(){
       ()=>_refreshPalpStatus())
     .on('postgres_changes',{event:'*',schema:'public',table:'palpites_artilheiro'},
       ()=>_refreshPalpStatus())
+    .on('postgres_changes',{event:'*',schema:'public',table:'palpites_eliminatorias'},
+      ()=>_refreshPalpStatus())
     .subscribe();
 }
 
@@ -3098,6 +3100,37 @@ async function _refreshPalpStatus(){
         ?"<span style='color:var(--success);font-weight:600'>✅ Concluído</span>"
         :n>0?`<span style='color:var(--warning)'>⚠️ ${n}/${cotas}</span>`
         :"<span style='color:var(--error)'>❌ Pendente</span>";
+    });
+
+    // Atualizar também a coluna "Palpites 2ª Fase"
+    const{data:pe}=await sb.from('palpites_eliminatorias').select('inscricao_id,cota_numero,jogo_id');
+    const{data:jogosElimTotal2}=await sb.from('jogos_eliminatorias').select('id,fase').neq('fase','terceiro');
+    const totalJogosElim2 = (jogosElimTotal2||[]).length;
+    const peMap={};
+    (pe||[]).forEach(p=>{
+      if(!peMap[p.inscricao_id]) peMap[p.inscricao_id]={};
+      if(!peMap[p.inscricao_id][p.cota_numero]) peMap[p.inscricao_id][p.cota_numero]=new Set();
+      peMap[p.inscricao_id][p.cota_numero].add(p.jogo_id);
+    });
+    document.querySelectorAll('[data-palp2-cell]').forEach(cell=>{
+      const id=Number(cell.dataset.palp2Cell);
+      const cotas=Number(cell.dataset.palp2Cotas);
+      const cotasMap = peMap[id] || {};
+      let cotasCompletas = 0;
+      for(let c=1;c<=cotas;c++){
+        const qtd = cotasMap[c]?.size || 0;
+        if(qtd >= totalJogosElim2) cotasCompletas++;
+      }
+      if(cotasCompletas>=cotas){
+        cell.innerHTML="<span style='color:var(--success);font-weight:600'>✅ Concluído</span>";
+      } else if(cotasCompletas>0){
+        cell.innerHTML=`<span style='color:var(--warning)'>⚠️ ${cotasCompletas}/${cotas}</span>`;
+      } else {
+        const temAlgo = Object.values(cotasMap).some(s=>s.size>0);
+        cell.innerHTML = temAlgo
+          ? `<span style='color:var(--warning)'>⚠️ Parcial (0/${cotas})</span>`
+          : `<span style='color:var(--error)'>❌ Pendente (0/${cotas})</span>`;
+      }
     });
   },800);
 }
