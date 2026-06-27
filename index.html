@@ -53,6 +53,8 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 
 /* NAV */
 .nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.7rem 1rem;display:flex;justify-content:space-between;align-items:center;transition:all .3s;gap:.3rem}
+.nav-logo{flex-shrink:0}
+.nav-user{min-width:0}
 .nav.scrolled{background:rgba(10,14,23,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .nav-logo{font-family:Oswald,sans-serif;font-weight:700;font-size:1rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:.4rem;text-decoration:none}
 .nav-logo .li{width:32px;height:32px;background:var(--gradient-gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
@@ -60,7 +62,9 @@ body{-webkit-overflow-scrolling:touch;font-family:'Barlow',sans-serif;background
 .nav-links{display:flex;gap:1.2rem;list-style:none;align-items:center}
 .nav-links a{color:var(--text-secondary);text-decoration:none;font-family:Barlow Condensed,sans-serif;font-size:.8rem;text-transform:uppercase;letter-spacing:1.5px;transition:color .3s;cursor:pointer}
 .nav-links a:hover{color:var(--accent-gold)}
-.nav-user{display:flex;align-items:center;gap:.5rem}
+.nav-user{display:flex;align-items:center;gap:.5rem;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav-user::-webkit-scrollbar{display:none}
+.nav-user>*{flex-shrink:0}
 .nav-user img{width:28px;height:28px;border-radius:50%;border:2px solid var(--accent-gold)}
 .nav-user span{font-family:Barlow Condensed,sans-serif;font-size:.8rem;color:var(--text-secondary)}
 
@@ -407,12 +411,18 @@ button:active,.co:active{opacity:.8}
   color:var(--accent-gold)!important;
 }
 @media(max-width:768px){
-  .nav-palpites{
+  .nav-links .nav-palpites{
     margin:.2rem 1rem;
     display:block;
     text-align:center;
     padding:.6rem 1rem!important;
     font-size:.82rem!important;
+  }
+  .nav-user .nav-palpites{
+    flex-shrink:0;
+    margin:0;
+    display:inline-flex;
+    white-space:nowrap;
   }
 }
 
