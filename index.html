@@ -3466,7 +3466,7 @@ async function loadElim(){
         + '</div>';
     } else {
       out += '<div style="background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.2);border-radius:8px;padding:.8rem 1rem;margin-bottom:1.5rem">'
-        + '<p style="font-size:.82rem;color:var(--text-secondary);line-height:1.6">👇 <strong>Clique no time que você acha que vai vencer</strong> cada confronto. Para as fases seguintes (oitavas, quartas...) chute com base no seu feeling — faz parte da estratégia! Ao terminar, clique em <strong>💾 Salvar</strong>.</p>'
+        + '<p style="font-size:.82rem;color:var(--text-secondary);line-height:1.6">👇 <strong>Clique no time que você acha que vai vencer</strong> cada confronto. Você pode salvar mesmo preenchendo só alguns jogos — não precisa completar tudo de uma vez! Para as fases seguintes (oitavas, quartas...) chute com base no seu feeling — faz parte da estratégia. Ao terminar (ou se quiser salvar o que já escolheu), clique em <strong>💾 Salvar</strong>.</p>'
         + (prazoFinal?'<p style="font-size:.74rem;color:var(--warning);margin-top:.4rem">⏰ Edição liberada até <strong>'+prazoFinal.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',timeZone:'America/Sao_Paulo'})+'</strong> (30min antes do início dos 16-avos, dia 28/06 às 16h).</p>':'')
         + '</div>';
     }
@@ -4466,32 +4466,8 @@ async function salvarPalpitesElim(inscricaoId, cotaNum){
       return;
     }
 
-    // Só exige preenchimento dos jogos exibidos na tela (exclui fase 'terceiro', que não é mostrada)
-    // e que ainda não têm resultado oficial (vencedor null)
-    const jogosPendentes = jogosRes.filter(j=>!j.vencedor && j.fase!=='terceiro');
+    // Permite salvar mesmo com preenchimento parcial — grava só o que já foi escolhido
     const jogoIds = jogosRes.map(j=>j.id);
-
-    // Validar: todo jogo pendente precisa ter um palpite preenchido (no temp ou já salvo)
-    const faltando = [];
-    for(const j of jogosPendentes){
-      const k = `${inscricaoId}_${cotaNum}_${j.id}`;
-      const temNoTemp = !!_palpitesElimTemp[k];
-      const temNoBanco = !!_palpitesJaSalvos?.[k];
-      if(!temNoTemp && !temNoBanco) faltando.push(j.id);
-    }
-
-    if(faltando.length){
-      // Destacar visualmente os cards não preenchidos
-      faltando.forEach(jogoId=>{
-        const match = document.getElementById('jogo-'+inscricaoId+'-'+cotaNum+'-'+jogoId);
-        if(match){ match.style.border='2px solid var(--warning)'; match.style.boxShadow='0 0 0 3px rgba(245,158,11,.2)'; }
-      });
-      toast(`⚠️ Faltam ${faltando.length} confronto(s) sem palpite! Escolha um time em cada um.`,'e');
-      // Rolar até o primeiro card faltante
-      const primeiro = document.getElementById('jogo-'+inscricaoId+'-'+cotaNum+'-'+faltando[0]);
-      if(primeiro) primeiro.closest('.bkt-wrap')?.scrollIntoView({behavior:'smooth', block:'center'});
-      return;
-    }
 
     const upserts=[];
     jogoIds.forEach(jogoId=>{
