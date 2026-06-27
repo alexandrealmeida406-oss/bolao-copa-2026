@@ -3291,15 +3291,25 @@ async function loadElim(){
       fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?select=*&order=id',{headers:H}).then(r=>r.json()),
     ]);
 
-    const aberta = configRes?.[0]?.valor === 'true';
+    const valorConfig = configRes?.[0]?.valor || 'false';
+    const aberta = valorConfig === 'true' || valorConfig === 'parcial';
+    const abertaTotal = valorConfig === 'true';
+    const abertaParcial = valorConfig === 'parcial';
     const isAdmin = currentUser?.id === ADMIN_ID;
     const jogos = Array.isArray(jogosRes) ? jogosRes : [];
 
-    // Calcular prazo: edição liberada até 4h antes do 1º jogo dos 16-avos
-    const jogos16 = jogos.filter(j=>j.fase==='16avos' && j.data_jogo).sort((a,b)=>new Date(a.data_jogo)-new Date(b.data_jogo));
-    const primeiroJogo16 = jogos16[0];
-    const prazoFinal = primeiroJogo16 ? new Date(new Date(primeiroJogo16.data_jogo).getTime() - 4*60*60*1000) : null;
-    const prazoEncerrado = prazoFinal ? (new Date() >= prazoFinal) : false;
+    // Prazo fixo: edição bloqueada a partir de 28/06/2026 às 15:30 (horário de Brasília)
+    // = 18:30 UTC (Brasília é UTC-3)
+    const prazoFinal = new Date('2026-06-28T18:30:00.000Z');
+    const prazoEncerrado = new Date() >= prazoFinal;
+
+    // Prazo específico do jogo liberado parcialmente (Canadá x África do Sul):
+    // bloqueia a partir de 28/06/2026 às 15:00 (horário de Brasília) = 18:00 UTC
+    const prazoParcial = new Date('2026-06-28T18:00:00.000Z');
+    const prazoParcialEncerrado = new Date() >= prazoParcial;
+
+    // Slot do jogo liberado parcialmente: Canadá x África do Sul (2A x 2B, jogo 16avos ordem 1)
+    const SLOT_LIBERADO_PARCIAL = 33; // id do jogo Canadá x África do Sul
 
     if(!currentUser || (!aberta && !isAdmin)){
       el.innerHTML = '<div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:1.5rem;text-align:center;max-width:500px;margin:2rem auto">'
@@ -3346,12 +3356,17 @@ async function loadElim(){
     // Instrução
     if(prazoEncerrado){
       out += '<div style="background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.3);border-radius:8px;padding:.8rem 1rem;margin-bottom:1.5rem">'
-        + '<p style="font-size:.82rem;color:var(--error);line-height:1.6;font-weight:600">🔒 Prazo de edição encerrado! Os palpites estão travados a partir de 4h antes do início dos 16-avos.</p>'
+        + '<p style="font-size:.82rem;color:var(--error);line-height:1.6;font-weight:600">🔒 Prazo de edição encerrado! Os palpites estão travados desde 28/06 às 15h30 (30min antes do início dos 16-avos).</p>'
+        + '</div>';
+    } else if(abertaParcial && !isAdmin){
+      out += '<div style="background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.3);border-radius:8px;padding:.8rem 1rem;margin-bottom:1.5rem">'
+        + '<p style="font-size:.82rem;color:var(--accent-gold);line-height:1.6;font-weight:600">⚡ Liberação parcial! Por enquanto, só o confronto <strong>Canadá x África do Sul</strong> está liberado para palpite (joga domingo, único jogo do dia).</p>'
+        + '<p style="font-size:.76rem;color:var(--text-secondary);line-height:1.6;margin-top:.4rem">⏰ Prazo para esse confronto: até <strong>domingo (28/06) às 15h00</strong>. Os demais confrontos serão liberados em breve — fique de olho no grupo do WhatsApp!</p>'
         + '</div>';
     } else {
       out += '<div style="background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.2);border-radius:8px;padding:.8rem 1rem;margin-bottom:1.5rem">'
         + '<p style="font-size:.82rem;color:var(--text-secondary);line-height:1.6">👇 <strong>Clique no time que você acha que vai vencer</strong> cada confronto. Para as fases seguintes (oitavas, quartas...) chute com base no seu feeling — faz parte da estratégia! Ao terminar, clique em <strong>💾 Salvar</strong>.</p>'
-        + (prazoFinal?'<p style="font-size:.74rem;color:var(--warning);margin-top:.4rem">⏰ Edição liberada até <strong>'+prazoFinal.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',timeZone:'America/Sao_Paulo'})+'</strong> (4h antes do 1º jogo dos 16-avos).</p>':'')
+        + (prazoFinal?'<p style="font-size:.74rem;color:var(--warning);margin-top:.4rem">⏰ Edição liberada até <strong>'+prazoFinal.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',timeZone:'America/Sao_Paulo'})+'</strong> (30min antes do início dos 16-avos, dia 28/06 às 16h).</p>':'')
         + '</div>';
     }
 
@@ -3456,7 +3471,11 @@ async function loadElim(){
           const labelCasa = slotLabel(j.slot_casa, nomeCasa);
           const labelFora = slotLabel(j.slot_fora, nomeFora);
           const palp = palpMap[inscId+'_'+cotaNum+'_'+j.id];
-          const encerrado = !!j.vencedor || prazoEncerrado;
+          // No modo parcial, só o jogo liberado (Canadá x África do Sul) aceita clique;
+          // os demais ficam travados até a liberação total, exceto para o admin (que pode testar)
+          const bloqueadoPorModoParcial = abertaParcial && !isAdmin && j.id !== SLOT_LIBERADO_PARCIAL;
+          const prazoDesseJogo = (j.id === SLOT_LIBERADO_PARCIAL) ? prazoParcialEncerrado : prazoEncerrado;
+          const encerrado = !!j.vencedor || prazoDesseJogo || bloqueadoPorModoParcial;
           const casaSel = palp===labelCasa;
           const foraSel = palp===labelFora;
           const casaWin = encerrado && j.vencedor===labelCasa;
@@ -3873,9 +3892,9 @@ async function renderAdminClassificados(el){
       const ok = val1 && val2 && val2 !== '?';
       const times = TIMES_GRUPO[g] || [];
 
-      const opts1 = '<option value="">— selecione —</option>'
+      const opts1 = (val1 ? '' : '<option value="">— selecione —</option>')
         + times.map(t=>'<option value="'+t+'"'+(t===val1?' selected':'')+'>'+t+'</option>').join('');
-      const opts2 = '<option value="">— selecione —</option>'
+      const opts2 = (val2 ? '' : '<option value="">— selecione —</option>')
         + times.map(t=>'<option value="'+t+'"'+(t===val2?' selected':'')+'>'+t+'</option>').join('');
 
       const selStyle = 'width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.28rem .4rem;color:var(--text-primary);font-size:.78rem';
@@ -3917,7 +3936,7 @@ async function renderAdminClassificados(el){
       const slot = terceirosSlots[i];
       const val = slotMap[slot] || '';
       const id = 'classif-3-'+i;
-      const opts3 = '<option value="">— selecione —</option>'
+      const opts3 = (val ? '' : '<option value="">— selecione —</option>')
         + TODOS_TIMES.map(t=>'<option value="'+t+'"'+(t===val?' selected':'')+'>'+t+'</option>').join('');
       out += '<div style="background:var(--bg-dark);border:1px solid '+(val?'var(--success)':'var(--border)')+';border-radius:6px;padding:.5rem .7rem">';
       out += '<div style="font-size:.63rem;color:var(--text-muted);margin-bottom:.3rem">3º colocado '+(i+1)+' — <code style="color:var(--accent-teal)">'+slot+'</code></div>';
@@ -4221,15 +4240,38 @@ async function adminToggleSegundaFase(abrir){
 async function salvarPalpitesElim(inscricaoId, cotaNum){
   const H={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
   const jogosRes=await fetch(SUPABASE_URL+'/rest/v1/jogos_eliminatorias?select=id,fase,vencedor,data_jogo',{headers:H}).then(r=>r.json());
+  const configRes = await fetch(SUPABASE_URL+'/rest/v1/config_bolao?chave=eq.segunda_fase_aberta&select=valor',{headers:H}).then(r=>r.json());
+  const valorConfig = configRes?.[0]?.valor || 'false';
+  const abertaParcial = valorConfig === 'parcial';
+  const isAdminCheck = currentUser?.id === '665be71a-1893-4ac8-a087-ed93cfbe7dd3';
+  const SLOT_LIBERADO_PARCIAL = 33; // Canadá x África do Sul
 
-  // Checar prazo: 4h antes do 1º jogo dos 16-avos
-  const jogos16Check = jogosRes.filter(j=>j.fase==='16avos' && j.data_jogo).sort((a,b)=>new Date(a.data_jogo)-new Date(b.data_jogo));
-  if(jogos16Check.length){
-    const prazoCheck = new Date(new Date(jogos16Check[0].data_jogo).getTime() - 4*60*60*1000);
-    if(new Date() >= prazoCheck){
-      toast('🔒 Prazo de edição encerrado! Os palpites não podem mais ser alterados.','e');
+  // Checar prazo fixo: bloqueia a partir de 28/06/2026 às 15:30 (horário de Brasília)
+  const prazoCheck = new Date('2026-06-28T18:30:00.000Z');
+  if(new Date() >= prazoCheck){
+    toast('🔒 Prazo de edição encerrado! Os palpites não podem mais ser alterados.','e');
+    return;
+  }
+
+  // No modo parcial (não-admin): só permite salvar o jogo liberado (Canadá x África do Sul)
+  // com prazo próprio (domingo 28/06 às 15h00)
+  if(abertaParcial && !isAdminCheck){
+    const prazoParcialCheck = new Date('2026-06-28T18:00:00.000Z');
+    if(new Date() >= prazoParcialCheck){
+      toast('🔒 Prazo encerrado para esse confronto (domingo 15h00)!','e');
       return;
     }
+    const k = `${inscricaoId}_${cotaNum}_${SLOT_LIBERADO_PARCIAL}`;
+    const vencedorEscolhido = _palpitesElimTemp[k];
+    if(!vencedorEscolhido){
+      toast('⚠️ Escolha um time em Canadá x África do Sul antes de salvar!','e');
+      return;
+    }
+    const{error}=await sb.from('palpites_eliminatorias')
+      .upsert([{inscricao_id:inscricaoId, cota_numero:cotaNum, jogo_id:SLOT_LIBERADO_PARCIAL, vencedor:vencedorEscolhido}],{onConflict:'inscricao_id,cota_numero,jogo_id'});
+    if(error){ toast('Erro: '+error.message,'e'); return; }
+    toast('✅ Palpite de Canadá x África do Sul salvo!','s');
+    return;
   }
 
   // Só exige preenchimento dos jogos exibidos na tela (exclui fase 'terceiro', que não é mostrada)
