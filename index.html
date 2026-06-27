@@ -3698,6 +3698,10 @@ function escolherVencedor(inscricaoId, cotaNum, jogoId, vencedor){
   // Destacar o time escolhido no card atual
   _destacarEscolha(inscricaoId, cotaNum, jogoId, vencedor);
 
+  // Remover o destaque de "faltando preencher" (borda amarela), já que foi escolhido agora
+  const matchEl = document.getElementById('jogo-'+inscricaoId+'-'+cotaNum+'-'+jogoId);
+  if(matchEl){ matchEl.style.border=''; matchEl.style.boxShadow=''; }
+
   // Se esse jogo é a Final, atualizar a caixinha de Campeão
   _atualizarCampeaoBox(inscricaoId, cotaNum, jogoId, vencedor);
 
