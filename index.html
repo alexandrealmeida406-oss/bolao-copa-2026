@@ -3985,20 +3985,24 @@ async function salvarClassificados(){
 
     // ── 1. Salvar 1ºs e 2ºs ─────────────────────────────────────────
     for(const g of grupos){
-      const v1 = document.getElementById('classif-1-'+g)?.value?.trim();
-      const v2 = document.getElementById('classif-2-'+g)?.value?.trim();
-      if(!v1 || !v2) continue;
+      const v1 = document.getElementById('classif-1-'+g)?.value?.trim() || null;
+      const v2 = document.getElementById('classif-2-'+g)?.value?.trim() || null;
 
-      // Salvar classificacao_grupos
-      await sb.from('classificacao_grupos').delete().eq('grupo',g);
-      const{error:e1}=await sb.from('classificacao_grupos')
-        .insert({grupo:g, primeiro:v1, segundo:v2, apurado_por:currentUser.id});
-      if(e1){ erros.push('Grupo '+g+': '+e1.message); continue; }
+      if(v1 && v2){
+        // Ambos preenchidos: salvar normalmente
+        await sb.from('classificacao_grupos').delete().eq('grupo',g);
+        const{error:e1}=await sb.from('classificacao_grupos')
+          .insert({grupo:g, primeiro:v1, segundo:v2, apurado_por:currentUser.id});
+        if(e1){ erros.push('Grupo '+g+': '+e1.message); continue; }
+      } else {
+        // Algum campo em branco: remover da classificacao_grupos (volta a ficar pendente)
+        await sb.from('classificacao_grupos').delete().eq('grupo',g);
+      }
 
-      // Atualizar jogos_eliminatorias — 1º do grupo
+      // Atualizar jogos_eliminatorias — 1º do grupo (null limpa o campo)
       const r2=await sb.from('jogos_eliminatorias').update({time_casa:v1}).eq('fase','16avos').eq('slot_casa','1'+g);
       const r3=await sb.from('jogos_eliminatorias').update({time_fora:v1}).eq('fase','16avos').eq('slot_fora','1'+g);
-      // Atualizar jogos_eliminatorias — 2º do grupo
+      // Atualizar jogos_eliminatorias — 2º do grupo (null limpa o campo)
       const r4=await sb.from('jogos_eliminatorias').update({time_casa:v2}).eq('fase','16avos').eq('slot_casa','2'+g);
       const r5=await sb.from('jogos_eliminatorias').update({time_fora:v2}).eq('fase','16avos').eq('slot_fora','2'+g);
 
@@ -4006,7 +4010,7 @@ async function salvarClassificados(){
         'r2:',r2.status,'r3:',r3.status,'r4:',r4.status,'r5:',r5.status);
       if(r2.error||r3.error||r4.error||r5.error){
         erros.push('Grupo '+g+': '+(r2.error||r3.error||r4.error||r5.error)?.message);
-      } else salvos++;
+      } else if(v1 && v2) salvos++;
     }
 
     // ── 2. Salvar terceiros ──────────────────────────────────────────
@@ -4014,8 +4018,8 @@ async function salvarClassificados(){
     for(let i=0;i<8;i++){
       const inp = document.getElementById('classif-3-'+i);
       const slot = inp?.dataset?.slot;
-      const val = inp?.value?.trim();
-      if(!slot||!val) continue;
+      const val = inp?.value?.trim() || null;
+      if(!slot) continue;
 
       const ra=await sb.from('jogos_eliminatorias').update({time_casa:val}).eq('fase','16avos').eq('slot_casa',slot);
       const rb=await sb.from('jogos_eliminatorias').update({time_fora:val}).eq('fase','16avos').eq('slot_fora',slot);
