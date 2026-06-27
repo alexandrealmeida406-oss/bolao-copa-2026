@@ -2876,8 +2876,8 @@ async function loadAdmin(){
               if(cotasCompletas>0) return `<span style='color:var(--warning)'>⚠️ ${cotasCompletas}/${i.cotas}</span>`;
               // checar se tem ALGUM palpite parcial (pelo menos 1 jogo preenchido em alguma cota)
               const temAlgo = Object.values(cotasMap).some(s=>s.size>0);
-              if(temAlgo) return "<span style='color:var(--warning)'>⚠️ Parcial</span>";
-              return "<span style='color:var(--error)'>❌ Pendente</span>";
+              if(temAlgo) return `<span style='color:var(--warning)'>⚠️ Parcial (0/${i.cotas})</span>`;
+              return `<span style='color:var(--error)'>❌ Pendente (0/${i.cotas})</span>`;
             })()}</td>
             <td>R$ ${i.valor_total}</td>
             <td>${p.como_conheceu||'-'}</td>
