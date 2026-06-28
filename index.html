@@ -2708,7 +2708,7 @@ async function loadJogos(){
       id: 'elim-'+j.id,
       time_casa: j.time_casa || j.slot_casa,
       time_fora: j.time_fora || j.slot_fora,
-      gols_casa: null, gols_fora: null,
+      gols_casa: j.gols_casa, gols_fora: j.gols_fora,
       data_jogo: j.data_jogo,
       grupo: FASE_LABEL_JOGOS[j.fase] || j.fase,
       cidade: null,
@@ -4226,14 +4226,33 @@ async function salvarClassificados(){
 }
 
 // ── Admin: salvar resultado de jogo eliminatório ──────────────────────────
-async function adminSalvarResultadoElim(jogoId, vencedor){
+// Salva só o placar (gols), SEM declarar vencedor nem pontuar ninguém ainda
+async function adminSalvarPlacarElim(jogoId, golsCasa, golsFora){
   try{
     const{error}=await sb.from('jogos_eliminatorias')
-      .update({vencedor})
+      .update({gols_casa: golsCasa, gols_fora: golsFora})
+      .eq('id', jogoId);
+    if(error) throw new Error(error.message);
+    toast('✅ Placar atualizado (ainda sem pontuar ninguém)','s');
+    if(typeof loadJogos==='function') loadJogos();
+  }catch(e){
+    toast('Erro: '+e.message,'e');
+  }
+}
+
+// Encerra o jogo de fato: define o vencedor oficial e RECALCULA pontos de todas as cotas
+async function adminSalvarResultadoElim(jogoId, vencedor, golsCasa, golsFora){
+  try{
+    const payload = {vencedor};
+    if(golsCasa!=null) payload.gols_casa = golsCasa;
+    if(golsFora!=null) payload.gols_fora = golsFora;
+    const{error}=await sb.from('jogos_eliminatorias')
+      .update(payload)
       .eq('id', jogoId);
     if(error) throw new Error(error.message);
 
     toast('✅ Resultado salvo! Recalculando pontos...','s');
+    if(typeof loadJogos==='function') loadJogos();
 
     // Recalcular pontos de todas as cotas
     const{data:inscs}=await sb.from('inscricoes').select('id,cotas').eq('status','aprovado');
@@ -4319,20 +4338,35 @@ async function renderAdminElimResultados(el){
         if(!j.time_casa && !j.time_fora) continue;
         const enc = !!j.vencedor;
         const idV = 'elim-v-'+j.id;
+        const idGC = 'elim-gc-'+j.id;
+        const idGF = 'elim-gf-'+j.id;
+        const placarTexto = (j.gols_casa!=null && j.gols_fora!=null) ? (j.gols_casa+' x '+j.gols_fora) : '';
 
-        out += '<div style="display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:.5rem;padding:.4rem .5rem;background:var(--bg-dark);border:1px solid '+(enc?'var(--success)':'var(--border)')+';border-radius:6px">';
+        out += '<div style="display:flex;flex-direction:column;gap:.35rem;padding:.5rem .6rem;background:var(--bg-dark);border:1px solid '+(enc?'var(--success)':'var(--border)')+';border-radius:6px">';
+        out += '<div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem">';
         out += '<span style="font-size:.8rem;font-family:Barlow Condensed,sans-serif">'
           +'<strong style="color:'+(j.vencedor===tc?'var(--success)':'var(--text-primary)')+'">'+tc+'</strong>'
           +' <span style="color:var(--text-muted)">×</span> '
           +'<strong style="color:'+(j.vencedor===tf?'var(--success)':'var(--text-primary)')+'">'+tf+'</strong>'
-          +(enc?' <span style="font-size:.65rem;color:var(--success)">✅ '+j.vencedor+'</span>':'')
+          +(enc?' <span style="font-size:.65rem;color:var(--success);margin-left:.3rem">🏁 ENCERRADO: '+j.vencedor+(placarTexto?' ('+placarTexto+')':'')+'</span>':'')
           +'</span>';
-        out += '<select id="'+idV+'" style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.2rem .4rem;color:var(--text-primary);font-size:.75rem">'
-          +'<option value="">vencedor</option>'
-          +'<option value="'+tc+'"'+(j.vencedor===tc?' selected':'')+'>'+tc+'</option>'
-          +'<option value="'+tf+'"'+(j.vencedor===tf?' selected':'')+'>'+tf+'</option>'
-          +'</select>';
-        out += '<button onclick="adminSalvarResultadoElimBtn('+j.id+',\''+idV+'\')" style="padding:.25rem .6rem;background:var(--accent-teal);color:white;border:none;border-radius:4px;cursor:pointer;font-size:.72rem;font-family:Oswald,sans-serif">Salvar</button>';
+        out += '<div style="display:flex;align-items:center;gap:.3rem">'
+          +'<input type="number" id="'+idGC+'" placeholder="0" value="'+(j.gols_casa??'')+'" min="0" style="width:38px;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.2rem .25rem;color:var(--text-primary);font-size:.72rem;text-align:center">'
+          +'<span style="font-size:.68rem;color:var(--text-muted)">×</span>'
+          +'<input type="number" id="'+idGF+'" placeholder="0" value="'+(j.gols_fora??'')+'" min="0" style="width:38px;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.2rem .25rem;color:var(--text-primary);font-size:.72rem;text-align:center">'
+          +'</div>';
+        out += '</div>';
+        if(!enc){
+          out += '<div style="display:flex;align-items:center;gap:.4rem">';
+          out += '<button onclick="adminSalvarPlacarElimBtn('+j.id+',\''+idGC+'\',\''+idGF+'\')" title="Atualiza só o placar em tempo real — NÃO declara vencedor, NÃO pontua ninguém ainda" style="flex:1;padding:.3rem .5rem;background:var(--bg-card);border:1px solid var(--accent-teal);color:var(--accent-teal);border-radius:4px;cursor:pointer;font-size:.68rem;font-family:Oswald,sans-serif">📊 Salvar Placar (sem pontuar)</button>';
+          out += '<select id="'+idV+'" style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:.2rem .4rem;color:var(--text-primary);font-size:.72rem">'
+            +'<option value="">vencedor</option>'
+            +'<option value="'+tc+'"'+(j.vencedor===tc?' selected':'')+'>'+tc+'</option>'
+            +'<option value="'+tf+'"'+(j.vencedor===tf?' selected':'')+'>'+tf+'</option>'
+            +'</select>';
+          out += '<button onclick="if(confirm(\'Confirma o resultado final? Isso vai PONTUAR todas as cotas que apostaram nesse jogo, de forma definitiva.\')) adminSalvarResultadoElimBtn('+j.id+',\''+idV+'\',\''+idGC+'\',\''+idGF+'\')" style="padding:.3rem .6rem;background:var(--success);color:white;border:none;border-radius:4px;cursor:pointer;font-size:.68rem;font-family:Oswald,sans-serif;white-space:nowrap">🏁 Encerrar Jogo</button>';
+          out += '</div>';
+        }
         out += '</div>';
       }
       out += '</div></div>';
@@ -4368,10 +4402,23 @@ function adminDefinirCampeoesBtn(){
   adminDefinirCampeoes(c,v,t);
 }
 
-function adminSalvarResultadoElimBtn(jogoId, selectId){
+function adminSalvarResultadoElimBtn(jogoId, selectId, gcId, gfId){
   const val = document.getElementById(selectId)?.value;
   if(!val){ toast('Selecione o vencedor!','e'); return; }
-  adminSalvarResultadoElim(jogoId, val);
+  const gcVal = document.getElementById(gcId)?.value;
+  const gfVal = document.getElementById(gfId)?.value;
+  const golsCasa = gcVal!==''&&gcVal!=null ? parseInt(gcVal,10) : null;
+  const golsFora = gfVal!==''&&gfVal!=null ? parseInt(gfVal,10) : null;
+  adminSalvarResultadoElim(jogoId, val, golsCasa, golsFora);
+}
+
+function adminSalvarPlacarElimBtn(jogoId, gcId, gfId){
+  const gcVal = document.getElementById(gcId)?.value;
+  const gfVal = document.getElementById(gfId)?.value;
+  const golsCasa = gcVal!==''&&gcVal!=null ? parseInt(gcVal,10) : null;
+  const golsFora = gfVal!==''&&gfVal!=null ? parseInt(gfVal,10) : null;
+  if(golsCasa==null && golsFora==null){ toast('Informe ao menos um placar!','e'); return; }
+  adminSalvarPlacarElim(jogoId, golsCasa, golsFora);
 }
 
 async function adminRecalcularTodos(){
