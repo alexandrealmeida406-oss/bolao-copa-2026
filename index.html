@@ -4133,34 +4133,29 @@ async function salvarClassificados(){
 
       // RECONCILIAÇÃO: atualizar palpites antigos que apontavam para o label genérico,
       // trocando para o nome real recém-definido (só se v1/v2 não forem null)
+      const labelGenerico1Fixo = slotLabelGlobal('1'+g, null);
+      const labelGenerico2Fixo = slotLabelGlobal('2'+g, null);
       if(v1){
         for(const j of (jogosAfetados1||[])){
-          const labelAntigo = slotLabelGlobal('1'+g, j.time_casa);
-          if(labelAntigo !== v1){
-            await sb.from('palpites_eliminatorias').update({vencedor:v1}).eq('jogo_id',j.id).eq('vencedor',labelAntigo);
-          }
+          await sb.from('palpites_eliminatorias').update({vencedor:v1}).eq('jogo_id',j.id).eq('vencedor',labelGenerico1Fixo);
         }
       } else {
         // Campo revertido para vazio: reverter palpites que tinham o nome real de volta ao label genérico
-        const labelGenerico1 = slotLabelGlobal('1'+g, null);
         for(const j of (jogosAfetados1||[])){
           if(j.time_casa){ // tinha nome real antes
-            await sb.from('palpites_eliminatorias').update({vencedor:labelGenerico1}).eq('jogo_id',j.id).eq('vencedor',j.time_casa);
+            await sb.from('palpites_eliminatorias').update({vencedor:labelGenerico1Fixo}).eq('jogo_id',j.id).eq('vencedor',j.time_casa);
           }
         }
       }
       if(v2){
         for(const j of (jogosAfetados2||[])){
-          const labelAntigo = slotLabelGlobal('2'+g, j.time_casa);
-          if(labelAntigo !== v2){
-            await sb.from('palpites_eliminatorias').update({vencedor:v2}).eq('jogo_id',j.id).eq('vencedor',labelAntigo);
-          }
+          await sb.from('palpites_eliminatorias').update({vencedor:v2}).eq('jogo_id',j.id).eq('vencedor',labelGenerico2Fixo);
         }
       } else {
         // Campo revertido para vazio: reverter palpites que tinham o nome real de volta ao label genérico
         for(const j of (jogosAfetados2||[])){
           if(j.time_fora){ // tinha nome real antes
-            await sb.from('palpites_eliminatorias').update({vencedor:slotLabelGlobal('2'+g,null)}).eq('jogo_id',j.id).eq('vencedor',j.time_fora);
+            await sb.from('palpites_eliminatorias').update({vencedor:labelGenerico2Fixo}).eq('jogo_id',j.id).eq('vencedor',j.time_fora);
           }
         }
       }
@@ -4189,10 +4184,9 @@ async function salvarClassificados(){
       // RECONCILIAÇÃO: trocar palpites que apontavam pro label genérico do slot de terceiro
       if(val){
         for(const j of (jogosAfetadosT||[])){
-          const labelAntigo = slotLabelGlobal(slot, j.time_casa || j.time_fora);
-          if(labelAntigo !== val){
-            await sb.from('palpites_eliminatorias').update({vencedor:val}).eq('jogo_id',j.id).eq('vencedor',labelAntigo);
-          }
+          // Calcular o label antigo ESPECIFICAMENTE para este slot (não confundir com o outro lado do jogo)
+          const labelAntigo = slotLabelGlobal(slot, null);
+          await sb.from('palpites_eliminatorias').update({vencedor:val}).eq('jogo_id',j.id).eq('vencedor',labelAntigo);
         }
       } else {
         // Campo revertido para vazio: reverter palpites de volta ao label genérico
