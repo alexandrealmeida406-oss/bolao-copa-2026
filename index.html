@@ -2546,6 +2546,7 @@ async function loadClassificacao(){
     if(jogosElim && jogosElim.length && jogosElim.some(j=>j.time_casa||j.time_fora)){
       const elimSecao = document.createElement('div');
       elimSecao.style.marginTop = '2.5rem';
+      elimSecao.style.gridColumn = '1 / -1';
 
       let bktHtml = '<h3 style="font-family:Oswald,sans-serif;font-size:1.1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;color:var(--accent-gold);border-top:1px solid var(--border);padding-top:1.5rem">🏆 Mata-Mata — Chaveamento Oficial</h3>';
 
