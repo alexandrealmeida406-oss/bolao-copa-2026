@@ -2541,6 +2541,53 @@ async function loadClassificacao(){
       }
       wrapper.appendChild(card);
     });
+
+    // ── Chaveamento oficial das eliminatórias (resultados reais, sem palpites) ──
+    const {data: jogosElim} = await sb.from('jogos_eliminatorias').select('*').neq('fase','terceiro').order('fase').order('ordem');
+    if(jogosElim && jogosElim.length && jogosElim.some(j=>j.time_casa||j.time_fora)){
+      const elimSecao = document.createElement('div');
+      elimSecao.style.marginTop = '2.5rem';
+      elimSecao.innerHTML = '<h3 style="font-family:Oswald,sans-serif;font-size:1.1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;color:var(--accent-gold);border-top:1px solid var(--border);padding-top:1.5rem">🏆 Mata-Mata — Resultados Oficiais</h3>';
+
+      const FASE_LABEL_OFICIAL = {'16avos':'16-avos de Final','oitavas':'Oitavas de Final','quartas':'Quartas de Final','semis':'Semifinais','final':'🏆 Final'};
+      const porFaseOficial = {};
+      jogosElim.forEach(j=>{ if(!porFaseOficial[j.fase]) porFaseOficial[j.fase]=[]; porFaseOficial[j.fase].push(j); });
+
+      ['16avos','oitavas','quartas','semis','final'].forEach(fase=>{
+        const js = (porFaseOficial[fase]||[]).filter(j=>j.time_casa||j.time_fora);
+        if(!js.length) return;
+        const faseDiv = document.createElement('div');
+        faseDiv.style.marginBottom = '1.2rem';
+        let html = '<div style="font-family:Oswald,sans-serif;font-size:.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem">'+FASE_LABEL_OFICIAL[fase]+'</div>';
+        html += '<div style="display:flex;flex-direction:column;gap:.4rem">';
+        js.forEach(j=>{
+          const tc = j.time_casa || j.slot_casa;
+          const tf = j.time_fora || j.slot_fora;
+          const enc = !!j.vencedor;
+          const placar = (j.gols_casa!=null && j.gols_fora!=null) ? (j.gols_casa+' x '+j.gols_fora) : null;
+          html += '<div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.5rem .7rem;background:var(--bg-card);border:1px solid '+(enc?'var(--success)':'var(--border)')+';border-radius:8px">';
+          html += '<span style="font-size:.82rem;font-family:\'Barlow Condensed\',sans-serif">'
+            +'<strong style="color:'+(j.vencedor===tc?'var(--success)':'var(--text-primary)')+'">'+tc+'</strong>'
+            +' <span style="color:var(--text-muted)">×</span> '
+            +'<strong style="color:'+(j.vencedor===tf?'var(--success)':'var(--text-primary)')+'">'+tf+'</strong>'
+            +'</span>';
+          if(placar){
+            html += '<span style="font-family:Oswald,sans-serif;font-size:.85rem;font-weight:700;color:var(--text-secondary)">'+placar+'</span>';
+          } else if(enc){
+            html += '<span style="font-size:.7rem;color:var(--success)">🏁 '+j.vencedor+'</span>';
+          } else {
+            html += '<span style="font-size:.7rem;color:var(--text-muted)">a definir</span>';
+          }
+          html += '</div>';
+        });
+        html += '</div>';
+        faseDiv.innerHTML = html;
+        elimSecao.appendChild(faseDiv);
+      });
+
+      wrapper.appendChild(elimSecao);
+    }
+
     el.dataset.loaded='true';
     el.innerHTML='';
     el.appendChild(wrapper);
