@@ -2939,6 +2939,24 @@ async function loadJogos(){
     el.innerHTML=`<p style="text-align:center;padding:2rem;color:var(--error)">Erro: ${e.message}</p>`;
   }
 }    
+// Busca TODOS os registros de uma tabela, ignorando o limite padrão de 1000 linhas do Supabase
+async function fetchAllRows(tableName, selectCols, filterFn){
+  let allRows = [];
+  let from = 0;
+  const pageSize = 1000;
+  while(true){
+    let query = sb.from(tableName).select(selectCols).range(from, from+pageSize-1);
+    if(filterFn) query = filterFn(query);
+    const {data, error} = await query;
+    if(error){ console.error('[fetchAllRows] erro em '+tableName+':', error); break; }
+    if(!data || !data.length) break;
+    allRows = allRows.concat(data);
+    if(data.length < pageSize) break;
+    from += pageSize;
+  }
+  return allRows;
+}
+
 async function loadAdmin(){
   const el=document.getElementById('admin-content');
   if(el&&!el.innerHTML.includes('Carregando'))el.innerHTML='<div class="loading"><div class="spinner"></div>Carregando admin...</div>';
@@ -2947,12 +2965,12 @@ async function loadAdmin(){
   
   try{
     // Load inscriptions and profiles separately
-    const[{data:inscs,error:insErr},{data:profs,error:profErr},{data:palpGrupos},{data:cotasReqs},{data:palpElim},{data:jogosElimTotal}]=await Promise.all([
+    const[{data:inscs,error:insErr},{data:profs,error:profErr},{data:palpGrupos},{data:cotasReqs},palpElim,{data:jogosElimTotal}]=await Promise.all([
       sb.from('inscricoes').select('*').order('created_at',{ascending:false}),
       sb.from('profiles').select('*'),
       sb.from('palpites_grupos').select('inscricao_id,cota_numero').order('inscricao_id'),
       sb.from('compra_cotas').select('*').order('created_at',{ascending:false}),
-      sb.from('palpites_eliminatorias').select('inscricao_id,cota_numero,jogo_id'),
+      fetchAllRows('palpites_eliminatorias','inscricao_id,cota_numero,jogo_id'),
       sb.from('jogos_eliminatorias').select('id,fase').neq('fase','terceiro'),
     ]);
     // Mapa inscricao_id → quantas cotas já preenchidas (1ª fase)
@@ -3219,7 +3237,7 @@ async function _refreshPalpStatus(){
     });
 
     // Atualizar também a coluna "Palpites 2ª Fase"
-    const{data:pe}=await sb.from('palpites_eliminatorias').select('inscricao_id,cota_numero,jogo_id');
+    const pe=await fetchAllRows('palpites_eliminatorias','inscricao_id,cota_numero,jogo_id');
     const{data:jogosElimTotal2}=await sb.from('jogos_eliminatorias').select('id,fase').neq('fase','terceiro');
     const totalJogosElim2 = (jogosElimTotal2||[]).length;
     const peMap={};
