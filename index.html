@@ -4367,6 +4367,30 @@ async function adminSalvarPlacarElim(jogoId, golsCasa, golsFora){
   }
 }
 
+// Propaga o vencedor de um jogo encerrado para o jogo correspondente da próxima fase,
+// escrevendo o nome real (time_casa/time_fora) direto no banco — garante que telas
+// somente-leitura (como a Classificação oficial) mostrem o nome certo, não o slot genérico
+async function _propagarVencedorParaProximaFase(jogoId, vencedor){
+  const MAPA_PROXIMA_FASE = {'16avos':'oitavas','oitavas':'quartas','quartas':'semis','semis':'final'};
+  const {data: jogoAtual} = await sb.from('jogos_eliminatorias').select('id,fase,ordem').eq('id',jogoId).single();
+  if(!jogoAtual) return;
+  const proximaFase = MAPA_PROXIMA_FASE[jogoAtual.fase];
+  if(!proximaFase) return; // já é a final, não propaga mais
+
+  const {data: jogosAtual} = await sb.from('jogos_eliminatorias').select('id,ordem').eq('fase',jogoAtual.fase).order('ordem');
+  const {data: jogosProxima} = await sb.from('jogos_eliminatorias').select('id,ordem').eq('fase',proximaFase).order('ordem');
+  if(!jogosAtual || !jogosProxima) return;
+
+  const idx = jogosAtual.findIndex(j=>j.id===jogoId);
+  if(idx===-1) return;
+  const proxIdx = Math.floor(idx/2);
+  const proxJogo = jogosProxima[proxIdx];
+  if(!proxJogo) return;
+  const posicao = idx%2===0 ? 'time_casa' : 'time_fora';
+
+  await sb.from('jogos_eliminatorias').update({[posicao]: vencedor}).eq('id', proxJogo.id);
+}
+
 // Encerra o jogo de fato: define o vencedor oficial e RECALCULA pontos de todas as cotas
 async function adminSalvarResultadoElim(jogoId, vencedor, golsCasa, golsFora){
   try{
@@ -4377,6 +4401,9 @@ async function adminSalvarResultadoElim(jogoId, vencedor, golsCasa, golsFora){
       .update(payload)
       .eq('id', jogoId);
     if(error) throw new Error(error.message);
+
+    // Propagar o vencedor para o jogo da PRÓXIMA fase (atualiza time_casa/time_fora reais no banco)
+    await _propagarVencedorParaProximaFase(jogoId, vencedor);
 
     toast('✅ Resultado salvo! Recalculando pontos...','s');
     if(typeof loadJogos==='function') loadJogos();
