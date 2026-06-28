@@ -561,7 +561,6 @@ window.addEventListener('DOMContentLoaded', () => {
 <li><a onclick="document.getElementById('nl').classList.remove('open');navigate('home');scrollToSection('cf')">Como Funciona</a></li>
 <li><a onclick="document.getElementById('nl').classList.remove('open');navigate('home');scrollToSection('rank');setTimeout(loadRanking,100)">Ranking</a></li>
 <li><a onclick="document.getElementById('nl').classList.remove('open');goToJogos()">Data dos Jogos</a></li>
-<li><a onclick="document.getElementById('nl').classList.remove('open');navigate('elim')">Eliminatórias</a></li>
 <li><a onclick="document.getElementById('nl').classList.remove('open');goToClass()">Classificação</a></li>
 <li><a onclick="document.getElementById('nl').classList.remove('open');goToArt()">Artilharia</a></li>
 </ul>
@@ -2547,44 +2546,113 @@ async function loadClassificacao(){
     if(jogosElim && jogosElim.length && jogosElim.some(j=>j.time_casa||j.time_fora)){
       const elimSecao = document.createElement('div');
       elimSecao.style.marginTop = '2.5rem';
-      elimSecao.innerHTML = '<h3 style="font-family:Oswald,sans-serif;font-size:1.1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;color:var(--accent-gold);border-top:1px solid var(--border);padding-top:1.5rem">🏆 Mata-Mata — Resultados Oficiais</h3>';
 
-      const FASE_LABEL_OFICIAL = {'16avos':'16-avos de Final','oitavas':'Oitavas de Final','quartas':'Quartas de Final','semis':'Semifinais','final':'🏆 Final'};
+      let bktHtml = '<h3 style="font-family:Oswald,sans-serif;font-size:1.1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;color:var(--accent-gold);border-top:1px solid var(--border);padding-top:1.5rem">🏆 Mata-Mata — Chaveamento Oficial</h3>';
+
+      bktHtml += '<style>'
+        + '.bktro-wrap{overflow-x:auto;padding-bottom:.5rem;-webkit-overflow-scrolling:touch}'
+        + '.bktro{display:flex;gap:0;min-width:max-content;padding:.5rem 0;align-items:stretch}'
+        + '.bktro-col{display:flex;flex-direction:column;min-width:148px;position:relative}'
+        + '.bktro-col-head{text-align:center;font-family:Oswald,sans-serif;font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:.5rem;padding:0 .3rem}'
+        + '.bktro-col-body{flex:1;display:flex;flex-direction:column}'
+        + '.bktro-slot{display:flex;flex-direction:column;justify-content:center;position:relative;padding:.2rem .4rem}'
+        + '.bktro-match{background:var(--bg-card);border:1px solid var(--border);border-radius:7px;overflow:hidden;position:relative;z-index:1}'
+        + '.bktro-side{display:flex;align-items:center;gap:.35rem;padding:.5rem .45rem;min-height:36px}'
+        + '.bktro-side.win{background:rgba(34,197,94,.12)}'
+        + '.bktro-side img{width:16px;height:11px;object-fit:cover;border-radius:1px;flex-shrink:0}'
+        + '.bktro-side span{font-family:\'Barlow Condensed\',sans-serif;font-size:.68rem;font-weight:500;color:var(--text-primary);line-height:1.1;word-break:break-word}'
+        + '.bktro-side.win span{color:var(--success);font-weight:700}'
+        + '.bktro-divider{height:1px;background:var(--border)}'
+        + '.bktro-col:not(:last-child) .bktro-slot::after{content:\'\';position:absolute;right:-16px;top:50%;width:16px;height:1px;background:var(--border)}'
+        + '.bktro-col:not(:first-child) .bktro-slot::before{content:\'\';position:absolute;left:-16px;top:50%;width:16px;height:1px;background:var(--border)}'
+        + '.bktro-vline{position:absolute;left:-16px;top:25%;bottom:25%;width:1px;background:var(--border)}'
+        + '.bktro-champion{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;background:linear-gradient(135deg,rgba(212,168,67,.18),rgba(212,168,67,.06));border:1.5px solid var(--accent-gold);border-radius:10px;padding:.7rem .5rem;min-height:60px;text-align:center}'
+        + '.bktro-champion img{width:26px;height:18px;object-fit:cover;border-radius:2px;box-shadow:0 2px 6px rgba(0,0,0,.3)}'
+        + '.bktro-champion span{font-family:Oswald,sans-serif;font-size:.75rem;font-weight:700;color:var(--accent-gold);text-transform:uppercase;letter-spacing:.5px}'
+        + '@media(max-width:640px){.bktro-col{min-width:124px}.bktro-side span{font-size:.62rem}}'
+        + '</style>';
+
+      const FASE_LABEL_OFICIAL = {'16avos':'16-avos','oitavas':'Oitavas','quartas':'Quartas','semis':'Semifinais','final':'Final'};
+      const FASE_ORDEM_OFICIAL = ['16avos','oitavas','quartas','semis','final'];
       const porFaseOficial = {};
       jogosElim.forEach(j=>{ if(!porFaseOficial[j.fase]) porFaseOficial[j.fase]=[]; porFaseOficial[j.fase].push(j); });
 
-      ['16avos','oitavas','quartas','semis','final'].forEach(fase=>{
-        const js = (porFaseOficial[fase]||[]).filter(j=>j.time_casa||j.time_fora);
+      function flagSrcRO(nome){
+        const FLAGS_RO = {"México":"mx","África do Sul":"za","Coreia do Sul":"kr","República Tcheca":"cz","Canadá":"ca","Bósnia e Herzegovina":"ba","Catar":"qa","Suíça":"ch","Brasil":"br","Marrocos":"ma","Haiti":"ht","Escócia":"gb-sct","EUA":"us","Paraguai":"py","Austrália":"au","Turquia":"tr","Alemanha":"de","Curaçao":"cw","Costa do Marfim":"ci","Equador":"ec","Holanda":"nl","Japão":"jp","Suécia":"se","Tunísia":"tn","Bélgica":"be","Egito":"eg","Irã":"ir","Nova Zelândia":"nz","Espanha":"es","Cabo Verde":"cv","Arábia Saudita":"sa","Uruguai":"uy","França":"fr","Senegal":"sn","Iraque":"iq","Noruega":"no","Argentina":"ar","Argélia":"dz","Áustria":"at","Jordânia":"jo","Portugal":"pt","RD Congo":"cd","Uzbequistão":"uz","Colômbia":"co","Inglaterra":"gb-eng","Croácia":"hr","Gana":"gh","Panamá":"pa"};
+        const code = nome ? FLAGS_RO[nome] : null;
+        return code ? 'https://flagcdn.com/w40/'+code+'.png' : '';
+      }
+      function slotLabelRO(slot, timeReal){
+        if(timeReal) return timeReal;
+        if(!slot) return '?';
+        if(/^[12][A-L]$/.test(slot)){
+          const pos = slot[0]==='1' ? '1º' : '2º';
+          return pos+' Grupo '+slot[1];
+        }
+        if(slot.startsWith('3')){
+          return '3º melhor ('+slot.slice(1).split('').join('/')+')';
+        }
+        return slot;
+      }
+
+      bktHtml += '<div class="bktro-wrap"><div class="bktro">';
+
+      FASE_ORDEM_OFICIAL.forEach((fase, faseIdx)=>{
+        const js = (porFaseOficial[fase]||[]).slice().sort((a,b)=>a.ordem-b.ordem);
         if(!js.length) return;
-        const faseDiv = document.createElement('div');
-        faseDiv.style.marginBottom = '1.2rem';
-        let html = '<div style="font-family:Oswald,sans-serif;font-size:.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem">'+FASE_LABEL_OFICIAL[fase]+'</div>';
-        html += '<div style="display:flex;flex-direction:column;gap:.4rem">';
-        js.forEach(j=>{
-          const tc = j.time_casa || j.slot_casa;
-          const tf = j.time_fora || j.slot_fora;
-          const enc = !!j.vencedor;
-          const placar = (j.gols_casa!=null && j.gols_fora!=null) ? (j.gols_casa+' x '+j.gols_fora) : null;
-          html += '<div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.5rem .7rem;background:var(--bg-card);border:1px solid '+(enc?'var(--success)':'var(--border)')+';border-radius:8px">';
-          html += '<span style="font-size:.82rem;font-family:\'Barlow Condensed\',sans-serif">'
-            +'<strong style="color:'+(j.vencedor===tc?'var(--success)':'var(--text-primary)')+'">'+tc+'</strong>'
-            +' <span style="color:var(--text-muted)">×</span> '
-            +'<strong style="color:'+(j.vencedor===tf?'var(--success)':'var(--text-primary)')+'">'+tf+'</strong>'
-            +'</span>';
-          if(placar){
-            html += '<span style="font-family:Oswald,sans-serif;font-size:.85rem;font-weight:700;color:var(--text-secondary)">'+placar+'</span>';
-          } else if(enc){
-            html += '<span style="font-size:.7rem;color:var(--success)">🏁 '+j.vencedor+'</span>';
-          } else {
-            html += '<span style="font-size:.7rem;color:var(--text-muted)">a definir</span>';
-          }
-          html += '</div>';
-        });
-        html += '</div>';
-        faseDiv.innerHTML = html;
-        elimSecao.appendChild(faseDiv);
+        const grow = Math.pow(2, faseIdx);
+
+        bktHtml += '<div class="bktro-col">';
+        bktHtml += '<div class="bktro-col-head">'+FASE_LABEL_OFICIAL[fase]+'</div>';
+        bktHtml += '<div class="bktro-col-body">';
+
+        for(let i=0;i<js.length;i+=2){
+          const par = [js[i], js[i+1]].filter(Boolean);
+          bktHtml += '<div style="flex:'+(grow*par.length)+' 0 0;position:relative;display:flex;flex-direction:column">';
+          if(par.length===2) bktHtml += '<div class="bktro-vline"></div>';
+
+          par.forEach(j=>{
+            const tc = slotLabelRO(j.slot_casa, j.time_casa);
+            const tf = slotLabelRO(j.slot_fora, j.time_fora);
+            const flagC = flagSrcRO(j.time_casa);
+            const flagF = flagSrcRO(j.time_fora);
+            bktHtml += '<div class="bktro-slot" style="flex:'+grow+' 0 0">';
+            bktHtml += '<div class="bktro-match">';
+            bktHtml += '<div class="bktro-side'+(j.vencedor && j.vencedor===tc?' win':'')+'">'
+              +(flagC?'<img src="'+flagC+'">':'')+'<span>'+tc+'</span></div>';
+            bktHtml += '<div class="bktro-divider"></div>';
+            bktHtml += '<div class="bktro-side'+(j.vencedor && j.vencedor===tf?' win':'')+'">'
+              +(flagF?'<img src="'+flagF+'">':'')+'<span>'+tf+'</span></div>';
+            bktHtml += '</div></div>';
+          });
+          bktHtml += '</div>';
+        }
+        bktHtml += '</div></div>';
       });
 
+      // Coluna do Campeão (oficial)
+      const jogoFinalRO = (porFaseOficial['final']||[])[0];
+      if(jogoFinalRO){
+        const growFinal = Math.pow(2, FASE_ORDEM_OFICIAL.indexOf('final'));
+        const campeaoNomeRO = jogoFinalRO.vencedor || null;
+        const flagCampeaoRO = flagSrcRO(campeaoNomeRO);
+        bktHtml += '<div class="bktro-col" style="min-width:120px">';
+        bktHtml += '<div class="bktro-col-head">Campeão</div>';
+        bktHtml += '<div class="bktro-col-body"><div style="flex:'+growFinal+' 0 0;display:flex;flex-direction:column">';
+        bktHtml += '<div class="bktro-slot" style="flex:'+growFinal+' 0 0">';
+        bktHtml += '<div class="bktro-champion">';
+        if(campeaoNomeRO){
+          bktHtml += '<span style="font-size:1rem">🏆</span>'
+            +(flagCampeaoRO?'<img src="'+flagCampeaoRO+'">':'')
+            +'<span>'+campeaoNomeRO+'</span>';
+        } else {
+          bktHtml += '<span style="font-size:1rem;opacity:.3">🏆</span><span style="font-family:\'Barlow Condensed\',sans-serif!important;font-weight:500!important;text-transform:none!important;color:var(--text-muted)!important">A definir</span>';
+        }
+        bktHtml += '</div></div></div></div>';
+      }
+
+      bktHtml += '</div></div>';
+      elimSecao.innerHTML = bktHtml;
       wrapper.appendChild(elimSecao);
     }
 
