@@ -3698,8 +3698,8 @@ async function loadElim(){
           if(temPar) out += '<div class="bkt-vline"></div>';
 
           par.forEach(j=>{
-          const nomeCasa = j.time_casa || resolverNomePropagado(inscId, cotaNum, j.id, 'casa') || null;
-          const nomeFora = j.time_fora || resolverNomePropagado(inscId, cotaNum, j.id, 'fora') || null;
+          const nomeCasa = resolverNomePropagado(inscId, cotaNum, j.id, 'casa') || j.time_casa || null;
+          const nomeFora = resolverNomePropagado(inscId, cotaNum, j.id, 'fora') || j.time_fora || null;
           const labelCasa = slotLabel(j.slot_casa, nomeCasa);
           const labelFora = slotLabel(j.slot_fora, nomeFora);
           const palp = palpMap[inscId+'_'+cotaNum+'_'+j.id];
