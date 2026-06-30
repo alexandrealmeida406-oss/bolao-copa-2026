@@ -3706,10 +3706,13 @@ async function loadElim(){
           // No modo parcial, só o jogo liberado (Canadá x África do Sul) aceita clique;
           // os demais ficam travados até a liberação total, exceto para o admin (que pode testar)
           const encerrado = !!j.vencedor || prazoEncerrado || (j.id === SLOT_SEMPRE_BLOQUEADO && !isAdmin);
+          // resultadoOficial: só true quando o jogo REALMENTE terminou (admin definiu o vencedor),
+          // diferente de "encerrado" que também vira true só por causa do prazo de edição ter passado
+          const resultadoOficial = !!j.vencedor;
           const casaSel = palp===labelCasa;
           const foraSel = palp===labelFora;
-          const casaWin = encerrado && j.vencedor===labelCasa;
-          const foraWin = encerrado && j.vencedor===labelFora;
+          const casaWin = resultadoOficial && j.vencedor===labelCasa;
+          const foraWin = resultadoOficial && j.vencedor===labelFora;
 
           const flagCasa = nomeCasa?(flag(nomeCasa).match(/src="([^"]+)"/)||[])[1]||'':'';
           const flagFora = nomeFora?(flag(nomeFora).match(/src="([^"]+)"/)||[])[1]||'':'';
@@ -3717,22 +3720,22 @@ async function loadElim(){
           out += '<div class="bkt-slot" style="flex:'+grow+' 0 0">';
           out += '<div class="bkt-match" id="jogo-'+inscId+'-'+cotaNum+'-'+j.id+'">';
 
-          out += '<button class="bkt-side'+(casaSel&&!encerrado?' sel':'')+(encerrado?(casaWin?' fim-win':' fim-lose')+(casaSel?' minha-escolha':''):'')+'" data-lado="casa" data-nome="'+labelCasa.replace(/"/g,'&quot;')+'" '
+          out += '<button class="bkt-side'+(casaSel&&!encerrado?' sel':'')+(resultadoOficial?(casaWin?' fim-win':' fim-lose')+(casaSel?' minha-escolha':''):(encerrado?' fim-lose':''))+'" data-lado="casa" data-nome="'+labelCasa.replace(/"/g,'&quot;')+'" '
             +(encerrado?'style="pointer-events:none;cursor:default"':'onclick="escolherVencedor('+inscId+','+cotaNum+','+j.id+',\''+labelCasa.replace(/'/g,"\\'")+'\')"')
             +'>';
           if(flagCasa) out += '<img class="btn-time-flag" src="'+flagCasa+'">';
           else out += '<img class="btn-time-flag" src="" style="display:none">';
-          out += '<span class="btn-time-nome">'+labelCasa+(casaWin?' ✅':'')+(encerrado&&casaSel?' <span style="font-size:.6rem;opacity:.8">(seu palpite'+(casaWin?', acertou!':casaSel&&!casaWin?', errou':'')+')</span>':'')+'</span>';
+          out += '<span class="btn-time-nome">'+labelCasa+(casaWin?' ✅':'')+(resultadoOficial&&casaSel?' <span style="font-size:.6rem;opacity:.8">(seu palpite'+(casaWin?', acertou!':', errou')+')</span>':'')+'</span>';
           out += '</button>';
 
           out += '<div class="bkt-divider"></div>';
 
-          out += '<button class="bkt-side'+(foraSel&&!encerrado?' sel':'')+(encerrado?(foraWin?' fim-win':' fim-lose')+(foraSel?' minha-escolha':''):'')+'" data-lado="fora" data-nome="'+labelFora.replace(/"/g,'&quot;')+'" '
+          out += '<button class="bkt-side'+(foraSel&&!encerrado?' sel':'')+(resultadoOficial?(foraWin?' fim-win':' fim-lose')+(foraSel?' minha-escolha':''):(encerrado?' fim-lose':''))+'" data-lado="fora" data-nome="'+labelFora.replace(/"/g,'&quot;')+'" '
             +(encerrado?'style="pointer-events:none;cursor:default"':'onclick="escolherVencedor('+inscId+','+cotaNum+','+j.id+',\''+labelFora.replace(/'/g,"\\'")+'\')"')
             +'>';
           if(flagFora) out += '<img class="btn-time-flag" src="'+flagFora+'">';
           else out += '<img class="btn-time-flag" src="" style="display:none">';
-          out += '<span class="btn-time-nome">'+labelFora+(foraWin?' ✅':'')+(encerrado&&foraSel?' <span style="font-size:.6rem;opacity:.8">(seu palpite'+(foraWin?', acertou!':foraSel&&!foraWin?', errou':'')+')</span>':'')+'</span>';
+          out += '<span class="btn-time-nome">'+labelFora+(foraWin?' ✅':'')+(resultadoOficial&&foraSel?' <span style="font-size:.6rem;opacity:.8">(seu palpite'+(foraWin?', acertou!':', errou')+')</span>':'')+'</span>';
           out += '</button>';
 
           out += '</div></div>'; // bkt-match, bkt-slot
