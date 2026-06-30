@@ -3651,6 +3651,8 @@ async function loadElim(){
       + '.bkt-side.sel{background:rgba(34,197,94,.14)}'
       + '.bkt-side.fim-win{background:rgba(34,197,94,.10)}'
       + '.bkt-side.fim-lose{opacity:.45}'
+      + '.bkt-side.minha-escolha{box-shadow:inset 0 0 0 2px var(--accent-teal);opacity:.85}'
+      + '.bkt-side.minha-escolha.fim-win{box-shadow:inset 0 0 0 2px var(--success)}'
       + '.bkt-side img{width:16px;height:11px;object-fit:cover;border-radius:1px;flex-shrink:0}'
       + '.bkt-side span{font-family:\'Barlow Condensed\',sans-serif;font-size:.68rem;font-weight:500;color:var(--text-primary);line-height:1.1;word-break:break-word}'
       + '.bkt-side.sel span{color:var(--success);font-weight:700}'
@@ -3715,22 +3717,22 @@ async function loadElim(){
           out += '<div class="bkt-slot" style="flex:'+grow+' 0 0">';
           out += '<div class="bkt-match" id="jogo-'+inscId+'-'+cotaNum+'-'+j.id+'">';
 
-          out += '<button class="bkt-side'+(casaSel&&!encerrado?' sel':'')+(encerrado?(casaWin?' fim-win':' fim-lose'):'')+'" data-lado="casa" data-nome="'+labelCasa.replace(/"/g,'&quot;')+'" '
+          out += '<button class="bkt-side'+(casaSel&&!encerrado?' sel':'')+(encerrado?(casaWin?' fim-win':' fim-lose')+(casaSel?' minha-escolha':''):'')+'" data-lado="casa" data-nome="'+labelCasa.replace(/"/g,'&quot;')+'" '
             +(encerrado?'style="pointer-events:none;cursor:default"':'onclick="escolherVencedor('+inscId+','+cotaNum+','+j.id+',\''+labelCasa.replace(/'/g,"\\'")+'\')"')
             +'>';
           if(flagCasa) out += '<img class="btn-time-flag" src="'+flagCasa+'">';
           else out += '<img class="btn-time-flag" src="" style="display:none">';
-          out += '<span class="btn-time-nome">'+labelCasa+(casaWin?' ✅':'')+'</span>';
+          out += '<span class="btn-time-nome">'+labelCasa+(casaWin?' ✅':'')+(encerrado&&casaSel?' <span style="font-size:.6rem;opacity:.8">(seu palpite'+(casaWin?', acertou!':casaSel&&!casaWin?', errou':'')+')</span>':'')+'</span>';
           out += '</button>';
 
           out += '<div class="bkt-divider"></div>';
 
-          out += '<button class="bkt-side'+(foraSel&&!encerrado?' sel':'')+(encerrado?(foraWin?' fim-win':' fim-lose'):'')+'" data-lado="fora" data-nome="'+labelFora.replace(/"/g,'&quot;')+'" '
+          out += '<button class="bkt-side'+(foraSel&&!encerrado?' sel':'')+(encerrado?(foraWin?' fim-win':' fim-lose')+(foraSel?' minha-escolha':''):'')+'" data-lado="fora" data-nome="'+labelFora.replace(/"/g,'&quot;')+'" '
             +(encerrado?'style="pointer-events:none;cursor:default"':'onclick="escolherVencedor('+inscId+','+cotaNum+','+j.id+',\''+labelFora.replace(/'/g,"\\'")+'\')"')
             +'>';
           if(flagFora) out += '<img class="btn-time-flag" src="'+flagFora+'">';
           else out += '<img class="btn-time-flag" src="" style="display:none">';
-          out += '<span class="btn-time-nome">'+labelFora+(foraWin?' ✅':'')+'</span>';
+          out += '<span class="btn-time-nome">'+labelFora+(foraWin?' ✅':'')+(encerrado&&foraSel?' <span style="font-size:.6rem;opacity:.8">(seu palpite'+(foraWin?', acertou!':foraSel&&!foraWin?', errou':'')+')</span>':'')+'</span>';
           out += '</button>';
 
           out += '</div></div>'; // bkt-match, bkt-slot
