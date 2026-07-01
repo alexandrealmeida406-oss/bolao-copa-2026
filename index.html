@@ -2056,12 +2056,12 @@ async function loadRanking(){
     // Ordenar: pontos desc, empate → por nome
     linhas.sort((a,b)=>b.pontos-a.pontos||a.apelido.localeCompare(b.apelido));
 
-    // Posições com empate
-    let pos=1;
+    // Posições com empate — ranking DENSO (1,1,2,3...): quem empata divide o prêmio
+    // da posição, e a próxima pontuação distinta ocupa a posição seguinte sem pular.
+    let pos=0;
     linhas.forEach((l,idx)=>{
-      if(idx>0&&l.pontos===linhas[idx-1].pontos) l.pos=linhas[idx-1].pos;
-      else l.pos=pos;
-      pos++;
+      if(idx===0||l.pontos!==linhas[idx-1].pontos) pos++;
+      l.pos=pos;
     });
 
     const badge=pos=>{
